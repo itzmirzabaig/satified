@@ -16,7 +16,7 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "../../types": ["study/types.ts"]
+      "../../types": ["./study/types.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "study/**/*.ts", "study/**/*.tsx", "utils/**/*.ts", "questions/**/*.ts"]
