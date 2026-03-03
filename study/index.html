@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>SAT Math Practice</title>
+  <!-- mafs CSS from CDN (fixes "no CSS" issue when not running via Vite dev server) -->
+  <link rel="stylesheet" href="https://unpkg.com/mafs@0.21.0/core.css">
+  <link rel="stylesheet" href="https://unpkg.com/mafs@0.21.0/font.css">
+  <!-- style.css — relative path works with both Vite dev server and static serving -->
+  <link rel="stylesheet" href="./style.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        ignoreHtmlClass: 'mafs-container',
+        processHtmlClass: 'content',
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+</head>
+<body>
+
+  <!-- Theme toggle — desktop only (hidden on mobile via CSS) -->
+  <div class="theme-corner">
+    <div class="switch-container">
+      <input class="toggle-checkbox" id="toggle-switch" type="checkbox" />
+      <label class="switch" for="toggle-switch">
+        <div class="toggle"><div class="led"></div></div>
+      </label>
+    </div>
+    <!-- Mario brick — desktop only -->
+    <div class="mario-wrap" id="mario-wrap">
+      <div class="mario-tooltip">Create Practice Test</div>
+      <!-- pixel mushroom (hidden, animates up on hover/click) -->
+      <div class="mario-pixel-mush" id="mario-mush" aria-hidden="true"></div>
+      <!-- invisible hit box that triggers hover mushroom + click -->
+      <div class="mario-hitbox" id="brick-btn" role="button" tabindex="0" aria-label="Create Practice Test"></div>
+      <!-- pixel brick (question block) -->
+      <div class="mario-pixel-brick" id="mario-pixel-brick"></div>
+    </div>
+  </div>
+
+  <!-- Mobile burger menu — shown only on mobile (≤640px) -->
+  <div class="mob-burger-corner">
+    <label class="popup">
+      <input type="checkbox" id="mob-burger-checkbox">
+      <div class="burger" tabindex="0">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <nav class="popup-window">
+        <legend>Filters</legend>
+        <ul>
+          <!-- Create Practice Test — mobile only -->
+          <li class="mob-filter-item" style="border-bottom: 1px solid var(--border-color, #333); margin-bottom: 4px; padding-bottom: 8px;">
+            <button class="mob-filter-row mob-create-test-btn" type="button" id="mob-create-test-btn" style="font-weight:700;color:var(--text);">
+              <span class="mob-filter-row-left">
+                <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                Create Practice Test
+              </span>
+            </button>
+          </li>
+          <hr>
+          <!-- Difficulty accordion -->
+          <li class="mob-filter-item" data-filter="difficulty">
+            <button class="mob-filter-row" type="button">
+              <span class="mob-filter-row-left">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                Difficulty
+              </span>
+              <span style="display:flex;align-items:center;gap:6px">
+                <span class="mob-filter-badge is-all" id="mob-diff-badge">All</span>
+                <svg class="mob-filter-chevron" viewBox="0 0 10 6"><polyline points="1 1 5 5 9 1"/></svg>
+              </span>
+            </button>
+            <div class="mob-filter-opts" id="mob-diff-opts"></div>
+          </li>
+          <hr>
+          <!-- Domain accordion -->
+          <li class="mob-filter-item" data-filter="domain">
+            <button class="mob-filter-row" type="button">
+              <span class="mob-filter-row-left">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Domain
+              </span>
+              <span style="display:flex;align-items:center;gap:6px">
+                <span class="mob-filter-badge is-all" id="mob-domain-badge">All</span>
+                <svg class="mob-filter-chevron" viewBox="0 0 10 6"><polyline points="1 1 5 5 9 1"/></svg>
+              </span>
+            </button>
+            <div class="mob-filter-opts" id="mob-domain-opts"></div>
+          </li>
+          <hr>
+          <!-- Skill accordion -->
+          <li class="mob-filter-item" data-filter="skill">
+            <button class="mob-filter-row" type="button">
+              <span class="mob-filter-row-left">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 20h20M6 20V10l6-8 6 8v10"/></svg>
+                Skill
+              </span>
+              <span style="display:flex;align-items:center;gap:6px">
+                <span class="mob-filter-badge is-all" id="mob-skill-badge">All</span>
+                <svg class="mob-filter-chevron" viewBox="0 0 10 6"><polyline points="1 1 5 5 9 1"/></svg>
+              </span>
+            </button>
+            <div class="mob-filter-opts" id="mob-skill-opts"></div>
+          </li>
+        </ul>
+      </nav>
+    </label>
+  </div>
+
+  <!-- Desmos Panel -->
+  <div id="desmos-panel" class="desmos-panel hidden">
+    <div id="desmos-titlebar" class="desmos-titlebar">
+      <button id="desmos-close" class="desmos-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="resize-handle resize-n" data-dir="n"></div>
+    <div class="resize-handle resize-s" data-dir="s"></div>
+    <div class="resize-handle resize-e" data-dir="e"></div>
+    <div class="resize-handle resize-w" data-dir="w"></div>
+    <div class="resize-handle resize-ne" data-dir="ne"></div>
+    <div class="resize-handle resize-nw" data-dir="nw"></div>
+    <div class="resize-handle resize-se" data-dir="se"></div>
+    <div class="resize-handle resize-sw" data-dir="sw"></div>
+    <div id="desmos-container"></div>
+  </div>
+
+  <button id="calc-toggle" class="calc-toggle-btn">
+    <span class="calc-letter calc-letter-c">C</span>
+    <span class="calc-letter calc-letter-a">A</span>
+    <span class="calc-letter calc-letter-l">L</span>
+  </button>
+
+  <div class="container">
+
+    <!-- Filter bar -->
+    <div id="filter-container" class="filter-section"></div>
+
+    <!-- Hidden counter element that app.ts references -->
+    <span id="question-counter" class="q-counter" style="display:none"></span>
+
+    <!-- Main row: prev | card | next -->
+    <div class="main-row">
+
+      <!-- Prev button -->
+      <div class="btn-conteiner">
+        <a id="prev-btn" href="#" class="btn-content btn-prev">
+          <span class="icon-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 66 43" height="30px" width="30px">
+              <g fill-rule="evenodd" fill="none" stroke-width="1" stroke="none">
+                <path fill="#9ee5fa" d="M40.1543933,3.89485454 L43.9763149,0.139296592 C44.1708311,-0.0518420739 44.4826329,-0.0518571125 44.6771675,0.139262789 L65.6916134,20.7848311 C66.0855801,21.1718824 66.0911863,21.8050225 65.704135,22.1989893 C65.7000188,22.2031791 65.6958657,22.2073326 65.6916762,22.2114492 L44.677098,42.8607841 C44.4825957,43.0519059 44.1708242,43.0519358 43.9762853,42.8608513 L40.1545186,39.1069479 C39.9575152,38.9134427 39.9546793,38.5968729 40.1481845,38.3998695 C40.1502893,38.3977268 40.1524132,38.395603 40.1545562,38.3934985 L56.9937789,21.8567812 C57.1908028,21.6632968 57.193672,21.3467273 57.0001876,21.1497035 C56.9980647,21.1475418 56.9959223,21.1453995 56.9937605,21.1432767 L40.1545208,4.60825197 C39.9574869,4.41477773 39.9546013,4.09820839 40.1480756,3.90117456 C40.1501626,3.89904911 40.1522686,3.89694235 40.1543933,3.89485454 Z"></path>
+                <path fill="#9ee5fa" d="M20.1543933,3.89485454 L23.9763149,0.139296592 C24.1708311,-0.0518420739 24.4826329,-0.0518571125 24.6771675,0.139262789 L45.6916134,20.7848311 C46.0855801,21.1718824 46.0911863,21.8050225 45.704135,22.1989893 C45.7000188,22.2031791 45.6958657,22.2073326 45.6916762,22.2114492 L24.677098,42.8607841 C24.4825957,43.0519059 24.1708242,43.0519358 23.9762853,42.8608513 L20.1545186,39.1069479 C19.9575152,38.9134427 19.9546793,38.5968729 20.1481845,38.3998695 C20.1502893,38.3977268 20.1524132,38.395603 20.1545562,38.3934985 L36.9937789,21.8567812 C37.1908028,21.6632968 37.193672,21.3467273 37.0001876,21.1497035 C36.9980647,21.1475418 36.9959223,21.1453995 36.9937605,21.1432767 L20.1545208,4.60825197 C19.9574869,4.41477773 19.9546013,4.09820839 20.1480756,3.90117456 C20.1501626,3.89904911 20.1522686,3.89694235 20.1543933,3.89485454 Z"></path>
+                <path fill="#9ee5fa" d="M0.154393339,3.89485454 L3.97631488,0.139296592 C4.17083111,-0.0518420739 4.48263286,-0.0518571125 4.67716753,0.139262789 L25.6916134,20.7848311 C26.0855801,21.1718824 26.0911863,21.8050225 25.704135,22.1989893 C25.7000188,22.2031791 25.6958657,22.2073326 25.6916762,22.2114492 L4.67709797,42.8607841 C4.48259567,43.0519059 4.17082418,43.0519358 3.97628526,42.8608513 L0.154518591,39.1069479 C-0.0424848215,38.9134427 -0.0453206733,38.5968729 0.148184538,38.3998695 C0.150289256,38.3977268 0.152413239,38.395603 0.154556228,38.3934985 L16.9937789,21.8567812 C17.1908028,21.6632968 17.193672,21.3467273 17.0001876,21.1497035 C16.9980647,21.1475418 16.9959223,21.1453995 16.9937605,21.1432767 L0.15452076,4.60825197 C-0.0425130651,4.41477773 -0.0453986756,4.09820839 0.148075568,3.90117456 C0.150162624,3.89904911 0.152268631,3.89694235 0.154393339,3.89485454 Z"></path>
+              </g>
+            </svg>
+          </span>
+        </a>
+      </div>
+
+      <!-- Card -->
+      <div class="card-col">
+        <div class="flip-card" id="flip-card">
+          <div class="flip-card-inner" id="flip-card-inner">
+            <div class="flip-card-front">
+              <div id="question-content" class="content">
+                <div class="loading"><div class="spinner"><div></div><div></div><div></div><div></div><div></div><div></div></div><p>Loading questions…</p></div>
+              </div>
+            </div>
+            <div class="flip-card-back">
+              <div id="answer-content" class="content"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button id="submit-btn" class="btn-action" disabled>Submit</button>
+          <button id="flip-btn" class="btn-action" disabled>Reveal</button>
+        </div>
+      </div>
+
+      <!-- Next button -->
+      <div class="btn-conteiner">
+        <a id="next-btn" href="#" class="btn-content">
+          <span class="icon-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 66 43" height="30px" width="30px">
+              <g fill-rule="evenodd" fill="none" stroke-width="1" stroke="none" id="arrow">
+                <path fill="#9ee5fa" d="M40.1543933,3.89485454 L43.9763149,0.139296592 C44.1708311,-0.0518420739 44.4826329,-0.0518571125 44.6771675,0.139262789 L65.6916134,20.7848311 C66.0855801,21.1718824 66.0911863,21.8050225 65.704135,22.1989893 C65.7000188,22.2031791 65.6958657,22.2073326 65.6916762,22.2114492 L44.677098,42.8607841 C44.4825957,43.0519059 44.1708242,43.0519358 43.9762853,42.8608513 L40.1545186,39.1069479 C39.9575152,38.9134427 39.9546793,38.5968729 40.1481845,38.3998695 C40.1502893,38.3977268 40.1524132,38.395603 40.1545562,38.3934985 L56.9937789,21.8567812 C57.1908028,21.6632968 57.193672,21.3467273 57.0001876,21.1497035 C56.9980647,21.1475418 56.9959223,21.1453995 56.9937605,21.1432767 L40.1545208,4.60825197 C39.9574869,4.41477773 39.9546013,4.09820839 40.1480756,3.90117456 C40.1501626,3.89904911 40.1522686,3.89694235 40.1543933,3.89485454 Z"></path>
+                <path fill="#9ee5fa" d="M20.1543933,3.89485454 L23.9763149,0.139296592 C24.1708311,-0.0518420739 24.4826329,-0.0518571125 24.6771675,0.139262789 L45.6916134,20.7848311 C46.0855801,21.1718824 46.0911863,21.8050225 45.704135,22.1989893 C45.7000188,22.2031791 45.6958657,22.2073326 45.6916762,22.2114492 L24.677098,42.8607841 C24.4825957,43.0519059 24.1708242,43.0519358 23.9762853,42.8608513 L20.1545186,39.1069479 C19.9575152,38.9134427 19.9546793,38.5968729 20.1481845,38.3998695 C20.1502893,38.3977268 20.1524132,38.395603 20.1545562,38.3934985 L36.9937789,21.8567812 C37.1908028,21.6632968 37.193672,21.3467273 37.0001876,21.1497035 C36.9980647,21.1475418 36.9959223,21.1453995 36.9937605,21.1432767 L20.1545208,4.60825197 C19.9574869,4.41477773 19.9546013,4.09820839 20.1480756,3.90117456 C20.1501626,3.89904911 20.1522686,3.89694235 20.1543933,3.89485454 Z"></path>
+                <path fill="#9ee5fa" d="M0.154393339,3.89485454 L3.97631488,0.139296592 C4.17083111,-0.0518420739 4.48263286,-0.0518571125 4.67716753,0.139262789 L25.6916134,20.7848311 C26.0855801,21.1718824 26.0911863,21.8050225 25.704135,22.1989893 C25.7000188,22.2031791 25.6958657,22.2073326 25.6916762,22.2114492 L4.67709797,42.8607841 C4.48259567,43.0519059 4.17082418,43.0519358 3.97628526,42.8608513 L0.154518591,39.1069479 C-0.0424848215,38.9134427 -0.0453206733,38.5968729 0.148184538,38.3998695 C0.150289256,38.3977268 0.152413239,38.395603 0.154556228,38.3934985 L16.9937789,21.8567812 C17.1908028,21.6632968 17.193672,21.3467273 17.0001876,21.1497035 C16.9980647,21.1475418 16.9959223,21.1453995 16.9937605,21.1432767 L0.15452076,4.60825197 C-0.0425130651,4.41477773 -0.0453986756,4.09820839 0.148075568,3.90117456 C0.150162624,3.89904911 0.152268631,3.89694235 0.154393339,3.89485454 Z"></path>
+              </g>
+            </svg>
+          </span>
+        </a>
+      </div>
+
+    </div><!-- end main-row -->
+
+  </div><!-- end container -->
+
+  <!-- Mobile sticky bottom nav -->
+  <div class="mobile-nav" id="mobile-nav">
+    <button class="mob-btn" id="mob-submit-btn" disabled>Submit</button>
+    <button class="mob-btn" id="mob-flip-btn" disabled>Reveal</button>
+  </div>
+
+  <!-- ══ PRACTICE TEST PANEL ══════════════════════════════════════════════ -->
+  <div id="pt-overlay" class="pt-overlay" aria-hidden="true">
+    <div id="pt-panel" class="pt-panel" role="dialog" aria-label="Practice Test">
+
+      <!-- Close button -->
+      <button class="pt-close" id="pt-close" aria-label="Close">✕</button>
+
+      <!-- ── HOME SCREEN ────────────────────────────────────────────────── -->
+      <div class="pt-screen" id="pt-home">
+        <div class="pt-home-inner">
+          <h2 class="pt-title">Practice Test</h2>
+          <p class="pt-subtitle">Full 44-question SAT Math simulation · 2 modules · 35 min each</p>
+
+          <div class="pt-home-actions">
+            <!-- Begin button (replica of submit btn, slightly bigger) -->
+            <button class="pt-begin-btn" id="pt-begin-btn">Begin</button>
+
+            <!-- Info button (circular, like landing page ? but bigger) -->
+            <button class="pt-info-btn" id="pt-info-btn" aria-label="How the SAT Math works">?</button>
+          </div>
+
+          <!-- Adaptive toggle -->
+          <div class="pt-adaptive-row">
+            <span class="pt-adaptive-label">Adaptive Mode</span>
+            <label class="pt-adap-switch">
+              <input type="checkbox" class="pt-adap-chk" id="pt-adaptive-toggle">
+              <span class="pt-adap-slider"></span>
+            </label>
+            <span class="pt-adaptive-desc" id="pt-adaptive-desc">Off — equal difficulty both modules</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── INFO SCREEN ────────────────────────────────────────────────── -->
+      <div class="pt-screen pt-screen-hidden" id="pt-info">
+        <button class="pt-back-btn" id="pt-info-back">← Back</button>
+        <div class="pt-info-scroll">
+
+          <h2 class="pt-info-title">How SAT Math Works</h2>
+
+          <section class="pt-info-section">
+            <h3>What the Math Section Contains</h3>
+            <p>The SAT Math section has <strong>44 questions</strong> across <strong>2 modules of 22 questions each</strong>, with <strong>35 minutes per module</strong>. Questions span four domains:</p>
+            <div class="pt-bar-chart" id="chart-domains">
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:82%;--bar-color:#4a90e2;" data-label="Algebra" data-pct="~35%"></div>
+              </div>
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:65%;--bar-color:#7b68ee;" data-label="Adv. Math" data-pct="~28%"></div>
+              </div>
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:42%;--bar-color:#50c878;" data-label="PS&amp;DA" data-pct="~18%"></div>
+              </div>
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:33%;--bar-color:#ff8c42;" data-label="Geo &amp; Trig" data-pct="~14%"></div>
+              </div>
+            </div>
+            <p class="pt-chart-note">Domain share per module (observed across 5 real CollegeBoard tests)</p>
+          </section>
+
+          <section class="pt-info-section">
+            <h3>How Scoring Works</h3>
+            <p>The SAT Math section is scored on a <strong>200–800</strong> scale. Each question has a point value that contributes to a raw score, which maps to the 200–800 range. Our scoring system uses:</p>
+            <ul class="pt-info-list">
+              <li><strong>Easy</strong> — 10 points</li>
+              <li><strong>Medium</strong> — 20 points</li>
+              <li><strong>Hard</strong> — 30 points</li>
+            </ul>
+            <p>There is no penalty for wrong answers — blank and incorrect count the same. Your raw score is converted to the 200–800 scale based on which path you took.</p>
+          </section>
+
+          <section class="pt-info-section">
+            <h3>How the Adaptive System Works</h3>
+            <p>Every student starts with the same <strong>Module 1</strong> — 22 questions that are predominantly easy with a few medium questions. Based on your Module 1 performance, you are routed to one of two versions of Module 2:</p>
+            <ul class="pt-info-list">
+              <li><strong>Hard Module 2</strong> — If you perform well (roughly 15–16 of 22 correct), you get a harder second module. Your maximum possible score is <strong>800</strong>.</li>
+              <li><strong>Easy Module 2</strong> — If you perform below that threshold, you get a module similar to Module 1. Your maximum possible score is <strong>600</strong>.</li>
+            </ul>
+            <p>This adaptive routing is how CollegeBoard ensures scores are spread across the full 200–800 range — higher-difficulty paths give access to higher score bands.</p>
+
+            <h4 style="margin-top:18px;margin-bottom:8px;font-size:13px;opacity:0.8;">Module 1 — All Students (22 questions)</h4>
+            <div class="pt-bar-chart" id="chart-mod1">
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:82%;--bar-color:#50c878;" data-label="Easy" data-pct="82%"></div>
+              </div>
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:18%;--bar-color:#f5c518;" data-label="Medium" data-pct="18%"></div>
+              </div>
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:2%;--bar-color:#e74c3c;" data-label="Hard" data-pct="0%"></div>
+              </div>
+            </div>
+
+            <h4 style="margin-top:24px;margin-bottom:8px;font-size:13px;opacity:0.8;">Module 2 — Hard Path (max 800)</h4>
+            <div class="pt-bar-chart" id="chart-mod2h">
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:2%;--bar-color:#50c878;" data-label="Easy" data-pct="0%"></div>
+              </div>
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:55%;--bar-color:#f5c518;" data-label="Medium" data-pct="55%"></div>
+              </div>
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:45%;--bar-color:#e74c3c;" data-label="Hard" data-pct="45%"></div>
+              </div>
+            </div>
+
+            <h4 style="margin-top:24px;margin-bottom:8px;font-size:13px;opacity:0.8;">Module 2 — Easy Path (max 600)</h4>
+            <div class="pt-bar-chart" id="chart-mod2e">
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:73%;--bar-color:#50c878;" data-label="Easy" data-pct="73%"></div>
+              </div>
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:27%;--bar-color:#f5c518;" data-label="Medium" data-pct="27%"></div>
+              </div>
+              <div class="pt-bar-wrap">
+                <div class="pt-bar" style="--bar-h:2%;--bar-color:#e74c3c;" data-label="Hard" data-pct="1%"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="pt-info-section">
+            <h3>Timing</h3>
+            <p>You have <strong>35 minutes per module</strong>. The timer is visible during the test and can be hidden if you prefer not to watch it. Between modules you get a short break before continuing.</p>
+          </section>
+
+          <section class="pt-info-section">
+            <h3>Our Tests vs. CollegeBoard</h3>
+            <p>Our adaptive tests mirror the domain distribution, difficulty routing, and scoring bands of the real digital SAT Math section. Questions come from the same 1,000+ item bank used for individual practice — each generator produces a fresh variation, so two test administrations will rarely repeat the exact same numbers.</p>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- ── TEST SCREEN ────────────────────────────────────────────────── -->
+      <div class="pt-screen pt-screen-hidden" id="pt-test">
+
+        <!-- Timer bar -->
+        <div class="pt-timer-bar" id="pt-timer-bar">
+          <div class="pt-timer-display" id="pt-timer-display">35:00</div>
+          <button class="pt-timer-toggle" id="pt-timer-toggle" aria-label="Hide timer">Hide</button>
+        </div>
+
+        <!-- Module header -->
+        <div class="pt-module-header" id="pt-module-header">
+          <span id="pt-module-label">Module 1 of 2</span>
+          <div class="pt-question-jump">
+            <span>Go to:</span>
+            <div class="pt-jump-wrap">
+              <div class="dd-select" id="pt-jump-dd" style="overflow:visible;">
+                <div class="dd-selected" style="padding:4px 8px;font-size:12px;">
+                  <span class="dd-selected-text" id="pt-jump-selected-text">Q1</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" class="dd-arrow">
+                    <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
+                  </svg>
+                </div>
+                <div class="dd-options" id="pt-jump-opts" style="min-width:110px;max-height:280px;overflow-y:auto;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question area -->
+        <div class="pt-question-area" id="pt-question-area">
+          <div class="pt-q-content" id="pt-q-content">
+            <div class="loading"><div class="spinner"><div></div><div></div><div></div><div></div><div></div><div></div></div><p>Loading…</p></div>
+          </div>
+        </div>
+
+        <!-- Nav row -->
+        <div class="pt-nav-row">
+          <button class="pt-nav-btn" id="pt-prev-btn">← Back</button>
+          <span class="pt-q-counter" id="pt-q-counter">1 / 22</span>
+          <button class="pt-nav-btn pt-nav-next" id="pt-next-btn">Next →</button>
+        </div>
+
+        <!-- Desmos trigger (bottom right) -->
+        <button id="pt-calc-btn" class="pt-calc-btn calc-toggle-btn" aria-label="Open calculator">
+          <span class="calc-letter calc-letter-c">C</span>
+          <span class="calc-letter calc-letter-a">A</span>
+          <span class="calc-letter calc-letter-l">L</span>
+        </button>
+      </div>
+
+      <!-- ── MODULE END SCREEN ───────────────────────────────────────────── -->
+      <div class="pt-screen pt-screen-hidden" id="pt-mod-end">
+        <div class="pt-mod-end-inner">
+          <h2 id="pt-mod-end-title">Module 1 Complete</h2>
+          <p id="pt-mod-end-msg">You've completed Module 1. When you're ready, continue to Module 2.</p>
+          <button class="pt-begin-btn" id="pt-continue-btn">Continue to Module 2</button>
+        </div>
+      </div>
+
+      <!-- ── RESULTS SCREEN ────────────────────────────────────────────── -->
+      <div class="pt-screen pt-screen-hidden" id="pt-results">
+        <div class="pt-results-top">
+          <div class="pt-score-left">
+            <span class="pt-score-label">Your Score</span>
+            <span class="pt-score-num" id="pt-score-num">—</span>
+            <span class="pt-score-sub" id="pt-score-sub">/ 800</span>
+            <div class="pt-domain-breakdown" id="pt-domain-breakdown"></div>
+          </div>
+          <div class="pt-score-graph">
+            <div class="pt-ring-tooltip" id="pt-ring-tooltip"></div>
+            <svg id="pt-score-svg" viewBox="0 0 200 200"></svg>
+          </div>
+        </div>
+        <div class="pt-results-list" id="pt-results-list">
+          <div class="loading" id="pt-results-loading" style="display:none"><div class="spinner"><div></div><div></div><div></div><div></div><div></div><div></div></div><p>Building results…</p></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module" src="./app.ts"></script>
+  <script>
+  /* ── Theme toggle (desktop only) ── */
+  (function() {
+    const toggle = document.getElementById('toggle-switch');
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') { document.body.classList.add('light-mode'); if(toggle) toggle.checked = true; }
+    if(toggle) toggle.addEventListener('change', function() {
+      if (this.checked) { document.body.classList.add('light-mode'); localStorage.setItem('theme', 'light'); }
+      else { document.body.classList.remove('light-mode'); localStorage.setItem('theme', 'dark'); }
+    });
+  })();
+
+  /* ── Ctrl+Q: open dev bug panel ── */
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'q') {
+      e.preventDefault();
+      document.dispatchEvent(new CustomEvent('dev-bug-panel'));
+    }
+  });
+
+  /* ── Swipe navigation ── */
+  (function() {
+    let sx = 0, sy = 0;
+    const MIN_SWIPE = 50, MAX_VERT = 80;
+    document.addEventListener('touchstart', e => {
+      sx = e.touches[0].clientX;
+      sy = e.touches[0].clientY;
+    }, { passive: true });
+    document.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - sx;
+      const dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) < MIN_SWIPE || Math.abs(dy) > MAX_VERT) return;
+      if (dx < 0) document.dispatchEvent(new CustomEvent('mob-swipe-next'));
+      else         document.dispatchEvent(new CustomEvent('mob-swipe-prev'));
+    }, { passive: true });
+  })();
+
+  /* ── Burger accordion for mobile filter ── */
+  (function() {
+    document.querySelectorAll('.mob-filter-item').forEach(item => {
+      const trigger = item.querySelector('.mob-filter-row');
+      trigger.addEventListener('click', () => {
+        const wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.mob-filter-item').forEach(i => i.classList.remove('open'));
+        if (!wasOpen) item.classList.add('open');
+      });
+    });
+    document.addEventListener('click', e => {
+      const burger = document.querySelector('.mob-burger-corner');
+      const cb = document.getElementById('mob-burger-checkbox');
+      if (burger && !burger.contains(e.target) && cb) cb.checked = false;
+    });
+  })();
+  </script>
+  <script>
+  (function () {
+    const panel = document.getElementById('desmos-panel');
+    const toggle = document.getElementById('calc-toggle');
+    const closeBtn = document.getElementById('desmos-close');
+    const titlebar = document.getElementById('desmos-titlebar');
+    const container= document.getElementById('desmos-container');
+    let calc = null;
+    const MIN_W = 280, MIN_H = 300;
+    function initDesmos() {
+      if (!calc && window.Desmos) {
+        calc = Desmos.GraphingCalculator(container, {
+          keypad: true, expressions: true, settingsMenu: false,
+          zoomButtons: true, expressionsTopbar: true, border: false
+        });
+      }
+    }
+    function openPanel() {
+      panel.classList.remove('hidden', 'closing');
+      panel.classList.add('opening');
+      if (!panel.dataset.pos) {
+        panel.style.width = '440px'; panel.style.height = '520px';
+        panel.style.right = '24px'; panel.style.bottom = '88px';
+        panel.style.left = 'auto'; panel.style.top = 'auto';
+        panel.dataset.pos = '1';
+      }
+      initDesmos();
+      setTimeout(() => { panel.classList.remove('opening'); if (calc) calc.resize(); }, 340);
+    }
+    function closePanel() {
+      panel.classList.remove('opening');
+      panel.classList.add('closing');
+      setTimeout(() => { panel.classList.add('hidden'); panel.classList.remove('closing'); }, 240);
+    }
+    toggle.addEventListener('click', () => panel.classList.contains('hidden') ? openPanel() : closePanel());
+    closeBtn.addEventListener('click', closePanel);
+    let drag=false,dsx,dsy,dpl,dpt;
+    titlebar.addEventListener('mousedown',sd); titlebar.addEventListener('touchstart',sd,{passive:false});
+    function sd(e){if(e.target===closeBtn)return;drag=true;const r=panel.getBoundingClientRect();panel.style.left=r.left+'px';panel.style.top=r.top+'px';panel.style.right='auto';panel.style.bottom='auto';dpl=r.left;dpt=r.top;const p=pt(e);dsx=p.x;dsy=p.y;e.preventDefault();}
+    document.addEventListener('mousemove',dm); document.addEventListener('touchmove',dm,{passive:false});
+    document.addEventListener('mouseup',ed); document.addEventListener('touchend',ed);
+    function dm(e){if(!drag)return;const p=pt(e),dx=p.x-dsx,dy=p.y-dsy;panel.style.left=cl(dpl+dx,0,window.innerWidth-60)+'px';panel.style.top=cl(dpt+dy,0,window.innerHeight-60)+'px';e.preventDefault();}
+    function ed(){drag=false;}
+    let res=false,rdir,rsx,rsy,rsw,rsh,rsl,rst;
+    document.querySelectorAll('.resize-handle').forEach(h=>{h.addEventListener('mousedown',sr);h.addEventListener('touchstart',sr,{passive:false});});
+    function sr(e){res=true;rdir=e.currentTarget.dataset.dir;const r=panel.getBoundingClientRect();panel.style.left=r.left+'px';panel.style.top=r.top+'px';panel.style.right='auto';panel.style.bottom='auto';rsw=r.width;rsh=r.height;rsl=r.left;rst=r.top;const p=pt(e);rsx=p.x;rsy=p.y;e.preventDefault();e.stopPropagation();}
+    document.addEventListener('mousemove',rm); document.addEventListener('touchmove',rm,{passive:false});
+    document.addEventListener('mouseup',er); document.addEventListener('touchend',er);
+    function rm(e){if(!res)return;const p=pt(e),dx=p.x-rsx,dy=p.y-rsy;let w=rsw,h=rsh,l=rsl,t=rst;if(rdir.includes('e'))w=Math.max(MIN_W,rsw+dx);if(rdir.includes('s'))h=Math.max(MIN_H,rsh+dy);if(rdir.includes('w')){w=Math.max(MIN_W,rsw-dx);l=rsl+(rsw-w);}if(rdir.includes('n')){h=Math.max(MIN_H,rsh-dy);t=rst+(rsh-h);}panel.style.width=w+'px';panel.style.height=h+'px';panel.style.left=l+'px';panel.style.top=t+'px';if(calc)calc.resize();e.preventDefault();}
+    function er(){if(res){res=false;if(calc)calc.resize();}}
+    function pt(e){const s=e.touches?e.touches[0]:e;return{x:s.clientX,y:s.clientY};}
+    function cl(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
+  })();
+  </script>
+</body>
+</html>

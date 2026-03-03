@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Satified</title>
+  <link rel="stylesheet" href="landing.css">
+</head>
+<body>
+
+  <!-- ── NAV: floating rounded pill ── -->
+  <div id="nav-wrap">
+    <nav id="main-nav">
+      <span class="nav-brand">Satified</span>
+      <a href="./study/" id="nav-study-btn">Study</a>
+      <div id="nav-info-wrap">
+        <button id="nav-info-btn" aria-label="About this site" aria-expanded="false">
+          <svg viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg">
+            <path d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/>
+          </svg>
+        </button>
+        <div id="nav-tooltip" role="dialog" aria-hidden="true">
+          <p class="tooltip-author">&mdash; Mirza N. Baig</p>
+          <p>I built this SAT platform to provide 1,000+ carefully designed math questions that target the exact patterns and problem types the College Board uses on the SAT Math section. Every question is intentional and focused to capture almost every single concept the SAT could throw at you.</p>
+          <p>This is not a site for learning basic algebra or geometry. Resources like Khan Academy already do that well.</p>
+          <p>The issue is that many platforms do not fully match the difficulty and structure of real SAT math questions — especially at medium and hard levels. And the ones that come closer, like Princeton Review, are not always free.</p>
+          <p>There is also a lack of true variety. Many sites repeat similar problems with small changes. My platform includes multiple regenerations of each question type so you can practice the same concept repeatedly with different numbers and setups, helping you <em>master patterns</em> rather than memorize answers.</p>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <p id="forthcoming">Official site forthcoming</p>
+  <div id="scroll-hint">
+    <span>Scroll</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+    </svg>
+  </div>
+
+  <!-- ── SCROLL DRIVER ── -->
+  <div id="scroll-driver">
+    <div id="horizontal-track">
+
+      <!-- PANEL 0: Animation -->
+      <section class="panel" id="panel-anim">
+        <svg id="anim-svg" xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
+
+          <!-- grid -->
+          <g id="g-grid" opacity="0">
+            <line x1="100" y1="0"   x2="100"  y2="600" stroke="#ccc" stroke-width="0.4"/>
+            <line x1="200" y1="0"   x2="200"  y2="600" stroke="#ccc" stroke-width="0.4"/>
+            <line x1="300" y1="0"   x2="300"  y2="600" stroke="#ccc" stroke-width="0.4"/>
+            <line x1="400" y1="0"   x2="400"  y2="600" stroke="#ccc" stroke-width="0.4"/>
+            <line x1="600" y1="0"   x2="600"  y2="600" stroke="#ccc" stroke-width="0.4"/>
+            <line x1="700" y1="0"   x2="700"  y2="600" stroke="#ccc" stroke-width="0.4"/>
+            <line x1="800" y1="0"   x2="800"  y2="600" stroke="#ccc" stroke-width="0.4"/>
+            <line x1="900" y1="0"   x2="900"  y2="600" stroke="#ccc" stroke-width="0.4"/>
+            <line x1="0"   y1="100" x2="1000" y2="100" stroke="#ccc" stroke-width="0.4"/>
+            <line x1="0"   y1="200" x2="1000" y2="200" stroke="#ccc" stroke-width="0.4"/>
+            <line x1="0"   y1="400" x2="1000" y2="400" stroke="#ccc" stroke-width="0.4"/>
+            <line x1="0"   y1="500" x2="1000" y2="500" stroke="#ccc" stroke-width="0.4"/>
+          </g>
+
+          <!-- The "x" arms — these ARE the coordinate axes. They start diagonal and rotate to become +.
+               No separate axis lines needed. arm1 becomes the horizontal axis, arm2 becomes vertical. -->
+          <line id="x-arm1" x1="486" y1="286" x2="514" y2="314"
+                stroke="#090909" stroke-width="5" stroke-linecap="round"/>
+          <line id="x-arm2" x1="514" y1="286" x2="486" y2="314"
+                stroke="#090909" stroke-width="5" stroke-linecap="round"/>
+
+          <!-- unit circle -->
+          <circle id="unit-circle" cx="500" cy="300" r="160"
+            fill="none" stroke="#090909" stroke-width="1.2"
+            stroke-dasharray="1005" stroke-dashoffset="1005" opacity="0"/>
+
+          <!-- circle trace arc (follows terminal side CCW) -->
+          <path id="circle-trace" d="" fill="none" stroke="#090909" stroke-width="1.2" opacity="0"/>
+
+          <!-- terminal line -->
+          <line id="terminal" x1="500" y1="300" x2="660" y2="300"
+            stroke="#090909" stroke-width="1.4" opacity="0"/>
+
+          <!-- radian labels (coordinate plane labels) -->
+          <g id="g-labels" opacity="0"
+             font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif"
+             font-size="13" fill="#555">
+            <text x="507" y="128">π/2</text>
+            <text x="325" y="306" text-anchor="end">π</text>
+            <text x="507" y="484">3π/2</text>
+            <text x="672" y="296">2π</text>
+            <text x="512" y="296" font-size="11" fill="#888">0</text>
+          </g>
+
+          <!-- Math expression annotations — closer to center for zoom visibility -->
+          <g id="g-math"
+             font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif"
+             fill="#222" font-weight="600">
+            <text id="me1"  x="345" y="210" font-size="14" opacity="0">sin²θ + cos²θ = 1</text>
+            <text id="me2"  x="530" y="210" font-size="12" opacity="0">θ = 60° + 360°n</text>
+            <text id="me3"  x="555" y="250" font-size="11" opacity="0">π/3 rad = 60°</text>
+            <text id="me4"  x="335" y="390" font-size="13" opacity="0">2π rad = 360°</text>
+            <text id="me5"  x="525" y="390" font-size="11" opacity="0">420° ≡ 60° (mod 360°)</text>
+            <text id="me6"  x="335" y="240" font-size="12" opacity="0">sin(π/6) = 1/2</text>
+            <text id="me7"  x="335" y="360" font-size="12" opacity="0">cos(π/3) = 1/2</text>
+            <text id="me8"  x="555" y="360" font-size="12" opacity="0">arc = rθ</text>
+            <text id="me9"  x="558" y="298" font-size="13" opacity="0">e^(iπ) + 1 = 0</text>
+            <text id="me10" x="340" y="272" font-size="11" opacity="0">tan(θ) = sin(θ)/cos(θ)</text>
+            <text id="me11" x="535" y="272" font-size="11" opacity="0">sec²θ = 1 + tan²θ</text>
+            <text id="me12" x="335" y="330" font-size="12" opacity="0">sin(2θ) = 2sinθcosθ</text>
+            <text id="me13" x="528" y="232" font-size="11" opacity="0">cos(π - θ) = -cos(θ)</text>
+            <text id="me14" x="340" y="422" font-size="11" opacity="0">csc(θ) = 1/sin(θ)</text>
+            <text id="me15" x="528" y="422" font-size="11" opacity="0">cot²θ + 1 = csc²θ</text>
+            <text id="me16" x="402" y="185" font-size="13" opacity="0">f(x) = A·sin(Bx + C)</text>
+            <text id="me17" x="402" y="418" font-size="12" opacity="0">period = 2π/B</text>
+            <text id="me18" x="352" y="196" font-size="10" opacity="0">sin(α+β) = sinαcosβ + cosαsinβ</text>
+            <text id="me19" x="352" y="410" font-size="10" opacity="0">cos(α-β) = cosαcosβ + sinαsinβ</text>
+            <text id="me20" x="340" y="442" font-size="11" opacity="0">amplitude = |A|</text>
+          </g>
+
+          <!-- axis labels (x and y) -->
+          <g id="g-axis-labels" opacity="0"
+             font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif"
+             font-size="15" fill="#444" font-style="italic">
+            <text x="995" y="295" text-anchor="end">x</text>
+            <text x="507" y="22">y</text>
+          </g>
+
+          <!-- black wipe -->
+          <circle id="black-wipe" cx="500" cy="300" r="0" fill="#212121"/>
+        </svg>
+
+        <!-- "satisfied yet?" overlay over the black wipe -->
+        <div id="reveal-wrap">
+          <div id="reveal-row">
+            <div id="reveal-satisfied">
+              <span id="span-sat">sat</span><span id="span-rest">ified</span>
+              <div id="sat-line"></div>
+            </div>
+            <div id="reveal-yet">yet?</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 1: Study CTA -->
+      <section class="panel" id="panel-study">
+        <div id="study-inner">
+          <a href="./study/" id="btn-study-panel">Study</a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="landing.js"></script>
+</body>
+</html>

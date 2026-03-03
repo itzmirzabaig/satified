@@ -1,0 +1,466 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SATIFIED — LANDING PAGE
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Hide the scrollbar globally — scrolling still works, just no visible bar */
+html {
+  scrollbar-width: none; /* Firefox */
+}
+html::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Edge */
+}
+
+:root {
+  --bg:         #e8e8e8;
+  --text:       #090909;
+  --shadow-a:   #c5c5c5;
+  --shadow-b:   #ffffff;
+  --sat-yellow: #f5c518;
+  --card-bg:    #e8e8e8;
+}
+
+html { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  transition: background 0.5s, color 0.5s;
+  height: 100%;
+}
+
+body.is-dark {
+  --bg:       #212121;
+  --text:     #e0e0e0;
+  --shadow-a: rgb(25,25,25);
+  --shadow-b: rgb(60,60,60);
+  --card-bg:  #212121;
+  background: #212121;
+}
+
+/* ── NAV ─────────────────────────────────────────────────────────────────────── */
+#nav-wrap {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+#main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  padding: 8px 20px;
+  border-radius: 50px;
+  background: var(--card-bg);
+  box-shadow: 4px 4px 8px var(--shadow-a), -4px -4px 8px var(--shadow-b);
+  transition: background 0.5s, box-shadow 0.5s;
+  white-space: nowrap;
+}
+
+.nav-brand {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.01em;
+  transition: color 0.5s;
+  cursor: default;
+  user-select: none;
+}
+
+#nav-study-btn {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #b0b0b0;
+  text-decoration: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+#nav-study-btn:hover {
+  color: var(--text);
+  background: var(--shadow-a);
+}
+
+/* ── SCROLL DRIVER ───────────────────────────────────────────────────────────── */
+#scroll-driver {
+  position: relative;
+}
+
+/* ── HORIZONTAL TRACK ────────────────────────────────────────────────────────── */
+#horizontal-track {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+/* ── PANELS ──────────────────────────────────────────────────────────────────── */
+.panel {
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── PANEL 0: ANIMATION ──────────────────────────────────────────────────────── */
+#panel-anim { background: transparent; }
+
+#anim-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── "satisfied yet?" overlay ─────────────────────────────────────────────────── */
+#reveal-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+#reveal-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* "satisfied" line */
+#reveal-satisfied {
+  font-size: clamp(48px, 7vw, 90px);
+  font-weight: 700;
+  color: #e0e0e0;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  position: relative;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+#reveal-satisfied.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#span-sat  { color: #e0e0e0; transition: color 0.4s ease; }
+#span-rest { color: #e0e0e0; }
+#span-sat.yellow { color: #f5c518; }
+
+#sat-line {
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  height: 5px;
+  width: 0;
+  background: #f5c518;
+  border-radius: 0 0 50% 50% / 0 0 8px 8px;
+  transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* "yet?" — appears on a second line, right-aligned under "satisfied" */
+#reveal-yet {
+  font-size: clamp(18px, 2.5vw, 32px);
+  font-weight: 300;
+  color: rgba(160,160,160,0.6);
+  margin-top: 16px;
+  letter-spacing: 0.06em;
+  align-self: flex-end;   /* pushes to the right side under "satisfied" */
+  padding-right: 4px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+#reveal-yet.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── PANEL 1: STUDY CTA ──────────────────────────────────────────────────────── */
+#panel-study {
+  background: #212121;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#study-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+  padding: 40px 24px;
+}
+
+/* Study button — matches nav Study button aesthetic but larger */
+#btn-study-panel {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #b0b0b0;
+  text-decoration: none;
+  padding: 14px 48px;
+  border-radius: 50px;
+  background: #212121;
+  box-shadow: 4px 4px 10px rgb(25,25,25), -4px -4px 10px rgb(60,60,60);
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  letter-spacing: 0.05em;
+  display: inline-block;
+}
+#btn-study-panel:hover {
+  color: #9ee5fa;
+  background: rgba(158,229,250,0.08);
+  box-shadow: 4px 4px 14px rgb(20,20,20), -4px -4px 14px rgb(65,65,65);
+}
+#btn-study-panel:active {
+  transform: scale(0.97);
+}
+
+
+
+/* Mobile-only hint */
+
+
+@media (max-width: 768px) {
+  
+}
+
+/* ── Override panel-study to be clearly visible ── */
+#panel-study {
+  background: #1a1a1a !important;
+  border-left: 1px solid #333;
+}
+#btn-study-panel {
+  font-size: 20px !important;
+  color: #e0e0e0 !important;
+  padding: 18px 64px !important;
+  background: #1a1a1a !important;
+  box-shadow: 6px 6px 14px #0d0d0d, -6px -6px 14px #2e2e2e !important;
+}
+#btn-study-panel:hover { color: #9ee5fa !important; }
+#study-inner { gap: 28px !important; padding: 60px 40px !important; }
+
+/* ── Last panel: Study button grows ─────────────────────────────────────────── */
+#nav-wrap {
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.34,1.56,0.64,1);
+}
+.nav-hidden {
+  transform: translateX(-50%) translateY(-80px) !important;
+  opacity: 0;
+  pointer-events: none;
+}
+.nav-drop {
+  transform: translateX(-50%) translateY(0) !important;
+  opacity: 1;
+}
+#nav-study-btn {
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s, 
+              font-size 0.6s cubic-bezier(0.34,1.56,0.64,1),
+              padding 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+#nav-study-btn.nav-study-grow {
+  font-size: 18px !important;
+  padding: 10px 32px !important;
+  background: #f5c518 !important;
+  color: #111 !important;
+  box-shadow: 0 4px 20px rgba(245,197,24,0.4) !important;
+}
+#forthcoming {
+  position: fixed;
+  top: 98px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  font-size: 15px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+  transition: opacity 0.7s ease 0.5s, transform 0.7s ease 0.5s;
+}
+#forthcoming.visible {
+  opacity: 0.85;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── SCROLL HINT ─────────────────────────────────────────────────────────────── */
+#scroll-hint {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(calc(-50% + 80px));
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 999;
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.34,1.56,0.64,1);
+  color: var(--text);
+}
+#scroll-hint.visible {
+  opacity: 0.75;
+  transform: translateX(-50%) translateY(calc(-50% + 80px));
+}
+#scroll-hint.hidden {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+#scroll-hint span {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+#scroll-hint svg {
+  width: 18px;
+  height: 18px;
+  animation: scroll-bounce 1.8s ease-in-out infinite;
+}
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateX(0); }
+  50%       { transform: translateX(5px); }
+}
+
+/* ── NAV INFO ICON ─────────────────────────────────────────────────────────── */
+#nav-info-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#nav-info-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  transition: background 0.15s, transform 0.15s;
+}
+#nav-info-btn svg {
+  width: 13px;
+  height: 13px;
+  fill: var(--text);
+  opacity: 0.45;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+#nav-info-btn:hover svg,
+#nav-info-wrap.tooltip-open #nav-info-btn svg {
+  opacity: 0.9;
+}
+#nav-info-btn:hover {
+  background: var(--shadow-a);
+  transform: translateY(-1px);
+}
+#nav-info-btn:active {
+  transform: scale(0.95) rotateZ(1.7deg);
+}
+
+#nav-tooltip {
+  position: fixed;
+  top: 56px;
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  width: min(300px, calc(100vw - 48px));
+  max-height: 260px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--card-bg);
+  box-shadow: 4px 4px 16px var(--shadow-a), -4px -4px 16px var(--shadow-b);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-sizing: border-box;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 2000;
+  scrollbar-width: thin;
+  scrollbar-color: var(--shadow-a) transparent;
+}
+#nav-tooltip::-webkit-scrollbar { width: 4px; }
+#nav-tooltip::-webkit-scrollbar-thumb { background: var(--shadow-a); border-radius: 2px; }
+
+/* Open state — toggled by JS adding .tooltip-open to #nav-info-wrap */
+#nav-info-wrap.tooltip-open #nav-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+#nav-tooltip p {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text);
+  margin-bottom: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+}
+#nav-tooltip p:last-child { margin-bottom: 0; }
+.tooltip-author {
+  font-size: 11px !important;
+  font-weight: 700;
+  opacity: 0.5;
+  letter-spacing: 0.04em;
+  margin-bottom: 12px !important;
+}
+#nav-tooltip em {
+  font-style: italic;
+  color: #f5c518;
+}
+
+/* ── LANDING PAGE BUTTON EFFECTS ──────────────────────────────────────────── */
+/* Submit-style hover lift + bug-button-style click tilt on nav & panel buttons */
+
+#nav-study-btn {
+  position: relative;
+  overflow: hidden;
+  transition: background 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s !important;
+}
+#nav-study-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+#nav-study-btn:active {
+  transform: scale(0.95) rotateZ(1.7deg) !important;
+}
+
+#btn-study-panel {
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s, transform 0.2s !important;
+}
+#btn-study-panel:hover {
+  transform: translateY(-3px) !important;
+}
+#btn-study-panel:active {
+  transform: scale(0.95) rotateZ(1.7deg) !important;
+}
