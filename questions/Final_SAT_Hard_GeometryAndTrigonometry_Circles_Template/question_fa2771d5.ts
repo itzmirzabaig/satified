@@ -1,5 +1,5 @@
 import { getRandomInt, getRandomElement, shuffle, getRandomNonZeroInt } from '../../utils/math';
-import type { QuestionData } from '../../types';
+import type { QuestionData } from '../../study/types';
 
 
 

@@ -1,5 +1,5 @@
 import { getRandomInt, shuffle } from '../../utils/math';
-import type { QuestionData } from '../../types';
+import type { QuestionData } from '../../study/types';
 
 /**
  * Question ID: 1ee962ec
@@ -73,7 +73,3 @@ export const generator_1ee962ec = {
  * - Question type: [Multiple Choice Text]
  * - Figure generation: [None]
  */
-
-import { getRandomInt, shuffle } from '../../utils/math';
-
-import type { QuestionData } from '../../types';

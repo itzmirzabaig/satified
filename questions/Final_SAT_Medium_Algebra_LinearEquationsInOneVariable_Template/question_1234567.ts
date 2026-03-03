@@ -1,5 +1,5 @@
 import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
-import type { QuestionData } from '../../types';
+import type { QuestionData } from '../../study/types';
 
 /**
  * Question ID: 1234567 (Placeholder ID for infinitely many solutions question)

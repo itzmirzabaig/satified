@@ -1,5 +1,5 @@
 import { getRandomInt, shuffle } from '../../utils/math';
-import type { QuestionData } from '../../types';
+import type { QuestionData } from '../../study/types';
 
 export const generator_7f2524bf = {
   metadata: {

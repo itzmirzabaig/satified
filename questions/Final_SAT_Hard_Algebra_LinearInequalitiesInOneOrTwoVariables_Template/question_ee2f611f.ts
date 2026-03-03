@@ -1,5 +1,5 @@
 import { getRandomInt, getRandomElement } from '../../utils/math';
-import type { QuestionData } from '../../types';
+import type { QuestionData } from '../../study/types';
 
 /**
  * Question ID: ee2f611f

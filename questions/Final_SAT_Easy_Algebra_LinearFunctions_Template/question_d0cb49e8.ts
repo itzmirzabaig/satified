@@ -1,5 +1,5 @@
 import { shuffle } from '../../utils/math';
-import type { QuestionData } from '../../types';
+import type { QuestionData } from '../../study/types';
 
 /**
  * Question ID: d0cb49e8

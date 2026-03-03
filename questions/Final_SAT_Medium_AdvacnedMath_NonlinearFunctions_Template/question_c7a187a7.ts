@@ -1,5 +1,5 @@
 import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
-import type { QuestionData } from '../../types';
+import type { QuestionData } from '../../study/types';
 
 
 
@@ -85,4 +85,4 @@ export const generator_c7a187a7 = {
  */
 
 import { getRandomInt, shuffle } from '../../utils/math';
-import type { QuestionData } from '../../types';
+import type { QuestionData } from '../../study/types';

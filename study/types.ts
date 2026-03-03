@@ -35,4 +35,4 @@ export interface LoadedQuestion {
 export type FilterType = 'difficulty' | 'domain' | 'skill';
 
 // Root-level re-export so question files (../../types) resolve correctly
-export * from '../study/types';
+export * from './types';

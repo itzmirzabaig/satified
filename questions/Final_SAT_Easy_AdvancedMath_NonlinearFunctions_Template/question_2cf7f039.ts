@@ -1,5 +1,5 @@
 import { getRandomInt, shuffle } from '../../utils/math';
-import type { QuestionData } from '../../types';
+import type { QuestionData } from '../../study/types';
 
 /**
  * Question ID: 2cf7f039
@@ -66,4 +66,4 @@ export const generator_2cf7f039 = {
 
 import { getRandomInt } from '../../utils/math';
 
-import type { QuestionData } from '../../types';
+import type { QuestionData } from '../../study/types';
