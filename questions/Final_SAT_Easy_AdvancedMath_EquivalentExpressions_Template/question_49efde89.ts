@@ -1,21 +1,19 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
-import type { QuestionData } from '../../study/types';
+import { getRandomInt, shuffle } from '../../utils/math';
+import type { QuestionData } from '../../types';
 
 /**
  * Question ID: 49efde89
  * 
- * ORIGINAL ANALYSIS:
- * - Number ranges: [a=7 from factored form]
- * - Difficulty factors: [Expanding factored form to find coefficient]
- * - Distractor patterns: [A: just uses 2 from 2x, B,C: random]
- * - Constraints: [Must expand correctly]
- * - Question type: [Multiple Choice Text]
- * - Figure generation: [None]
+ * ANALYSIS:
+ * - Skill: Equivalent Expressions (Distributing/Expanding)
+ * - Logic: x(bx + c) = bx^2 + cx. Compare to bx^2 + ax. Thus a = c.
+ * - Fixes: 
+ *   1. Fixed type error: `options` must return objects `{ text: string }`, not strings.
+ *   2. Fixed validation error: `correctAnswer` must match the option text exactly (including '$').
  */
 
 export const generator_49efde89 = {
   metadata: {
-    // id: "49efde89",
     assessment: "SAT",
     domain: "Advanced Math",
     skill: "Equivalent Expressions",
@@ -23,16 +21,25 @@ export const generator_49efde89 = {
   },
 
   generate: (): QuestionData => {
-    const factor = getRandomInt(2, 5);
-    const constTerm = getRandomInt(5, 10);
-    const a = constTerm;
+    // STEP 1: Generate values
+    // Expression: coeff*x^2 + a*x
+    // Factored: x(coeff*x + constant)
+    const coeff = getRandomInt(2, 9);
+    const constant = getRandomInt(5, 15);
+    
+    // STEP 2: Logic
+    // Expanding x(coeff*x + constant) -> coeff*x^2 + constant*x
+    // Comparing to coeff*x^2 + ax -> a = constant
+    const answerVal = constant;
 
-    const correctText = `$${constTerm}$`;
+    // STEP 3: Format Output
+    const correctText = `$${answerVal}$`;
 
+    // STEP 4: Distractors
     const optionsData = [
-      { text: `$${factor}$`, isCorrect: false },
-      { text: `$${constTerm - 2}$`, isCorrect: false },
-      { text: `$${constTerm + 2}$`, isCorrect: false },
+      { text: `$${coeff}$`, isCorrect: false }, // Confusing a with the x^2 coefficient
+      { text: `$${answerVal + coeff}$`, isCorrect: false }, // Arbitrary arithmetic
+      { text: `$${answerVal - coeff}$`, isCorrect: false }, // Arbitrary arithmetic
       { text: correctText, isCorrect: true }
     ];
 
@@ -44,23 +51,19 @@ export const generator_49efde89 = {
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
 
     return {
-      questionText: `The expression $${factor}x^{2} + ax$ is equivalent to $x(${factor}x + ${constTerm})$ for some constant $a$. What is the value of $a$?`,
+      questionText: `The expression $${coeff}x^{2} + ax$ is equivalent to $x(${coeff}x + ${constant})$ for some constant $a$. What is the value of $a$?`,
       figureCode: null,
-      options: shuffledOptions.map(o => o.text),
-      correctAnswer: constTerm.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Expanding $x(${factor}x + ${constTerm})$ gives $${factor}x^{2} + ${constTerm}x$. Therefore, $a = ${constTerm}$.`
+      // FIX: Map to object with text property, not just string
+      options: shuffledOptions.map(o => ({ text: o.text })),
+      // FIX: Ensure this string matches the option text exactly
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctOption.letter} is correct. To find the value of $a$, we can expand the expression $x(${coeff}x + ${constant})$ by distributing the $x$:
+      
+      $$x(${coeff}x + ${constant}) = ${coeff}x^2 + ${constant}x$$
+      
+      We are given that this is equivalent to $${coeff}x^2 + ax$. By comparing the coefficients of the $x$ terms in both expressions, we can see that:
+      
+      $$a = ${constant}$$`
     };
   }
 };
-
-/**
- * Question ID: 8f82ad81
- * 
- * ORIGINAL ANALYSIS:
- * - Number ranges: [coefficient: 4, constant: 6]
- * - Difficulty factors: [Basic distribution]
- * - Distractor patterns: [B: adds instead of multiplies, C: forgets to distribute, D: subtracts or negative error]
- * - Constraints: [Simple integers]
- * - Question type: [Multiple Choice Text]
- * - Figure generation: [None]
- */
