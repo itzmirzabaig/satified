@@ -1,23 +1,51 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
-import type { QuestionData } from '../../study/types';
-
-
+import { getRandomInt, shuffle } from '../../utils/math';
+import type { QuestionData } from '../../types';
 
 /**
  * Question ID: 979c6ebc
  * 
- * ORIGINAL ANALYSIS:
- * - Number ranges: [same line system, parametric point form]
- * - Difficulty factors: [Equivalent equations recognition, parametric representation]
- * - Distractor patterns: [Swapped coordinates, wrong slope sign, wrong constant]
- * - Constraints: [Equations must be equivalent (one is multiple of other)]
- * - Question type: [Text→Multiple Choice Text]
- * - Figure generation: null
+ * ANALYSIS:
+ * - Skill: Systems of Linear Equations (Parametric Solutions)
+ * - Issue Fixed: "Unsolvable/Duplicate Answers". When coefficients A and B were equal, the symmetric nature of the equation meant the "swapped coordinate" distractor was actually a valid solution, creating two correct answers. Added `while (a === b)` loop to prevent this.
+ * - Issue Fixed: "Text Latex". The renderer displayed `\left` as text. Replaced with standard parentheses `()`.
  */
+
+// Helper to compute GCD
+const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
+
+// Helper to simplify and format fractions for LaTeX
+const formatFrac = (num: number, den: number, variable: string = ''): string => {
+  if (den === 0) return '0';
+  
+  // Handle signs
+  const sign = (num * den < 0) ? '-' : '';
+  num = Math.abs(num);
+  den = Math.abs(den);
+  
+  // Simplify
+  const common = gcd(num, den);
+  num /= common;
+  den /= common;
+  
+  let result = sign;
+  
+  if (den === 1) {
+    result += `${num}${variable}`;
+  } else {
+    result += `\\frac{${num}${variable}}{${den}}`;
+  }
+  
+  // Clean up "1r" -> "r" if it's not part of a fraction denominator
+  if (variable && num === 1) {
+    if (den === 1) return `${sign}${variable}`;
+    return `${sign}\\frac{${variable}}{${den}}`;
+  }
+  
+  return result;
+};
 
 export const generator_979c6ebc = {
   metadata: {
-    // id: "979c6ebc",
     assessment: "SAT",
     domain: "Algebra",
     skill: "Systems Of Two Linear Equations In Two Variables",
@@ -25,39 +53,77 @@ export const generator_979c6ebc = {
   },
   
   generate: (): QuestionData => {
-    const mult = getRandomInt(2, 5);
-    const A = getRandomInt(2, 5) * mult;
-    const B = getRandomInt(2, 5) * mult;
-    const C = getRandomInt(5, 20);
+    // STEP 1: Generate Base Coefficients (Eq 2)
+    // Equation: ax + by = c
+    let a = getRandomInt(2, 6);
+    let b = getRandomInt(2, 6);
+    // CONSTRAINT: a must not equal b. 
+    // If a = b, the equation is symmetric (e.g. 2x+2y=8), so (r, 4-r) and (4-r, r) are BOTH valid solutions.
+    while (a === b) {
+        b = getRandomInt(2, 6);
+    }
+
+    const c = getRandomInt(5, 15);
     
-    const A2 = A / mult;
-    const B2 = B / mult;
-    const C2 = C / mult;
+    // STEP 2: Generate Multiplier (Eq 1)
+    const mult = getRandomInt(2, 4);
     
-    const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
-    const g = gcd(Math.abs(B), A);
-    const numX = B / g;
-    const denX = A / g;
-    const numC = C / g;
-    const denC = A / g;
+    // Eq 1 coefficients (Scaled up)
+    const A = a * mult;
+    const B = b * mult;
+    const C = c * mult;
     
-    const correctX = -B / A;
-    const correctC = C / A;
+    // STEP 3: Solve for x in terms of y = r
+    // ax + br = c  =>  ax = c - br  =>  x = (c/a) - (b/a)r
     
-    const signX = correctX >= 0 ? '-' : '+';
-    const signC = correctC >= 0 ? '+' : '-';
+    // Constant term: c/a
+    const constTerm = formatFrac(c, a);
     
-    const correctOpt = `\\left(${signX}\\frac{${Math.abs(numX)}r}{${denX}} ${signC} \\frac{${Math.abs(numC)}}{${denC}}, r\\right)`;
+    // r term: -b/a
+    const slopeTerm = formatFrac(-b, a, 'r');
     
-    const optB = `\\left(r, \\frac{${A}r}{${B}} + \\frac{${C}}{${B}}\\right)`;
-    const optC = `\\left(\\frac{r}{${mult}} + ${C}, -\\frac{r}{${mult}} + ${A * mult}\\right)`;
-    const optA_wrong = `\\left(r, -\\frac{${B}r}{${A}} + \\frac{${C}}{${A}}\\right)`;
+    // Construct Correct Expression
+    // Standard format: constant - slopeTerm or -slopeTerm + constant
+    let correctExpr = "";
+    if (slopeTerm.startsWith('-')) {
+        correctExpr = `${constTerm} - ${slopeTerm.substring(1)}`;
+    } else {
+        correctExpr = `${constTerm} + ${slopeTerm}`;
+    }
     
+    // Correct Answer: (x, y) = (expr, r)
+    // Removed \left and \right to prevent rendering errors
+    const correctOpt = `(${correctExpr}, r)`;
+    
+    // STEP 4: Generate Distractors
+    
+    // Distractor 1: Sign Error (Add instead of subtract)
+    // x = c/a + (b/a)r
+    const slopeTermWrong = formatFrac(b, a, 'r');
+    const distSign = `(${constTerm} + ${slopeTermWrong}, r)`;
+    
+    // Distractor 2: Denominator Swap (Dividing by b instead of a)
+    // x = c/b - (a/b)r
+    const constSwap = formatFrac(c, b);
+    const slopeSwap = formatFrac(-a, b, 'r');
+    let swapExpr = "";
+    if (slopeSwap.startsWith('-')) {
+        swapExpr = `${constSwap} - ${slopeSwap.substring(1)}`;
+    } else {
+        swapExpr = `${constSwap} + ${slopeSwap}`;
+    }
+    const distSwap = `(${swapExpr}, r)`;
+    
+    // Distractor 3: Coordinate Swap
+    // (r, something)
+    // Since a != b, this is guaranteed to be incorrect for the system (unless a line y=x is involved which we avoid)
+    const distCoord = `(r, ${correctExpr})`;
+
     const optionsData = [
-      { text: optA_wrong, isCorrect: false, reason: "swaps the coefficients of x and y" },
-      { text: optB, isCorrect: false, reason: "uses an incorrect sign for the slope" },
-      { text: optC, isCorrect: false, reason: "uses incorrect coefficients" },
-      { text: correctOpt, isCorrect: true }
+      { text: correctOpt, isCorrect: true },
+      { text: distSign, isCorrect: false },
+      { text: distSwap, isCorrect: false },
+      { text: distCoord, isCorrect: false }
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -66,27 +132,39 @@ export const generator_979c6ebc = {
     }));
     
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
-    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
+    
+    // STEP 5: Explanation
+    const explanation = `
+      Choice ${correctOption.letter} is correct.
+      
+      The first equation is $${A}x + ${B}y = ${C}$. Dividing both sides by ${mult}, we get:
+      $$${a}x + ${b}y = ${c}$$
+      
+      This is identical to the second equation. Thus, the system consists of dependent equations representing the same line.
+      
+      To find the solution set where $y = r$, substitute $r$ for $y$ in the equation:
+      $$${a}x + ${b}r = ${c}$$
+      
+      Subtract $${b}r$ from both sides:
+      $$${a}x = ${c} - ${b}r$$
+      
+      Divide by $${a}$:
+      $$x = \\frac{${c}}{${a}} - \\frac{${b}r}{${a}}$$
+      
+      Simplifying the terms:
+      $$x = ${correctExpr}$$
+      
+      So the point is $(${correctExpr}, r)$.
+    `.trim();
     
     return {
-      questionText: `For each real number $r$, which of the following points lies on the graph of each equation in the $xy$-plane for the given system? $$${A}x + ${B}y = ${C}$$ $$${A2}x + ${B2}y = ${C2}$$`,
+      questionText: `For each real number $r$, which of the following points lies on the graph of each equation in the $xy$-plane for the given system?
+      $$${A}x + ${B}y = ${C}$$
+      $$${a}x + ${b}y = ${c}$$`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOpt,
-      explanation: `Choice ${correctLetter} is correct. The two equations are equivalent (the first divided by ${mult} gives the second), so they represent the same line. Substituting $y = r$ into the second equation and solving for $x$ yields $${A2}x = ${C2} - ${B2}r$, or $x = ${correctX >= 0 ? '' : '-'}\\frac{${Math.abs(numX)}r}{${denX}} ${correctC >= 0 ? '+' : '-'} \\frac{${Math.abs(numC)}}{${denC}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: explanation
     };
   }
 };
-
-/**
- * Question ID: 797a81fb
- * 
- * ORIGINAL ANALYSIS:
- * - Number ranges: [slope: 6/7, intercepts: 18/7 and -18/7]
- * - Difficulty factors: [Visual identification of parallel lines from graph]
- * - Distractor patterns: [One solution (intersecting), two solutions (impossible), infinite (same line)]
- * - Constraints: [Lines must be parallel and distinct]
- * - Question type: [Figure→Multiple Choice Text]
- * - Figure generation: [Two parallel lines with same slope, different intercepts]
- */
