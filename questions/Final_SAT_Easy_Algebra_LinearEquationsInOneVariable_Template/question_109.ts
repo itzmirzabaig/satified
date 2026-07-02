@@ -1,0 +1,54 @@
+import { getRandomInt, shuffle } from '../../utils/math';
+import type { QuestionData } from '../../study/types';
+
+/**
+* Question 109
+*
+* ORIGINAL ANALYSIS:
+* - Number ranges: [coeff: 2-5, const1: 100-400, result: 10-50]
+* - Difficulty factors: [Two-step equation with larger numbers]
+* - Distractor patterns: [A: division error, C: wrong operation, D: ignored coefficient]
+* - Constraints: [Clean integer result]
+* - Question type: [Multiple Choice]
+* - Figure generation: [None]
+*/
+
+export const generator_109 = {
+  metadata: {
+    id: "109",
+    assessment: "SAT",
+    domain: "Algebra",
+    skill: "Linear Equations In One Variable",
+    difficulty: "Easy"
+  },
+
+  generate: (): QuestionData => {
+    const coeff = getRandomInt(2, 5);
+    const const1 = getRandomInt(100, 400);
+    const result = getRandomInt(10, 50);
+    const rightSide = coeff * result + const1;
+
+    const optionsData = [
+      { text: (result - 20).toString(), isCorrect: false, reason: "division error" },
+      { text: result.toString(), isCorrect: true },
+      { text: (result + 23).toString(), isCorrect: false, reason: "wrong operation" },
+      { text: (rightSide - 25).toString(), isCorrect: false, reason: "ignored coefficient" }
+    ];
+
+    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
+      ...opt,
+      letter: String.fromCharCode(65 + index)
+    }));
+
+    const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+
+    return {
+      questionText: `What value of $p$ satisfies the equation $${coeff}p + ${const1} = ${rightSide}$?`,
+      figureCode: null,
+      options: shuffledOptions.map(o => o.text),
+      correctAnswer: result.toString(),
+      explanation: `Subtract ${const1}: ${coeff}p = ${rightSide - const1}. Divide: p = ${result}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+    };
+  }
+};

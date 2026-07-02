@@ -131,11 +131,42 @@ const autoWrap = (t: string): string => {
 const getOptText = (o: string | {text:string}): string =>
   typeof o === 'string' ? o : (o as any).text ?? String(o);
 
+// Parse a numeric value from an answer string: plain numbers, a/b fractions,
+// and values wrapped in currency/percent/comma formatting. Returns null if not numeric.
+const parseNumeric = (raw: string): number | null => {
+  let s = raw.trim().toLowerCase()
+    .replace(/\\\$|\$|,|%/g, '')
+    .replace(/\\frac\{(-?\d+(?:\.\d+)?)\}\{(-?\d+(?:\.\d+)?)\}/, '$1/$2')
+    .trim();
+  const frac = s.match(/^(-?\d+(?:\.\d+)?)\s*\/\s*(-?\d+(?:\.\d+)?)$/);
+  if (frac) {
+    const den = parseFloat(frac[2]);
+    if (den === 0) return null;
+    return parseFloat(frac[1]) / den;
+  }
+  if (/^-?(\d+\.?\d*|\.\d+)$/.test(s)) return parseFloat(s);
+  return null;
+};
+
+const numericallyEqual = (a: string, b: string): boolean => {
+  const na = parseNumeric(a), nb = parseNumeric(b);
+  return na !== null && nb !== null && Math.abs(na - nb) < 1e-9;
+};
+
 const resolveCorrect = (ca: any, opts: (string|{text:string})[]): number => {
   if (typeof ca === 'number') return ca;
   const s = String(ca).trim();
-  const i = opts.findIndex(o => getOptText(o).trim() === s);
-  return i !== -1 ? i : (isNaN(parseInt(s,10)) ? 0 : parseInt(s,10));
+  let i = opts.findIndex(o => getOptText(o).trim() === s);
+  if (i !== -1) return i;
+  // Whitespace-collapsed match
+  const collapse = (t: string) => t.replace(/\s+/g, ' ').trim();
+  i = opts.findIndex(o => collapse(getOptText(o)) === collapse(s));
+  if (i !== -1) return i;
+  // Numeric-equivalence match ("0.75" matches "3/4")
+  i = opts.findIndex(o => numericallyEqual(getOptText(o), s));
+  if (i !== -1) return i;
+  console.warn('[grader] correctAnswer did not match any option:', s, opts.map(getOptText));
+  return isNaN(parseInt(s,10)) ? 0 : parseInt(s,10);
 };
 
 const isFillIn = (d: QuestionData) => !d.options || d.options.length === 0;
@@ -578,7 +609,8 @@ class QuestionTester {
     if(fillIn){
       const norm=(s:string)=>s.trim().toLowerCase().replace(/\.0+$/,'');
       const correct=String(d.correctAnswer).trim();
-      ok=norm(this.userInput)===norm(correct);
+      // Exact match first, then numeric equivalence so "3/4", "0.75" and ".75" all grade correct
+      ok=norm(this.userInput)===norm(correct) || numericallyEqual(this.userInput, correct);
       correctDisplay=autoWrap(correct);
     } else {
       const ci=resolveCorrect(d.correctAnswer,d.options);

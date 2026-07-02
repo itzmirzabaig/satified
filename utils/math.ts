@@ -7,6 +7,18 @@ export function getRandomInt(min: number, max: number): number {
 }
 
 /**
+ * Get a random nonzero integer between min and max (inclusive)
+ * Used for: coefficients and coordinates that must not be zero
+ */
+export function getRandomNonZeroInt(min: number, max: number): number {
+  if (min === 0 && max === 0) return 1;
+  let n = getRandomInt(min, max);
+  let guard = 0;
+  while (n === 0 && guard++ < 50) n = getRandomInt(min, max);
+  return n === 0 ? (max > 0 ? 1 : -1) : n;
+}
+
+/**
  * Get a random element from an array
  * Used for: selecting random values, shuffling answer choices
  */
