@@ -140,3 +140,6 @@ vite.config.ts.timestamp-*
 
 # Question audit reports
 reports/
+
+# Legacy corrupted originals (repaired copies live in questions/)
+backup/
