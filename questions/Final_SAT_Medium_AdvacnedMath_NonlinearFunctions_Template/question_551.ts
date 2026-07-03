@@ -33,7 +33,7 @@ export const generator_551 = {
     const optionsData = [
       { text: "0", isCorrect: false, reason: "incorrectly thinks anything times 0 is 0" },
       { text: "1", isCorrect: false, reason: "forgets to multiply by the coefficient" },
-      { text: (coefficient * base).toString(), isCorrect: false, reason: "calculates f(1) instead of f(0)" },
+      { text: (coefficient / 10).toString(), isCorrect: false, reason: "calculates f(1) instead of f(0)" },
       { text: correctAnswer, isCorrect: true }
     ];
     

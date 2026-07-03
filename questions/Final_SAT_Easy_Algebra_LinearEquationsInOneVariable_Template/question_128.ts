@@ -33,9 +33,9 @@ export const generator_128 = {
 
     const optionsData = [
       { text: result.toString(), isCorrect: true },
-      { text: distractorB.toString(), isCorrect: false, reason: "results from subtracting ${coeff} from ${rightSide}" },
-      { text: distractorC.toString(), isCorrect: false, reason: "results from adding ${coeff} to ${rightSide}" },
-      { text: distractorD.toString(), isCorrect: false, reason: "results from multiplying ${rightSide} by ${coeff}" }
+      { text: distractorB.toString(), isCorrect: false, reason: `results from subtracting ${coeff} from ${rightSide} instead of dividing` },
+      { text: distractorC.toString(), isCorrect: false, reason: `results from adding ${coeff} to ${rightSide} instead of dividing` },
+      { text: distractorD.toString(), isCorrect: false, reason: `results from multiplying ${rightSide} by ${coeff} instead of dividing` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,7 +47,7 @@ export const generator_128 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `$${coeff}x = ${rightSide}$ What value of $x$ is the solution to the given equation?`,
+      questionText: `What is the solution to the equation $${coeff}x = ${rightSide}$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),

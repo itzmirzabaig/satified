@@ -27,12 +27,21 @@ export const generator_76 = {
 
     const xVal = getRandomInt(2, 5);
 
-    const result = Math.pow(xVal, 3) + cVal;
+    const cube = Math.pow(xVal, 3);
+    const result = cube + cVal;
+
+    // Distractors: multiplying by the exponent instead of cubing (3x + c),
+    // squaring instead of cubing (x^2 + c), and an off-by-one slip (result + 1).
+    // 3x equals x^2 exactly when x = 3, so use 2x + c in that case; for every
+    // x in [2, 5] the four values are then pairwise distinct.
+    const squareErr = xVal * xVal + cVal;
+    let multiplyErr = 3 * xVal + cVal;
+    if (multiplyErr === squareErr) multiplyErr = 2 * xVal + cVal;
 
     const optionsData = [
       { text: `$${result}$`, isCorrect: true },
-      { text: `$${3 * xVal + cVal}$`, isCorrect: false },
-      { text: `$${Math.pow(xVal, 2) + cVal}$`, isCorrect: false },
+      { text: `$${multiplyErr}$`, isCorrect: false },
+      { text: `$${squareErr}$`, isCorrect: false },
       { text: `$${result + 1}$`, isCorrect: false }
     ];
 
@@ -45,7 +54,7 @@ export const generator_76 = {
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. Substituting $${xVal}$ for $x$ in $f(x)=x^3+${cVal}$ yields $f(${xVal})=(${xVal})^3+${cVal}=${Math.pow(xVal, 3)}+${cVal}=${result}$.`
+      explanation: `Choice ${correctOption.letter} is correct. The value of $f(${xVal})$ is found by substituting $x=${xVal}$ into $f(x)=x^3+${cVal}$, which gives $f(${xVal})=(${xVal})^3+${cVal}=${cube}+${cVal}=${result}$. The other choices result from common errors, such as multiplying $x$ by the exponent instead of cubing, squaring instead of cubing, or making a small arithmetic mistake.`
     };
   }
 };

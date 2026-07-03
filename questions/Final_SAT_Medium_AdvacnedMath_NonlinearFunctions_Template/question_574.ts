@@ -39,10 +39,9 @@ export const generator_574 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: `${doublingTime}`,
-      // Fixed: \\frac instead of \\\\frac throughout
-      explanation: `The correct answer is ${doublingTime}. The expression $(2)^{\\frac{t}{${doublingTime}}}$ doubles when the exponent $\\frac{t}{${doublingTime}}$ increases by 1 (since $2^1 = 2$). For the exponent to increase by 1, $t$ must increase by ${doublingTime}$. Therefore, the doubling time is ${doublingTime} minutes.`
+      explanation: `The correct answer is ${doublingTime}. In the expression $(2)^{\\frac{t}{${doublingTime}}}$, the number of bacteria doubles each time the exponent $\\frac{t}{${doublingTime}}$ increases by 1, because increasing the exponent by 1 multiplies the value of the expression by a factor of 2. The exponent $\\frac{t}{${doublingTime}}$ increases by 1 exactly when $t$ increases by ${doublingTime}. Therefore, it takes ${doublingTime} minutes for the number of bacteria in the population to double.`
     };
   }
 };

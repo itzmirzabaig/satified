@@ -24,14 +24,17 @@ export const generator_115 = {
 
   generate: (): QuestionData => {
     const total = getRandomInt(20, 50);
-    const blue = getRandomInt(5, total - 5);
+    let blue = getRandomInt(5, total - 5);
+    // Guard: if blue is exactly half the total, yellow would equal blue
+    // (duplicate option). Nudge by 1; blue + 1 <= total - 5 holds since total >= 20.
+    if (blue * 2 === total) blue += 1;
     const yellow = total - blue;
 
     const optionsData = [
       { text: yellow.toString(), isCorrect: true },
       { text: blue.toString(), isCorrect: false, reason: "is the number of blue flags" },
       { text: total.toString(), isCorrect: false, reason: "is the total number of flags" },
-      { text: (total + 5).toString(), isCorrect: false, reason: "results from incorrect addition" }
+      { text: (total + blue).toString(), isCorrect: false, reason: "results from adding the number of blue flags to the total instead of subtracting" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

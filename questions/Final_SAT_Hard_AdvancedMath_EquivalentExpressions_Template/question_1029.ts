@@ -72,7 +72,7 @@ The answer may be entered as the fraction ${finalNum}/${a2} or the decimal ${dec
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: explanation
     };

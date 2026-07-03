@@ -27,11 +27,11 @@ export const generator_112 = {
     const numer = getRandomInt(2, 10);
 
     return {
-      questionText: `If \\( \\frac{x}{${denom}} = ${numer} \\), what is the value of \\( \\frac{${denom}}{x} \\)?`,
+      questionText: `If $\\frac{x}{${denom}} = ${numer}$, what is the value of $\\frac{${denom}}{x}$? (The answer may be entered as a fraction or a decimal.)`,
       figureCode: null,
-      options: null,
-      correctAnswer: `\\frac{1}{${numer}}`,
-      explanation: `Since $\\frac{x}{${denom}} = ${numer} = \\frac{${numer}}{1}$, this is equivalent to $\\frac{${denom}}{x} = \\frac{1}{${numer}}$. Alternatively, $x = ${denom * numer}$, so $\\frac{${denom}}{x} = \\frac{${denom}}{${denom * numer}} = \\frac{1}{${numer}}$.`
+      options: [],
+      correctAnswer: `1/${numer}`,
+      explanation: `Since $\\frac{x}{${denom}} = ${numer}$, taking the reciprocal of both sides gives $\\frac{${denom}}{x} = \\frac{1}{${numer}}$. Alternatively, multiplying both sides of $\\frac{x}{${denom}} = ${numer}$ by ${denom} gives $x = ${denom * numer}$, so $\\frac{${denom}}{x} = \\frac{${denom}}{${denom * numer}} = \\frac{1}{${numer}}$.`
     };
   }
 };

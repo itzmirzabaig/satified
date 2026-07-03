@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -56,7 +56,7 @@ export const generator_1037 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. Dividing by $${k}$: $\\frac{1}{p}=\\frac{1}{q}-\\frac{1}{r}-\\frac{1}{s}$. Rearranging: $\\frac{1}{q}=\\frac{1}{p}+\\frac{1}{r}+\\frac{1}{s}=\\frac{rs+ps+pr}{prs}$. Thus $q=\\frac{prs}{pr+ps+rs}$.
+    const explanation = `Choice ${correctLetter} is correct. Dividing both sides of the equation by ${k} gives $\\frac{1}{p}=\\frac{1}{q}-\\frac{1}{r}-\\frac{1}{s}$. Rearranging to isolate the term with $q$ gives $\\frac{1}{q}=\\frac{1}{p}+\\frac{1}{r}+\\frac{1}{s}=\\frac{rs+ps+pr}{prs}$. Taking the reciprocal of both sides gives $q=\\frac{prs}{pr+ps+rs}$.
 Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
 Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
 Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
@@ -65,7 +65,7 @@ Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reas
       questionText: `$\\frac{${k}}{p} = \\frac{${k}}{q} - \\frac{${k}}{r} - \\frac{${k}}{s}$\n\nThe given equation relates the positive variables $p, q, r,$ and $s$. Which of the following is equivalent to $q$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
+      correctAnswer: correctOption.text,
       explanation: explanation
     };
   }

@@ -19,6 +19,9 @@ explanations, float artifacts, personal names.
 3. No personal names in word problems — generic role + pronouns.
 4. User must be asked before starting the verification phase (Phase D), and
    before any deploy to production (push to main auto-deploys via Cloudflare).
+5. Model fallback authorized: if the Fable 5 usage limit is hit, continue the
+   remaining agent work on Opus 4.8 (or the next most capable available model)
+   without asking again — user gave explicit permission (2026-07-02).
 
 ## Architecture crib sheet
 

@@ -29,9 +29,10 @@ export const generator_595 = {
     // Original: f(x) = x² - 18x - 360, roots at -12 and 30
     // Randomize: factorable quadratics with roots r1 (negative) and r2 (positive)
     const r1 = -1 * getRandomInt(8, 20); // -8 to -20
-    const r2 = getRandomInt(15, 35); // 15 to 35
-    const sum = r1 + r2; // Should be positive (since r2 > |r1|)
-    const product = r1 * r2; // Should be negative
+    let r2 = getRandomInt(15, 35); // 15 to 35
+    // Guard: r2 must not equal -r1, otherwise the distractors (-r2, 0) and
+    // (-r1, 0) would duplicate/also-be-correct and b would be 0.
+    if (r2 === -r1) r2 += 1; // stays within a sensible range (at most 21)
     
     // STEP 2: Calculate derived values
     // Quadratic: x² - (sum)x + (product) = x² - (r1+r2)x + r1*r2
@@ -58,7 +59,7 @@ export const generator_595 = {
     
     const correctOption = shuffledOptions.find(opt => opt.isCorrect);
     const correctLetter = correctOption!.letter;
-    const correctAnswer = `(${r1}, 0)`;
+    const correctAnswer = correctOption!.text;
     
     // STEP 6: Build explanation with dynamic letters
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
@@ -74,15 +75,3 @@ export const generator_595 = {
     };
   }
 };
-/**
- * Question 595
- * 
- * ORIGINAL ANALYSIS:
- * - Type: Function transformation (vertical shift)
- * - Number ranges: Simple integer coefficients (1-10 range)
- * - Difficulty: Medium - requires understanding vertical shifts
- * - Distractor patterns: Confusing shift direction, wrong operation type
- */
-
-import { getRandomInt, shuffle } from '../../utils/math';
-import type { QuestionData } from '../../study/types';

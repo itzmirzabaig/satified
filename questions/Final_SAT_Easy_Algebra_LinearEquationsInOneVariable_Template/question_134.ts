@@ -24,19 +24,20 @@ export const generator_134 = {
 
   generate: (): QuestionData => {
     const coeff = getRandomInt(2, 6);
-    const rightSide = coeff * getRandomInt(10, 30);
+    const n = getRandomInt(10, 30);
+    const rightSide = coeff * n;
     const subtract = getRandomInt(1, 5);
     const result = rightSide - subtract;
 
-    const distractorA = (rightSide / coeff) - subtract;
+    const distractorA = n - subtract;
     const distractorC = rightSide;
     const distractorD = 2 * rightSide - subtract;
 
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: "finds n-1 instead of ${coeff}n-1" },
-      { text: result.toString(), isCorrect: true },
-      { text: distractorC.toString(), isCorrect: false, reason: "finds ${coeff}n instead of ${coeff}n-1" },
-      { text: distractorD.toString(), isCorrect: false, reason: "uses wrong coefficient" }
+      { text: distractorA.toString(), isCorrect: false, reason: `it results from first solving for $n$ (which gives $n = ${n}$) and then subtracting ${subtract} from $n$ instead of from $${coeff}n$` },
+      { text: result.toString(), isCorrect: true, reason: "" },
+      { text: distractorC.toString(), isCorrect: false, reason: `it is the value of $${coeff}n$ itself, without subtracting ${subtract}` },
+      { text: distractorD.toString(), isCorrect: false, reason: `it results from doubling $${coeff}n$ to ${2 * rightSide} before subtracting ${subtract}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -52,7 +53,7 @@ export const generator_134 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Substitute ${rightSide} for ${coeff}n: ${rightSide} - ${subtract} = ${result}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Since $${coeff}n = ${rightSide}$, substitute ${rightSide} for $${coeff}n$ in the expression: $${coeff}n - ${subtract} = ${rightSide} - ${subtract} = ${result}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because ${incorrectOptions[2].reason}.`
     };
   }
 };

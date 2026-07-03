@@ -23,15 +23,15 @@ export const generator_559 = {
     
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto;"><thead><tr><th style="border: 1px solid currentColor; padding: 8px;">Time (years)</th><th style="border: 1px solid currentColor; padding: 8px;">Total amount (dollars)</th></tr></thead><tbody><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">0</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${year0}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">1</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${year1}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">2</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${year2}</td></tr></tbody></table>`;
     
-    const questionText = `Rosa opened a savings account at a bank. The table shows the exponential relationship between the time $t$, in years, since Rosa opened the account and the total amount $n$, in dollars, in the account. If Rosa made no additional deposits or withdrawals, which of the following equations best represents the relationship between $t$ and $n$?`;
-    
-    const rateString = rateDecimal.toFixed(3).replace(/^0\./, '0.');
-    
+    const questionText = `A student opened a savings account at a bank. The table shows the exponential relationship between the time $t$, in years, since the account was opened and the total amount $n$, in dollars, in the account. If the student made no additional deposits or withdrawals, which of the following equations best represents the relationship between $t$ and $n$?`;
+
+    const rateString = rateDecimal.toFixed(3);
+
     const optionsData = [
       { text: `$n = (1 + ${initialAmount})^t$`, isCorrect: false, reason: "incorrectly uses the principal as the base of the exponent" },
-      { text: `$n = (1 + ${rateString})^t$`, isCorrect: false, reason: "omits the principal amount, starting with $1 instead" },
+      { text: `$n = (1 + ${rateString})^t$`, isCorrect: false, reason: `omits the principal, using a coefficient of 1 instead of ${initialAmount}` },
       { text: `$n = ${initialAmount}(1 + ${rateString})^t$`, isCorrect: true },
-      { text: `$n = ${rateString}(1 + ${initialAmount})^t$`, isCorrect: false, reason: "swaps the principal and growth factor values" }
+      { text: `$n = ${rateString}(1 + ${initialAmount})^t$`, isCorrect: false, reason: "swaps the principal and growth rate values" }
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

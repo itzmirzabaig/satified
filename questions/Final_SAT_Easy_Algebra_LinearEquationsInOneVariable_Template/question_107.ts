@@ -24,7 +24,10 @@ export const generator_107 = {
 
   generate: (): QuestionData => {
     const total = getRandomInt(100, 300);
-    const donors = getRandomInt(50, total - 30);
+    let donors = getRandomInt(50, total - 30);
+    // Guard: if donors is exactly half the total, volunteers would equal donors
+    // (duplicate option). Nudge by 1; donors + 1 <= total - 30 holds since total >= 100.
+    if (donors * 2 === total) donors += 1;
     const volunteers = total - donors;
 
     const optionsData = [

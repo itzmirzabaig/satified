@@ -22,10 +22,14 @@ export const generator_560 = {
   },
   
   generate: (): QuestionData => {
-    const days = getRandomInt(200, 400);
-    const mass = getRandomInt(300, 500);
-    
-    const questionText = `The function $m$ gives the predicted body mass $m(t)$, in kilograms (kg), of a certain animal $t$ days after it was born in a wildlife reserve, where $t \\leq 390$. Which of the following is the best interpretation of the statement "$m(${days})$ is approximately equal to ${mass}$" in this context?`;
+    // days stays within the stated domain t <= 390
+    const days = getRandomInt(200, 385);
+    let mass = getRandomInt(300, 500);
+    // Guard: if mass === days, the "swapped input/output" distractor would
+    // exactly duplicate the correct option. Nudge mass to keep them distinct.
+    if (mass === days) mass += 7;
+
+    const questionText = `The function $m$ gives the predicted body mass $m(t)$, in kilograms (kg), of a certain animal $t$ days after it was born in a wildlife reserve, where $t \\leq 390$. Which of the following is the best interpretation of the statement "$m(${days})$ is approximately equal to ${mass}" in this context?`;
     
     const correctAnswer = `The predicted body mass of the animal was approximately ${mass} kg ${days} days after it was born.`;
     

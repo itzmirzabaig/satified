@@ -23,23 +23,40 @@ export const generator_141 = {
   },
 
   generate: (): QuestionData => {
-    const coeff = getRandomInt(2, 5);
-    const const1 = getRandomInt(3, 9);
-    const rightSide = getRandomInt(5, 12);
-    const addAmount = const1 * 2;
+    // Answer-first construction: pick an integer x, then derive rightSide so
+    // every option is an integer. Guard (bounded) against:
+    //  - rightSide - const1 < 1  (keeps the sign-error distractor positive)
+    //  - x * (coeff - 1) === 2 * const1  (would make distractor A equal x)
+    let coeff = getRandomInt(2, 5);
+    let x = getRandomInt(4, 9);
+    let const1 = getRandomInt(3, 9);
+    let rightSide = coeff * x - const1;
+    let tries = 0;
+    while ((rightSide - const1 < 1 || x * (coeff - 1) === 2 * const1) && tries++ < 50) {
+      coeff = getRandomInt(2, 5);
+      x = getRandomInt(4, 9);
+      const1 = getRandomInt(3, 9);
+      rightSide = coeff * x - const1;
+    }
+    if (rightSide - const1 < 1 || x * (coeff - 1) === 2 * const1) {
+      coeff = 3;
+      x = 5;
+      const1 = 4;
+      rightSide = 11; // 3*5 - 4
+    }
 
-    const x = (rightSide + const1) / coeff;
-    const targetValue = coeff * x + const1;
+    const addAmount = const1 * 2;
+    const targetValue = coeff * x + const1; // = rightSide + 2*const1
 
     const distractorA = rightSide - const1;
     const distractorB = x;
-    const distractorC = coeff * x - const1 + 3;
+    const distractorC = coeff * x; // = rightSide + const1
 
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: "might result from a sign error" },
-      { text: distractorB.toString(), isCorrect: false, reason: "is the value of x, not the value of the expression" },
-      { text: distractorC.toString(), isCorrect: false, reason: "might result from calculating with wrong coefficients" },
-      { text: targetValue.toString(), isCorrect: true }
+      { text: distractorA.toString(), isCorrect: false, reason: `results from a sign error: computing ${rightSide} - ${const1} instead of ${rightSide} + ${addAmount}` },
+      { text: distractorB.toString(), isCorrect: false, reason: `is the value of $x$, not the value of the expression $${coeff}x + ${const1}$` },
+      { text: distractorC.toString(), isCorrect: false, reason: `is the value of $${coeff}x$; it results from adding ${const1} to ${rightSide} only once` },
+      { text: targetValue.toString(), isCorrect: true, reason: "" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

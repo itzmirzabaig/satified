@@ -32,10 +32,10 @@ export const generator_102 = {
     const distractorD = parseInt(`${total}${addend}`);
 
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: "might result from dividing ${total} by ${addend} instead of subtracting" },
+      { text: distractorA.toString(), isCorrect: false, reason: `may result from dividing ${total} by ${addend} instead of subtracting ${addend} from both sides` },
       { text: result.toString(), isCorrect: true },
-      { text: distractorC.toString(), isCorrect: false, reason: "would be the result if one added ${addend} to ${total}" },
-      { text: distractorD.toString(), isCorrect: false, reason: "looks like concatenation of digits" }
+      { text: distractorC.toString(), isCorrect: false, reason: `results from adding ${addend} to ${total} instead of subtracting it` },
+      { text: distractorD.toString(), isCorrect: false, reason: `results from writing the digits of ${total} and ${addend} next to each other instead of solving the equation` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -51,7 +51,7 @@ export const generator_102 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `To find the solution, subtract ${addend} from both sides: $w = ${total} - ${addend} = ${result}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `To find the solution, subtract ${addend} from both sides of the equation: $w = ${total} - ${addend} = ${result}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

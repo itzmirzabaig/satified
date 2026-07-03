@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1042
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [system in table: y=x²+3x-7 and 5x-y=8]
  * - Difficulty factors: [System with table presentation, substitution, discriminant]
@@ -21,32 +21,19 @@ export const generator_1042 = {
     skill: "Nonlinear Equations In One Variable And Systems Of Equations In Two Variables",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values preserving difficulty
-    // Pattern: y = x² + bx + c, dx - y = e, find number of solutions
-    
-    // We want exactly one solution, so discriminant = 0 after substitution
-    
+    // Pattern: y = x^2 + bx + c and Dx - y = e, engineered so substitution
+    // yields a perfect-square quadratic (discriminant 0) => exactly 1 solution.
+    //
+    // Substituting y = Dx - e gives x^2 + (b - D)x + (c + e) = 0.
+    // Force b - D = -2*root and c + e = root^2, so it becomes (x - root)^2 = 0.
     const b = getRandomInt(2, 6);
-    const d = getRandomInt(4, 8);
-    const root = getRandomInt(1, 5); // The single solution x-value
-    
-    // From linear: y = dx - e
-    // Substitute: dx - e = x² + bx + c
-    // x² + (b-d)x + (c+e) = 0
-    
-    // For one solution: (b-d)² - 4(c+e) = 0
-    // And x = (d-b)/2 = root, so d - b = 2*root
-    
+    const root = getRandomInt(1, 5); // the single x-solution
     const finalD = b + 2 * root;
-    const cPlusE = ((b - finalD) * (b - finalD)) / 4;
-    
-    // Choose c, then e = cPlusE - c
-    const c = getRandomInt(-10, -3);
-    const e = cPlusE - c;
-    
-    // STEP 2: Create table code
+    const c = getRandomInt(-10, -3); // always negative
+    const e = root * root - c; // e >= root^2 + 3, always positive
+
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto;">
   <thead>
     <tr>
@@ -55,7 +42,7 @@ export const generator_1042 = {
   </thead>
   <tbody>
     <tr>
-      <td style="border: 1px solid #ccc; padding: 8px;">$y = x^2 + ${b}x ${c}$</td>
+      <td style="border: 1px solid #ccc; padding: 8px;">$y = x^2 + ${b}x - ${-c}$</td>
     </tr>
     <tr>
       <td style="border: 1px solid #ccc; padding: 8px;">$${finalD}x - y = ${e}$</td>
@@ -63,33 +50,35 @@ export const generator_1042 = {
   </tbody>
 </table>`;
 
-    // STEP 3: Create options
     const optionsData = [
-      { text: `There are exactly 4 solutions.`, isCorrect: false, reason: "is incorrect; a quadratic and linear equation cannot intersect more than twice" },
-      { text: `There are exactly 2 solutions.`, isCorrect: false, reason: "is incorrect; this would require a positive discriminant" },
-      { text: `There is exactly 1 solution.`, isCorrect: true },
-      { text: `There are no solutions.`, isCorrect: false, reason: "is incorrect; this would require a negative discriminant" }
+      { text: `There are exactly 4 solutions.`, isCorrect: false, reason: "assumes a line and a parabola can intersect more than twice, which is impossible" },
+      { text: `There are exactly 2 solutions.`, isCorrect: false, reason: "would require a positive discriminant, but the discriminant equals zero" },
+      { text: `There is exactly 1 solution.`, isCorrect: true, reason: "" },
+      { text: `There are no solutions.`, isCorrect: false, reason: "would require a negative discriminant, but the discriminant equals zero" }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    const explanation = `Choice ${correctLetter} is correct. From the second equation, $y=${finalD}x-${e}$. Substituting: $${finalD}x-${e}=x^2+${b}x+${c}$, giving $x^2+${b-finalD}x+${c+e}=0$. The discriminant is $(${b-finalD})^2-4(${c+e})=0$, so there is exactly one solution.
+
+    const p = finalD - b; // = 2*root, always positive
+    const q = c + e; // = root^2, always positive
+
+    const explanation = `Choice ${correctLetter} is correct. Solving the second equation for $y$ gives $y = ${finalD}x - ${e}$. Setting the two expressions for $y$ equal gives $x^2 + ${b}x - ${-c} = ${finalD}x - ${e}$, which rearranges to $x^2 - ${p}x + ${q} = 0$. The discriminant is $(-${p})^2 - 4(1)(${q}) = ${p * p} - ${4 * q} = 0$. Because the discriminant equals zero, the quadratic equation has exactly one solution, so the system has exactly one solution.
 Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
 Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
 Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
-    
+
     return {
-      questionText: `How many solutions are there to the system of equations above?`,
+      questionText: `How many solutions are there to the system of equations shown?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
+      correctAnswer: correctOption.text,
       explanation: explanation
     };
   }

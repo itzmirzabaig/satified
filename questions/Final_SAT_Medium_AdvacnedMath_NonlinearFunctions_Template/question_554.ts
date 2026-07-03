@@ -25,9 +25,14 @@ export const generator_554 = {
   generate: (): QuestionData => {
     const coefficient = getRandomInt(5, 20);
     const baseNumerator = 1;
-    const baseDenominator = getRandomInt(5, 15);
-    
-    const questionText = `If the given function $g(x)=${coefficient}\\left(\\frac{${baseNumerator}}{${baseDenominator}}\\right)^{x}$ is graphed in the $xy$-plane, where $y=g(x)$, what is the $y$-intercept of the graph?`;
+    let baseDenominator = getRandomInt(5, 15);
+    // Guard: the distractor (0, baseDenominator) must never equal the correct
+    // answer (0, coefficient), so force baseDenominator !== coefficient.
+    if (baseDenominator === coefficient) {
+      baseDenominator = baseDenominator === 15 ? 14 : baseDenominator + 1;
+    }
+
+    const questionText = `The function $g$ is defined by $g(x)=${coefficient}\\left(\\frac{${baseNumerator}}{${baseDenominator}}\\right)^{x}$. What is the $y$-intercept of the graph of $y=g(x)$ in the $xy$-plane?`;
     
     const correctAnswer = `(0, ${coefficient})`;
     

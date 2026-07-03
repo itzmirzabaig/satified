@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 
@@ -11,33 +11,39 @@ export const generator_609 = {
     skill: "Nonlinear Functions",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
     const rate = getRandomInt(3, 8);
     const rateDecimal = rate / 100;
     const growthFactor = 1 + rateDecimal;
-    
-    const questionText = `The function $S$ models the annual salary, in dollars, of an employee $n$ years after starting a job, where $a$ is a constant. If the employee's salary increases by ${rate}\\% each year, what is the value of $a$?`;
-    
+    const base = getRandomInt(4, 9) * 10000; // starting salary: 40,000 to 90,000
+
+    const rateStr = rateDecimal.toFixed(2); // "0.03".."0.08"
+    const factorStr = growthFactor.toFixed(2); // "1.03".."1.08"
+
+    const questionText = `The function $S(n) = ${base}(a)^n$ models the annual salary, in dollars, of an employee $n$ years after starting a job, where $a$ is a constant. If the employee's salary increases by ${rate}% each year, what is the value of $a$?`;
+
+    // Option values for rate 3..8: 0.03..0.08, 0.3..0.8, 1.03..1.08, 1.3..1.8
+    // — the four ranges never overlap, so options are always distinct.
     const optionsData = [
-      { text: `$${rateDecimal.toFixed(2).replace(/^0\./, '0.')}$`, isCorrect: false, reason: "this is the growth rate $r$ itself, not the growth factor $1+r$" },
-      { text: `$${(rateDecimal * 10).toFixed(1)}$`, isCorrect: false, reason: "results from a decimal point error" },
-      { text: `$${growthFactor.toFixed(2)}$`, isCorrect: true },
-      { text: `$${(1 + rate/10).toFixed(1)}$`, isCorrect: false, reason: `this would represent a ${rate * 10}% increase, not ${rate}%` }
+      { text: `$${rateStr}$`, isCorrect: false, reason: "this is the growth rate written as a decimal, not the growth factor $a$" },
+      { text: `$${(rateDecimal * 10).toFixed(1)}$`, isCorrect: false, reason: `it results from a decimal-point error when converting ${rate}% to a decimal` },
+      { text: `$${factorStr}$`, isCorrect: true },
+      { text: `$${(1 + rate / 10).toFixed(1)}$`, isCorrect: false, reason: `this would represent a ${rate * 10}% annual increase, not ${rate}%` }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect);
     const correctLetter = correctOption!.letter;
-    const correctAnswer = `${growthFactor.toFixed(2)}`;
-    
+    const correctAnswer = `$${factorStr}$`;
+
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. The general form of an exponential growth function is $y = P(1 + r)^t$, where $r$ is the growth rate as a decimal. Here, the growth rate is ${rate}\\\\% = ${rateDecimal.toFixed(2).replace(/^0\./, '0.')}$. The growth factor (the constant $a$) is $1 + r = 1 + ${rateDecimal.toFixed(2).replace(/^0\./, '0.')} = ${growthFactor.toFixed(2)}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
-    
+    const explanation = `Choice ${correctLetter} is correct. An exponential growth model has the form $S(n) = S_0(a)^n$, where $S_0$ is the starting value and the constant $a$ is the growth factor $a = 1 + r$, with $r$ equal to the annual growth rate written as a decimal. An increase of ${rate}% per year means $r = ${rateStr}$, so $a = 1 + ${rateStr} = ${factorStr}$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
+
     return {
       questionText: questionText,
       figureCode: null,

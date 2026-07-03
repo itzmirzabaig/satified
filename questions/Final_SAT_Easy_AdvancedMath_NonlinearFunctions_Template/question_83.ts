@@ -11,6 +11,18 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Values follow exponential decay]
  * - Question type: [Table→Multiple Choice Text]
  * - Figure generation: [HTML Table]
+ *
+ * FIXED:
+ * - TEX_UNBALANCED / DOLLAR_RISK: options, explanation, and table cells used
+ *   bare "$" for currency. Options/explanation now use escaped "\$"; the
+ *   table cells show plain numbers (the header already says "dollars").
+ * - questionText referenced "the sport utility vehicle" with no introduction;
+ *   added a sentence introducing the table.
+ * - Explanation now covers every distractor with letters taken from the
+ *   shuffled array.
+ * - Distractor distinctness holds for every draw: with rate in [0.80, 0.90],
+ *   value gaps are >= initial*rate*(1-rate) >= 1800 between consecutive years,
+ *   and |initial*(rate^3 - 0.5)| >= 240 for the half-price distractor.
  */
 
 export const generator_83 = {
@@ -32,29 +44,48 @@ export const generator_83 = {
     const targetVal = values[3];
     const year1Val = values[1];
     const year2Val = values[2];
+    const halfVal = Math.round(initial * 0.5);
 
-    const tableHTML = `<table border="1">
-  <tr><th>Years after purchase</th><th>Value (dollars)</th></tr>
-  ${years.map((y, i) => `<tr><td>${y}</td><td>$${values[i].toLocaleString()}</td></tr>`).join('')}
+    const cellStyle = 'border: 1px solid currentColor; padding: 6px 14px; text-align: center;';
+    const tableHTML = `<table style="border-collapse: collapse; margin: 0 auto; font-size: 15px;">
+  <tr><th style="${cellStyle}">Years after purchase</th><th style="${cellStyle}">Predicted value (dollars)</th></tr>
+  ${years.map((y, i) => `<tr><td style="${cellStyle}">${y}</td><td style="${cellStyle}">${values[i].toLocaleString('en-US')}</td></tr>`).join('\n  ')}
 </table>`;
 
     const optionsData = [
-      { text: `$${targetVal.toLocaleString()}`, isCorrect: true },
-      { text: `$${year1Val.toLocaleString()}`, isCorrect: false },
-      { text: `$${year2Val.toLocaleString()}`, isCorrect: false },
-      { text: `$${Math.round(initial * 0.5).toLocaleString()}`, isCorrect: false }
+      {
+        text: `\\$${targetVal.toLocaleString('en-US')}`,
+        isCorrect: true,
+        reason: ""
+      },
+      {
+        text: `\\$${year1Val.toLocaleString('en-US')}`,
+        isCorrect: false,
+        reason: "this is the predicted value of the vehicle 1 year after purchase, not 3 years"
+      },
+      {
+        text: `\\$${year2Val.toLocaleString('en-US')}`,
+        isCorrect: false,
+        reason: "this is the predicted value of the vehicle 2 years after purchase, not 3 years"
+      },
+      {
+        text: `\\$${halfVal.toLocaleString('en-US')}`,
+        isCorrect: false,
+        reason: "this is half of the original purchase price, which does not appear in the table"
+      }
     ];
 
     const shuffled = shuffle(optionsData).map((opt, i) => ({ ...opt, letter: String.fromCharCode(65 + i) }));
 
     const correctOption = shuffled.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffled.filter(o => !o.isCorrect);
 
     return {
-      questionText: `Which of the following is closest to the predicted value of the sport utility vehicle 3 years after it is first purchased?`,
+      questionText: `A sport utility vehicle begins to decrease in value as soon as it is purchased. The table gives the predicted value of the vehicle, in dollars, for each of the first 3 years after it is purchased. According to the table, what is the predicted value of the vehicle 3 years after it is purchased?`,
       figureCode: tableHTML,
       options: shuffled.map(o => o.text),
-      correctAnswer: `$${targetVal.toLocaleString()}`,
-      explanation: `Choice ${correctOption.letter} is correct. Looking at the table, 3 years after purchase ($x=3$), the value is $${targetVal.toLocaleString()}$.`
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctOption.letter} is correct. In the table, the row where the number of years after purchase is 3 shows a predicted value of \\$${targetVal.toLocaleString('en-US')}. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
     };
   }
 };
