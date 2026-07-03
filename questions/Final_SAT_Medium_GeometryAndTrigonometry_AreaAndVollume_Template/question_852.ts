@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 852
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [volume: 432, base area: 24]
  * - Difficulty factors: [Cylinder volume V = Bh, solving for height]
@@ -21,41 +21,50 @@ export const generator_852 = {
     skill: "Area And Vollume",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
     // STEP 1: Generate random values (MATCH ORIGINAL RANGES)
+    // Ensure base area and height differ so the correct answer (height)
+    // never collides with distractor B (base area).
     const baseArea = getRandomInt(20, 30);
-    const height = getRandomInt(15, 25);
+    let height = getRandomInt(15, 25);
+    let tries = 0;
+    while (height === baseArea && tries++ < 50) {
+      height = getRandomInt(15, 25);
+    }
     const volume = baseArea * height;
-    
+
     // STEP 2: Create options with tracking
     const correctText = height.toString();
-    
-    // Distractors
-    const distractorB = baseArea.toString(); // Base area itself
+
+    // Distractors (all provably distinct across the declared ranges):
+    // B = base area (20..30), never equal to height (guarded above).
+    // C = floor(volume/2) >= 150, far from B and height.
+    // D = volume*base >= 300, larger than every other option.
+    const distractorB = baseArea.toString();            // Base area itself
     const distractorC = Math.floor(volume / 2).toString(); // Volume/2
-    const distractorD = (volume * baseArea).toLocaleString(); // Volume × base
-    
+    const distractorD = (volume * baseArea).toString();    // Volume × base
+
     const optionsData = [
       { text: correctText, isCorrect: true },
       { text: distractorB, isCorrect: false },
       { text: distractorC, isCorrect: false },
       { text: distractorD, isCorrect: false }
     ];
-    
+
     // STEP 3: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect);
     const correctLetter = correctOption!.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
-    // STEP 4: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. The volume of a cylinder is $V = Bh$. Substituting $V = ${volume}$ and $B = ${baseArea}$ gives ${volume} = ${baseArea}h$. Dividing both sides by ${baseArea} yields $h = ${height}$ centimeters. Choice ${incorrectOptions[0].letter} is incorrect; this is the area of the base, not the height. Choice ${incorrectOptions[1].letter} is incorrect; this results from dividing the volume by 2 instead of by the base area. Choice ${incorrectOptions[2].letter} is incorrect; this results from multiplying the volume by the base area instead of dividing.`;
-    
+
+    // STEP 4: Build explanation (numbers derived from the same live variables)
+    const explanation = `Choice ${correctLetter} is correct. The volume of a cylinder is $V = Bh$. Substituting $V = ${volume}$ and $B = ${baseArea}$ gives the equation $Bh = ${volume}$. Dividing both sides by ${baseArea} yields $h = ${height}$ centimeters. Choice ${incorrectOptions[0].letter} is incorrect; this is the area of the base, not the height. Choice ${incorrectOptions[1].letter} is incorrect; this results from dividing the volume by 2 instead of by the base area. Choice ${incorrectOptions[2].letter} is incorrect; this results from multiplying the volume by the base area instead of dividing.`;
+
     return {
       questionText: `A right circular cylinder has a volume of ${volume} cubic centimeters. The area of the base of the cylinder is ${baseArea} square centimeters. What is the height, in centimeters, of the cylinder?`,
       figureCode: null,

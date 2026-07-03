@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -39,16 +39,49 @@ export const generator_742 = {
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto;"><thead><tr><th style="border: 1px solid currentColor; padding: 8px;">h</th><th style="border: 1px solid currentColor; padding: 8px;">f(h)</th></tr></thead><tbody><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${h1}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${f1}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${h2}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${f2}</td></tr></tbody></table>`;
     
     // STEP 3: Create options
-    const correctEq = `f(h) = ${m}h + ${b}`;
-    const distA = `f(h) = ${Math.floor(m/3)}h + ${b + 50}`;
-    const distB = `f(h) = ${b}h + ${m}`;
-    const distD = `f(h) = ${Math.floor(b/2)}h + ${m + 10}`;
-    
+    // Build the correct (slope, intercept) pair, then generate distinct
+    // distractor pairs. Each candidate carries a reason; we keep the first
+    // three that differ from the correct pair AND from each other, so no two
+    // options can ever collide for any draw.
+    const eqOf = (slope: number, intercept: number) => `f(h) = ${slope}h + ${intercept}`;
+    const correctEq = eqOf(m, b);
+
+    // Candidate distractors, each a distinct conceptual error:
+    // 1. Swaps slope and intercept.
+    // 2. Correct slope but uses the first output f1 as the intercept
+    //    (forgets to subtract m*h1), guaranteed > b since m*h1 > 0.
+    // 3. Reads the total change in f(h) as the slope without dividing by the
+    //    change in h.
+    // 4/5. Backup pairs (safety net so we always have 3 distinct distractors).
+    const candidates = [
+      { slope: b, intercept: m, reason: "swaps the slope and intercept values" },
+      { slope: m, intercept: f1, reason: "uses the first table value as the intercept instead of subtracting the slope contribution" },
+      { slope: f2 - f1, intercept: b, reason: "uses the total change in $f(h)$ as the slope without dividing by the change in $h$" },
+      { slope: m + 5, intercept: b, reason: "uses an incorrect slope" },
+      { slope: m, intercept: b + 15, reason: "uses an incorrect intercept" },
+    ];
+
+    const distractors: { text: string; isCorrect: boolean; reason: string }[] = [];
+    const used = new Set<string>([correctEq]);
+    for (const c of candidates) {
+      const text = eqOf(c.slope, c.intercept);
+      if (used.has(text)) continue;
+      used.add(text);
+      distractors.push({ text, isCorrect: false, reason: c.reason });
+      if (distractors.length === 3) break;
+    }
+    // Bounded safety net: if candidates collided too much, add offset pairs.
+    let guard = 0;
+    while (distractors.length < 3 && guard++ < 50) {
+      const text = eqOf(m + guard, b + guard);
+      if (used.has(text)) continue;
+      used.add(text);
+      distractors.push({ text, isCorrect: false, reason: "uses an incorrect slope and intercept" });
+    }
+
     const optionsData = [
-      { text: distA, isCorrect: false, reason: "incorrect slope and intercept" },
-      { text: distB, isCorrect: false, reason: "swaps the slope and intercept values" },
-      { text: correctEq, isCorrect: true },
-      { text: distD, isCorrect: false, reason: "incorrect values" }
+      { text: correctEq, isCorrect: true, reason: "" },
+      ...distractors,
     ];
     
     // STEP 4: Shuffle and assign letters
@@ -67,7 +100,7 @@ export const generator_742 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,
-      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${f2} - ${f1}}{${h2} - ${h1}} = \\frac{${f2 - f1}}{${h2 - h1}} = ${m}$. Using $f(${h1}) = ${f1}$: ${f1} = ${m}(${h1}) + b, so $b = ${f1} - ${m * h1} = ${b}$. Thus $f(h) = ${m}h + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${f2} - ${f1}}{${h2} - ${h1}} = \\frac{${f2 - f1}}{${h2 - h1}} = ${m}$. Substituting the point $(${h1}, ${f1})$ into $f(h) = ${m}h + b$ and solving for the intercept gives $b = ${f1} - ${m}(${h1}) = ${b}$. Thus $f(h) = ${m}h + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

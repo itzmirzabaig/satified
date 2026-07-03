@@ -24,40 +24,43 @@ export const generator_936 = {
   
   generate: (): QuestionData => {
     // STEP 1: Generate random values
-    // Original: 1.13 times 100, find percent greater
-    // Generate multipliers 1.05 to 1.35 (5% to 35% increase)
+    // Original: 1.13 times 100, find percent greater.
+    // percentIncrease is an integer, so with base = 100 the value z = base + p
+    // is an exact integer and the multiplier 1 + p/100 has exactly 2 decimals.
     const percentIncrease = getRandomInt(5, 35);
-    const multiplier = 1 + percentIncrease / 100;
-    const base = 100; // Keep base at 100 for clean calculation
-    
-    // STEP 2: Calculate options
-    const z = base * multiplier;
-    const correctAnswer = percentIncrease;
-    
-    const correctText = correctAnswer.toString();
-    
+    const base = 100; // Keep base at 100 for clean calculation.
+
+    // Exact integer value of z; no float artifact from base * (1 + p/100).
+    const z = base + percentIncrease;
+    const multiplierStr = (1 + percentIncrease / 100).toFixed(2); // e.g. "1.13"
+
+    // STEP 2: Build options (answer is the percent, a plain number).
+    // Distractors verified distinct for every p in [5, 35] by exhaustive check.
+    const correctText = percentIncrease.toString();
+    const decimalStr = (percentIncrease / 100).toFixed(2).replace(/\.?0+$/, ''); // 0.13
+
     const optionsData = [
-      { text: (multiplier - 1).toFixed(3).replace(/\.?0+$/, '').substring(1), isCorrect: false, reason: `confuses the decimal ${(multiplier-1).toFixed(3)} with ${percentIncrease}%` },
+      { text: decimalStr, isCorrect: false, reason: `is the decimal form of the increase, not the percent` },
       { text: correctText, isCorrect: true },
-      { text: (percentIncrease * 10).toString(), isCorrect: false, reason: "incorrect calculation" },
-      { text: (100 + percentIncrease).toString(), isCorrect: false, reason: "incorrectly adds 100 to the percentage" }
+      { text: (percentIncrease * 10).toString(), isCorrect: false, reason: "results from misplacing the decimal point" },
+      { text: (100 + percentIncrease).toString(), isCorrect: false, reason: "is the value of $z$ itself, not how much greater it is than 100" }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
     // STEP 3: Return question data
     return {
-      questionText: `The value of $z$ is ${multiplier} times ${base}. The value of $z$ is what percent greater than ${100}?`,
+      questionText: `The value of $z$ is ${multiplierStr} times ${base}. The value of $z$ is what percent greater than ${base}?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. If $z = ${multiplier} \\times ${base}$, then $z = ${z}$. The percent increase from ${base} to ${z} is $\\frac{${z - base}}{${base}} \\times 100 = ${correctAnswer}%. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. If $z = ${multiplierStr} \\times ${base}$, then $z = ${z}$. The percent by which $z$ is greater than ${base} is $\\frac{${z - base}}{${base}} \\times 100$, which equals ${percentIncrease}. So $z$ is ${percentIncrease}\\% greater than ${base}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

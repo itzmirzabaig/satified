@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -23,83 +23,103 @@ export const generator_833 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate figure parameters
-    // Original: center (7,8), radius 3, points at (7,5), (7,11), (4,8)
-    // Generate new center and radius
-    const centerX = getRandomInt(3, 10);
-    const centerY = getRandomInt(5, 12);
-    const radius = getRandomInt(2, 5);
-    
-    // STEP 2: Calculate point coordinates
-    // Points at vertical extremes and left horizontal
-    const point1X = centerX;
-    const point1Y = centerY - radius; // bottom
-    const point2X = centerX;
-    const point2Y = centerY + radius; // top
-    const point3X = centerX - radius;
-    const point3Y = centerY; // left
-    
-    // STEP 3: Calculate circumference constant k
-    const circumferenceK = 2 * radius; // C = 2πr = kπ, so k = 2r
-    
-    // STEP 4: Build Mafs code
-    const _svg_0 = centerX - radius - 2; const _svg_1 = centerX + radius + 2; const _svg_2 = centerY + radius + 2; const _svg_3 = centerY - radius - 2;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_0,xmax=_svg_1;
-      const ymin=_svg_3,ymax=_svg_2;
-      const W=400,H=350,P=40;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      const xstep=Math.ceil((_svg_1-(_svg_0))/8);
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0) continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=(centerX - radius - 2),xmax=(centerX + radius + 2);
-      const ymin=(centerY - radius - 2),ymax=(centerY + radius + 2);
-      const W=400,H=350,P=40;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      const r=((centerY))*(400-2*40)/((centerX + radius + 2)-((centerX - radius - 2)));
-      return '<circle cx="'+mx((centerX))+'" cy="'+my((centerY))+'" r="'+r+'" fill="none" stroke="currentColor" stroke-width="2"/>';
-    })()}</svg></div>`;
-    
-    // STEP 5: Create options with tracking
+    // STEP 1: Generate figure parameters.
+    // r in [3,6] guarantees the four options {2r, r, 2r+1, r^2} are pairwise
+    // distinct for every draw: 2r is even; r < 2r (r>0); 2r+1 is odd (never 2r);
+    // r^2 = 2r only at r=2 and r^2 = 2r+1 has no integer solution, so both are
+    // excluded on [3,6]. Center kept small-positive so the plotted grid is clean.
+    const centerX = getRandomInt(3, 8);
+    const centerY = getRandomInt(4, 9);
+    const radius = getRandomInt(3, 6);
+
+    // STEP 2: Three points on the circle (bottom, top, left).
+    const point1X = centerX, point1Y = centerY - radius; // bottom
+    const point2X = centerX, point2Y = centerY + radius; // top
+    const point3X = centerX - radius, point3Y = centerY; // left
+
+    // STEP 3: Circumference constant. C = 2*pi*r = k*pi, so k = 2r.
+    const circumferenceK = 2 * radius;
+
+    // STEP 4: Options.
     const correctText = circumferenceK.toString();
-    
-    // Distractors
-    const distractorA = radius.toString(); // Just radius
-    const distractorC = (2 * radius + 1).toString(); // Diameter + 1
-    const distractorD = (radius * radius).toString(); // r²
-    
+    const distractorA = radius.toString();          // used r (radius) instead of 2r
+    const distractorC = (2 * radius + 1).toString(); // added 1 to the diameter
+    const distractorD = (radius * radius).toString(); // used r^2 (the area coefficient)
+
     const optionsData = [
       { text: distractorA, isCorrect: false },
       { text: correctText, isCorrect: true },
       { text: distractorC, isCorrect: false },
       { text: distractorD, isCorrect: false }
     ];
-    
-    // STEP 6: Shuffle and assign letters
+
+    // STEP 5: Shuffle and assign letters (letters only meaningful post-shuffle).
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(o => o.isCorrect);
-    const correctLetter = correctOption!.letter;
+
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
-    // STEP 7: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. The center O at (${centerX}, ${centerY}) is equidistant from all three points. The distance from O to (${point1X}, ${point1Y}) is ${radius}, so the radius is ${radius}. The circumference is $2\\\\pi r = 2\\\\pi(${radius}) = ${circumferenceK}\\\\pi$, so $k = ${circumferenceK}$. Choice ${incorrectOptions[0].letter} is incorrect; this is the radius, not the coefficient of $\\\\pi$ in the circumference. Choice ${incorrectOptions[1].letter} is incorrect; this appears to add 1 to the diameter without geometric basis. Choice ${incorrectOptions[2].letter} is incorrect; this is $r^2$ rather than $2r$.`;
-    
+    const byText = (t: string) => incorrectOptions.find(o => o.text === t)!.letter;
+
+    // STEP 6: Figure — plain SVG coordinate grid with the circle and 3 points.
+    const xmin = centerX - radius - 1, xmax = centerX + radius + 1;
+    const ymin = centerY - radius - 1, ymax = centerY + radius + 1;
+    const W = 360, H = 340, P = 34;
+    const mx = (x: number) => P + ((x - xmin) / (xmax - xmin)) * (W - 2 * P);
+    const my = (y: number) => (H - P) - ((y - ymin) / (ymax - ymin)) * (H - 2 * P);
+    const rPx = mx(centerX + radius) - mx(centerX); // circle radius in pixels
+
+    let grid = '';
+    for (let x = xmin; x <= xmax; x++) {
+      grid += `<line x1="${mx(x).toFixed(1)}" y1="${my(ymin).toFixed(1)}" x2="${mx(x).toFixed(1)}" y2="${my(ymax).toFixed(1)}" stroke="currentColor" stroke-opacity="0.12" stroke-width="1"/>`;
+    }
+    for (let y = ymin; y <= ymax; y++) {
+      grid += `<line x1="${mx(xmin).toFixed(1)}" y1="${my(y).toFixed(1)}" x2="${mx(xmax).toFixed(1)}" y2="${my(y).toFixed(1)}" stroke="currentColor" stroke-opacity="0.12" stroke-width="1"/>`;
+    }
+
+    // Axis tick labels (only where an axis is inside the visible window).
+    let ticks = '';
+    const showXAxis = ymin <= 0 && ymax >= 0;
+    const showYAxis = xmin <= 0 && xmax >= 0;
+    const axisY = showXAxis ? my(0) : my(ymin);
+    const axisX = showYAxis ? mx(0) : mx(xmin);
+    for (let x = xmin; x <= xmax; x += 2) {
+      ticks += `<text x="${mx(x).toFixed(1)}" y="${(axisY + 14).toFixed(1)}" text-anchor="middle" font-size="10" fill="currentColor">${x}</text>`;
+    }
+    for (let y = ymin; y <= ymax; y += 2) {
+      ticks += `<text x="${(axisX - 8).toFixed(1)}" y="${(my(y) + 3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="currentColor">${y}</text>`;
+    }
+
+    const axes =
+      `<line x1="${mx(xmin).toFixed(1)}" y1="${axisY.toFixed(1)}" x2="${mx(xmax).toFixed(1)}" y2="${axisY.toFixed(1)}" stroke="currentColor" stroke-width="1.5"/>` +
+      `<line x1="${axisX.toFixed(1)}" y1="${my(ymax).toFixed(1)}" x2="${axisX.toFixed(1)}" y2="${my(ymin).toFixed(1)}" stroke="currentColor" stroke-width="1.5"/>`;
+
+    const circle = `<circle cx="${mx(centerX).toFixed(1)}" cy="${my(centerY).toFixed(1)}" r="${rPx.toFixed(1)}" fill="none" stroke="#3b82f6" stroke-width="2"/>`;
+
+    const pts = [
+      { x: point1X, y: point1Y },
+      { x: point2X, y: point2Y },
+      { x: point3X, y: point3Y }
+    ].map(pt =>
+      `<circle cx="${mx(pt.x).toFixed(1)}" cy="${my(pt.y).toFixed(1)}" r="4" fill="#3b82f6"/>` +
+      `<text x="${(mx(pt.x) + 7).toFixed(1)}" y="${(my(pt.y) - 6).toFixed(1)}" font-size="10" fill="currentColor">(${pt.x}, ${pt.y})</text>`
+    ).join('');
+
+    const center =
+      `<circle cx="${mx(centerX).toFixed(1)}" cy="${my(centerY).toFixed(1)}" r="3" fill="currentColor"/>` +
+      `<text x="${(mx(centerX) + 7).toFixed(1)}" y="${(my(centerY) - 6).toFixed(1)}" font-size="11" fill="currentColor">O</text>`;
+
+    const figureCode = `<div style="width:100%;max-width:360px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${grid}${axes}${ticks}${circle}${pts}${center}</svg></div>`;
+
+    // STEP 7: Explanation — numbers from the same live variables; letters from shuffle.
+    const explanation = `Choice ${correctLetter} is correct. The center $O$ is the point equidistant from the three given points; here it is $(${centerX}, ${centerY})$. The distance from $O$ to the point $(${point1X}, ${point1Y})$ is ${radius}, so the radius is ${radius}. The circumference is $C = 2\\pi r = 2\\pi(${radius}) = ${circumferenceK}\\pi$, so $k = ${circumferenceK}$. Choice ${byText(distractorA)} is incorrect; it uses the radius ${radius} instead of $k = 2r$. Choice ${byText(distractorC)} is incorrect; it adds 1 to the diameter with no geometric basis. Choice ${byText(distractorD)} is incorrect; ${radius * radius} is $r^{2}$, the coefficient in the area $\\pi r^{2}$, not $k = 2r$.`;
+
     return {
-      questionText: `The three points shown define a circle. The circumference of this circle is $k\\\\pi$, where $k$ is a constant. What is the value of $k$?`,
-      figureCode: mafsCode,
+      questionText: `The three points shown define a circle. The circumference of this circle is $k\\pi$, where $k$ is a constant. What is the value of $k$?`,
+      figureCode: figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
       explanation: explanation

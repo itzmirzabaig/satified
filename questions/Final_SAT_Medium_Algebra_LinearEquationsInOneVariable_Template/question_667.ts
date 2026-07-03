@@ -3,12 +3,14 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 667
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [coefficients: 3, 2, 6, 11, 4, 3, 6 (single-digit to double-digit)]
- * - Difficulty factors: [Algebraic manipulation, substitution, solving for expression x-3]
- * - Distractor patterns: [A gives value of x instead of x-3, C and D are values that don't satisfy the equation]
- * - Constraints: [Must solve for x-3 directly or find x then subtract 3]
+ * - Number ranges: [coefficients: single-digit to double-digit]
+ * - Difficulty factors: [Algebraic manipulation, recognizing the expression
+ *   (x - f) can be solved for directly without first solving for x]
+ * - Distractor patterns: [A gives the value of x instead of (x - f);
+ *   a sign-error value; a small arithmetic slip]
+ * - Constraints: [b divides c so (bx - c) = b(x - f); solve for (x - f)]
  * - Question type: [Equation solving - Multiple Choice Text]
  * - Figure generation: [None]
  */
@@ -21,78 +23,63 @@ export const generator_667 = {
     skill: "Linear Equations In One Variable",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate equation of form a(bx - c) - d = e(x - f) + g
-    // We want to solve for (x - f) or similar
-    const a = getRandomInt(2, 5);
-    const b = getRandomInt(2, 4);
-    const c = b * getRandomInt(2, 5); // c is multiple of b so (bx - c) = b(x - c/b)
-    const d = getRandomInt(5, 15);
-    const e = getRandomInt(2, 6);
-    const f = c / b; // So that (bx - c) = b(x - f)
-    const g = getRandomInt(3, 12);
-    
-    // Calculate target value (x - f)
-    // Equation: a(b(x-f)) - d = e(x-f) + g
-    // Let u = x - f, then: ab*u - d = e*u + g
-    // (ab - e)*u = g + d
-    // u = (g + d) / (ab - e)
-    // Ensure ab ≠ e and result is clean
-    
+    // Equation:  a(bx - c) - d = e(x - f) + g,  with c = b*f so bx - c = b(x - f).
+    // Let u = x - f.  Then  a*b*u - d = e*u + g  =>  (a*b - e)*u = g + d.
+    // Answer-first construction: choose u (clean positive integer) and the
+    // coefficient m = a*b - e >= 2, then force g = m*u - d so the equation is
+    // exactly consistent and u is always an integer.
+    let a = 0, b = 0, f = 0, c = 0, d = 0, e = 0, g = 0, m = 0, u = 0;
+    let tries = 0;
+    do {
+      a = getRandomInt(2, 5);
+      b = getRandomInt(2, 4);
+      f = getRandomInt(2, 5);          // f = c / b (integer)
+      c = b * f;
+      const ab = a * b;                // 4..20
+      m = getRandomInt(2, Math.min(8, ab - 2)); // a*b - e, kept >= 2
+      e = ab - m;                      // in [2, a*b - 2], always >= 2
+      u = getRandomInt(2, 5);          // chosen value of (x - f)
+      d = getRandomInt(5, 15);
+      g = m * u - d;                   // forced for consistency
+      tries++;
+    } while ((g < 3 || g > 20) && tries < 50);
+
+    // Deterministic fallback (hand-checked): a=3,b=2,f=3,c=6,m=4,e=2,u=3,d=6,g=6
+    if (g < 3 || g > 20) {
+      a = 3; b = 2; f = 3; c = b * f; m = 4; e = a * b - m; u = 3; d = 6; g = m * u - d;
+    }
+
     const ab = a * b;
-    const targetNumerator = g + d;
-    const targetDenominator = ab - e;
-    
-    // Ensure we get a nice fraction
-    const targetValueNum = targetNumerator;
-    const targetValueDenom = targetDenominator;
-    
-    // Generate distractors
-    // A: value of x (not x-f)
-    const xValueNum = targetValueNum + f * targetValueDenom;
-    const xValueDenom = targetValueDenom;
-    
-    // Format fractions nicely
-    const formatFraction = (num: number, denom: number): string => {
-      if (denom === 1) return num.toString();
-      // Simplify
-      const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
-      const divisor = gcd(Math.abs(num), Math.abs(denom));
-      const simplifiedNum = num / divisor;
-      const simplifiedDenom = denom / divisor;
-      if (simplifiedDenom === 1) return simplifiedNum.toString();
-      return `\\frac{${simplifiedNum}}{${simplifiedDenom}}`;
-    };
-    
-    const correctAnswer = formatFraction(targetValueNum, targetValueDenom);
-    const distractorA = formatFraction(xValueNum, xValueDenom);
-    const distractorC = formatFraction(targetValueNum - 2, targetValueDenom);
-    const distractorD = formatFraction(-targetValueNum + 2, targetValueDenom);
-    
-    const correctText = correctAnswer;
+
+    // Distractors (all guaranteed pairwise distinct from u for u>=2, f>=2):
+    const dxValue = u + f;   // solved for x instead of (x - f)
+    const dSign = -u;        // sign error: treated (e - a*b) as the coefficient
+    const dSlip = u - 1;     // arithmetic slip when dividing
+
+    const correctText = `$${u}$`;
     const optionsData = [
-      { text: `$${distractorA}$`, isCorrect: false },
-      { text: `$${correctAnswer}$`, isCorrect: true },
-      { text: `$${distractorC}$`, isCorrect: false },
-      { text: `$${distractorD}$`, isCorrect: false }
+      { text: `$${dxValue}$`, isCorrect: false },
+      { text: `$${u}$`, isCorrect: true },
+      { text: `$${dSign}$`, isCorrect: false },
+      { text: `$${dSlip}$`, isCorrect: false }
     ];
-    
-    // STEP 3: Shuffle and assign letters
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect);
     const correctLetter = correctOption!.letter;
-    
+
     return {
-      questionText: `$${a}(${b} x-${c})-${d}=${e}(x-${f})+${g}$`,
+      questionText: `If $${a}(${b}x - ${c}) - ${d} = ${e}(x - ${f}) + ${g}$, what is the value of $(x - ${f})$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. Because ${b} is a factor of both $${b}x$ and ${c}, the expression $${b}x - ${c}$ can be rewritten as $${b}(x - ${f})$. Substituting $${b}(x - ${f})$ for $(${b}x - ${c})$ on the left-hand side of the given equation yields $${a}(${b})(x - ${f}) - ${d} = ${e}(x - ${f}) + ${g}$, or $${ab}(x - ${f}) - ${d} = ${e}(x - ${f}) + ${g}$. Subtracting $${e}(x - ${f})$ from both sides of this equation yields $${ab - e}(x - ${f}) - ${d} = ${g}$. Adding ${d} to both sides of this equation yields $${ab - e}(x - ${f}) = ${g + d}$. Dividing both sides of this equation by ${ab - e} yields $x - ${f} = ${correctAnswer}$.`
+      explanation: `Choice ${correctLetter} is correct. Because $${b}$ is a factor of both $${b}x$ and $${c}$, the expression $${b}x - ${c}$ can be written as $${b}(x - ${f})$. Substituting this on the left-hand side gives $${a}(${b})(x - ${f}) - ${d} = ${e}(x - ${f}) + ${g}$, which is $${ab}(x - ${f}) - ${d} = ${e}(x - ${f}) + ${g}$. Subtracting $${e}(x - ${f})$ from both sides gives $${m}(x - ${f}) - ${d} = ${g}$, and adding $${d}$ to both sides gives $${m}(x - ${f}) = ${g + d}$. Dividing both sides by $${m}$ gives $(x - ${f}) = ${u}$. The value $${dxValue}$ is the value of the variable x itself rather than of $(x - ${f})$, and the other choices come from a sign or arithmetic error.`
     };
   }
 };

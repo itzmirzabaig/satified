@@ -3,12 +3,12 @@ import type { QuestionData } from '../../study/types';
 
 /**
 * Question 642
-* 
+*
 * ORIGINAL ANALYSIS:
 * - Number ranges: [coefficients: 1, 12, -40]
 * - Difficulty factors: [Quadratic formula with simplification, radical form]
-* - Distractor patterns: [A: 6-2√19 (wrong sign), B: 2√19 (incomplete), C: √19 (simplified wrong)]
-* - Constraints: [Discriminant must not be perfect square, requires simplification]
+* - Distractor patterns: [A: wrong sign on -b, B: dropped -b term, C: unsimplified radical]
+* - Constraints: [Discriminant not a perfect square; radical must genuinely simplify]
 * - Question type: [Multiple Choice Text]
 * - Figure generation: [None]
 */
@@ -21,73 +21,80 @@ export const generator_642 = {
    skill: "Nonlinear Equations In One Variable And Systems Of Equations In Two Variables",
    difficulty: "Medium"
  },
- 
+
  generate: (): QuestionData => {
-   // STEP 1: Generate quadratic w² + 2bw - c = 0 where discriminant = 4b² + 4c = 4(b²+c)
-   // Must be perfect square times something... Original: 144 + 160 = 304 = 16*19
-   const b = getRandomInt(5, 15); // Coefficient of w is 2b
-   let c = getRandomInt(20, 60); // Constant term
-   
-   const disc = 4 * b * b + 4 * c; // 4(b² + c)
-   const inside = b * b + c; // Should not be perfect square
-   
-   // Simplify sqrt(disc) = 2*sqrt(inside)
-   // Solutions: (-2b ± 2√inside)/2 = -b ± √inside
-   
-   // Check if inside is perfect square (avoid)
-   const sqrtInside = Math.sqrt(inside);
-   const isPerfectSquare = Number.isInteger(sqrtInside);
-   
-   // If perfect square, adjust c
-   if (isPerfectSquare) {
-     c = c + 1;
+   // Quadratic in the form  w^2 + (2b)w - c = 0.
+   //   A = 1, B = 2b, C = -c
+   //   Discriminant D = (2b)^2 - 4(1)(-c) = 4b^2 + 4c = 4(b^2 + c)
+   //   sqrt(D) = 2*sqrt(b^2 + c)
+   //   w = (-2b +/- 2*sqrt(b^2+c)) / 2 = -b +/- sqrt(b^2 + c)
+   //
+   // ANSWER-FIRST CONSTRUCTION: we choose the simplified radical form
+   // sqrt(b^2 + c) = kRad * sqrt(mRad) with mRad square-free and kRad >= 2,
+   // so the radical genuinely simplifies (mirrors the original -6 + 2*sqrt(19),
+   // where sqrt(76) = 2*sqrt(19)).  Setting inside = kRad^2 * mRad guarantees:
+   //   - inside is never a perfect square (mRad square-free, mRad > 1),
+   //   - c = inside - b^2 is a clean positive integer.
+   const squareFree = [2, 3, 5, 6, 7, 10, 11, 13, 14, 15];
+
+   let b = 0, kRad = 0, mRad = 0, inside = 0, c = 0;
+   let tries = 0;
+   do {
+     b = getRandomInt(4, 9);          // middle coefficient is 2b (8..18)
+     kRad = getRandomInt(2, 3);       // radical coefficient, >= 2 so it simplifies
+     mRad = getRandomElement(squareFree);
+     inside = kRad * kRad * mRad;     // = b^2 + c  (never a perfect square)
+     c = inside - b * b;              // constant term (subtracted in the equation)
+   } while (c < 5 && tries++ < 50);
+
+   // Safety fallback if the bounded loop never found c >= 5 (keeps render finite).
+   if (c < 5) {
+     b = 5; kRad = 2; mRad = 15; inside = kRad * kRad * mRad; c = inside - b * b; // 60 - 25 = 35
    }
-   
-   // For display with the 2 coefficient like original (-6 ± 2√19):
-   // Original had w² + 12w - 40, so b=6
-   // Solutions: -6 ± 2√19
-   
-   const sol1 = `-${b}+2\\sqrt{${inside}}`; // -b + 2√(b²+c) wait no...
-   // Actually: w = (-12 ± √304)/2 = (-12 ± 4√19)/2 = -6 ± 2√19
-   
-   // Recalculate properly:
-   // w = (-2b ± 2√inside)/2 = -b ± √inside
-   // But to match format with 2√, we need discriminant = 4*k where sqrt(k) has factor 2
-   
-   // Let's just use the structure: (-B ± sqrt(D))/2A
-   // A=1, B=2b, C=-c
-   // D = 4b² + 4c = 4(b²+c)
-   // sqrt(D) = 2√(b²+c)
-   // So w = (-2b ± 2√(b²+c))/2 = -b ± √(b²+c)
-   
-   const sqrtTerm = Math.sqrt(b * b + c);
-   
+
+   const twoB = 2 * b;
+   const disc = 4 * inside;           // = (2b)^2 + 4c
+
+   // Correct simplified solution: -b + kRad*sqrt(mRad)
+   const correctText = `$-${b}+${kRad}\\sqrt{${mRad}}$`;
+
    const optionsData = [
-     { text: `$${b}-2\\sqrt{${inside}}$`, isCorrect: false }, // Wrong sign on b
-     { text: `$2\\sqrt{${inside}}$`, isCorrect: false }, // Incomplete
-     { text: `$\\sqrt{${inside}}$`, isCorrect: false }, // Missing b term
-     { text: `$-${b}+2\\sqrt{${inside}}$`, isCorrect: true } // Match format (-6+2√19)
+     // Wrong sign on the -b term: +b + kRad*sqrt(mRad)
+     { text: `$${b}+${kRad}\\sqrt{${mRad}}$`, isCorrect: false },
+     // Dropped the -b term entirely: kRad*sqrt(mRad)
+     { text: `$${kRad}\\sqrt{${mRad}}$`, isCorrect: false },
+     // Forgot to keep the coefficient when simplifying: -b + sqrt(mRad)
+     { text: `$-${b}+\\sqrt{${mRad}}$`, isCorrect: false },
+     // Correct
+     { text: correctText, isCorrect: true }
    ];
-   
+
    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
      ...opt,
      letter: String.fromCharCode(65 + index)
    }));
-   
-   const correctOption = shuffledOptions.find(opt => opt.isCorrect);
-   const correctLetter = correctOption.letter;
-   
-   const explanation = `Quadratic formula: $w=\\frac{-${2*b}\\pm\\sqrt{${2*b}^2-4(1)(-${c})}}{2} = \\frac{-${2*b}\\pm\\sqrt{${4*b*b + 4*c}}}{2} = \\frac{-${2*b}\\pm${2}\\sqrt{${b*b + c}}}{2} = -${b}\\pm\\sqrt{${b*b + c}}$. Only $-${b}+2\\sqrt{${inside}}$ is among the options (note: equivalent to $-${b}+\\sqrt{${4*inside}}$). Choice ${correctLetter} is correct.`;
-   
-   const correctText = `-${b}+2\\sqrt{${inside}}`;
 
-    return {
-    questionText: `$$w^2+${2*b}w-${c}=0$$\nWhich of the following is a solution to the given equation?`,
-    figureCode: null,
-    options: shuffledOptions.map(o => ({ text: o.text })),
-    // FIXED: Matches the LaTeX formatting used in optionsData [6]
-    correctAnswer: correctText, 
-    explanation: explanation
-    };
+   const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+   const correctLetter = correctOption.letter;
+   const wrongSign = shuffledOptions.find(o => o.text === `$${b}+${kRad}\\sqrt{${mRad}}$`)!.letter;
+   const droppedB = shuffledOptions.find(o => o.text === `$${kRad}\\sqrt{${mRad}}$`)!.letter;
+   const notSimplified = shuffledOptions.find(o => o.text === `$-${b}+\\sqrt{${mRad}}$`)!.letter;
+
+   const explanation = `Use the quadratic formula on $w^2+${twoB}w-${c}=0$ with $a=1$, $b=${twoB}$, $c=-${c}$: ` +
+     `$w=\\frac{-${twoB}\\pm\\sqrt{${twoB}^2-4(1)(-${c})}}{2}=\\frac{-${twoB}\\pm\\sqrt{${disc}}}{2}$. ` +
+     `Factor the discriminant: $\\sqrt{${disc}}=\\sqrt{4\\cdot${inside}}=2\\sqrt{${inside}}$, and $\\sqrt{${inside}}=\\sqrt{${kRad * kRad}\\cdot${mRad}}=${kRad}\\sqrt{${mRad}}$. ` +
+     `So $w=\\frac{-${twoB}\\pm 2\\cdot${kRad}\\sqrt{${mRad}}}{2}=-${b}\\pm${kRad}\\sqrt{${mRad}}$. ` +
+     `Choice ${correctLetter} gives $-${b}+${kRad}\\sqrt{${mRad}}$, which is one of these solutions, so Choice ${correctLetter} is correct. ` +
+     `Choice ${wrongSign} has the wrong sign on the $-${b}$ term. ` +
+     `Choice ${droppedB} drops the $-${b}$ entirely. ` +
+     `Choice ${notSimplified} fails to carry the factor of ${kRad} out of the radical.`;
+
+   return {
+     questionText: `$$w^2+${twoB}w-${c}=0$$\nWhich of the following is a solution to the given equation?`,
+     figureCode: null,
+     options: shuffledOptions.map(o => ({ text: o.text })),
+     correctAnswer: correctText,
+     explanation: explanation
+   };
  }
 };

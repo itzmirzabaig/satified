@@ -1,16 +1,27 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 876
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [ST: 10-18, QP: 12-20, PR: 15-25, QR: 20-30]
  * - Difficulty factors: [Similar triangles, corresponding sides, setting up proportion]
  * - Distractor patterns: [B: wrong correspondence, C: wrong sides used, D: wrong ratio direction]
  * - Constraints: [Triangle QPR ~ Triangle STR, maintain similarity ratio]
- * - Question type: [Figure→Multiple Choice Text]
+ * - Question type: [Figure->Multiple Choice Text]
  * - Figure generation: [Two similar triangles sharing angle at R]
+ *
+ * FIXED:
+ * - Rebuilt corrupted figure IIFEs into a single plain-SVG template literal
+ *   (nested similar right triangles sharing vertex R); side labels use the
+ *   live values ST, QP, PR, QR every draw.
+ * - Collapsed doubled backslashes (\\\\ -> \\) so MathJax renders \frac, \triangle,
+ *   \overline, \sim, \cdot correctly.
+ * - Correct answer SR = ST*QR/QP shown as an exact (unsimplified) fraction.
+ * - Distractors are distinct misconception fractions; a bounded retry (<=50)
+ *   redraws inputs on the rare draw where two option VALUES coincide, so no
+ *   two options are ever numerically equal.
  */
 
 export const generator_876 = {
@@ -21,130 +32,111 @@ export const generator_876 = {
     skill: "Lines Angles And Triangles",
     difficulty: "Medium"
   },
-  
-  generate: (): QuestionData => {
-    // STEP 1: Generate random values for similar triangles
-    const scaleFactor = getRandomInt(2, 4);
-    const ST = getRandomInt(10, 18); // Corresponds to QP
-    const QP = ST * scaleFactor;
-    const PR = getRandomInt(15, 25);
-    const QR = getRandomInt(20, 30);
-    
-    // SR corresponds to QR, using proportion: QP/ST = QR/SR
-    // SR = (ST * QR) / QP = QR / scaleFactor
-    const SR_numerator = ST * QR;
-    
-    // STEP 2: Build Mafs code with calculated positions
-    const px = 0;
-    const py = 0;
-    const rx = 20;
-    const ry = 0;
-    const qx = 0;
-    const qy = 15;
-    
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-2,xmax=22;
-      const ymin=-2,ymax=17;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;
-    })()}${(() => {
-      const xmin=-2,xmax=22;
-      const ymin=-2,ymax=17;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((qx - 0.5))+'" y="'+my((qy + 0.5))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">Q</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=22;
-      const ymin=-2,ymax=17;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((px - 0.5))+'" y="'+my((py - 0.5))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">P</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=22;
-      const ymin=-2,ymax=17;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((rx + 0.3))+'" y="'+my((py - 0.5))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">R</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=22;
-      const ymin=-2,ymax=17;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((qx + 1.5))+'" y="'+my((qy - 1))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">S</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=22;
-      const ymin=-2,ymax=17;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((rx - 2))+'" y="'+my((ry + 5))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">T</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=22;
-      const ymin=-2,ymax=17;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((qx + 1))+'" y="'+my((qy / 2))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">${QP</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=22;
-      const ymin=-2,ymax=17;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(((px + rx) / 2))+'" y="'+my((py - 0.5))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">${PR</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=22;
-      const ymin=-2,ymax=17;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(((qx + rx) / 2))+'" y="'+my(((qy + ry) / 2 + 0.5))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">${QR</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=22;
-      const ymin=-2,ymax=17;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((qx + 3))+'" y="'+my((qy - 3))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">${ST</text>';
-    })()}</svg></div>`;
 
-    // STEP 3: Create options
-    const correctText = `\\\\frac{${SR_numerator}}{${QP}}`;
-    const distractorB = `\\\\frac{${ST * QR}}{${PR}}`;
-    const distractorC = `\\\\frac{${QP * ST}}{${PR}}`;
-    const distractorD = `\\\\frac{${QP * QR}}{${SR_numerator}}`;
-    
-    const optionsData = [
-      { text: correctText, isCorrect: true },
-      { text: distractorB, isCorrect: false, reason: "uses PR instead of QP in the denominator" },
-      { text: distractorC, isCorrect: false, reason: "uses incorrect combination of sides" },
-      { text: distractorD, isCorrect: false, reason: "inverts the proportion" }
-    ];
-    
+  generate: (): QuestionData => {
+    // STEP 1: Generate similar-triangle side lengths with distinct option values.
+    // Correspondence for triangle QPR ~ triangle STR: Q<->S, P<->T, R<->R,
+    // so QP<->ST, PR<->TR, QR<->SR. With QP = ST * scaleFactor,
+    // proportion QP/ST = QR/SR gives SR = ST*QR/QP = QR/scaleFactor.
+    let ST = 0, QP = 0, PR = 0, QR = 0;
+    let correctNum = 0, correctDen = 0;
+    let optionSpecs: { num: number; den: number; isCorrect: boolean; reason?: string }[] = [];
+
+    let tries = 0;
+    while (tries++ < 50) {
+      const scaleFactor = getRandomInt(2, 4);
+      ST = getRandomInt(10, 18);      // corresponds to QP
+      QP = ST * scaleFactor;
+      PR = getRandomInt(15, 25);
+      QR = getRandomInt(20, 30);
+
+      // Correct: SR = ST*QR / QP  (exact, shown unsimplified)
+      correctNum = ST * QR;
+      correctDen = QP;
+
+      // Distractor B: inverted ratio QP/ST = SR/QR -> SR = QP*QR/ST
+      const bNum = QP * QR, bDen = ST;
+      // Distractor C: uses PR in place of QR -> SR = ST*PR/QP
+      const cNum = ST * PR, cDen = QP;
+      // Distractor D: mixes denominators -> SR = ST*QR/PR
+      const dNum = ST * QR, dDen = PR;
+
+      const specs = [
+        { num: correctNum, den: correctDen, isCorrect: true },
+        { num: bNum, den: bDen, isCorrect: false, reason: "inverts the proportion, solving for the wrong side" },
+        { num: cNum, den: cDen, isCorrect: false, reason: "uses $PR$ instead of $QR$ in the numerator" },
+        { num: dNum, den: dDen, isCorrect: false, reason: "divides by $PR$ instead of the corresponding side $QP$" },
+      ];
+
+      // Require all four VALUES pairwise distinct (grader compares numerically).
+      const vals = specs.map(s => s.num / s.den);
+      let ok = true;
+      for (let a = 0; a < vals.length && ok; a++) {
+        for (let b = a + 1; b < vals.length; b++) {
+          if (Math.abs(vals[a] - vals[b]) < 1e-9) { ok = false; break; }
+        }
+      }
+      if (ok) { optionSpecs = specs; break; }
+    }
+
+    // STEP 2: Figure — two nested similar right triangles sharing vertex R.
+    // Right angle at P (large triangle QPR) and at T (small triangle STR).
+    // Coordinates are illustrative; the numeric side labels are the live values.
+    const W = 420, H = 300;
+    const Px = 70, Py = 250;              // P (right angle, large)
+    const Rx = 370, Ry = 250;            // R (shared)
+    const Qx = 70, Qy = 60;              // Q (top of large)
+    // Small triangle STR similar with T on PR and S on QR; ~55% along.
+    const t = 0.55;
+    const Tx = Px + (Rx - Px) * t, Ty = Py;         // T on PR
+    const Sx = Tx, Sy = Py + (Qy - Py) * t;         // S above T, on hypotenuse QR
+    const svg =
+      `<div style="width:100%;max-width:420px;margin:0 auto;">` +
+      `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      // large triangle QPR
+      `<polygon points="${Qx},${Qy} ${Px},${Py} ${Rx},${Ry}" fill="none" stroke="currentColor" stroke-width="2"/>` +
+      // small triangle STR (highlighted)
+      `<polygon points="${Sx},${Sy} ${Tx},${Ty} ${Rx},${Ry}" fill="#3b82f6" fill-opacity="0.10" stroke="#3b82f6" stroke-width="2"/>` +
+      // right-angle marks
+      `<path d="M ${Px + 14} ${Py} L ${Px + 14} ${Py - 14} L ${Px} ${Py - 14}" fill="none" stroke="currentColor" stroke-width="1"/>` +
+      `<path d="M ${Tx + 12} ${Ty} L ${Tx + 12} ${Ty - 12} L ${Tx} ${Ty - 12}" fill="none" stroke="#3b82f6" stroke-width="1"/>` +
+      // vertex labels
+      `<text x="${Qx - 12}" y="${Qy}" font-size="14" font-style="italic" fill="currentColor">Q</text>` +
+      `<text x="${Px - 14}" y="${Py + 6}" font-size="14" font-style="italic" fill="currentColor">P</text>` +
+      `<text x="${Rx + 6}" y="${Ry + 6}" font-size="14" font-style="italic" fill="currentColor">R</text>` +
+      `<text x="${Sx + 8}" y="${Sy - 2}" font-size="14" font-style="italic" fill="#3b82f6">S</text>` +
+      `<text x="${Tx - 4}" y="${Ty + 18}" font-size="14" font-style="italic" fill="#3b82f6">T</text>` +
+      // side-length labels (live values)
+      `<text x="${Qx - 30}" y="${(Qy + Py) / 2}" font-size="13" fill="currentColor">${QP}</text>` +
+      `<text x="${(Px + Rx) / 2}" y="${Py + 20}" text-anchor="middle" font-size="13" fill="currentColor">${PR}</text>` +
+      `<text x="${(Qx + Rx) / 2 + 6}" y="${(Qy + Ry) / 2 - 6}" font-size="13" fill="currentColor">${QR}</text>` +
+      `<text x="${(Sx + Tx) / 2 + 8}" y="${(Sy + Ty) / 2}" font-size="13" fill="#3b82f6">${ST}</text>` +
+      `</svg></div>`;
+
+    // STEP 3: Build option strings and shuffle.
+    const toFrac = (n: number, d: number) => `\\frac{${n}}{${d}}`;
+    const correctText = toFrac(correctNum, correctDen);
+
+    const optionsData = optionSpecs.map(s => ({
+      text: toFrac(s.num, s.den),
+      isCorrect: s.isCorrect,
+      reason: s.reason,
+    }));
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+
     return {
-      questionText: `$\\\\triangle QPR$ is similar to $\\\\triangle STR$. The lengths represented by $\\\\overline{ST}$, $\\\\overline{QP}$, $\\\\overline{PR}$, and $\\\\overline{QR}$ in the figure are ${ST}, ${QP}, ${PR}, and ${QR}, respectively. What is the length of $\\\\overline{SR}$?`,
-      figureCode: mafsCode,
+      questionText: `$\\triangle QPR$ is similar to $\\triangle STR$. The lengths represented by $\\overline{ST}$, $\\overline{QP}$, $\\overline{PR}$, and $\\overline{QR}$ in the figure are ${ST}, ${QP}, ${PR}, and ${QR}, respectively. What is the length of $\\overline{SR}$?`,
+      figureCode: svg,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Since $\\\\triangle QPR \\\\sim \\\\triangle STR$, corresponding sides are proportional: $\\\\frac{QP}{ST} = \\\\frac{QR}{SR}$. Substituting the given values: $\\\\frac{${QP}}{${ST}} = \\\\frac{${QR}}{SR}$. Cross-multiplying gives $${QP} \\\\cdot SR = ${SR_numerator}$, so $SR = \\\\frac{${SR_numerator}}{${QP}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Since $\\triangle QPR \\sim \\triangle STR$, corresponding sides are proportional: $\\frac{QP}{ST} = \\frac{QR}{SR}$. Substituting the given values gives $\\frac{${QP}}{${ST}} = \\frac{${QR}}{SR}$. Cross-multiplying yields $SR \\cdot ${QP} = ${ST} \\cdot ${QR} = ${correctNum}$, so $SR = \\frac{${correctNum}}{${QP}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

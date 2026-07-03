@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 813
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [constants: 3, 5, -2, 5, 7 (single digit)]
  * - Difficulty factors: [Addition of equations method, asks for expression value]
@@ -11,6 +11,12 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Clean addition eliminates y]
  * - Question type: [Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * REBUILD NOTES:
+ * - Answer-first construction: pick integer x and y, then derive the right-hand
+ *   sides so every draw is exact (no float artifacts) and 2x is a clean integer.
+ * - Distractors (x, y, 4x) guarded by bounded retry so all four options differ.
+ * - Signed formatting avoids "+ -" sign glitches in both question and explanation.
  */
 
 export const generator_813 = {
@@ -22,89 +28,92 @@ export const generator_813 = {
     skill: "Systems Of Two Linear Equations In Two Variables",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values
+    // Render "+ n" or "- |n|" inside math so we never emit "+ -".
+    const withSign = (n: number): string => (n >= 0 ? `+ ${n}` : `- ${Math.abs(n)}`);
+
+    // STEP 1: Answer-first construction. Choose the true solution (x, y) as
+    // integers, then derive the equation right-hand sides so the system is
+    // exactly consistent for every draw.
     const const1 = getRandomInt(2, 5);
     const const2 = getRandomInt(1, 4);
-    const right1 = getRandomInt(3, 8);
-    const right2 = getRandomInt(5, 12);
-    const yCoeff = getRandomInt(2, 4); // Coefficient of y when equations arranged
-    
-    // Equations: x + const1 = -yCoeff*y + right1
-    //            x - const2 = yCoeff*y + right2
-    // Adding: 2x + (const1 - const2) = right1 + right2
-    // 2x = right1 + right2 - (const1 - const2)
-    
-    const targetValue = right1 + right2 - (const1 - const2);
-    
-    // Calculate y for explanation
-    const xValue = targetValue / 2;
-    const yValue = (xValue - (right1 - const1)) / (-yCoeff);
-    
-    // STEP 2: Build question text - use single $ for inline math
+    const yCoeff = getRandomInt(2, 4);
+
+    let xVal = 0, yVal = 0;
+    let tries = 0;
+    do {
+      xVal = getRandomInt(2, 9);   // positive & >=2 so x, 2x, 4x are all distinct
+      yVal = getRandomInt(1, 4);   // positive keeps the printed constants tidy
+      tries++;
+    } while (
+      // Guard: the four option values (2x, x, y, 4x) must all be distinct.
+      (yVal === xVal || yVal === 2 * xVal || yVal === 4 * xVal) && tries < 50
+    );
+
+    // System (as displayed):
+    //   x + const1 = -yCoeff*y + right1
+    //   x - const2 =  yCoeff*y + right2
+    // Solve each for right side using the chosen (xVal, yVal):
+    const right1 = xVal + const1 + yCoeff * yVal;
+    const right2 = xVal - const2 - yCoeff * yVal;
+
+    // Adding the equations eliminates y: 2x + (const1 - const2) = right1 + right2.
+    const targetValue = 2 * xVal; // == right1 + right2 - (const1 - const2)
+
+    // Simplified single-variable forms used in the explanation.
+    const simp1 = right1 - const1; // x = -yCoeff*y + simp1
+    const simp2 = right2 + const2; // x =  yCoeff*y + simp2
+
+    // STEP 2: Build question text.
     const questionText = `The solution to the given system of equations is $(x, y)$. What is the value of $2x$?
-    
-$$\\begin{cases} x + ${const1} = -${yCoeff}y + ${right1} \\\\ x - ${const2} = ${yCoeff}y + ${right2} \\end{cases}$$`;
-    
-    // STEP 3: Create options
-    const distractor1 = Math.round(yValue); // y value
-    const distractor2 = Math.round(xValue); // x value
-    const distractor3 = targetValue * 2; // 4x
-    
+
+$$\\begin{cases} x + ${const1} = -${yCoeff}y + ${right1} \\\\ x - ${const2} = ${yCoeff}y ${withSign(right2)} \\end{cases}$$`;
+
+    // STEP 3: Create options. Intent-preserving distractors: x, y, and 4x.
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false },
-      { text: distractor2.toString(), isCorrect: false },
-      { text: targetValue.toString(), isCorrect: true },
-      { text: distractor3.toString(), isCorrect: false }
+      { text: yVal.toString(), isCorrect: false },        // the value of y
+      { text: xVal.toString(), isCorrect: false },        // the value of x
+      { text: targetValue.toString(), isCorrect: true },  // 2x (asked)
+      { text: (4 * xVal).toString(), isCorrect: false }   // 4x
     ];
-    
-    // STEP 4: Shuffle and assign letters
+
+    // STEP 4: Shuffle and assign letters.
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(o => o.isCorrect);
-    const correctLetter = correctOption!.letter;
-    
-    // STEP 5: Return question data - use single $ for inline math in explanation
+
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const correctLetter = correctOption.letter;
+    const letterOf = (val: string) => shuffledOptions.find(o => o.text === val)!.letter;
+
+    // STEP 5: Return question data.
     return {
       questionText: questionText,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: targetValue.toString(),
-      explanation: `To find the value of $2x$, we first need to solve the given system of equations for $x$. The system is:
-      
-$\\begin{cases} x + ${const1} = -${yCoeff}y + ${right1} \\\\ x - ${const2} = ${yCoeff}y + ${right2} \\end{cases}$
+      explanation: `To find the value of $2x$, add the two equations to eliminate $y$. The system is:
 
-Let's simplify the equations first.
-From equation (1): $x = -${yCoeff}y + ${right1 - const1}$
-From equation (2): $x = ${yCoeff}y + ${right2 + const2}$
+$\\begin{cases} x + ${const1} = -${yCoeff}y + ${right1} \\\\ x - ${const2} = ${yCoeff}y ${withSign(right2)} \\end{cases}$
 
-Notice that both equations are equal to $x$, or we can simply add the two original equations together to eliminate the $y$ variable, which is a very efficient method here.
+Adding the left sides and the right sides, the $-${yCoeff}y$ and $+${yCoeff}y$ terms cancel:
 
-Let's add the two equations:
-$(x + ${const1}) + (x - ${const2}) = (-${yCoeff}y + ${right1}) + (${yCoeff}y + ${right2})$
+$$(x + ${const1}) + (x - ${const2}) = ${right1} ${withSign(right2)}$$
 
-Combine like terms:
-$2x = ${targetValue}$
+Combining like terms gives $2x + ${const1 - const2 >= 0 ? const1 - const2 : `(${const1 - const2})`} = ${right1 + right2}$, so:
 
-We have directly found the value of $2x$, which is exactly what the question asks for.
-So, $2x = ${targetValue}$.
+$$2x = ${targetValue}$$
 
-(If we wanted to find $x$ and $y$:
-$2x = ${targetValue} \\Rightarrow x = ${xValue}$
-Substitute $x = ${xValue}$ into the first simplified equation: $${xValue} = -${yCoeff}y + ${right1 - const1} \\Rightarrow ${xValue - (right1 - const1)} = -${yCoeff}y \\Rightarrow y = ${yValue}$$.
-The solution is $(${xValue}, ${yValue})$.
-The question asks for $2x$, so $2(${xValue}) = ${targetValue}$.)
+That is exactly what the question asks, so $2x = ${targetValue}$, which is choice ${correctLetter}.
 
-Therefore, the correct option is ${correctLetter}.
+Solving all the way for $(x, y)$: since $2x = ${targetValue}$, we get $x = ${xVal}$. Substituting into $x = ${yCoeff}y ${withSign(simp2)}$ gives $${xVal} = ${yCoeff}y ${withSign(simp2)}$, so $${yCoeff}y = ${xVal - simp2}$ and $y = ${yVal}$. The solution is $(${xVal}, ${yVal})$.
 
-Why other options are incorrect:
-- ${shuffledOptions[0].letter}. This is the value of $y$ ($y = ${yValue}$).
-- ${shuffledOptions[1].letter}. This is the value of $x$ ($x = ${xValue}$).
-- ${shuffledOptions[3].letter}. This would be the value of $4x$ or some other miscalculation.`
+Why the other options are incorrect:
+- Choice ${letterOf(xVal.toString())} is the value of $x$ ($x = ${xVal}$), not $2x$.
+- Choice ${letterOf(yVal.toString())} is the value of $y$ ($y = ${yVal}$).
+- Choice ${letterOf((4 * xVal).toString())} is $4x$ ($4 \\times ${xVal} = ${4 * xVal}$), which double-counts the coefficient.`
     };
   }
 };

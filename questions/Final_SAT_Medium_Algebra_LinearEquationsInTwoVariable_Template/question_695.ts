@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 695
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [coefficients: 10, -5, constant: -12]
  * - Difficulty factors: [Converting standard form to slope-intercept]
@@ -21,38 +21,55 @@ export const generator_695 = {
     skill: "Linear Equations In Two Variable",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate parameters for clean slope
-    // 10x - 5y = -12 → y = 2x + 12/5, slope = 2
-    const A = getRandomInt(5, 15);
+    // STEP 1: Generate parameters for a clean integer slope.
+    // Equation is aVal*x - bVal*y = C  =>  y = (aVal/bVal)*x - C/bVal.
+    // Choosing aVal = slope * bVal guarantees slope = aVal/bVal is an integer.
     const slope = getRandomInt(2, 6);
     const bVal = getRandomInt(2, 6);
     const aVal = slope * bVal;
     const C = getRandomInt(-20, 20);
-    
-    // STEP 2: Create options
+
+    // Sign-safe rendering of the constant term inside slope-intercept work.
+    // -aVal*x + C  ->  "-aVal x + C" when C >= 0, "-aVal x - |C|" when C < 0.
+    const cTerm = C < 0 ? `- ${Math.abs(C)}` : `+ ${C}`;
+    // C / bVal shown as -C/bVal in y = mx - (C/bVal); flip sign for display.
+    const constFrac = C < 0
+      ? `+ \\frac{${Math.abs(C)}}{${bVal}}`
+      : `- \\frac{${C}}{${bVal}}`;
+
+    // STEP 2: Build distractors that can never collide with the correct slope.
+    // Correct answer is the integer `slope` (>= 2).
+    //  - `-slope`  : classic sign error (<= -2, never equals slope).
+    //  - one negative and one positive proper fraction in (-1.6, 1.6) minus 0:
+    //    |value| <= 8/5 = 1.6 < 2, so neither can equal slope or -slope, and
+    //    opposite signs mean they can never equal each other.
+    const fracA = getRandomInt(3, 8);
+    const fracB = getRandomInt(5, 10);
+    const fracC = getRandomInt(3, 8);
+    const fracD = getRandomInt(5, 10);
+
     const optionsData = [
-      { text: `$-${slope}$`, isCorrect: false, reason: "sign error" },
-      { text: `$-\\frac{${getRandomInt(3, 8)}}{${getRandomInt(5, 10)}}$`, isCorrect: false, reason: "unrelated fraction" },
-      { text: `$\\frac{${getRandomInt(3, 8)}}{${getRandomInt(5, 10)}}$`, isCorrect: false, reason: "unrelated fraction" },
-      { text: `$${slope}$`, isCorrect: true, reason: "" }
+      { text: `$-${slope}$`, isCorrect: false },
+      { text: `$-\\frac{${fracA}}{${fracB}}$`, isCorrect: false },
+      { text: `$\\frac{${fracC}}{${fracD}}$`, isCorrect: false },
+      { text: `$${slope}$`, isCorrect: true }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
-    
+
     return {
-      questionText: `What is the slope of the graph of $${aVal}x - ${bVal}y = ${C}$ in the $xy$-plane?`,
+      questionText: `What is the slope of the line with equation $${aVal}x - ${bVal}y = ${C}$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
-      explanation: `The given equation is in the standard form $Ax + By = C$, where $A = ${aVal}$, $B = -${bVal}$, and $C = ${C}$. The slope of a line in this form is given by the formula $m = -\\frac{A}{B}$. Substituting the values: $m = -\\frac{${aVal}}{-${bVal}} = ${slope}$. Alternatively, converting to slope-intercept form: $-${bVal}y = -${aVal}x + ${C}$, so $y = ${slope}x - \\frac{${C}}{${bVal}}$. The slope is ${slope}.`
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctOption.letter} is correct. The given equation is in standard form $Ax + By = C$ with $A = ${aVal}$ and $B = -${bVal}$. The slope of a line in this form is $m = -\\dfrac{A}{B} = -\\dfrac{${aVal}}{-${bVal}} = ${slope}$. Equivalently, solve for $y$: isolate the $y$-term to get $-${bVal}y = -${aVal}x ${cTerm}$, then divide both sides by $-${bVal}$ to get $y = ${slope}x ${constFrac}$. The coefficient of $x$ is the slope, ${slope}.`
     };
   }
 };

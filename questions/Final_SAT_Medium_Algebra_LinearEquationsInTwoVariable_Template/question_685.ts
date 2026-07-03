@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 685
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [coefficients: 24.5, 24.75, total: 641]
  * - Difficulty factors: [Interpreting coefficients as unit prices, subtraction]
@@ -11,6 +11,11 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Price difference should be small and positive]
  * - Question type: [Fill-in-the-blank]
  * - Figure generation: [None]
+ *
+ * The linear equation (price1) x + (price2) y = total is given; the coefficients
+ * are the unit prices, so the answer is price2 - price1 = diff, a clean multiple
+ * of 0.25. Currency is written as \$ throughout; the equation and variables live
+ * in proper math spans. Generic role ("a landscaper") replaces the personal name.
  */
 
 export const generator_685 = {
@@ -23,20 +28,36 @@ export const generator_685 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate prices with small difference
-    // Original: 24.5 and 24.75, difference = 0.25
+    // STEP 1: Prices as exact 2-decimal money values with a small positive gap.
+    // diff is a clean multiple of 0.25 (the answer). quarters counts the 0.25s.
     const basePrice = getRandomInt(20, 50);
-    const diff = getRandomInt(1, 5) * 0.25; // 0.25, 0.5, 0.75, 1.0
-    const price1 = basePrice + 0.5;
-    const price2 = price1 + diff;
-    const total = Math.round((price1 * getRandomInt(10, 20) + price2 * getRandomInt(10, 20)) * 100) / 100;
-    
+    const quarters = getRandomInt(1, 5);           // 1..5
+    const diff = quarters * 0.25;                  // 0.25, 0.50, 0.75, 1.00, 1.25
+    const price1 = basePrice + 0.5;                // e.g. 24.50 (topsoil, per cubic yard)
+    const price2 = price1 + diff;                  // e.g. 24.75 (crushed stone, per ton)
+    const qty1 = getRandomInt(10, 20);
+    const qty2 = getRandomInt(10, 20);
+    // total is a given dollar amount consistent with these unit prices; it is
+    // cosmetic (the answer depends only on the coefficients). Round to cents.
+    const total = Math.round((price1 * qty1 + price2 * qty2) * 100) / 100;
+
+    // Currency helper: always render money with a literal, escaped dollar sign.
+    const money = (v: number): string => `\\$${v.toFixed(2)}`;
+
+    // Reduced fraction form of diff for the "ways to enter" note.
+    const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+    const g = gcd(quarters, 4);
+    const fracNum = quarters / g;
+    const fracDen = 4 / g;
+    const decStr = String(diff);                   // clean: "0.25","0.5","0.75","1","1.25"
+    const fracStr = fracDen === 1 ? `${fracNum}` : `${fracNum}/${fracDen}`;
+
     return {
-      questionText: `Isabel ordered topsoil and crushed stone, which cost a total of ${total}, for her garden. The given equation represents the relationship between the number of cubic yards of topsoil, $x$, and the number of tons of crushed stone, $y$, Isabel ordered. How much more, in dollars, did a ton of crushed stone cost Isabel than a cubic yard of topsoil?`,
+      questionText: `A landscaper ordered topsoil and crushed stone, which cost a total of ${money(total)}, for a garden. The equation $${price1.toFixed(2)}x+${price2.toFixed(2)}y=${total.toFixed(2)}$ represents the relationship between the number of cubic yards of topsoil, $x$, and the number of tons of crushed stone, $y$, that the landscaper ordered. How much more, in dollars, did a ton of crushed stone cost than a cubic yard of topsoil? (Enter your answer as a decimal or fraction.)`,
       figureCode: null,
-      options: null,
-      correctAnswer: diff.toFixed(2),
-      explanation: `The correct answer is ${diff.toFixed(2)}. It's given that the topsoil and crushed stone Isabel ordered for her garden cost a total of ${total}. It's also given that the equation ${price1.toFixed(2)} x+${price2.toFixed(2)} y=${total}$ represents the relationship between the number of cubic yards of topsoil, $x$, and the number of tons of crushed stone, $y$, that Isabel ordered. Since $x$ represents the number of cubic yards of topsoil ordered, $${price1.toFixed(2)} x$ represents the total cost, in dollars, of the topsoil, and the cost per cubic yard of topsoil is $${price1.toFixed(2)}. Similarly, since $y$ represents the number of tons of crushed stone ordered, $${price2.toFixed(2)} y$ represents the total cost, in dollars, of crushed stone ordered, and the cost per ton of crushed stone is $${price2.toFixed(2)}. Therefore, a ton of crushed stone cost Isabel $${price2.toFixed(2)}-${price1.toFixed(2)}$, or ${diff.toFixed(2)}, more dollars than a cubic yard of topsoil. Note that ${diff.toFixed(2)} and ${Math.round(diff * 4)}/4 are examples of ways to enter a correct answer.`
+      options: [],
+      correctAnswer: decStr,
+      explanation: `The correct answer is ${decStr}. The equation $${price1.toFixed(2)}x+${price2.toFixed(2)}y=${total.toFixed(2)}$ models the total cost, where $x$ is the number of cubic yards of topsoil and $y$ is the number of tons of crushed stone. Because $${price1.toFixed(2)}x$ is the total cost of the topsoil, the cost of one cubic yard of topsoil is ${money(price1)}. Likewise, because $${price2.toFixed(2)}y$ is the total cost of the crushed stone, the cost of one ton of crushed stone is ${money(price2)}. So a ton of crushed stone cost ${money(price2)} $-$ ${money(price1)} $=$ ${money(diff)} more than a cubic yard of topsoil. Both ${decStr} and ${fracStr} are accepted ways to enter this answer.`
     };
   }
 };

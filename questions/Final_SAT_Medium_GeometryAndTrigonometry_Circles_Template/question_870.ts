@@ -31,12 +31,22 @@ export const generator_870 = {
     
     // STEP 2: Generate difference angle (similar to 5π/12)
     const denom2 = 12; // Common denominator for SAT problems
-    const numer2 = getRandomInt(1, 11); // Any reasonable numerator
-    
-    // STEP 3: Calculate angle T in radians (find common denominator)
-    // T = R + difference = numer1/denom1 + numer2/12
     const lcd = 12; // Least common denominator
     const convertedNumer1 = numer1 * (lcd / denom1);
+
+    // Guard: the "just the difference" distractor (numer2 * 15 degrees) must
+    // not collide with the "angle R only" distractor (convertedNumer1 * 15
+    // degrees). That happens exactly when numer2 === convertedNumer1, so draw
+    // numer2 until it differs (bounded retry). numer2 range [1,11] always
+    // contains a non-colliding value regardless of convertedNumer1.
+    let numer2 = getRandomInt(1, 11); // Any reasonable numerator
+    let numer2Tries = 0;
+    while (numer2 === convertedNumer1 && numer2Tries++ < 50) {
+      numer2 = getRandomInt(1, 11);
+    }
+
+    // STEP 3: Calculate angle T in radians (find common denominator)
+    // T = R + difference = numer1/denom1 + numer2/12
     const totalNumer = convertedNumer1 + numer2;
     
     // STEP 4: Convert to degrees

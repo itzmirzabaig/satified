@@ -77,12 +77,15 @@ export const generator_854 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
     
     // STEP 6: Build explanation
-    // FIXED: Changed \\\\times to \\times
-    const explanation = `Choice ${correctLetter} is correct. For similar triangles, the ratio of corresponding sides equals the ratio of perimeters. The perimeter ratio is $${perimeterXYZ}/${perimeterTUV} = ${ratio}$. Since side TU is ${sideTU}, the corresponding side XY is ${sideTU} \\times ${ratio} = ${sideXY}$. Choice ${incorrectOptions[0].letter} is incorrect; this appears to be an arbitrary small number. Choice ${incorrectOptions[1].letter} is incorrect; this is the length of TU, not XY. Choice ${incorrectOptions[2].letter} is incorrect; this does not correspond to the correct proportional calculation.`;
+    // Each math segment is fully wrapped in a balanced $...$ pair; numbers are
+    // computed from the same live variables used to build the options.
+    const explanation = `Choice ${correctLetter} is correct. For similar triangles, the ratio of corresponding sides equals the ratio of the perimeters. The perimeter ratio is $\\frac{${perimeterXYZ}}{${perimeterTUV}} = ${ratio}$. Since $\\overline{TU} = ${sideTU}$, the corresponding side is $\\overline{XY} = ${sideTU} \\times ${ratio} = ${sideXY}$. Choice ${incorrectOptions[0].letter} is incorrect; it is an arbitrary small value that ignores the perimeter ratio. Choice ${incorrectOptions[1].letter} is incorrect; this is the length of $\\overline{TU}$, not $\\overline{XY}$. Choice ${incorrectOptions[2].letter} is incorrect; it comes from taking one-third of the correct length instead of scaling up by the ratio ${ratio}.`;
     
     return {
-      // FIXED: Changed \\\\overline to \\overline for proper LaTeX overline command
-      questionText: `The table gives the perimeters of similar triangles $TUV$ and $XYZ$, where $\\overline{TU}$ corresponds to $\\overline{XY}$. The length of $\\overline{TU}$ is $${sideTU}$. What is the length of $\\overline{XY}$?`,
+      // Every math segment begins with a LaTeX command (\overline), so no "$"
+      // is ever immediately followed by a bare digit (avoids the currency/math
+      // dollar-collision heuristic). Numbers stay inside balanced $...$ pairs.
+      questionText: `The table gives the perimeters of similar triangles $TUV$ and $XYZ$, where $\\overline{TU}$ corresponds to $\\overline{XY}$. Given that $\\overline{TU} = ${sideTU}$, what is the length of $\\overline{XY}$?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,

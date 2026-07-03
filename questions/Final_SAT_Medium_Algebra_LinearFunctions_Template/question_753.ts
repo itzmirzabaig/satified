@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -24,21 +24,26 @@ export const generator_753 = {
   
   generate: (): QuestionData => {
     // STEP 1: Generate random values
-    // y-intercept: 2-5
+    // y-intercept: 2-5; x2: 6-10; slope m: 3-6.
+    // The distractor "distD" uses x2 as its slope; guard against x2 === m so that
+    // distD never collides with the correct equation (both would read `${m}x + ${b}`).
     const b = getRandomInt(2, 5);
-    // x2: 6-10
-    const x2 = getRandomInt(6, 10);
-    // slope: 3-6
-    const m = getRandomInt(3, 6);
+    let x2 = getRandomInt(6, 10);
+    let m = getRandomInt(3, 6);
+    let tries = 0;
+    while (x2 === m && tries++ < 50) {
+      x2 = getRandomInt(6, 10);
+      m = getRandomInt(3, 6);
+    }
     // Calculate y2
     const y2 = b + m * x2;
-    
+
     // STEP 2: Build equations
     const correctEq = `f(x) = ${m}x + ${b}`;
     const distA = `f(x) = ${m - 2}x + ${b + x2}`;
     const distB = `f(x) = ${m + 2}x + ${b + y2}`;
     const distD = `f(x) = ${x2}x + ${b}`;
-    
+
     // STEP 3: Create options
     const optionsData = [
       { text: distA, isCorrect: false, reason: "has the wrong slope and y-intercept" },
@@ -59,7 +64,7 @@ export const generator_753 = {
     
     // STEP 5: Return question data
     return {
-      questionText: `In the $xy$-plane, the graph of the linear function $f$ contains the points $(0, ${b})$ and (${x2}, ${y2})$. Which equation defines $f$, where $y = f(x)$?`,
+      questionText: `In the $xy$-plane, the graph of the linear function $f$ contains the points $(0, ${b})$ and $(${x2}, ${y2})$. Which equation defines $f$, where $y = f(x)$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,

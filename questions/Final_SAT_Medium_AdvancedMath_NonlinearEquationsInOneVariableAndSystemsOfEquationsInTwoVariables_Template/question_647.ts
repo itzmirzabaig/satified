@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -49,12 +49,14 @@ export const generator_647 = {
      letter: String.fromCharCode(65 + index)
    }));
    
-   const correctOption = shuffledOptions.find(opt => opt.isCorrect);
+   const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
    const correctLetter = correctOption.letter;
    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
    
    // STEP 5: Build explanation
-   const explanation = `Choice ${correctLetter} is correct. To express $a$ in terms of $b$ and $x$, isolate $a$ in the given equation: $x = ${coeff}a(b + 9)$. Divide both sides by $${coeff}(b + 9)$$: $a = \\frac{x}{${coeff}(b+9)}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+   // Keep every math span inline ($...$) and balanced; divide both sides by the
+   // whole coefficient-binomial product to isolate a.
+   const explanation = `Choice ${correctLetter} is correct. To express $a$ in terms of $b$ and $x$, isolate $a$ in the given equation $x = ${coeff}a(b + 9)$. Dividing both sides by the product of ${coeff} and $(b + 9)$ gives $a = \\frac{x}{${coeff}(b+9)}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
    
    return {
      questionText: `$$x = ${coeff}a(b + 9)$$\nThe given equation relates the positive numbers $a$, $b$, and $x$. Which equation correctly expresses $a$ in terms of $b$ and $x$?`,

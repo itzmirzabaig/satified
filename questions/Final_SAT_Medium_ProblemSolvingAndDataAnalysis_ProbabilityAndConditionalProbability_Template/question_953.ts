@@ -1,15 +1,15 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 953
  *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [total 350, probabilities 0.24, 0.48]
+ * - Number ranges: [total 300-400, probA 0.35-0.50, probB 0.20-0.30]
  * - Difficulty factors: [Probability complement rule, decimal to count conversion]
- * - Distractor patterns: [28 = probability as integer, 40 = calculation error, 84 = theater B count]
+ * - Distractor patterns: [probC as an integer count, theater A count, theater B count]
  * - Constraints: [Probabilities must sum to 1, P(C) = 1 - P(A) - P(B)]
- * - Question type: [Word Problem→Multiple Choice Text]
+ * - Question type: [Word Problem->Multiple Choice Text]
  * - Figure generation: [No figure needed]
  */
 
@@ -23,29 +23,40 @@ export const generator_953 = {
   },
 
   generate: (): QuestionData => {
-    // STEP 1: Generate parameters
-    const totalCustomers = getRandomInt(300, 400);
-    const probA = parseFloat((getRandomInt(35, 50) / 100).toFixed(2));
-    const probB = parseFloat((getRandomInt(20, 30) / 100).toFixed(2));
-    const probC = parseFloat((1 - probA - probB).toFixed(2));
+    // STEP 1: Generate parameters, retrying until the correct answer and all
+    // three distractors are distinct values (bounded retry, HOUSE_STYLE rule 2).
+    let totalCustomers = 0;
+    let probA = 0, probB = 0, probC = 0;
+    let countA = 0, countB = 0, countC = 0;
+    let distractorProb = 0; // probC read as a raw count (e.g. 0.28 -> 28)
 
-    // STEP 2: Calculate counts
-    const countA = Math.round(totalCustomers * probA);
-    const countB = Math.round(totalCustomers * probB);
-    const countC = totalCustomers - countA - countB; // Ensure exact total
+    let tries = 0;
+    do {
+      totalCustomers = getRandomInt(300, 400);
+      probA = parseFloat((getRandomInt(35, 50) / 100).toFixed(2));
+      probB = parseFloat((getRandomInt(20, 30) / 100).toFixed(2));
+      probC = parseFloat((1 - probA - probB).toFixed(2));
+
+      // Answer-first count construction so the three counts sum EXACTLY to total.
+      countA = Math.round(totalCustomers * probA);
+      countB = Math.round(totalCustomers * probB);
+      countC = totalCustomers - countA - countB; // customers in theater C
+
+      distractorProb = Math.round(probC * 100);
+      tries++;
+    } while (
+      tries < 50 &&
+      new Set([countC, distractorProb, countA, countB]).size !== 4
+    );
 
     const correctAnswer = countC.toString();
 
-    // STEP 3: Create distractors
-    const distractor1 = Math.round(probC * 100); // Probability as integer (e.g., 0.28 → 28)
-    const distractor2 = getRandomInt(30, 50); // Random error
-    const distractor3 = countB; // Theater B count
-
+    // STEP 2: Build options. Each distractor is a distinct, meaningful trap.
     const optionsData = [
       { text: countC.toString(), isCorrect: true },
-      { text: distractor1.toString(), isCorrect: false, reason: "confuses probability (0.28) with actual count" },
-      { text: distractor2.toString(), isCorrect: false, reason: "results from miscalculating the complement" },
-      { text: countB.toString(), isCorrect: false, reason: "gives the number of customers in theater B instead of theater C" }
+      { text: distractorProb.toString(), isCorrect: false, reason: `uses the probability ${probC} as if it were the count of customers` },
+      { text: countA.toString(), isCorrect: false, reason: "gives the number of customers in theater A" },
+      { text: countB.toString(), isCorrect: false, reason: "gives the number of customers in theater B" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -61,7 +72,7 @@ export const generator_953 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctLetter} is correct. Since the probabilities must sum to 1, the probability of selecting a customer in theater C is 1 - ${probA} - ${probB} = ${probC}. Therefore, the number of customers in theater C is ${probC} × ${totalCustomers} = ${countC}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Since the probabilities must sum to 1, the probability of selecting a customer in theater C is $1 - ${probA} - ${probB} = ${probC}$. Therefore, the number of customers in theater C is $${probC} \\times ${totalCustomers} = ${countC}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 889
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [Adjacent: 41, Hypotenuse: 42 (double-digit, close values)]
  * - Difficulty factors: [Cosine ratio, identifying adjacent side vs hypotenuse]
@@ -21,110 +21,83 @@ export const generator_889 = {
     skill: "Right Triangles And Trigonometry",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate right triangle with adjacent and hypotenuse close in value
-    // This creates a "steep" triangle where the angle is small
-    // Original: adjacent=41, hypotenuse=42
+    // STEP 1: Right triangle with the leg adjacent to angle A close to the
+    // hypotenuse (a "steep" triangle, small angle A). Original: adjacent=41,
+    // hypotenuse=42. The hypotenuse is the longest side, so the triangle is
+    // always valid and cos A = adjacent/hypotenuse < 1.
     const adjacent = getRandomInt(30, 60);
-    // Hypotenuse must be slightly larger to create valid triangle
-    const hypotenuse = adjacent + getRandomInt(1, 5);
-    // Calculate opposite using Pythagorean theorem
+    const hypotenuse = adjacent + getRandomInt(1, 5); // strictly > adjacent
+    // Opposite leg (irrational in general) — used only for the figure geometry.
     const opposite = Math.sqrt(hypotenuse * hypotenuse - adjacent * adjacent);
-    
-    // Position: A at origin, C on x-axis, B up
-    const vertexA = [0, 0];
-    const vertexC = [adjacent, 0];
-    const vertexB = [adjacent, opposite];
-    
-    // Calculate viewBox bounds
-    const xMin = -5;
-    const xMax = adjacent + 5;
-    const yMin = -5;
-    const yMax = opposite + 5;
-    
-    // STEP 2: Build Mafs code
-    const _svg_0 = yMax; const _svg_1 = yMin; const _svg_2 = xMax; const _svg_3 = xMin;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_3,xmax=_svg_2;
-      const ymin=_svg_1,ymax=_svg_0;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=(yMin),ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(-1)+'" y="'+my(-1)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">A</text>';
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=(yMin),ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((adjacent + 2))+'" y="'+my(-1)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">C</text>';
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=(yMin),ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((adjacent + 1))+'" y="'+my((opposite + 1))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">B</text>';
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=(yMin),ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((adjacent / 2))+'" y="'+my(-3)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">${adjacent</text>';
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=(yMin),ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((adjacent + 3))+'" y="'+my((opposite / 2))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">${hypotenuse</text>';
-    })()}</svg></div>`;
-    
-    // STEP 3: Calculate cosine
+
+    // STEP 2: Build a clean SVG figure that draws the triangle.
+    // A (angle A) at origin, C (right angle) on the x-axis at distance
+    // `adjacent`, B above C at height `opposite`. Segment AC is the adjacent
+    // leg, AB is the hypotenuse, CB is the opposite leg.
+    const W = 420, H = 300, M = 48;
+    const spanX = adjacent;
+    const spanY = opposite;
+    const sx = (W - 2 * M) / spanX;
+    const sy = (H - 2 * M) / spanY;
+    const s = Math.min(sx, sy);
+    const r2 = (v: number) => Math.round(v * 100) / 100;
+    const baseY = H - M;
+    const Ax = M, Ay = baseY;
+    const Cx = M + adjacent * s, Cy = baseY;
+    const Bx = M + adjacent * s, By = baseY - opposite * s;
+    const A = `${r2(Ax)},${r2(Ay)}`;
+    const C = `${r2(Cx)},${r2(Cy)}`;
+    const B = `${r2(Bx)},${r2(By)}`;
+    const box = 12;
+    const rightAngle = `M ${r2(Cx)} ${r2(Cy - box)} L ${r2(Cx - box)} ${r2(Cy - box)} L ${r2(Cx - box)} ${r2(Cy)}`;
+
+    const figureCode = `<div style="width:100%;max-width:420px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      `<polygon points="${A} ${C} ${B}" fill="#3b82f6" fill-opacity="0.08" stroke="#3b82f6" stroke-width="2"/>` +
+      `<path d="${rightAngle}" fill="none" stroke="currentColor" stroke-width="1.4"/>` +
+      `<text x="${r2(Ax - 8)}" y="${r2(Ay + 18)}" text-anchor="middle" font-size="14" fill="currentColor">A</text>` +
+      `<text x="${r2(Cx + 14)}" y="${r2(Cy + 18)}" text-anchor="middle" font-size="14" fill="currentColor">C</text>` +
+      `<text x="${r2(Bx + 14)}" y="${r2(By - 6)}" text-anchor="middle" font-size="14" fill="currentColor">B</text>` +
+      `<text x="${r2((Ax + Cx) / 2)}" y="${r2(Cy + 20)}" text-anchor="middle" font-size="14" font-style="italic" fill="currentColor">${adjacent}</text>` +
+      `<text x="${r2((Ax + Bx) / 2 - 10)}" y="${r2((Ay + By) / 2 - 6)}" text-anchor="end" font-size="14" font-style="italic" fill="currentColor">${hypotenuse}</text>` +
+      `</svg></div>`;
+
+    // STEP 3: cos A = adjacent / hypotenuse (already in lowest visible form as a
+    // ratio of the two labelled sides).
     const cosA = `${adjacent}/${hypotenuse}`;
-    
-    // STEP 4: Create options with tracking
+
+    // STEP 4: Options with tracking. All four are numerically distinct for every
+    // draw: correct < 1; secant > 1; 1/adjacent and 1/hypotenuse are tiny and
+    // differ because adjacent !== hypotenuse.
     const correctText = cosA;
     const optionsData = [
-      { text: `${hypotenuse}/${adjacent}`, isCorrect: false, reason: "reverses the ratio (secant)" },
+      { text: `${hypotenuse}/${adjacent}`, isCorrect: false, reason: "reverses the ratio, giving the secant (hypotenuse over adjacent)" },
       { text: cosA, isCorrect: true, reason: "" },
-      { text: `1/${adjacent}`, isCorrect: false, reason: "uses reciprocal of adjacent only" },
-      { text: `1/${hypotenuse}`, isCorrect: false, reason: "uses reciprocal of hypotenuse only" }
+      { text: `1/${adjacent}`, isCorrect: false, reason: "uses the reciprocal of the adjacent side only" },
+      { text: `1/${hypotenuse}`, isCorrect: false, reason: "uses the reciprocal of the hypotenuse only" }
     ];
-    
-    // STEP 5: Shuffle and assign letters
+
+    // STEP 5: Shuffle and assign letters (letters are only meaningful now).
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(opt => opt.isCorrect);
-    const correctLetter = correctOption!.letter;
+
+    const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    // STEP 6: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. The cosine of an angle is defined as the ratio of the length of the leg adjacent to the angle to the length of the hypotenuse. For angle $A$, the adjacent side is ${adjacent} and the hypotenuse is ${hypotenuse}, so $\\cos A = \\frac{${adjacent}}{${hypotenuse}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
-    
-    // STEP 7: Return question data
+
+    // STEP 6: Build explanation from the shuffled letters and live values.
+    const explanation = `Choice ${correctLetter} is correct. The cosine of an angle in a right triangle is the ratio of the length of the leg adjacent to the angle to the length of the hypotenuse. For angle $A$, the adjacent leg is ${adjacent} and the hypotenuse is ${hypotenuse}, so $\\cos A = \\frac{${adjacent}}{${hypotenuse}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+
+    // STEP 7: Return question data.
     return {
-      questionText: "What is the value of $\\cos A$ in the triangle shown?",
-      figureCode: mafsCode,
+      questionText: "In right triangle $ABC$ shown above, the right angle is at $C$. What is the value of $\\cos A$?",
+      figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: explanation
+      explanation
     };
   }
 };

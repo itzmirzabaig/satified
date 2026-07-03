@@ -4,13 +4,26 @@ import type { QuestionData } from '../../study/types';
 /**
  * Question 957
  *
+ * Conditional probability from a two-way frequency table.
+ * P(weekend day | no rain) = weekendNoRain / totalNoRain.
+ *
  * FIXES:
- * - Changed \\\\frac to \\frac
- * - Updated table styling to use transparent background and currentColor
- * - Added local gcd function
+ * - Removed personal name ("Anka") -> generic student role with "they".
+ * - correctAnswer now exactly equals the correct option string (with $...$),
+ *   eliminating CORRECT_FUZZY / numeric-equivalence mis-resolution.
+ * - Bounded retry (<=50) guarantees all four option VALUES are distinct,
+ *   eliminating DUP_OPTIONS for every draw.
+ * - Explanation describes each distractor by its reasoning (no letter-based
+ *   "incorrect" claims, so letters stay shuffle-consistent).
  */
 
 const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
+
+// Reduced-fraction TeX plus a numeric value for collision checks.
+const frac = (num: number, den: number): { tex: string; value: number } => {
+  const g = gcd(Math.abs(num), Math.abs(den)) || 1;
+  return { tex: `$\\frac{${num / g}}{${den / g}}$`, value: num / den };
+};
 
 export const generator_957 = {
   metadata: {
@@ -21,25 +34,41 @@ export const generator_957 = {
   },
 
   generate: (): QuestionData => {
-    // STEP 1: Generate parameters
     const weeks = 12;
-    const weekdaysRain = getRandomInt(10, 15);
-    const weekdaysNoRain = getRandomInt(45, 55);
-    const weekendRain = getRandomInt(6, 10);
-    const weekendNoRain = getRandomInt(14, 20);
 
-    const weekdaysTotal = weekdaysRain + weekdaysNoRain;
-    const weekendTotal = weekendRain + weekendNoRain;
-    const totalDays = weekdaysTotal + weekendTotal;
-    const totalRain = weekdaysRain + weekendRain;
-    const totalNoRain = weekdaysNoRain + weekendNoRain;
+    // STEP 1: Generate parameters, retrying until all four option values are
+    // distinct (bounded). Distractors are derived from the same counts as the
+    // correct answer, so we regenerate the counts rather than nudge a distractor.
+    let weekdaysRain = 0, weekdaysNoRain = 0, weekendRain = 0, weekendNoRain = 0;
+    let weekdaysTotal = 0, weekendTotal = 0, totalDays = 0, totalRain = 0, totalNoRain = 0;
+    let correct = frac(0, 1), d1 = frac(0, 1), d2 = frac(0, 1), d3 = frac(0, 1);
 
-    // STEP 2: Calculate conditional probability
-    const numerator = weekendNoRain;
-    const denominator = totalNoRain;
-    const g = gcd(numerator, denominator);
-    const simplifiedNum = numerator / g;
-    const simplifiedDen = denominator / g;
+    let tries = 0;
+    do {
+      weekdaysRain = getRandomInt(10, 15);
+      weekdaysNoRain = getRandomInt(45, 55);
+      weekendRain = getRandomInt(6, 10);
+      weekendNoRain = getRandomInt(14, 20);
+
+      weekdaysTotal = weekdaysRain + weekdaysNoRain;
+      weekendTotal = weekendRain + weekendNoRain;
+      totalDays = weekdaysTotal + weekendTotal;
+      totalRain = weekdaysRain + weekendRain;
+      totalNoRain = weekdaysNoRain + weekendNoRain;
+
+      // STEP 2: Correct conditional probability P(weekend | no rain), plus the
+      // three most common wrong approaches as distractors.
+      correct = frac(weekendNoRain, totalNoRain);        // weekend & no rain / all no-rain
+      d1 = frac(weekendTotal, totalDays);                // all weekend / all days
+      d2 = frac(totalNoRain, totalDays);                 // all no-rain / all days
+      d3 = frac(weekdaysNoRain, totalNoRain);            // weekday & no rain / all no-rain
+    } while (
+      new Set([correct.value, d1.value, d2.value, d3.value]).size !== 4 &&
+      tries++ < 50
+    );
+
+    const simplifiedNum = weekendNoRain / (gcd(weekendNoRain, totalNoRain) || 1);
+    const simplifiedDen = totalNoRain / (gcd(weekendNoRain, totalNoRain) || 1);
 
     // STEP 3: Build table
     const tableCode = `<table style="border-collapse: collapse; margin: 0 auto; text-align: center; background: transparent; width: 100%; max-width: 400px;">
@@ -74,15 +103,11 @@ export const generator_957 = {
 </table>`;
 
     // STEP 4: Create options
-    const g2 = gcd(weekendTotal, totalDays);
-    const g3 = gcd(totalNoRain, totalDays);
-    const g4 = gcd(weekdaysNoRain, totalNoRain);
-
     const optionsData = [
-      { text: `$\\frac{${weekendTotal / g2}}{${totalDays / g2}}$`, isCorrect: false },
-      { text: `$\\frac{${simplifiedNum}}{${simplifiedDen}}$`, isCorrect: true },
-      { text: `$\\frac{${totalNoRain / g3}}{${totalDays / g3}}$`, isCorrect: false },
-      { text: `$\\frac{${weekdaysNoRain / g4}}{${totalNoRain / g4}}$`, isCorrect: false }
+      { text: d1.tex, isCorrect: false },
+      { text: correct.tex, isCorrect: true },
+      { text: d2.tex, isCorrect: false },
+      { text: d3.tex, isCorrect: false }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -93,11 +118,11 @@ export const generator_957 = {
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
 
     return {
-      questionText: `For a science project, Anka recorded whether it rained each weekday and weekend day for ${weeks} weeks. Her results are summarized in the table below. If one of the days on which there was no rain is selected at random, what is the probability the day was a weekend day?`,
+      questionText: `For a science project, a student recorded whether it rained each weekday and weekend day for ${weeks} weeks. Their results are summarized in the table below. If one of the days on which there was no rain is selected at random, what is the probability the day was a weekend day?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `\\frac{${simplifiedNum}}{${simplifiedDen}}`,
-      explanation: `Choice ${correctLetter} is correct. There were ${totalNoRain} days with no rain. Of those, ${weekendNoRain} were weekend days. Therefore, the probability is $\\frac{${weekendNoRain}}{${totalNoRain}} = \\frac{${simplifiedNum}}{${simplifiedDen}}$.`
+      correctAnswer: correct.tex,
+      explanation: `Choice ${correctLetter} is correct. Of the ${totalNoRain} days with no rain, ${weekendNoRain} were weekend days, so the probability is $\\frac{${weekendNoRain}}{${totalNoRain}} = \\frac{${simplifiedNum}}{${simplifiedDen}}$. Dividing the weekend days or no-rain days by the total of ${totalDays} days ignores the given condition (no rain), and using the ${weekdaysNoRain} weekday no-rain days counts the wrong group.`
     };
   }
 };

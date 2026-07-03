@@ -3,11 +3,14 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 728
- * 
- * FIXES:
- * - Handled long decimals by converting to fractions.
- * - Used styled HTML table.
- * - Logic: P(t) = P_start + slope * t.
+ *
+ * Linear model from a two-point table (decreasing population).
+ * Intent: given population at two years, model P as a function of t = years
+ * after the start year. P(t) = startPop + slope * t, slope = (midPop - startPop)/years.
+ *
+ * Construction keeps the slope a clean negative integer by choosing the slope
+ * magnitude first, then deriving the population drop, so every option is a tidy
+ * linear expression and all four choices are distinct by construction.
  */
 export const generator_728 = {
   metadata: {
@@ -17,73 +20,30 @@ export const generator_728 = {
     skill: "Linear Functions",
     difficulty: "Medium"
   },
-  
-  generate: (): QuestionData => {
-    // 1. Math Setup
-    // Start year: 1995-2005
-    const startYear = getRandomInt(1995, 2005);
-    // Years later: 8-12
-    const yearsLater = getRandomInt(8, 12);
-    const midYear = startYear + yearsLater;
-    
-    // Population values
-    const startPop = getRandomInt(800, 900);
-    // Ensure midPop is less than startPop (decreasing)
-    const popDrop = getRandomInt(10, 50);
-    const midPop = startPop - popDrop;
-    
-    // Calculate slope = (mid - start) / years
-    const slopeVal = (midPop - startPop) / yearsLater;
-    
-    // Helper to format slope as fraction if decimal is messy
-    const formatSlope = (val: number): { str: string; isNegative: boolean } => {
-      // Check if integer or simple decimal
-      if (Number.isInteger(val)) {
-        return { str: Math.abs(val).toString(), isNegative: val < 0 };
-      }
-      if (Math.abs(val * 10 - Math.round(val * 10)) < 0.001) {
-        return { str: Math.abs(val).toFixed(1), isNegative: val < 0 };
-      }
-      
-      // Convert to fraction
-      const num = Math.abs(midPop - startPop);
-      const den = yearsLater;
-      
-      // GCD using while loop (no recursion)
-      const gcd = (a: number, b: number): number => {
-        let num1 = a;
-        let num2 = b;
-        while (num2 !== 0) {
-          const temp = num2;
-          num2 = num1 % num2;
-          num1 = temp;
-        }
-        return num1;
-      };
-      
-      const common = gcd(num, den);
-      const simpNum = num / common;
-      const simpDen = den / common;
-      return { str: `\\frac{${simpNum}}{${simpDen}}`, isNegative: val < 0 };
-    };
 
-    const slopeInfo = formatSlope(slopeVal);
-    // Build equation: "800 - 5/3 t" (space around minus, no double negative)
-    const sign = slopeInfo.isNegative ? '-' : '+';
-    const correctEq = `P(t) = ${startPop} ${sign} ${slopeInfo.str}t`;
-    
-    // Distractors
-    // D1: Wrong magnitude (multiply by 10)
-    const wrongSlopeInfo = formatSlope(slopeVal * 10);
-    const d1Sign = wrongSlopeInfo.isNegative ? '-' : '+';
-    const d1 = `P(t) = ${startPop} ${d1Sign} ${wrongSlopeInfo.str}t`;
-    
-    // D2: Wrong sign (positive slope)
-    const d2 = `P(t) = ${startPop} + ${slopeInfo.str}t`;
-    
-    // D3: Wrong variable shift
-    const d3Sign = slopeInfo.isNegative ? '-' : '+';
-    const d3 = `P(t) = ${startPop} ${d3Sign} ${slopeInfo.str}(t - ${startYear})`;
+  generate: (): QuestionData => {
+    // 1. Math setup — pick the slope magnitude first for a clean integer rate.
+    const startYear = getRandomInt(1995, 2005);
+    const yearsLater = getRandomInt(8, 12);          // >= 8, so popDrop > slopeMag
+    const midYear = startYear + yearsLater;
+
+    const slopeMag = getRandomInt(2, 8);             // decrease per year (positive)
+    const popDrop = slopeMag * yearsLater;           // total drop over the period
+    const startPop = getRandomInt(800, 900);
+    const midPop = startPop - popDrop;               // < startPop (decreasing)
+
+    // Correct model: P(t) = startPop - slopeMag * t
+    const correctEq = `P(t) = ${startPop} - ${slopeMag}t`;
+
+    // Distractors — all distinct from the answer and from each other:
+    //  D1: wrong sign (increasing instead of decreasing).
+    const d1 = `P(t) = ${startPop} + ${slopeMag}t`;
+    //  D2: uses the total drop as the per-year rate (forgot to divide by years).
+    //      popDrop = slopeMag * yearsLater > slopeMag, so slope differs.
+    const d2 = `P(t) = ${startPop} - ${popDrop}t`;
+    //  D3: uses the later population as the initial value (midPop < startPop),
+    //      correct slope. Intercept differs from every other option.
+    const d3 = `P(t) = ${midPop} - ${slopeMag}t`;
 
     const optionsData = [
       { text: `$${correctEq}$`, isCorrect: true },
@@ -96,7 +56,7 @@ export const generator_728 = {
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
 
     // Table HTML with proper styling
@@ -121,29 +81,26 @@ export const generator_728 = {
       </table>
     `;
 
-    // Build slope string for explanation (with sign)
-    const expSlopeStr = slopeInfo.isNegative ? `-${slopeInfo.str}` : slopeInfo.str;
-
     return {
-      questionText: `The table above shows the population of Greenleaf, Idaho, for the years ${startYear} and ${midYear}. If the relationship between population and year is linear, which of the following functions $P$ models the population of Greenleaf $t$ years after ${startYear}?
-      
+      questionText: `The table above shows the population of a small town for the years ${startYear} and ${midYear}. If the relationship between population and year is linear, which of the following functions $P$ models the population of the town $t$ years after ${startYear}?
+
 ${tableHTML}`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. 
-      
+      explanation: `Choice ${correctOption.letter} is correct.
+
 1.  **Identify Points:**
-    $t$ is years after ${startYear}.
-    At $t=0$, Population = ${startPop}. (y-intercept)
-    At $t=${yearsLater}$ ($= ${midYear} - ${startYear}$), Population = ${midPop}.
+    $t$ is the number of years after ${startYear}.
+    At $t = 0$, the population is ${startPop} (the initial value).
+    At $t = ${yearsLater}$ (that is, ${midYear} - ${startYear}), the population is ${midPop}.
 
-2.  **Calculate Slope:**
-    Slope $m = \\frac{\\text{Change in Population}}{\\text{Change in Time}} = \\frac{${midPop} - ${startPop}}{${yearsLater}} = ${expSlopeStr}$.
+2.  **Calculate the Slope:**
+    $m = \\dfrac{\\text{change in population}}{\\text{change in time}} = \\dfrac{${midPop} - ${startPop}}{${yearsLater}} = \\dfrac{-${popDrop}}{${yearsLater}} = -${slopeMag}$.
 
-3.  **Form Equation:**
-    $P(t) = \\text{Initial Value} + \\text{Slope} \\cdot t$
-    $P(t) = ${startPop} ${sign} ${slopeInfo.str}t$.`
+3.  **Form the Equation:**
+    Using $P(t) = \\text{initial value} + \\text{slope} \\cdot t$ gives
+    $P(t) = ${startPop} - ${slopeMag}t$.`
     };
   }
 };

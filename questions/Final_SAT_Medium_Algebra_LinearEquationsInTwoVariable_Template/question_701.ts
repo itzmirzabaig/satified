@@ -23,9 +23,18 @@ export const generator_701 = {
     // 1. Math Setup
     const perimeter = getRandomInt(30, 50) * 2; // Ensure even perimeter
     const halfPerimeter = perimeter / 2;
-    
-    // Choose a point (x, y) on the line x + y = halfPerimeter
-    const xVal = getRandomInt(5, halfPerimeter - 5);
+
+    // Choose a point (x, y) on the line x + y = halfPerimeter.
+    // Require xVal !== yVal so the correct option and the length/width-swapped
+    // distractor can never collapse into the same string (bounded retry).
+    let xVal = getRandomInt(5, halfPerimeter - 5);
+    let tries = 0;
+    while (xVal * 2 === halfPerimeter && tries++ < 50) {
+      xVal = getRandomInt(5, halfPerimeter - 5);
+    }
+    // Deterministic guarantee that xVal !== yVal even in the (astronomically
+    // unlikely) event the retries never dodge the midpoint.
+    if (xVal * 2 === halfPerimeter) xVal -= 1;
     const yVal = halfPerimeter - xVal;
     
     // 2. SVG Configuration
@@ -90,33 +99,36 @@ export const generator_701 = {
       </div>
     `;
     
-    // 3. Options
+    // 3. Options. Tag each distractor with a key so its post-shuffle letter can
+    // be recovered for the explanation.
+    const swappedText = `The length is ${yVal} m, and the width is ${xVal} m.`;
+    const lessText = `The length is ${xVal} m less than the perimeter, and the width is ${yVal} m less than the perimeter.`;
+    const areaText = `The area of the rectangle is ${perimeter} square meters.`;
+
     const optionsData = [
       { text: `The length is ${xVal} m, and the width is ${yVal} m.`, isCorrect: true },
-      { text: `The length is ${yVal} m, and the width is ${xVal} m.`, isCorrect: false }, // Swapped
-      { text: `The length is ${xVal} m less than the perimeter, and the width is ${yVal} m less than the perimeter.`, isCorrect: false },
-      { text: `The area of the rectangle is ${perimeter} square meters.`, isCorrect: false }
+      { text: swappedText, isCorrect: false },
+      { text: lessText, isCorrect: false },
+      { text: areaText, isCorrect: false }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const letterOf = (t: string) => shuffledOptions.find(o => o.text === t)!.letter;
+    const swappedLetter = letterOf(swappedText);
+    const lessLetter = letterOf(lessText);
+    const areaLetter = letterOf(areaText);
 
     return {
       questionText: `The graph in the $xy$-plane models the possible combinations of length $x$, in meters (m), and width $y$, in meters, for a rectangle with a perimeter of ${perimeter} m. Which statement is the best interpretation of the point $(${xVal}, ${yVal})$ in this context?`,
       figureCode: svgCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. 
-      
-In the given context:
-- The x-axis represents the length of the rectangle.
-- The y-axis represents the width of the rectangle.
-
-Therefore, the point $(x, y) = (${xVal}, ${yVal})$ means that when the length is ${xVal} m, the width is ${yVal} m.`
+      explanation: `Choice ${correctOption.letter} is correct. In the graph, the horizontal axis represents the length $x$ and the vertical axis represents the width $y$. The point $(${xVal}, ${yVal})$ therefore means that when the length is ${xVal} m, the width is ${yVal} m. As a check, the perimeter is 2(${xVal}) + 2(${yVal}) = ${perimeter} m, as required. Choice ${swappedLetter} is incorrect because it reverses the length and the width. Choice ${lessLetter} is incorrect because the coordinates give the length and width directly, not amounts less than the perimeter. Choice ${areaLetter} is incorrect because ${perimeter} is the perimeter of the rectangle, not its area.`
     };
   }
 };

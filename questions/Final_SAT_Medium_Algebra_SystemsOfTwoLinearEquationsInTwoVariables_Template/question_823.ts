@@ -1,16 +1,22 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 823
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [coefficient: 1/2 (simple fractions), result: single digit]
  * - Difficulty factors: [Simple substitution, elimination method]
- * - Distractor patterns: [3, 7/2, 4, 6 - close to correct value 6]
+ * - Distractor patterns: [close to correct value]
  * - Constraints: [Ensure clean arithmetic with fractions]
  * - Question type: [Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * System:
+ *   (1/d) y = r1
+ *   x - (1/d) y = r2
+ * Adding the two equations eliminates y: x = r1 + r2.
+ * All quantities are integers by construction (y = d*k so (1/d)y = k = r1).
  */
 
 export const generator_823 = {
@@ -22,55 +28,57 @@ export const generator_823 = {
     skill: "Systems Of Two Linear Equations In Two Variables",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values - simple coefficients for clean arithmetic
-    const coeffY = getRandomInt(2, 5); // Coefficient for y (2, 3, 4, or 5)
-    const yValue = getRandomInt(2, 8) * 2; // Even y value for clean division
-    const rightSide1 = (coeffY * yValue) / 2; // Result of first equation
-    
-    // Second equation: x - (1/coeffY)*y = some value
-    // We want x to be clean, so let's set up so x = rightSide1 + something
-    const xOffset = getRandomInt(2, 6);
-    const xValue = rightSide1 + xOffset;
-    const rightSide2 = xValue - rightSide1;
-    
-    // STEP 2: Format as fractions
-    const frac1 = coeffY === 2 ? "\\frac{1}{2}" : `\\frac{1}{${coeffY}}`;
-    const frac2 = coeffY === 2 ? "\\frac{1}{2}" : `\\frac{1}{${coeffY}}`;
-    
-    // STEP 3: Build question text
-    const questionText = `$$\\begin{cases} ${frac1}y=${rightSide1} \\\\ x-${frac2}y=${rightSide2} \\end{cases}$$ \n\nThe system of equations above has solution $(x, y)$. What is the value of $x$?`;
-    
-    // STEP 4: Generate distractors based on SAT error patterns
-    const distractor1 = xValue - xOffset; // 3 (wrong subtraction)
-    const distractor2 = (xValue + rightSide1) / 2; // Average
-    const distractor3 = rightSide1; // Wrong variable
-    
+    // STEP 1: Choose a denominator and a clean y so that (1/d)*y is an integer.
+    const d = getRandomInt(2, 5);            // denominator of the fractional coefficient
+    const k = getRandomInt(2, 7);            // = (1/d) * y
+    // r2 must differ from k so the "wrong variable" distractor cannot collide.
+    let r2 = getRandomInt(2, 9);
+    let guard = 0;
+    while (r2 === k && guard++ < 50) r2 = getRandomInt(2, 9);
+    if (r2 === k) r2 = k + 1;                // deterministic fallback
+
+    const yValue = d * k;                    // clean: (1/d)*yValue = k
+    const r1 = k;                            // right side of equation 1
+    const xValue = r1 + r2;                  // solution for x (adding eliminates y)
+
+    // STEP 2: Fraction label with the LIVE denominator.
+    const frac = `\\frac{1}{${d}}`;
+
+    // STEP 3: Build question text.
+    const questionText = `$$\\begin{cases} ${frac}y=${r1} \\\\ x-${frac}y=${r2} \\end{cases}$$ \n\nThe system of equations above has solution $(x, y)$. What is the value of $x$?`;
+
+    // STEP 4: Distractors (all integers, all distinct from the answer).
+    //  - r2:        used only the second equation, forgot to add r1
+    //  - r1:        reported the value of the y-term instead of x
+    //  - 2*r1 + r2: added the first equation's value twice
     const correctText = xValue.toString();
+    const distractors = [r2, r1, 2 * r1 + r2];
+
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false },
-      { text: distractor2.toString(), isCorrect: false },
-      { text: distractor3.toString(), isCorrect: false },
+      { text: distractors[0].toString(), isCorrect: false },
+      { text: distractors[1].toString(), isCorrect: false },
+      { text: distractors[2].toString(), isCorrect: false },
       { text: correctText, isCorrect: true }
     ];
-    
-    // STEP 5: Shuffle and assign letters
+
+    // STEP 5: Shuffle and assign letters (letters known only after shuffle).
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect);
     const correctLetter = correctOption!.letter;
-    
-    // STEP 6: Return question data
+
+    // STEP 6: Return question data.
     return {
       questionText: questionText,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. Adding the corresponding sides of the two equations eliminates $y$ and yields $x=${xValue}$. Substituting $${frac1}y=${rightSide1}$ into the second equation: $x - ${rightSide1} = ${rightSide2} \\implies x = ${xValue}$.`
+      explanation: `Choice ${correctLetter} is correct. From the first equation, $${frac}y=${r1}$, so the $y$-term equals ${r1}. Adding the two equations eliminates $y$: $\\left(${frac}y\\right)+\\left(x-${frac}y\\right)=${r1}+${r2}$, which gives $x=${xValue}$. The value ${r2} comes from using only the second equation, ${r1} is the value of the $y$-term rather than $x$, and ${2 * r1 + r2} results from adding ${r1} twice.`
     };
   }
 };

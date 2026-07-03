@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -23,34 +23,37 @@ export const generator_694 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate parameters
+    // STEP 1: Generate parameters. circleVal is worth exactly diff more points
+    // than squareVal, so the answer to "how many more points" is diff.
     const squareVal = getRandomInt(50, 100);
     const diff = getRandomInt(5, 20);
-    const circleVal = squareVal + diff;
+    const circleVal = squareVal + diff;     // 55..120, always > squareVal
     const total = getRandomInt(800, 1500);
-    
-    // STEP 2: Create options
+    const sumVal = squareVal + circleVal;   // "added instead of subtracted" distractor
+
+    // STEP 2: Create options. All four values are pairwise distinct for every
+    // draw: diff <= 20 < squareVal < circleVal < sumVal, and circleVal > squareVal
+    // because diff >= 5 — so no bounded retry is needed.
     const optionsData = [
-      { text: `$${total - squareVal - circleVal}$`, isCorrect: false, reason: "random calculation" },
-      { text: `$${circleVal}$`, isCorrect: false, reason: "value of circle token, not difference" },
-      { text: `$${squareVal}$`, isCorrect: false, reason: "value of square token, not difference" },
+      { text: `$${sumVal}$`, isCorrect: false, reason: "added the two token values instead of subtracting" },
+      { text: `$${circleVal}$`, isCorrect: false, reason: "value of a circle token, not the difference" },
+      { text: `$${squareVal}$`, isCorrect: false, reason: "value of a square token, not the difference" },
       { text: `$${diff}$`, isCorrect: true, reason: "" }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
-    
+
     return {
-      questionText: `At a state fair, attendees can win tokens that are worth a different number of points depending on the shape. One attendee won $S$ square tokens and $C$ circle tokens worth a total of $${total}$ points. The equation $${squareVal}S + ${circleVal}C = ${total}$ represents this situation. How many more points is a circle token worth than a square token?`,
+      questionText: `At a state fair, attendees can win tokens that are worth a different number of points depending on the shape. One attendee won some square tokens and some circle tokens worth a total of ${total} points. If S is the number of square tokens and C is the number of circle tokens, the equation $${squareVal}S + ${circleVal}C = ${total}$ represents this situation. How many more points is a circle token worth than a square token?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
-      explanation: `The given equation is $${squareVal}S + ${circleVal}C = ${total}$. In this equation:\n- $S$ represents the number of square tokens.\n- $C$ represents the number of circle tokens.\n- The term $${squareVal}S$ represents the total points from square tokens, which means each square token is worth $${squareVal}$ points.\n- The term $${circleVal}C$ represents the total points from circle tokens, which means each circle token is worth $${circleVal}$ points.\n\nThe question asks for the difference in points between a circle token and a square token.\nValue of a circle token $= ${circleVal}$ points.\nValue of a square token $= ${squareVal}$ points.\n\nDifference $= ${circleVal} - ${squareVal} = ${diff}$.`
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctOption.letter} is correct. In the equation $${squareVal}S + ${circleVal}C = ${total}$, the number of square tokens is multiplied by ${squareVal} and the number of circle tokens is multiplied by ${circleVal}. The term $${squareVal}S$ gives the total points from square tokens, so each square token is worth ${squareVal} points. The term $${circleVal}C$ gives the total points from circle tokens, so each circle token is worth ${circleVal} points.\n\nThe question asks how many more points a circle token is worth than a square token, which is the difference ${circleVal} - ${squareVal} = ${diff} points.\n\nThe distractor ${circleVal} is the value of a circle token and the distractor ${squareVal} is the value of a square token; each is a single token value rather than the difference. The distractor ${sumVal} comes from adding the two token values instead of subtracting them.`
     };
   }
 };

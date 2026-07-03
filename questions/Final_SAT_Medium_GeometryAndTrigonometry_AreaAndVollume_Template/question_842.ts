@@ -3,7 +3,7 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 842
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [radius: 2 (single-digit)]
  * - Difficulty factors: [Area equivalence, square root of π expression]
@@ -20,48 +20,61 @@ export const generator_842 = {
     skill: "Area And Volume",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
     // STEP 1: Generate random values (MATCH ORIGINAL RANGES)
     const radius = getRandomInt(2, 5);
-    
-    // STEP 2: Calculate derived values
-    const circleAreaCoeff = radius * radius; // r²
-    
-    // FIXED: Changed \\\\ to \\ for LaTeX commands
-    const sideExact = `${radius}\\sqrt{\\pi}`;
-    
-    // STEP 3: Create options with tracking
-    const correctText = sideExact;
-    
-    // Distractor A: radius (confusing radius with side)
-    const distractorA = radius.toString();
-    // FIXED: Changed \\\\ to \\ for LaTeX commands
-    const distractorB = `\\sqrt{2\\pi}`;
-    // FIXED: Changed \\\\ to \\ for LaTeX commands
-    const distractorD = radius === 2 ? `2\\pi` : `${radius}\\pi`;
-    
+
+    // STEP 2: Derived values. Circle area = pi*r^2. A square with the same area
+    // has side s where s^2 = pi*r^2, so s = r*sqrt(pi). Since r is an integer in
+    // [2,5], the correct side is r*sqrt(pi) — a clean radical.
+    const circleAreaCoeff = radius * radius; // r^2
+
+    // Option texts are raw LaTeX (the study renderer auto-wraps them in math).
+    const correctText = `${radius}\\sqrt{\\pi}`;
+
+    // STEP 3: Distractors, each carrying its own reason so the explanation
+    // stays correct regardless of shuffle order.
+    // A: uses the radius itself as the side.
+    // B: sqrt(2*pi) — the side you get only if the area were 2*pi (constant).
+    // D: r*pi — a circumference-style expression, not a side length.
+    // These are all distinct from the correct answer and from each other for
+    // every radius in [2,5]: the correct answer contains \sqrt while D does not,
+    // B is a constant radical, and A is a bare integer.
     const optionsData = [
-      { text: distractorA, isCorrect: false },
-      { text: distractorB, isCorrect: false },
-      { text: correctText, isCorrect: true },
-      { text: distractorD, isCorrect: false }
+      { text: correctText, isCorrect: true, reason: '' },
+      {
+        text: radius.toString(),
+        isCorrect: false,
+        reason: `this is the radius of the circle, not the side of the square`
+      },
+      {
+        text: `\\sqrt{2\\pi}`,
+        isCorrect: false,
+        reason: `$\\sqrt{2\\pi}$ would be the side only if the area were $2\\pi$, but the area here is $${circleAreaCoeff}\\pi$`
+      },
+      {
+        text: `${radius}\\pi`,
+        isCorrect: false,
+        reason: `this resembles a circumference expression such as $${radius}\\pi$, not the side length`
+      }
     ];
-    
+
     // STEP 4: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(o => o.isCorrect);
-    const correctLetter = correctOption!.letter;
-    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
-    // STEP 5: Build explanation
-    // FIXED: Changed all \\\\ to \\ for LaTeX commands
-    const explanation = `Choice ${correctLetter} is correct. The area of a circle with radius ${radius} is $\\pi(${radius})^2 = ${circleAreaCoeff}\\pi$. Setting this equal to the area of a square $s^2$ gives $s^2 = ${circleAreaCoeff}\\pi$, so $s = ${radius}\\sqrt{\\pi}$. Choice ${incorrectOptions[0].letter} is incorrect; this is the radius of the circle, not the side of the square. Choice ${incorrectOptions[1].letter} is incorrect; this would be the answer if the area were $2\\pi$ instead of ${circleAreaCoeff}\\pi$. Choice ${incorrectOptions[2].letter} is incorrect; this resembles the circumference formula $2\\pi r$ or $\\pi r$, not the side length.`;
-    
+
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const distractorNotes = shuffledOptions
+      .filter(o => !o.isCorrect)
+      .map(o => `Choice ${o.letter} is incorrect; ${o.reason}.`)
+      .join(' ');
+
+    // STEP 5: Build explanation from the same live variables.
+    const explanation = `Choice ${correctOption.letter} is correct. The area of a circle with radius ${radius} is $\\pi(${radius})^2 = ${circleAreaCoeff}\\pi$. A square with the same area satisfies $s^2 = ${circleAreaCoeff}\\pi$, so $s = ${radius}\\sqrt{\\pi}$. ${distractorNotes}`;
+
     return {
       questionText: `What is the length of one side of a square that has the same area as a circle with radius $${radius}$?`,
       figureCode: null,

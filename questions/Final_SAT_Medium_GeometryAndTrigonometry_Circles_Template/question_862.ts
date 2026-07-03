@@ -1,17 +1,35 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomElement, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 862
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [angle: 60° (simple, clean number)]
- * - Difficulty factors: [Degree to radian conversion, simplifying fractions]
- * - Distractor patterns: [A=30° equivalent, B=correct, C=120° equivalent, D=180° equivalent]
- * - Constraints: [Must reduce fraction 60/180 = 1/3]
- * - Question type: [Text→Multiple Choice Text]
- * - Figure generation: [None]
+ * - Intent: convert a whole-degree angle to its radian measure (a Circles skill).
+ * - Question type: Text -> Multiple Choice Text.
+ * - Figure generation: None.
+ *
+ * REPAIR NOTES:
+ * - Old distractors were built as degrees/2 and min(degrees*2, 180). For 45/135
+ *   this produced non-integer degrees fed through a gcd() that assumes integers
+ *   (float artifacts), and for 90/120/135/150 the "double" distractor clamped to
+ *   180 and collided with the hardcoded pi distractor -> DUP_OPTIONS.
+ * - Rebuilt distractors from a fixed pool of standard radian measures with the
+ *   correct answer removed, then shuffled, guaranteeing 4 distinct options with a
+ *   unique correct one for every draw. All answers are exact reduced fractions of
+ *   pi, so there are no float artifacts.
  */
+
+const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+
+// Render a whole-degree angle as a reduced radian fraction in LaTeX (no $ wrapper).
+const toRadianTex = (deg: number): string => {
+  const g = gcd(deg, 180);
+  const num = deg / g;
+  const den = 180 / g;
+  if (den === 1) return num === 1 ? `\\pi` : `${num}\\pi`;
+  return num === 1 ? `\\frac{\\pi}{${den}}` : `\\frac{${num}\\pi}{${den}}`;
+};
 
 export const generator_862 = {
   metadata: {
@@ -21,69 +39,47 @@ export const generator_862 = {
     skill: "Circles",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate angle that gives clean radian measure (divisors of 180)
-    // Original used 60°, others: 30°, 45°, 90°, 120°, 135°, 150°
+    // STEP 1: Pick a whole-degree angle that has a clean radian measure.
     const cleanAngles = [30, 45, 60, 90, 120, 135, 150];
     const degrees = getRandomElement(cleanAngles);
-    
-    // STEP 2: Convert to radians and simplify
-    // degrees × (π/180) = (degrees/180)π = simplified
-    const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
-    const divisor = gcd(degrees, 180);
-    const numerator = degrees / divisor;
-    const denominator = 180 / divisor;
-    
-    // Format the radian answer
-    let radianAnswer: string;
-    if (numerator === 1) {
-      radianAnswer = denominator === 1 ? `$\\pi$` : `$\\frac{1}{${denominator}}\\pi$`;
-    } else {
-      radianAnswer = denominator === 1 ? `$${numerator}\\pi$` : `$\\frac{${numerator}}{${denominator}}\\pi$`;
-    }
-    
-    // STEP 3: Create distractors (common conversion errors)
-    // A: half the correct value (e.g., 30° → π/6 instead of 60° → π/3)
-    // B: correct
-    // C: double the correct value (e.g., 120° → 2π/3)
-    // D: π (180°)
-    
-    const distractorA = degrees / 2;
-    const distractorC = degrees * 2;
-    
-    const formatRadian = (deg: number): string => {
-      const div = gcd(deg, 180);
-      const num = deg / div;
-      const den = 180 / div;
-      if (num === 1) return den === 1 ? `$1\\pi$` : `$\\frac{1}{${den}}\\pi$`;
-      return den === 1 ? `$${num}\\pi$` : `$\\frac{${num}}{${den}}\\pi$`;
-    };
-    
+
+    // STEP 2: Correct answer in radians (exact reduced fraction of pi).
+    const correctTex = toRadianTex(degrees);
+
+    // STEP 3: Distractors from a pool of standard radian measures, each tagged
+    // with the degree measure it represents. Remove the correct angle (and any
+    // pool entry that reduces to the same radian string), shuffle, take three.
+    // This guarantees four pairwise-distinct options with a unique correct one.
+    const pool = [30, 45, 60, 90, 120, 135, 150, 180]
+      .filter(deg => deg !== degrees)
+      .map(deg => ({ deg, tex: toRadianTex(deg) }))
+      .filter(p => p.tex !== correctTex);
+    const chosenDistractors = shuffle(pool).slice(0, 3);
+
     const optionsData = [
-      { text: formatRadian(distractorA), isCorrect: false, description: `equal to $${distractorA}^{\\circ}$, not $${degrees}^{\\circ}$` },
-      { text: radianAnswer, isCorrect: true },
-      { text: formatRadian(Math.min(distractorC, 180)), isCorrect: false, description: `equal to $${Math.min(distractorC, 180)}^{\\circ}$` },
-      { text: `$1\\pi$`, isCorrect: false, description: `equal to $180^{\\circ}$` }
+      { text: `$${correctTex}$`, isCorrect: true, deg: degrees },
+      ...chosenDistractors.map(d => ({ text: `$${d.tex}$`, isCorrect: false, deg: d.deg }))
     ];
-    
-    // STEP 4: Shuffle and assign letters
+
+    // STEP 4: Shuffle and assign letters (letters known only after shuffling).
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(o => o.isCorrect);
-    const correctLetter = correctOption!.letter;
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
-    // STEP 5: Return question data
+
+    const reasonFor = (deg: number): string =>
+      `this is the radian measure of ${deg} degrees, not ${degrees} degrees`;
+
     return {
-      questionText: `The measure of angle $Z$ is $${degrees}^{\\circ}$. What is the measure, in radians, of angle $Z$?`,
+      questionText: `The measure of angle $Z$ is ${degrees} degrees. What is the measure, in radians, of angle $Z$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: radianAnswer,
-      explanation: `Choice ${correctLetter} is correct. To convert from degrees to radians, multiply by $\\frac{\\pi}{180^{\\circ}}$. $$${degrees} \\cdot \\frac{\\pi}{180} = \\frac{${degrees}\\pi}{180} = \\frac{${numerator}\\pi}{${denominator}}$$ Choice ${incorrectOptions[0].letter} is incorrect because it is ${incorrectOptions[0].description}. Choice ${incorrectOptions[1].letter} is incorrect because it is ${incorrectOptions[1].description}. Choice ${incorrectOptions[2].letter} is incorrect because it is ${incorrectOptions[2].description}.`
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctOption.letter} is correct. To convert a degree measure to radians, multiply by $\\frac{\\pi}{180}$. Here $\\frac{${degrees}\\pi}{180} = ${correctTex}$. Choice ${incorrectOptions[0].letter} is incorrect because ${reasonFor(incorrectOptions[0].deg)}. Choice ${incorrectOptions[1].letter} is incorrect because ${reasonFor(incorrectOptions[1].deg)}. Choice ${incorrectOptions[2].letter} is incorrect because ${reasonFor(incorrectOptions[2].deg)}.`
     };
   }
 };

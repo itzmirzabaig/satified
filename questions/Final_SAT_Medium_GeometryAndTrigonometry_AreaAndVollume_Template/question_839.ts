@@ -35,7 +35,7 @@ export const generator_839 = {
       figureCode: null,
       options: null,
       correctAnswer: height.toString(),
-      explanation: `The volume of a right circular cylinder is given by $V = Bh$, where $B$ is the area of the base and $h$ is the height. Substituting $V = ${volume}$ and $B = ${baseArea}$ gives ${volume} = ${baseArea}h$. Dividing both sides by ${baseArea} yields $h = ${height}$ centimeters.`
+      explanation: `The volume of a right circular cylinder is given by $V = Bh$, where $B$ is the area of the base and $h$ is the height. Substituting $V = ${volume}$ and $B = ${baseArea}$ gives $${volume} = ${baseArea}h$. Dividing both sides by ${baseArea} yields $h = ${height}$ centimeters.`
     };
   }
 };

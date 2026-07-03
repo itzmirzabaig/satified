@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -34,7 +34,7 @@ export const generator_832 = {
       figureCode: null,
       options: null,
       correctAnswer: baseArea.toString(),
-      explanation: `The volume of a triangular prism is $V = Bh$. Substituting $V = ${volume}$ and $h = ${height}$ gives ${volume} = B(${height})$. Dividing both sides by ${height} yields $B = ${baseArea}$ cm².`
+      explanation: `The volume of a triangular prism is $V = Bh$, where $B$ is the base area and $h$ is the height. Substituting $V = ${volume}$ and $h = ${height}$ gives $V = B \\cdot ${height}$. Dividing both sides by ${height} yields $B = \\dfrac{${volume}}{${height}} = ${baseArea}$, so the area of the base is ${baseArea} cm².`
     };
   }
 };

@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -42,7 +42,7 @@ export const generator_736 = {
     
     // STEP 3: Return question data
     return {
-      questionText: `A company's total cost, in dollars, to produce $x$ shirts is given by the function $c(x) = mx + ${fixedCost}$, where $m$ is a constant. The total cost to produce ${amount1} shirts is $${cost1}. What is the total cost, in dollars, to produce ${amount2} shirts?`,
+      questionText: `A company's total cost, in dollars, to produce $x$ shirts is given by the function $c(x) = mx + ${fixedCost}$, where $m$ is a constant. The total cost to produce ${amount1} shirts is \\$${cost1}. What is the total cost, in dollars, to produce ${amount2} shirts?`,
       figureCode: null,
       options: null,
       correctAnswer: cost2.toString(),

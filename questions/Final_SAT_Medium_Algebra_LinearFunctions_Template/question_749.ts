@@ -1,14 +1,14 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 749
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [j(x) = mx + 144, j(12) = 18, find j(10) = 39]
- * - Difficulty factors: [Two-step: find m, evaluate at new point]
+ * - Number ranges: [j(x) = mx + b, j(x1) given, find j(x2)]
+ * - Difficulty factors: [Two-step: find m from a point, evaluate at new point]
  * - Distractor patterns: [None - fill in blank]
- * - Constraints: [m must be negative for this pattern]
+ * - Constraints: [m must be a negative integer; b positive intercept]
  * - Question type: [Text→Fill in Blank]
  * - Figure generation: [None]
  */
@@ -21,38 +21,30 @@ export const generator_749 = {
     skill: "Linear Functions",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values
-    // Intercept: 100-200
-    const b = getRandomInt(100, 200);
-    // Point 1: x1 = 10-15
+    // STEP 1: Generate random values (answer-first, so m is always an integer)
+    // Negative integer slope.
+    const m = getRandomInt(-15, -3);
+    // First point x-value.
     const x1 = getRandomInt(10, 15);
-    // j(x1) should be small positive
-    const j1 = getRandomInt(10, 30);
-    // Calculate m (should be negative)
-    // j1 = m*x1 + b → m = (j1 - b)/x1
-    let m = (j1 - b) / x1;
-    // Ensure m is integer
-    let adjustedJ1 = j1;
-    while (!Number.isInteger(m)) {
-      const adjustment = getRandomInt(-2, 2);
-      adjustedJ1 = j1 + adjustment;
-      m = (adjustedJ1 - b) / x1;
-      if (Number.isInteger(m)) break;
-    }
-    
-    // Target x
+    // Small positive value of j at x1.
+    const j1 = getRandomInt(5, 40);
+    // Derive the intercept so everything is an integer and b > 0.
+    // j1 = m*x1 + b  ->  b = j1 - m*x1  (positive since m < 0)
+    const b = j1 - m * x1;
+
+    // Second x-value: strictly less than x1, so j2 > j1 (m is negative).
     const x2 = x1 - getRandomInt(1, 3);
     const j2 = m * x2 + b;
-    
+
     // STEP 2: Return question data
     return {
-      questionText: `$j(x) = mx + ${b}$ For the linear function $j$, $m$ is a constant and $j(${x1}) = ${adjustedJ1}$. What is the value of $j(${x2})$?`,
+      questionText: `$j(x) = mx + ${b}$ For the linear function $j$, $m$ is a constant and $j(${x1}) = ${j1}$. What is the value of $j(${x2})$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: j2.toString(),
-      explanation: `First find $m$: $j(${x1}) = m(${x1}) + ${b} = ${adjustedJ1}$, so $m(${x1}) = ${adjustedJ1 - b}$, giving $m = ${m}$. Then $j(${x2}) = ${m}(${x2}) + ${b} = ${m * x2} + ${b} = ${j2}$.`
+      explanation: `First find $m$: $j(${x1}) = m(${x1}) + ${b} = ${j1}$, so $m(${x1}) = ${m * x1}$, giving $m = ${m}$. Then $j(${x2}) = ${m}(${x2}) + ${b} = ${m * x2} + ${b} = ${j2}$.`
     };
   }
 };

@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -33,37 +33,41 @@ export const generator_791 = {
     const maxBoxesExact = remainingCapacity / boxWeight;
     const maxBoxes = Math.floor(maxBoxesExact);
     
-    // STEP 3: Create distractors (all exceed limit)
+    // STEP 3: Create distractors (all exceed the limit). Build them strictly
+    // increasing above maxBoxes so no two distractors — and none versus the
+    // correct answer — can ever collide (guards against DUP_OPTIONS).
     const distractor1 = maxBoxes + 1;
-    const distractor2 = maxBoxes + getRandomInt(2, 5);
-    const distractor3 = maxBoxes + getRandomInt(5, 10);
-    
-    // STEP 4: Create options
+    const distractor2 = distractor1 + getRandomInt(1, 3);
+    const distractor3 = distractor2 + getRandomInt(1, 4);
+
+    // STEP 4: Create options. correctAnswer will match one of these exactly.
     const optionsData = [
       { text: `$${maxBoxes}$`, isCorrect: true },
       { text: `$${distractor1}$`, isCorrect: false },
       { text: `$${distractor2}$`, isCorrect: false },
       { text: `$${distractor3}$`, isCorrect: false }
     ];
-    
+
     // STEP 5: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    // STEP 6: Build explanation
-    const explanation = `Choice ${correctOption.letter} is correct. Let $b$ be the number of boxes. The combined weight is $${trailerWeight} + ${boxWeight}b \\leq ${maxWeight}$. Solving: $${boxWeight}b \\leq ${remainingCapacity}$, so $b \\leq ${maxBoxesExact.toFixed(2)}$. Since boxes must be whole numbers, the maximum is ${maxBoxes}. Choice ${incorrectOptions[0].letter} would give total weight ${trailerWeight + boxWeight * distractor1} which exceeds ${maxWeight}. Choices ${incorrectOptions[1].letter} and ${incorrectOptions[2].letter} also exceed the weight limit.`;
-    
-    // STEP 7: Return question data
+
+    // STEP 6: Build explanation. Every math span begins with a letter (w or b),
+    // never a bare digit, so there is no currency/math collision (DOLLAR_RISK).
+    const explanation = `Choice ${correctOption.letter} is correct. Let $b$ be the number of boxes, so the total weight in pounds is $w = ${trailerWeight} + ${boxWeight}b$ and must satisfy $w \\le ${maxWeight}$. Subtracting the trailer weight leaves at most ${remainingCapacity} pounds for the boxes. Dividing by ${boxWeight} gives $b \\le ${maxBoxesExact.toFixed(2)}$. Since the number of boxes must be a whole number, the maximum is ${maxBoxes}. Choice ${incorrectOptions[0].letter} would make the total weight ${trailerWeight + boxWeight * distractor1} pounds, which exceeds ${maxWeight}; choices ${incorrectOptions[1].letter} and ${incorrectOptions[2].letter} exceed the limit by even more.`;
+
+    // STEP 7: Return question data. Weights carry the unit "pounds", so the
+    // numeric magnitudes are plain math spans (no dollar currency involved).
     return {
-      questionText: `A moving truck can tow a trailer if the combined weight of the trailer and the boxes it contains is no more than $${maxWeight}$ pounds. What is the maximum number of boxes this truck can tow in a trailer with a weight of $${trailerWeight}$ pounds if each box weighs $${boxWeight}$ pounds?`,
+      questionText: `A moving truck can tow a trailer if the combined weight of the trailer and the boxes it contains is no more than ${maxWeight} pounds. What is the maximum number of boxes this truck can tow in a trailer that weighs ${trailerWeight} pounds if each box weighs ${boxWeight} pounds?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: maxBoxes.toString(),
+      correctAnswer: `$${maxBoxes}$`,
       explanation: explanation
     };
   }

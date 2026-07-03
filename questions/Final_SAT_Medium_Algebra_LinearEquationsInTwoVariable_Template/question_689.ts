@@ -1,16 +1,16 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 689
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [x-intercept: 60, y-intercept: 40, slope: -2/3]
  * - Difficulty factors: [Finding equation from intercepts]
  * - Distractor patterns: [A/C: slope-intercept wrong values, B: correct, D: swapped coefficients]
  * - Constraints: [Clean integer intercepts]
- * - Question type: [Figure→Multiple Choice Text]
- * - Figure generation: [Mafs line plot with intercept points]
+ * - Question type: [Figure->Multiple Choice Text]
+ * - Figure generation: [Line plot with intercept points]
  */
 
 export const generator_689 = {
@@ -21,80 +21,76 @@ export const generator_689 = {
     skill: "Linear Equations In Two Variable",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate parameters
-    // Standard form: Ax + By = C where C is common multiple
+    // STEP 1: Generate parameters.
+    // Standard form Ax + By = C with C = A*B*k guarantees clean INTEGER
+    // intercepts: xInt = C/A = B*k, yInt = C/B = A*k. Keep A != B so the
+    // "swapped coefficient" and "swapped slope-intercept" distractors can
+    // never collide with the correct equation or with each other.
     const A = getRandomInt(2, 15);
-    const B = getRandomInt(2, 15);
-    const C = A * B * getRandomInt(2, 4); // Ensures clean intercepts
-    
-    const xInt = C / A;
-    const yInt = C / B;
-    const slope = -A / B;
-    
-    // STEP 2: Build Mafs code
-    const _svg_0 = yInt + 10; const _svg_1 = xInt + 10;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-10,xmax=_svg_1;
-      const ymin=-10,ymax=_svg_0;
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Border
-      s+='<rect x="'+P+'" y="'+P+'" width="'+(W-2*P)+'" height="'+(H-2*P)+'" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>';
-      // X axis
-      const y0=Math.max(ymin,Math.min(ymax,0));
-      s+='<line x1="'+P+'" y1="'+my(y0)+'" x2="'+(W-P)+'" y2="'+my(y0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // Y axis
-      const x0=Math.max(xmin,Math.min(xmax,0));
-      s+='<line x1="'+mx(x0)+'" y1="'+P+'" x2="'+mx(x0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // X tick labels
-      const xstep=Math.ceil((xmax-xmin)/8);
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        s+='<line x1="'+mx(x)+'" y1="'+my(y0)+'" x2="'+mx(x)+'" y2="'+(my(y0)+4)+'" stroke="currentColor" stroke-width="1"/>';
-        s+='<text x="'+mx(x)+'" y="'+(my(y0)+15)+'" text-anchor="middle" font-size="10" fill="currentColor">'+x+'</text>';
-      }
-      // Y tick labels
-      const ystep=Math.ceil((ymax-ymin)/6);
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        s+='<line x1="'+(mx(x0)-4)+'" y1="'+my(y)+'" x2="'+mx(x0)+'" y2="'+my(y)+'" stroke="currentColor" stroke-width="1"/>';
-        s+='<text x="'+(mx(x0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="10" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=-10,xmax=(xInt + 10);
-      const ymin=-10,ymax=(yInt + 10);
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      const cx=mx(0),cy=my((yInt));
-      return '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>';
-    })()}</svg></div>`;
-    
-    // STEP 3: Create options
+    let B = getRandomInt(2, 15);
+    let guard = 0;
+    while (B === A && guard++ < 50) B = getRandomInt(2, 15);
+    if (B === A) B = A === 15 ? A - 1 : A + 1; // deterministic fallback
+    const k = getRandomInt(2, 4);
+    const C = A * B * k; // ensures clean intercepts
+
+    const xInt = C / A; // = B * k, integer
+    const yInt = C / B; // = A * k, integer
+
+    // STEP 2: Build a compact SVG line graph. The drawn line passes through
+    // BOTH intercepts (0, yInt) and (xInt, 0), matching the question's numbers
+    // for every draw. Axes auto-scale to contain the data.
+    const W = 460, H = 300, P = 46;
+    const xMin = -xInt * 0.18, xMax = xInt * 1.18;
+    const yMin = -yInt * 0.18, yMax = yInt * 1.18;
+    const mx = (x: number) => P + ((x - xMin) / (xMax - xMin)) * (W - 2 * P);
+    const my = (y: number) => H - P - ((y - yMin) / (yMax - yMin)) * (H - 2 * P);
+    const x0 = mx(0), y0 = my(0);
+
+    const figureCode = `<div style="width:100%;max-width:460px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;font-family:sans-serif;" xmlns="http://www.w3.org/2000/svg">`
+      // axes
+      + `<line x1="${P}" y1="${y0}" x2="${W - P}" y2="${y0}" stroke="currentColor" stroke-width="1.5"/>`
+      + `<line x1="${x0}" y1="${P}" x2="${x0}" y2="${H - P}" stroke="currentColor" stroke-width="1.5"/>`
+      // axis arrows / labels
+      + `<text x="${W - P + 10}" y="${y0 + 4}" text-anchor="middle" font-size="12" fill="currentColor">x</text>`
+      + `<text x="${x0}" y="${P - 12}" text-anchor="middle" font-size="12" fill="currentColor">y</text>`
+      // x-intercept tick + label
+      + `<line x1="${mx(xInt)}" y1="${y0 - 4}" x2="${mx(xInt)}" y2="${y0 + 4}" stroke="currentColor" stroke-width="1"/>`
+      + `<text x="${mx(xInt)}" y="${y0 + 18}" text-anchor="middle" font-size="11" fill="currentColor">${xInt}</text>`
+      // y-intercept tick + label
+      + `<line x1="${x0 - 4}" y1="${my(yInt)}" x2="${x0 + 4}" y2="${my(yInt)}" stroke="currentColor" stroke-width="1"/>`
+      + `<text x="${x0 - 10}" y="${my(yInt) + 4}" text-anchor="end" font-size="11" fill="currentColor">${yInt}</text>`
+      // the line through both intercepts
+      + `<line x1="${mx(0)}" y1="${my(yInt)}" x2="${mx(xInt)}" y2="${my(0)}" stroke="#3b82f6" stroke-width="2.5"/>`
+      // intercept points
+      + `<circle cx="${mx(0)}" cy="${my(yInt)}" r="4.5" fill="#3b82f6" stroke="white" stroke-width="1.5"/>`
+      + `<circle cx="${mx(xInt)}" cy="${my(0)}" r="4.5" fill="#3b82f6" stroke="white" stroke-width="1.5"/>`
+      + `</svg></div>`;
+
+    // STEP 3: Create options. Correct = standard form Ax + By = C.
     const optionsData = [
       { text: `$y = ${A}x + ${B}$`, isCorrect: false },
       { text: `$${A}x + ${B}y = ${C}$`, isCorrect: true },
       { text: `$y = ${B}x + ${A}$`, isCorrect: false },
       { text: `$${B}x + ${A}y = ${C}$`, isCorrect: false }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const correctLetter = correctOption.letter;
-    
+
     return {
-      questionText: `The graph shows the relationship between the number of shares of stock from Company A, $x$, and the number of shares of stock from Company B, $y$, that Simone can purchase. Which equation could represent this relationship?`,
-      figureCode: mafsCode,
+      questionText: `The graph shows the relationship between the number of shares of stock from Company A, x, and the number of shares of stock from Company B, y, that an investor can purchase. Which equation could represent this relationship?`,
+      figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
-      explanation: `Choice ${correctLetter} is correct. The intercepts are $(0, ${yInt})$ and $(${xInt}, 0)$. In $${A}x + ${B}y = ${C}$, when $x=0$, $y=${yInt}$. When $y=0$, $x=${xInt}$.`
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctLetter} is correct. The line crosses the y-axis at $(0, ${yInt})$ and the x-axis at $(${xInt}, 0)$. Testing the equation $${A}x + ${B}y = ${C}$: when x = 0, $${B}y = ${C}$, so y = ${yInt}; when y = 0, $${A}x = ${C}$, so x = ${xInt}. Both intercepts match, so this equation represents the graph. The two slope-intercept forms treat the coefficients ${A} and ${B} as a slope and a y-intercept, which do not match the graph. The standard form $${B}x + ${A}y = ${C}$ swaps the coefficients, giving the intercepts $(0, ${xInt})$ and $(${yInt}, 0)$ instead.`
     };
   }
 };

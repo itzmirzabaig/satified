@@ -1,16 +1,31 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 880
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [AB: single/double digit 5-15, BC: 15-25, FE: 5-12]
- * - Difficulty factors: [Parallel lines, proportional segments, solving proportion equation]
+ * - Number ranges: [AB: 5-15, BC: 15-25, FE: 5-12]
+ * - Difficulty factors: [Parallel lines, proportional segments, solving proportion]
  * - Distractor patterns: [A: rounding error, C: swapped ratio, D: added instead of multiplied]
  * - Constraints: [AB/BC = FE/ED, all values positive]
- * - Question type: [Figure→Multiple Choice Text]
+ * - Question type: [Figure->Multiple Choice Text]
  * - Figure generation: [Three parallel lines cut by two transversals]
+ *
+ * FIXED:
+ * - Rebuilt the corrupted figure IIFEs into one plain-SVG template literal:
+ *   two transversals (AC, FD) crossed by three parallel segments (AF, BE, CD).
+ *   Segment labels are plain "AB"/"BC"/"FE" (old figure printed literal "$AB").
+ *   B and E sit at the same fractional height (AB/(AB+BC) = FE/(FE+ED) by the
+ *   intercept theorem), so all three connectors are drawn horizontal.
+ * - Collapsed doubled backslashes (\\\\ -> \\) so MathJax renders \overline,
+ *   \parallel, \frac, \cdot, \implies correctly.
+ * - correctAnswer = round(BC*FE/AB, 1), presented to the nearest tenth.
+ * - Distractors are distinct misconception values; a bounded retry (<=50)
+ *   redraws AB/BC/FE whenever two of the four rounded values coincide or any
+ *   is non-positive, so no two options ever match (fixes DUP_OPTIONS and the
+ *   downstream LETTER_MISMATCH). Explanation letters come from the shuffled
+ *   array; its numbers come from the same live variables.
  */
 
 export const generator_880 = {
@@ -21,202 +36,106 @@ export const generator_880 = {
     skill: "Lines Angles And Triangles",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values ensuring clean division
-    // AB must divide evenly into BC * FE for clean answer
-    const AB = getRandomInt(5, 15);
-    const BC = getRandomInt(15, 25);
-    const FE = getRandomInt(5, 12);
-    
-    // Calculate ED using proportion: AB/BC = FE/ED
-    // ED = (BC * FE) / AB
-    // Ensure this divides evenly by choosing values carefully
-    const numerator = BC * FE;
-    let ED = numerator / AB;
-    
-    // If not clean, adjust AB to be a divisor of numerator
-    if (!Number.isInteger(ED)) {
-      // Find a divisor of numerator in range 5-15
-      const divisors = [];
-      for (let i = 5; i <= 15; i++) {
-        if (numerator % i === 0) {
-          divisors.push(i);
+    const round1 = (v: number) => Math.round(v * 10) / 10;
+
+    // STEP 1: draw AB, BC, FE so the four option values are distinct & positive.
+    let AB = 0, BC = 0, FE = 0, ED = 0;
+    let correctVal = 0;
+    let optionSpecs: { val: number; isCorrect: boolean; reason?: string }[] = [];
+
+    let tries = 0;
+    while (tries++ < 50) {
+      AB = getRandomInt(5, 15);
+      BC = getRandomInt(15, 25);
+      FE = getRandomInt(5, 12);
+
+      ED = (BC * FE) / AB;                 // intercept theorem: AB/BC = FE/ED
+      correctVal = round1(ED);
+
+      // Distractor B: reciprocal proportion AB/BC = ED/FE  -> ED = AB*FE/BC
+      const bVal = round1((AB * FE) / BC);
+      // Distractor C: wrong pairing AB*BC/FE
+      const cVal = round1((AB * BC) / FE);
+      // Distractor D: adds intercepts instead of scaling -> FE + (BC - AB)
+      const dVal = round1(FE + BC - AB);
+
+      const specs = [
+        { val: correctVal, isCorrect: true },
+        { val: bVal, isCorrect: false, reason: "uses the reciprocal proportion $\\frac{AB}{BC} = \\frac{ED}{FE}$" },
+        { val: cVal, isCorrect: false, reason: "multiplies $AB$ and $BC$ instead of applying the proportion" },
+        { val: dVal, isCorrect: false, reason: "adds the segment lengths instead of scaling them" },
+      ];
+
+      const vals = specs.map(s => s.val);
+      const allPositive = vals.every(v => v > 0);
+      let distinct = true;
+      for (let a = 0; a < vals.length && distinct; a++) {
+        for (let b = a + 1; b < vals.length; b++) {
+          if (Math.abs(vals[a] - vals[b]) < 0.05) { distinct = false; break; }
         }
       }
-      if (divisors.length > 0) {
-        const adjustedAB = divisors[getRandomInt(0, divisors.length - 1)];
-        ED = numerator / adjustedAB;
-      } else {
-        // Fallback: force integer result
-        ED = Math.round(ED);
-      }
+      if (allPositive && distinct) { optionSpecs = specs; break; }
     }
-    
-    const ED_rounded = Math.round(ED * 10) / 10;
-    
-    // STEP 2: Build Mafs code with calculated positions
-    const scale = 0.3;
-    const ax = 0;
-    const ay = 10;
-    const bx = AB * scale;
-    const by = 8.5;
-    const cx = (AB + BC) * scale;
-    const cy = 4.5;
-    const fx = 0;
-    const fy = 3.5;
-    const ex = FE * scale;
-    const ey = 1.5;
-    const dx = (FE + ED_rounded) * scale;
-    const dy = -2.5;
-    
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 320" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      const xstep=Math.max(1,Math.ceil((10-(-1))/8));
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0)continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      const ystep=Math.max(1,Math.ceil((11-(-2))/6));
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        if(y===0)continue;
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((ax))+'" y1="'+my((ay))+'" x2="'+mx((fx))+'" y2="'+my((fy))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((bx))+'" y1="'+my((by))+'" x2="'+mx((ex))+'" y2="'+my((ey))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((cx))+'" y1="'+my((cy))+'" x2="'+mx((dx))+'" y2="'+my((dy))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((ax))+'" y1="'+my((ay))+'" x2="'+mx((bx))+'" y2="'+my((by))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((bx))+'" y1="'+my((by))+'" x2="'+mx((cx))+'" y2="'+my((cy))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((ax - 0.5))+'" y="'+my((ay + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">A</text>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((bx + 0.2))+'" y="'+my((by + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">B</text>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((cx + 0.3))+'" y="'+my((cy + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">C</text>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((fx - 0.5))+'" y="'+my((fy - 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">F</text>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((ex + 0.2))+'" y="'+my((ey - 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">E</text>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((dx + 0.3))+'" y="'+my((dy - 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">D</text>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((ax + (bx-ax)/2 - 0.5))+'" y="'+my((ay + (by-ay)/2 + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">$AB</text>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((bx + (cx-bx)/2))+'" y="'+my((by + (cy-by)/2 + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">$BC</text>';
-    })()}${(() => {
-      const xmin=-1,xmax=10;
-      const ymin=-2,ymax=11;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((fx + (ex-fx)/2 - 0.5))+'" y="'+my((fy + (ey-fy)/2 - 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">$FE</text>';
-    })()}</svg></div>`;
 
-    // STEP 3: Create options
-    const correctText = ED_rounded.toFixed(1);
-    const distractorA = (ED * 0.96).toFixed(1); // Rounding error
-    const distractorC = ((AB * FE) / BC).toFixed(1); // Swapped ratio
-    const distractorD = (FE + BC - AB).toFixed(1); // Nonsensical combination
-    
-    const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "results from rounding error in calculation" },
-      { text: correctText, isCorrect: true },
-      { text: distractorC, isCorrect: false, reason: "results from using the reciprocal proportion AB/BC = ED/FE" },
-      { text: distractorD, isCorrect: false, reason: "results from incorrect arithmetic operations" }
-    ];
-    
+    // STEP 2: figure — transversals AC (left) and FD (right) cut by three
+    // parallel segments AF, BE, CD. B and E at the same fractional height.
+    const W = 420, H = 300;
+    const topY = 50, botY = 250;
+    const Ax = 90, Cx = 130;              // left transversal drifts right going down
+    const Fx = 300, Dx = 340;             // right transversal drifts right going down
+    const fMid = AB / (AB + BC);          // fractional height of B and E
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    const Bx = lerp(Ax, Cx, fMid), Ex = lerp(Fx, Dx, fMid);
+    const midY = lerp(topY, botY, fMid);
+
+    const svg =
+      `<div style="width:100%;max-width:420px;margin:0 auto;">` +
+      `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      // transversals
+      `<line x1="${Ax}" y1="${topY}" x2="${Cx}" y2="${botY}" stroke="currentColor" stroke-width="2"/>` +
+      `<line x1="${Fx}" y1="${topY}" x2="${Dx}" y2="${botY}" stroke="currentColor" stroke-width="2"/>` +
+      // three parallel connectors
+      `<line x1="${Ax}" y1="${topY}" x2="${Fx}" y2="${topY}" stroke="#3b82f6" stroke-width="2"/>` +
+      `<line x1="${Bx}" y1="${midY}" x2="${Ex}" y2="${midY}" stroke="#3b82f6" stroke-width="2"/>` +
+      `<line x1="${Cx}" y1="${botY}" x2="${Dx}" y2="${botY}" stroke="#3b82f6" stroke-width="2"/>` +
+      // vertex labels
+      `<text x="${Ax - 18}" y="${topY + 4}" font-size="14" font-style="italic" fill="currentColor">A</text>` +
+      `<text x="${Bx - 18}" y="${midY + 4}" font-size="14" font-style="italic" fill="currentColor">B</text>` +
+      `<text x="${Cx - 18}" y="${botY + 4}" font-size="14" font-style="italic" fill="currentColor">C</text>` +
+      `<text x="${Fx + 8}" y="${topY + 4}" font-size="14" font-style="italic" fill="currentColor">F</text>` +
+      `<text x="${Ex + 8}" y="${midY + 4}" font-size="14" font-style="italic" fill="currentColor">E</text>` +
+      `<text x="${Dx + 8}" y="${botY + 4}" font-size="14" font-style="italic" fill="currentColor">D</text>` +
+      // segment-length labels (live values) on the transversals
+      `<text x="${lerp(Ax, Bx, 0.5) - 26}" y="${lerp(topY, midY, 0.5) + 4}" font-size="13" fill="currentColor">AB = ${AB}</text>` +
+      `<text x="${lerp(Bx, Cx, 0.5) - 26}" y="${lerp(midY, botY, 0.5) + 4}" font-size="13" fill="currentColor">BC = ${BC}</text>` +
+      `<text x="${lerp(Fx, Ex, 0.5) + 12}" y="${lerp(topY, midY, 0.5) + 4}" font-size="13" fill="currentColor">FE = ${FE}</text>` +
+      `</svg></div>`;
+
+    // STEP 3: build option strings (nearest tenth) and shuffle.
+    const correctText = correctVal.toFixed(1);
+    const optionsData = optionSpecs.map(s => ({
+      text: s.val.toFixed(1),
+      isCorrect: s.isCorrect,
+      reason: s.reason,
+    }));
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+    const exact = (BC * FE) / AB;
+
     return {
-      questionText: `In the figure above, $\\\\overline{AF}$, $\\\\overline{BE}$, and $\\\\overline{CD}$ are parallel. Points $B$ and $E$ lie on $\\\\overline{AC}$ and $\\\\overline{FD}$, respectively. If $AB = ${AB}$, $BC = ${BC}$, and $FE = ${FE}$, what is the length of $\\\\overline{ED}$, to the nearest tenth?`,
-      figureCode: mafsCode,
+      questionText: `In the figure, $\\overline{AF}$, $\\overline{BE}$, and $\\overline{CD}$ are parallel. Points $B$ and $E$ lie on $\\overline{AC}$ and $\\overline{FD}$, respectively. If $AB = ${AB}$, $BC = ${BC}$, and $FE = ${FE}$, what is the length of $\\overline{ED}$, to the nearest tenth?`,
+      figureCode: svg,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Since $\\\\overline{AF} \\\\parallel \\\\overline{BE} \\\\parallel \\\\overline{CD}$, the segments intercepted on the transversals $\\\\overline{AC}$ and $\\\\overline{FD}$ are proportional: $\\\\frac{AB}{BC} = \\\\frac{FE}{ED}$. Substituting the given values: $\\\\frac{${AB}}{${BC}} = \\\\frac{${FE}}{ED}$. Solving for $ED$: $${AB} \\\\cdot ED = ${BC * FE} \\\\implies ED = \\\\frac{${BC * FE}}{${AB}} \\\\approx ${(BC * FE / AB).toFixed(2)}$. Rounding to the nearest tenth gives ${correctText}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Because $\\overline{AF} \\parallel \\overline{BE} \\parallel \\overline{CD}$, the segments they cut on the transversals $\\overline{AC}$ and $\\overline{FD}$ are proportional: $\\frac{AB}{BC} = \\frac{FE}{ED}$. Substituting the given values gives $\\frac{${AB}}{${BC}} = \\frac{${FE}}{ED}$, so $ED = \\frac{${BC} \\cdot ${FE}}{${AB}} = \\frac{${BC * FE}}{${AB}}$, which gives $ED \\approx ${exact.toFixed(2)}$. Rounded to the nearest tenth, $ED = ${correctText}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -1,15 +1,15 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 773
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [max bushes: 164, ratio: 3]
  * - Difficulty factors: [System setup from word problem, constraint translation]
- * - Distractor patterns: [A/B=wrong inequality signs, C=swapped ratio]
- * - Constraints: [a + b ≤ 164, a ≤ 3b]
- * - Question type: [Word Problem→Multiple Choice Text]
+ * - Distractor patterns: [wrong inequality sign on total, reversed ratio]
+ * - Constraints: [a + b <= maxTotal, a <= ratio*b]
+ * - Question type: [Word Problem -> Multiple Choice Text]
  * - Figure generation: [None]
  */
 
@@ -21,49 +21,57 @@ export const generator_773 = {
     skill: "Linear Inequalities In One Or Two Variables",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values (MATCH ORIGINAL RANGES)
-    // Original: max 164 bushes, azaleas at most 3 times boxwoods
+    // STEP 1: Generate random values (MATCH ORIGINAL RANGES).
     const maxTotal = getRandomInt(100, 200);
     const ratio = getRandomInt(2, 5); // "at most ratio times"
-    
+
     const bush1 = "azaleas";
     const bush2 = "boxwoods";
-    const a = "a"; // azaleas
-    const b = "b"; // boxwoods
-    
-    // STEP 2: Create options
-    // Correct: a + b ≤ maxTotal, a ≤ ratio*b
-    // A: ≥ for total, wrong ratio direction
-    // B: ≥ for total, correct ratio
-    // C: ≤ for total, wrong ratio direction (3a ≥ b means b ≤ 3a)
-    
+
+    // STEP 2: Build the four systems. The correct one is a + b <= maxTotal
+    // and a <= ratio*b. Distractors flip the total's inequality sign and/or
+    // reverse the ratio (written as b <= ratio*a so no "$<digit>" appears).
+    // Each option carries its own reason so the explanation is shuffle-safe.
+    const totalLE = `$a + b \\leq ${maxTotal}$`;
+    const totalGE = `$a + b \\geq ${maxTotal}$`;
+    const ratioOK = `$a \\leq ${ratio}b$`;      // azaleas at most ratio times boxwoods
+    const ratioBad = `$b \\leq ${ratio}a$`;     // reversed relationship
+
     const optionsData = [
-      { text: `$${a} + ${b} \\geq ${maxTotal}$\n$${ratio}${a} \\geq ${b}$`, isCorrect: false },
-      { text: `$${a} + ${b} \\geq ${maxTotal}$\n$${a} \\leq ${ratio}${b}$`, isCorrect: false },
-      { text: `$${a} + ${b} \\leq ${maxTotal}$\n$${ratio}${a} \\geq ${b}$`, isCorrect: false },
-      { text: `$${a} + ${b} \\leq ${maxTotal}$\n$${a} \\leq ${ratio}${b}$`, isCorrect: true }
+      { text: `${totalGE}\n${ratioBad}`, isCorrect: false,
+        reason: `uses $\\geq$ for the total, meaning at least ${maxTotal} bushes, and reverses the ratio` },
+      { text: `${totalGE}\n${ratioOK}`, isCorrect: false,
+        reason: `uses $\\geq$ for the total, meaning at least ${maxTotal} bushes, rather than no more than ${maxTotal}` },
+      { text: `${totalLE}\n${ratioBad}`, isCorrect: false,
+        reason: `reverses the ratio, making the number of boxwoods at most ${ratio} times the number of azaleas` },
+      { text: `${totalLE}\n${ratioOK}`, isCorrect: true, reason: '' },
     ];
-    
-    // STEP 3: Shuffle and assign letters
+
+    // STEP 3: Shuffle and assign letters.
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
-    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    // STEP 4: Build explanation
-    const explanation = `Choice ${correctOption.letter} is correct. It's given that there will be no more than ${maxTotal} total bushes planted, which can be represented by $${a} + ${b} \\leq ${maxTotal}$. It's also given that the number of ${bush1} planted will be at most ${ratio} times the number of ${bush2} planted, which can be represented by $${a} \\leq ${ratio}${b}$. Choice ${incorrectOptions[0].letter} is incorrect because it uses $\\geq$ for the total (meaning at least ${maxTotal}) and reverses the ratio. Choice ${incorrectOptions[1].letter} is incorrect because it uses $\\geq$ for the total. Choice ${incorrectOptions[2].letter} is incorrect because it reverses the ratio relationship.`;
-    
-    // STEP 5: Return question data
+    const correctText = correctOption.text;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+
+    // STEP 4: Build explanation from live variables and per-option reasons.
+    const distractorSentences = incorrectOptions
+      .map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`)
+      .join(' ');
+
+    const explanation = `Choice ${correctOption.letter} is correct. There will be no more than ${maxTotal} total bushes, which is $a + b \\leq ${maxTotal}$. The number of ${bush1} will be at most ${ratio} times the number of ${bush2}, which is $a \\leq ${ratio}b$. ${distractorSentences}`;
+
+    // STEP 5: Return question data.
     return {
-      questionText: `A city employee will plant two types of bushes, ${bush1} and ${bush2}, in a park. There will be no more than $${maxTotal}$ total bushes planted, and the number of ${bush1} planted will be at most ${ratio} times the number of ${bush2} planted. Which of the following systems of inequalities best represents this situation, where $${a}$ is the number of ${bush1} that will be planted, and $${b}$ is the number of ${bush2} that will be planted?`,
+      questionText: `A city employee will plant two types of bushes, ${bush1} and ${bush2}, in a park. There will be no more than ${maxTotal} total bushes planted, and the number of ${bush1} planted will be at most ${ratio} times the number of ${bush2} planted. Which of the following systems of inequalities best represents this situation, where $a$ is the number of ${bush1} that will be planted and $b$ is the number of ${bush2} that will be planted?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `${a} + ${b} \\leq ${maxTotal}, ${a} \\leq ${ratio}${b}`,
+      correctAnswer: correctText,
       explanation: explanation
     };
   }

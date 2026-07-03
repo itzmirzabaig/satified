@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -42,15 +42,14 @@ export const generator_686 = {
     }));
     
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
     return {
       questionText: `Line $k$ is defined by $y=${slope}x+\\frac{${interceptNum}}{${interceptDen}}$. Line $j$ is perpendicular to line $k$ in the $xy$-plane. What is the slope of line $j$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
-      explanation: `The correct answer is ${correctLetter}.\n\nThe given equation for line $k$ is in slope-intercept form, $y=mx+b$, where $m$ is the slope and $b$ is the $y$-intercept. Comparing $y=${slope}x+\\frac{${interceptNum}}{${interceptDen}}$ to the slope-intercept form, we can see that the slope of line $k$ is ${slope}.\n\nWhen two lines are perpendicular in the $xy$-plane, the product of their slopes is $-1$. Let $m_k$ be the slope of line $k$ and $m_j$ be the slope of line $j$. We have $m_k \\cdot m_j = -1$. Substituting $m_k = ${slope}$, we get $${slope} \\cdot m_j = -1$, so $m_j = -\\frac{1}{${slope}}$.\n\n${incorrectOptions.map(opt => `${opt.letter} is incorrect because ${opt.reason}.`).join(' ')}`
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctOption.letter} is correct. The given equation for line $k$ is in slope-intercept form, $y=mx+b$, where $m$ is the slope and $b$ is the $y$-intercept. Comparing $y=${slope}x+\\frac{${interceptNum}}{${interceptDen}}$ to the slope-intercept form, the slope of line $k$ is $${slope}$. When two lines are perpendicular in the $xy$-plane, the product of their slopes is $-1$. Let $m_k$ be the slope of line $k$ and $m_j$ be the slope of line $j$, so $m_k \\cdot m_j = -1$. Substituting $m_k = ${slope}$ gives $${slope} \\cdot m_j = -1$, so $m_j = -\\frac{1}{${slope}}$. ${incorrectOptions.map(opt => `Choice ${opt.letter} is incorrect because it is ${opt.reason}.`).join(' ')}`
     };
   }
 };

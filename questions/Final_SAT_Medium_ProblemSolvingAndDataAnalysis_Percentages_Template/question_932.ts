@@ -23,31 +23,24 @@ export const generator_932 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values - original uses 80% and 88 faulty items
-    // Keep percentage as a "nice" percentage (ends in 0 or 5, reasonable range 60-90%)
-    const percent = getRandomInt(6, 9) * 10; // 60, 70, 80, 90
-    // Generate total first, then calculate faulty to ensure clean division
-    const total = getRandomInt(10, 20) * 5; // 50, 55, 60, ..., 100 - divisible by 5 for clean math
-    const faultyItems = Math.round((percent / 100) * total);
-    
-    // Ensure we get a reasonable double-digit number like the original (88)
-    // Adjust total if needed to get faulty items in 50-150 range
-    const adjustedTotal = Math.ceil(faultyItems * 100 / percent);
-    const finalFaulty = Math.round((percent / 100) * adjustedTotal);
-    const finalTotal = adjustedTotal;
-    
-    // STEP 2: Calculate answer
-    // Equation: (percent/100) * total = faultyItems
-    // total = faultyItems * 100 / percent
-    const correctAnswer = (finalFaulty * 100 / percent).toString();
-    
+    // STEP 1: Answer-first construction so total is always a clean integer.
+    // percent is a multiple of 10 in {60,70,80,90}; total is a multiple of 10.
+    // faulty = (percent/100) * total = (percent/10) * (total/10) is then an
+    // exact integer for every draw, and the answer (total) is an exact integer.
+    const percent = getRandomInt(6, 9) * 10;       // 60, 70, 80, 90
+    const totalItems = getRandomInt(6, 15) * 10;   // 60, 70, ..., 150
+    const faultyItems = (percent / 10) * (totalItems / 10); // exact integer
+
+    // STEP 2: Answer is the total number of items.
+    const correctAnswer = totalItems.toString();
+
     // STEP 3: Return question data
     return {
-      questionText: `In a sample, ${percent}\\% of the items are faulty. There are ${finalFaulty} faulty items in the sample. How many total items are in the sample?`,
+      questionText: `In a sample, ${percent}\\% of the items are faulty. There are ${faultyItems} faulty items in the sample. How many total items are in the sample?`,
       figureCode: null,
       options: null,
       correctAnswer: correctAnswer,
-      explanation: `The correct answer is ${correctAnswer}. Let \\( x \\) represent the total number of items in the sample. It's given that ${percent}\\% of the items are faulty and that there are ${finalFaulty} faulty items in the sample. Therefore, ${percent}\\% of \\( x \\) is ${finalFaulty}. Since ${percent}\\% can be rewritten as \\( \\frac{${percent}}{100} \\), it follows that \\( \\frac{${percent}}{100} x=${finalFaulty} \\). Multiplying both sides of this equation by 100 yields ${percent}x=${finalFaulty * 100}. Dividing both sides of this equation by ${percent} yields \\( x=${correctAnswer} \\). Therefore, there are ${correctAnswer} total items in the sample.`
+      explanation: `The correct answer is ${correctAnswer}. Let \\( x \\) represent the total number of items in the sample. It's given that ${percent}\\% of the items are faulty and that there are ${faultyItems} faulty items in the sample. Therefore, ${percent}\\% of \\( x \\) is ${faultyItems}. Since ${percent}\\% can be rewritten as \\( \\frac{${percent}}{100} \\), it follows that \\( \\frac{${percent}}{100} x=${faultyItems} \\). Multiplying both sides of this equation by 100 yields \\( ${percent}x=${faultyItems * 100} \\). Dividing both sides of this equation by ${percent} yields \\( x=${correctAnswer} \\). Therefore, there are ${correctAnswer} total items in the sample.`
     };
   }
 };

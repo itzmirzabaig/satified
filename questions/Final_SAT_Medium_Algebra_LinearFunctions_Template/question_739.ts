@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -80,11 +80,13 @@ export const generator_739 = {
     })()}</svg></div>`;
     
     // STEP 3: Create options
+    // Note: perItemCost (15-40) and fixedCost (80-150) are disjoint ranges,
+    // so no two options can ever collide.
     const optionsData = [
-      { text: `Each game costs $${perItemCost}.`, isCorrect: true },
-      { text: `The video game system costs $${fixedCost}.`, isCorrect: false, reason: "interprets the y-intercept instead of the slope" },
-      { text: `The video game system costs $${perItemCost}.`, isCorrect: false, reason: "confuses the per-item cost with the system cost" },
-      { text: `Each game costs $${fixedCost}.`, isCorrect: false, reason: "confuses the fixed cost with the per-item cost" }
+      { text: `Each game costs \\$${perItemCost}.`, isCorrect: true },
+      { text: `The video game system costs \\$${fixedCost}.`, isCorrect: false, reason: "interprets the y-intercept (the starting cost) instead of the slope" },
+      { text: `The video game system costs \\$${perItemCost}.`, isCorrect: false, reason: "confuses the per-game cost with the system cost" },
+      { text: `Each game costs \\$${fixedCost}.`, isCorrect: false, reason: "confuses the fixed system cost with the per-game cost" }
     ];
     
     // STEP 4: Shuffle and assign letters
@@ -102,8 +104,8 @@ export const generator_739 = {
       questionText: `The graph of the function $f$, where $y=f(x)$, gives the total cost $y$, in dollars, for a certain video game system and $x$ games. What is the best interpretation of the slope of the graph in this context?`,
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `Each game costs $${perItemCost}.`,
-      explanation: `Choice ${correctLetter} is correct. The slope represents the change in total cost per game. The graph shows that for each additional game, the cost increases by $${perItemCost} ($${perItemCost + fixedCost} - $${fixedCost} = $${perItemCost}). Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      correctAnswer: `Each game costs \\$${perItemCost}.`,
+      explanation: `Choice ${correctLetter} is correct. The slope represents the change in total cost per game. The graph passes through $(0, ${fixedCost})$ and $(1, ${perItemCost + fixedCost})$, so for each additional game the cost increases by \\$${perItemCost} (${perItemCost + fixedCost} - ${fixedCost} = ${perItemCost}). Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

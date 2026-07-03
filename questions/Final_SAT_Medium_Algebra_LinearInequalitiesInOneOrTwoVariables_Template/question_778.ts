@@ -59,16 +59,19 @@ export const generator_778 = {
     }));
     
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
-    
-    // STEP 4: Build explanation
-    const explanation = `Choice ${correctOption.letter} is correct. Testing each option in both inequalities:\n\n$(${dist1X}, ${dist1Y})$: Satisfies $${dist1Y} \\le ${dist1X}$ but not $${dist1Y} \\le ${-dist1X}$.\n$(${dist2X}, ${dist2Y})$: Satisfies $${dist2Y} \\le ${-dist2X}$ but not $${dist2Y} \\le ${dist2X}$.\n$(${dist3X}, ${dist3Y})$: Fails both inequalities.\n$(${correctX}, ${correctY})$: Satisfies $${correctY} \\le ${correctX}$ and $${correctY} \\le ${-correctX}$.\n\nTherefore, $(${correctX}, ${correctY})$ is the only solution that satisfies both inequalities.`;
-    
+
+    // STEP 4: Build explanation. Numbers come from the same live variables;
+    // the correct letter comes from the shuffled array. For x=1, -x=-1, so
+    // (1,0) fails y<=-x; for x=-1, -x=1, so (-1,0) fails y<=x; (0,1) fails both;
+    // (0, correctY<0) satisfies both since correctY <= 0 = x = -x.
+    const explanation = `Choice ${correctOption.letter} is correct. Testing each ordered pair in both inequalities:\n\n$(${dist1X}, ${dist1Y})$: satisfies $${dist1Y} \\le ${dist1X}$ but not $${dist1Y} \\le ${-dist1X}$.\n$(${dist2X}, ${dist2Y})$: satisfies $${dist2Y} \\le ${-dist2X}$ but not $${dist2Y} \\le ${dist2X}$.\n$(${dist3X}, ${dist3Y})$: satisfies neither inequality since $${dist3Y} \\le ${dist3X}$ is false.\n$(${correctX}, ${correctY})$: satisfies $${correctY} \\le ${correctX}$ and $${correctY} \\le ${-correctX}$.\n\nTherefore, $(${correctX}, ${correctY})$ is the only pair that satisfies both inequalities.`;
+
     // STEP 5: Return question data
     return {
       questionText: `Which of the following ordered pairs $(x, y)$ is a solution to the system of inequalities below?\n\n$y \\le x$\n$y \\le -x$`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `(${correctX}, ${correctY})`,
+      correctAnswer: correctOption.text,
       explanation: explanation
     };
   }

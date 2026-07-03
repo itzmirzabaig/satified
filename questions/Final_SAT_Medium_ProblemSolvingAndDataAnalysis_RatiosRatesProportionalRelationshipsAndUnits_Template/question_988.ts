@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 988
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [moon1: 252 days, moon2: 287 days, 29 orbits]
  * - Difficulty factors: [Multiplication, then difference calculation]
@@ -11,6 +11,14 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Must result in integer answer]
  * - Question type: [Text→Fill in blank]
  * - Figure generation: [None]
+ *
+ * REPAIR NOTES:
+ * - Fill-in answer must be a plain number: toLocaleString() inserted thousands
+ *   separators (e.g. "2,280") which the grader rejects. Emit the raw integer.
+ * - Math was already sound: difference = periodDiff * orbits is a positive integer
+ *   for every draw (periodDiff in [20,60], orbits in [10,40] -> difference in
+ *   [200,2400]). Removed separators everywhere so the explanation renders plain
+ *   integers in MathJax, consistent with the answer.
  */
 
 export const generator_988 = {
@@ -39,8 +47,8 @@ export const generator_988 = {
       questionText: `One of a planet's moons orbits the planet every $${period1}$ days. A second moon orbits the planet every $${period2}$ days. How many more days does it take the second moon to orbit the planet $${orbits}$ times than it takes the first moon to orbit the planet $${orbits}$ times?`,
       figureCode: null,
       options: null,
-      correctAnswer: difference.toLocaleString(),
-      explanation: `The correct answer is ${difference.toLocaleString()}. It's given that the first moon orbits the planet every $${period1}$ days. Therefore, it takes the first moon $${period1}(${orbits})$, or $${time1.toLocaleString()}$, days to orbit the planet $${orbits}$ times. It's also given that the second moon orbits the planet every $${period2}$ days. Therefore, it takes the second moon $${period2}(${orbits})$, or $${time2.toLocaleString()}$, days to orbit the planet $${orbits}$ times. Since it takes the first moon $${time1.toLocaleString()}$ days and the second moon $${time2.toLocaleString()}$ days, it takes the second moon $${time2.toLocaleString()} - ${time1.toLocaleString()}$, or $${difference.toLocaleString()}$, more days than it takes the first moon to orbit the planet $${orbits}$ times.`
+      correctAnswer: String(difference),
+      explanation: `The correct answer is $${difference}$. It's given that the first moon orbits the planet every $${period1}$ days. Therefore, it takes the first moon $${period1}(${orbits})$, or $${time1}$, days to orbit the planet $${orbits}$ times. It's also given that the second moon orbits the planet every $${period2}$ days. Therefore, it takes the second moon $${period2}(${orbits})$, or $${time2}$, days to orbit the planet $${orbits}$ times. Since it takes the first moon $${time1}$ days and the second moon $${time2}$ days, it takes the second moon $${time2} - ${time1}$, or $${difference}$, more days than it takes the first moon to orbit the planet $${orbits}$ times.`
     };
   }
 };

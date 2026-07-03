@@ -21,22 +21,29 @@ export const generator_1478 = {
 
   generate: (): QuestionData => {
     // 1. Math Setup
-    const mNum = getRandomInt(2, 9);
-    const mDen = getRandomInt(2, 9);
-    // Ensure reduced fraction isn't always needed for this logic, but cleaner numbers help.
-    // Let's just use raw ints for now.
-    
+    // The four options are {a/b, -b/a, b/a, -a/b}. Those are all distinct
+    // for nonzero a,b UNLESS a === b (then a/b = b/a = 1 and -b/a = -a/b = -1).
+    // Guard by requiring numerator !== denominator, so no distractor can
+    // collide with the correct slope or with another distractor for any draw.
+    let mNum = getRandomInt(2, 9);
+    let mDen = getRandomInt(2, 9);
+    let guard = 0;
+    while (mNum === mDen && guard++ < 50) {
+      mDen = getRandomInt(2, 9);
+    }
+    if (mNum === mDen) mDen = mNum === 2 ? 3 : 2; // deterministic fallback
+
     const intercept = getRandomInt(1, 10);
-    
+
     // Equation: y = (num/den)x + b
     const equation = `y = \\frac{${mNum}}{${mDen}}x + ${intercept}`;
     const slopeStr = `\\frac{${mNum}}{${mDen}}`;
-    
+
     // 2. Options
     const correctSlope = slopeStr;
-    const d1 = `-\\frac{${mDen}}{${mNum}}`; // Perpendicular
-    const d2 = `\\frac{${mDen}}{${mNum}}`; // Reciprocal
-    const d3 = `-${slopeStr}`; // Negative slope
+    const d1 = `-\\frac{${mDen}}{${mNum}}`; // Perpendicular (negative reciprocal)
+    const d2 = `\\frac{${mDen}}{${mNum}}`; // Reciprocal (no sign change)
+    const d3 = `-${slopeStr}`; // Negated slope
 
     const optionsData = [
       { text: correctSlope, isCorrect: true },
@@ -57,13 +64,7 @@ export const generator_1478 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. 
-      
-Parallel lines have equal slopes.
-The given equation is in slope-intercept form $y = mx + b$, where $m$ is the slope.
-For the equation $${equation}$, the slope is $${slopeStr}$.
-      
-Therefore, any line parallel to this line must also have a slope of $${slopeStr}$.`
+      explanation: `Choice ${correctOption.letter} is correct. Parallel lines have equal slopes. The given equation is in slope-intercept form $y = mx + b$, where $m$ is the slope. For the equation $${equation}$, the slope is $${slopeStr}$, so any parallel line must also have slope $${slopeStr}$. The choices $${d2}$ and $-${d2}$ are reciprocals of the slope (the relationship for perpendicular, not parallel, lines), and $-${slopeStr}$ simply reverses the sign of the slope.`
     };
   }
 };

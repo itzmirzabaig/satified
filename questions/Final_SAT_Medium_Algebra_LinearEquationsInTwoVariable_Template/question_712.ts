@@ -3,14 +3,14 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 712
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [s: 3,6,9, P: 8,18,28, slope: 10/3, intercept: -2]
  * - Difficulty factors: [Finding linear equation from table data]
  * - Distractor patterns: [A: wrong slope, B: wrong intercept, D: inverted slope]
  * - Constraints: [Clean fraction slope]
- * - Question type: [Table+Figure→Multiple Choice Text]
- * - Figure generation: [SVG plot with points]
+ * - Question type: [Table -> Multiple Choice Text]
+ * - Figure generation: [HTML table of (s, P) points]
  */
 
 export const generator_712 = {
@@ -21,93 +21,38 @@ export const generator_712 = {
     skill: "Linear Equations In Two Variable",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate linear relationship with fraction slope
-    // Use slope = a/b where b divides the x-spacing (which is 3)
-    const b = getRandomElement([1, 3]); // 1 gives integer slope, 3 gives fraction like 10/3
-    const a = getRandomInt(2, 10);
-    const slope = a / b;
-    const intercept = getRandomInt(-5, 5);
-    
+    // STEP 1: Generate a linear relationship P = slope*s + intercept.
+    // The x-values are 3, 6, 9 (all multiples of 3), so slope = a/3 always
+    // yields integer P values; slope = a/1 gives an integer slope. We exclude
+    // slope == 1 so the "inverted slope" distractor 1/slope is genuinely wrong.
     const sVals = [3, 6, 9];
-    const pVals = sVals.map(s => slope * s + intercept);
-    
-    // Ensure clean integer values for P
-    let attempts = 0;
-    let validSlope = slope;
-    let validIntercept = intercept;
-    let validPVals = pVals;
-    let validA = a;
-    let validB = b;
-    
-    while (!validPVals.every(p => Number.isInteger(p)) && attempts < 100) {
-      const newB = getRandomElement([1, 3]);
-      const newA = getRandomInt(2, 10);
-      validSlope = newA / newB;
-      validIntercept = getRandomInt(-5, 5);
-      validPVals = sVals.map(s => validSlope * s + validIntercept);
-      validA = newA;
-      validB = newB;
-      attempts++;
-    }
-    
-    // STEP 2: Build SVG code with plotted points
-    const maxP = Math.max(...validPVals);
-    const minP = Math.min(...validPVals);
-    const yPadding = 5;
-    const ymax = Math.max(0, maxP) + yPadding;
-    const ymin = Math.min(0, minP) - yPadding;
-    
-    const xmin = 0;
-    const xmax = 12;
-    const W = 400;
-    const H = 300;
-    const P = 45;
-    
-    const mx = (x: number) => P + (x - xmin) / (xmax - xmin) * (W - 2 * P);
-    const my = (y: number) => H - P - (y - ymin) / (ymax - ymin) * (H - 2 * P);
-    
-    // Generate axis ticks
-    let xTicks = '';
-    const xstep = 3;
-    for (let x = 0; x <= xmax; x += xstep) {
-      xTicks += `<line x1="${mx(x)}" y1="${my(0)}" x2="${mx(x)}" y2="${my(0) + 4}" stroke="currentColor" stroke-width="1"/>`;
-      xTicks += `<text x="${mx(x)}" y="${my(0) + 15}" text-anchor="middle" font-size="10" fill="currentColor">${x}</text>`;
-    }
-    
-    let yTicks = '';
-    const ystep = Math.ceil((ymax - ymin) / 6);
-    for (let y = Math.ceil(ymin / ystep) * ystep; y <= ymax; y += ystep) {
-      if (y === 0) continue;
-      yTicks += `<line x1="${mx(0) - 4}" y1="${my(y)}" x2="${mx(0)}" y2="${my(y)}" stroke="currentColor" stroke-width="1"/>`;
-      yTicks += `<text x="${mx(0) - 8}" y="${my(y) + 3}" text-anchor="end" font-size="10" fill="currentColor">${y}</text>`;
-    }
-    
-    // Plot the three data points
-    const points = sVals.map((s, i) => [s, validPVals[i]] as [number, number]);
-    const pointCircles = points.map(([s, p]) => 
-      `<circle cx="${mx(s)}" cy="${my(p)}" r="4" fill="currentColor" stroke="currentColor" stroke-width="2"/>`
-    ).join('');
-    
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;">
-  <svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;color:inherit;" xmlns="http://www.w3.org/2000/svg">
-    <!-- Border -->
-    <rect x="${P}" y="${P}" width="${W - 2 * P}" height="${H - 2 * P}" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>
-    <!-- X axis -->
-    <line x1="${P}" y1="${my(0)}" x2="${W - P}" y2="${my(0)}" stroke="currentColor" stroke-width="1.5"/>
-    <!-- Y axis -->
-    <line x1="${mx(0)}" y1="${P}" x2="${mx(0)}" y2="${H - P}" stroke="currentColor" stroke-width="1.5"/>
-    <!-- X tick labels -->
-    ${xTicks}
-    <!-- Y tick labels -->
-    ${yTicks}
-    <!-- Data points -->
-    ${pointCircles}
-  </svg>
-</div>`;
-    
-    // STEP 3: Build table HTML with proper styling
+    let a: number, b: number, slope: number, intercept: number;
+    let tries = 0;
+    do {
+      b = getRandomElement([1, 3]);   // denominator: 1 -> integer slope, 3 -> often a fraction
+      a = getRandomInt(2, 10);        // numerator
+      slope = a / b;
+      intercept = getRandomInt(-5, 5);
+      tries++;
+    } while ((slope === 1 || intercept === 0) && tries < 50);
+    // Deterministic fallbacks in case the bounded loop exhausts.
+    if (slope === 1) { a = 2; b = 1; slope = 2; }
+    if (intercept === 0) intercept = 3;
+
+    const isIntSlope = Number.isInteger(slope);
+    const pVals = sVals.map(s => slope * s + intercept); // always integers here
+
+    // Display string for the true slope.
+    const slopeStr = isIntSlope ? String(slope) : `\\frac{${a}}{${b}}`;
+    // Display string for the inverted (reciprocal) slope: 1/slope.
+    const recipStr = isIntSlope ? `\\frac{1}{${slope}}` : `\\frac{${b}}{${a}}`;
+
+    // Signed constant formatter: never produces "+ -3".
+    const fmt = (n: number) => (n < 0 ? `- ${Math.abs(n)}` : `+ ${n}`);
+
+    // STEP 2: Build the table (the figure) from the SAME values used above.
     const tableCode = `<table style="border-collapse: collapse; margin: 0 auto; text-align: center; background: transparent;">
   <thead>
     <tr>
@@ -118,48 +63,51 @@ export const generator_712 = {
   <tbody>
     ${sVals.map((s, i) => `<tr>
       <td style="border: 1px solid currentColor; padding: 8px;">${s}</td>
-      <td style="border: 1px solid currentColor; padding: 8px;">${validPVals[i]}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${pVals[i]}</td>
     </tr>`).join('')}
   </tbody>
 </table>`;
-    
-    // STEP 4: Create options
-    const wrongIntercept1 = Math.round(validPVals[0]);
-    const wrongSlope2 = validB / validA; // inverted
-    
-    // Build slope string safely
-    let slopeStr: string;
-    if (Number.isInteger(validSlope)) {
-      slopeStr = validSlope.toString();
-    } else {
-      slopeStr = `\\frac{${validA}}{${validB}}`;
-    }
-    
+
+    // STEP 3: Build four provably-distinct options.
+    // - correct:     slope = slopeStr, intercept = intercept
+    // - wrongInter:  same slope, shifted intercept (constant differs)
+    // - inverted:    reciprocal slope (a fraction), same intercept
+    // - wrongSlope:  a larger integer slope with a different intercept
+    let dInt = getRandomElement([2, 3, 4]);
+    let wrongIntercept = intercept + dInt;
+    if (wrongIntercept === 0) wrongIntercept = intercept - dInt; // keep it nonzero & != intercept
+
+    const wrongSlope = Math.round(slope) + getRandomElement([2, 3]); // integer, >= 3, != slope
+    let wrongSlopeIntercept = intercept + getRandomElement([-2, 1, 2]);
+    if (wrongSlopeIntercept === 0) wrongSlopeIntercept = intercept + 3;
+
+    const correctText = `$P = ${slopeStr}s ${fmt(intercept)}$`;
+
     const optionsData = [
-      { text: `$P=${Math.round(validSlope)}s+${validIntercept + 12}$`, isCorrect: false },
-      { text: `$P=${slopeStr}s+${wrongIntercept1}$`, isCorrect: false },
-      { text: `$P=${slopeStr}s${validIntercept < 0 ? '-' : '+'}${Math.abs(validIntercept)}$`, isCorrect: true },
-      { text: `$P=\\frac{${validB}}{${validA}}s${validIntercept < 0 ? '-' : '+'}${Math.abs(validIntercept) + 2}$`, isCorrect: false }
+      { text: correctText, isCorrect: true },
+      { text: `$P = ${slopeStr}s ${fmt(wrongIntercept)}$`, isCorrect: false },
+      { text: `$P = ${recipStr}s ${fmt(intercept)}$`, isCorrect: false },
+      { text: `$P = ${wrongSlope}s ${fmt(wrongSlopeIntercept)}$`, isCorrect: false }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const correctLetter = correctOption.letter;
-    
-    // Calculate values for explanation
-    const deltaP = validPVals[1] - validPVals[0];
-    const deltaS = sVals[1] - sVals[0];
-    
+
+    // STEP 4: Explanation from the same live variables.
+    const deltaP = pVals[1] - pVals[0]; // = 3*slope = a  (integer)
+    const deltaS = sVals[1] - sVals[0]; // = 3
+
     return {
-      questionText: `An artist paints and sells square tiles. The selling price $P$, in dollars, of a painted tile is a linear function of the side length of the tile $s$, in inches, as shown in the table below. Which equation could represent this relationship?`,
+      questionText: `An artist paints and sells square tiles. The selling price $P$, in dollars, of a painted tile is a linear function of the side length of the tile $s$, in inches, as shown in the table. Which equation could represent this relationship?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
-      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${validPVals[1]}-${validPVals[0]}}{${sVals[1]}-${sVals[0]}} = \\frac{${deltaP}}{${deltaS}} = ${slopeStr}$. Using point $(${sVals[0]}, ${validPVals[0]})$: $${validPVals[0]} = ${slopeStr}(${sVals[0]}) + b \\implies b = ${validIntercept}$. Equation: $P = ${slopeStr}s ${validIntercept < 0 ? '-' : '+'} ${Math.abs(validIntercept)}$.`
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctLetter} is correct. Using the first two rows of the table, the slope is $\\frac{${pVals[1]} - ${pVals[0]}}{${sVals[1]} - ${sVals[0]}} = \\frac{${deltaP}}{${deltaS}} = ${slopeStr}$. Substituting the point $(${sVals[0]}, ${pVals[0]})$ into $P = ${slopeStr}s + b$ and solving gives $b = ${pVals[0]} - ${slopeStr}(${sVals[0]}) = ${intercept}$. Therefore the equation is $P = ${slopeStr}s ${fmt(intercept)}$.`
     };
   }
 };

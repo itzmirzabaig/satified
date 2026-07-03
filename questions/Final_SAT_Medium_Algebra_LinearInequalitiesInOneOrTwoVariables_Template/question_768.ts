@@ -1,16 +1,28 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 768
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [slope: 4, y-intercept: -4, test point: (6, -2)]
  * - Difficulty factors: [Graph interpretation, point-in-region testing]
  * - Distractor patterns: [Points not in shaded region or on wrong side of boundary]
- * - Constraints: [Must satisfy y ≤ 4x - 4]
- * - Question type: [Figure→Multiple Choice Text]
- * - Figure generation: [Mafs inequality graph]
+ * - Constraints: [Must satisfy y <= mx + b for the shaded region]
+ * - Question type: [Figure -> Multiple Choice Text]
+ * - Figure generation: [Half-plane inequality graph, rebuilt as plain SVG]
+ *
+ * FIXED:
+ * - correctAnswer now EXACTLY equals the correct option's text ("$(x, y)$").
+ * - Distractors are constructed strictly on the violating side of the SAME
+ *   boundary line, so exactly one option satisfies the inequality for every
+ *   draw (the old distractors satisfied the ">=" case constantly).
+ * - Figure rebuilt as a self-contained SVG that actually draws the boundary
+ *   line y = mx + b and shades the correct half-plane; drawn values match the
+ *   question numbers. Window is derived from the live points every draw.
+ * - Explanation math segments never start with a bare digit, so no bare "$d"
+ *   can pair with a math "$" (clears DOLLAR_RISK); numbers are computed from
+ *   the same live variables.
  */
 
 export const generator_768 = {
@@ -21,123 +33,140 @@ export const generator_768 = {
     skill: "Linear Inequalities In One Or Two Variables",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values (MATCH ORIGINAL RANGES)
-    // Original: y ≤ 4x - 4 with point (6, -2)
-    // Generate similar linear inequality with specific point
-    const slope = getRandomInt(2, 6); // Moderate positive slope
-    const yIntercept = getRandomInt(-6, -2); // Negative y-intercept
-    const inequalityType = getRandomInt(0, 1) === 0 ? '<=' : '>='; // ≤ or ≥
-    
-    // Generate a point that satisfies the inequality
-    // For y ≤ mx + b, we need y ≤ m*x + b
-    const testX = getRandomInt(3, 8);
-    const boundaryY = slope * testX + yIntercept;
-    const testY = inequalityType === '<=' 
-      ? boundaryY - getRandomInt(1, 5)  // Below line for ≤
-      : boundaryY + getRandomInt(1, 5); // Above line for ≥
-    
-    // STEP 2: Create distractor points (that don't satisfy the inequality)
-    // Distractor 1: Point way outside region
-    const dist1X = -getRandomInt(3, 6);
-    const dist1Y = -getRandomInt(4, 8);
-    
-    // Distractor 2: Point on wrong side
-    const dist2X = -getRandomInt(1, 3);
-    const dist2Y = getRandomInt(2, 6);
-    
-    // Distractor 3: Close but outside
-    const dist3X = getRandomInt(1, 3);
-    const dist3Y = inequalityType === '<='
-      ? boundaryY + getRandomInt(1, 3) // Just above for ≤
-      : boundaryY - getRandomInt(1, 3); // Just below for ≥
-    
-    // Calculate viewBox to fit all points with padding
-    const allX = [testX, dist1X, dist2X, dist3X, 0]; // Include origin for y-intercept
-    const allY = [testY, dist1Y, dist2Y, dist3Y, yIntercept];
-    const xMin = Math.min(...allX) - 2;
-    const xMax = Math.max(...allX) + 2;
-    const yMin = Math.min(...allY) - 2;
-    const yMax = Math.max(...allY) + 2;
-    
-    // STEP 3: Build Mafs code for the figure
-    const _svg_0 = yMax; const _svg_1 = yMin; const _svg_2 = xMax; const _svg_3 = xMin;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_3,xmax=_svg_2;
-      const ymin=_svg_1,ymax=_svg_0;
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      const y0=Math.max(ymin,Math.min(ymax,0));
-      const x0=Math.max(xmin,Math.min(xmax,0));
-      s+='<line x1="'+P+'" y1="'+my(y0)+'" x2="'+(W-P)+'" y2="'+my(y0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      s+='<line x1="'+mx(x0)+'" y1="'+P+'" x2="'+mx(x0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      const xstep=Math.ceil((xmax-xmin)/8);
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        s+='<text x="'+mx(x)+'" y="'+(my(y0)+15)+'" text-anchor="middle" font-size="10" fill="currentColor">'+x+'</text>';
-      }
-      const ystep=Math.ceil((ymax-ymin)/6);
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        s+='<text x="'+(mx(x0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="10" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=(yMin),ymax=(yMax);
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      // Shade region
-      const steps=80;
-      let pts=[];
-      for(let i=0;i<=steps;i++){
-        const x=xmin+i*(xmax-xmin)/steps;
-        const y=0;
-        pts.push(mx(x)+','+my(ymax));
-      }
-      for(let i=steps;i>=0;i--){
-        const x=xmin+i*(xmax-xmin)/steps;
-        const y=0;
-        pts.push(mx(x)+','+my(y));
-      }
-      let lpts=[];
-      for(let i=0;i<=steps;i++){
-        const x=xmin+i*(xmax-xmin)/steps;
-        const y=0;
-        lpts.push(mx(x)+','+my(y));
-      }
-      return '<polygon points="'+pts.join(' ')+'" fill="#22c55e" fill-opacity="0.15"/>'+
-             '<polyline points="'+lpts.join(' ')+'" fill="none" stroke="#16a34a" stroke-width="2" stroke-dasharray="6,3"/>';
-    })()}</svg></div>`;
-    
-    // STEP 4: Create options with tracking
-    const optionsData = [
-      { text: `$(${dist1X}, ${dist1Y})$`, isCorrect: false },
-      { text: `$(${dist2X}, ${dist2Y})$`, isCorrect: false },
-      { text: `$(${dist3X}, ${dist3Y})$`, isCorrect: false },
-      { text: `$(${testX}, ${testY})$`, isCorrect: true }
+    // STEP 1: Boundary line y = slope*x + yIntercept
+    const slope = getRandomInt(2, 6);          // moderate positive slope
+    const yIntercept = getRandomInt(-6, -2);   // negative y-intercept
+    const useLe = getRandomInt(0, 1) === 0;    // true => y <= line, false => y >= line
+    const sign = useLe ? '\\le' : '\\ge';
+
+    // Value of the boundary line at a given x.
+    const lineAt = (x: number) => slope * x + yIntercept;
+    // Does point (x, y) satisfy the chosen inequality?
+    const satisfies = (x: number, y: number) =>
+      useLe ? y <= lineAt(x) : y >= lineAt(x);
+
+    // STEP 2: Correct point — strictly on the satisfying side by a clear margin.
+    const correctX = getRandomInt(2, 6);
+    const marginC = getRandomInt(2, 5);
+    const correctY = useLe ? lineAt(correctX) - marginC : lineAt(correctX) + marginC;
+
+    // STEP 3: Three distractors — strictly on the VIOLATING side of the line,
+    // with distinct x-values so the ordered pairs never collide. Bounded retry
+    // guarantees uniqueness and that none accidentally satisfies the inequality.
+    const options: Array<{ x: number; y: number; isCorrect: boolean }> = [
+      { x: correctX, y: correctY, isCorrect: true }
     ];
-    
-    // STEP 5: Shuffle and assign letters
+    const usedX = new Set<number>([correctX]);
+    const xPool = [-4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7];
+
+    let guard = 0;
+    while (options.length < 4 && guard++ < 200) {
+      // pick an unused x
+      let dx = xPool[getRandomInt(0, xPool.length - 1)];
+      if (usedX.has(dx)) continue;
+      // place y strictly on the violating side (opposite of the correct side)
+      const off = getRandomInt(1, 5);
+      const dy = useLe ? lineAt(dx) + off : lineAt(dx) - off;
+      if (satisfies(dx, dy)) continue;            // must violate
+      // guard against duplicate ordered pairs (different x already ensures this,
+      // but keep the check explicit)
+      if (options.some(o => o.x === dx && o.y === dy)) continue;
+      usedX.add(dx);
+      options.push({ x: dx, y: dy, isCorrect: false });
+    }
+    // Deterministic fallback (only if the pool got exhausted): fill remaining
+    // slots with clearly-violating points using still-unused x values.
+    for (const dx of xPool) {
+      if (options.length >= 4) break;
+      if (usedX.has(dx)) continue;
+      const dy = useLe ? lineAt(dx) + 3 : lineAt(dx) - 3;
+      usedX.add(dx);
+      options.push({ x: dx, y: dy, isCorrect: false });
+    }
+
+    // STEP 4: Build figure window from the live points (+ origin) with padding.
+    const xs = options.map(o => o.x).concat(0);
+    const ys = options.map(o => o.y).concat(0, yIntercept);
+    const xMin = Math.min(...xs) - 2;
+    const xMax = Math.max(...xs) + 2;
+    const yMin = Math.min(...ys) - 3;
+    const yMax = Math.max(...ys) + 3;
+
+    const W = 450, H = 300, P = 40;
+    const gw = W - 2 * P, gh = H - 2 * P;
+    const mx = (x: number) => P + ((x - xMin) / (xMax - xMin)) * gw;
+    const my = (y: number) => P + gh - ((y - yMin) / (yMax - yMin)) * gh;
+
+    // Axes (drawn at x=0 / y=0 if visible, else clamped to the frame edge).
+    const x0 = Math.max(xMin, Math.min(xMax, 0));
+    const y0 = Math.max(yMin, Math.min(yMax, 0));
+
+    // Gridline / tick labels.
+    const xStep = Math.max(1, Math.ceil((xMax - xMin) / 9));
+    const yStep = Math.max(1, Math.ceil((yMax - yMin) / 7));
+    let ticks = '';
+    for (let x = Math.ceil(xMin / xStep) * xStep; x <= xMax; x += xStep) {
+      ticks += `<line x1="${mx(x)}" y1="${P}" x2="${mx(x)}" y2="${H - P}" stroke="currentColor" stroke-opacity="0.08" stroke-width="1"/>`;
+      ticks += `<text x="${mx(x)}" y="${my(y0) + 14}" text-anchor="middle" font-size="10" fill="currentColor">${x}</text>`;
+    }
+    for (let y = Math.ceil(yMin / yStep) * yStep; y <= yMax; y += yStep) {
+      ticks += `<line x1="${P}" y1="${my(y)}" x2="${W - P}" y2="${my(y)}" stroke="currentColor" stroke-opacity="0.08" stroke-width="1"/>`;
+      ticks += `<text x="${mx(x0) - 8}" y="${my(y) + 3}" text-anchor="end" font-size="10" fill="currentColor">${y}</text>`;
+    }
+
+    // Boundary line across the visible x-range.
+    const lx1 = xMin, ly1 = lineAt(xMin);
+    const lx2 = xMax, ly2 = lineAt(xMax);
+
+    // Shaded half-plane: clip the region { y <= line } or { y >= line } to the frame.
+    // Sample the line across the window, then close along the top or bottom edge.
+    const steps = 60;
+    const linePts: string[] = [];
+    for (let i = 0; i <= steps; i++) {
+      const x = xMin + (i * (xMax - xMin)) / steps;
+      linePts.push(`${mx(x)},${my(lineAt(x))}`);
+    }
+    const edgeY = useLe ? yMin : yMax;      // fill toward the satisfying side
+    const closePts = `${mx(xMax)},${my(edgeY)} ${mx(xMin)},${my(edgeY)}`;
+    const shade = `<polygon points="${linePts.join(' ')} ${closePts}" fill="#3b82f6" fill-opacity="0.12"/>`;
+
+    const figureCode = `<div style="width:100%;max-width:450px;margin:0 auto;">` +
+      `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;font-family:sans-serif;user-select:none;" xmlns="http://www.w3.org/2000/svg">` +
+      ticks +
+      shade +
+      `<line x1="${P}" y1="${my(y0)}" x2="${W - P}" y2="${my(y0)}" stroke="currentColor" stroke-width="1.5"/>` +
+      `<line x1="${mx(x0)}" y1="${P}" x2="${mx(x0)}" y2="${H - P}" stroke="currentColor" stroke-width="1.5"/>` +
+      `<line x1="${mx(lx1)}" y1="${my(ly1)}" x2="${mx(lx2)}" y2="${my(ly2)}" stroke="#3b82f6" stroke-width="2.5"/>` +
+      `</svg></div>`;
+
+    // STEP 5: Options — text and correctAnswer share the SAME string format.
+    const fmt = (o: { x: number; y: number }) => `$(${o.x}, ${o.y})$`;
+    const optionsData = options.map(o => ({ text: fmt(o), isCorrect: o.isCorrect }));
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
-    
-    // STEP 6: Build explanation
-    const sign = inequalityType === '<=' ? '\\le' : '\\ge';
-    const explanation = `Choice ${correctOption.letter} is correct. Since the shaded region shown represents the solutions to an inequality, an ordered pair $(x, y)$ is a solution if it falls within the shaded region. Testing $(${testX}, ${testY})$ in the boundary $y ${sign} ${slope}x ${yIntercept >= 0 ? '+' : '-'} ${Math.abs(yIntercept)}$: $${testY} ${sign} ${slope}(${testX}) ${yIntercept >= 0 ? '+' : '-'} ${Math.abs(yIntercept)} \\implies ${testY} ${sign} ${boundaryY}$, which is true. Of the choices, only $(${testX}, ${testY})$ is in the shaded region.`;
-    
-    // STEP 7: Return question data
+    const correctText = correctOption.text;
+
+    // STEP 6: Explanation — numbers from live vars; math segments start with a
+    // letter, "(" or "-" so no "$<digit>" can pair with a math "$".
+    const bDisp = yIntercept >= 0 ? `+ ${yIntercept}` : `- ${Math.abs(yIntercept)}`;
+    const explanation =
+      `Choice ${correctOption.letter} is correct. The shaded region shows the solutions to $y ${sign} ${slope}x ${bDisp}$, ` +
+      `so an ordered pair $(x, y)$ is a solution when its $y$-value is ${useLe ? 'at most' : 'at least'} the value of the boundary $y ${sign} ${slope}x ${bDisp}$ at that $x$. ` +
+      `Testing $(${correctX}, ${correctY})$: the boundary value is $(${slope})(${correctX}) ${bDisp} = ${lineAt(correctX)}$, and $(${correctY}) ${sign} (${lineAt(correctX)})$ is true, ` +
+      `so $(${correctX}, ${correctY})$ lies in the shaded region. Each other ordered pair fails the inequality (its point lies on the unshaded side of the boundary), so ${correctText} is the only solution.`;
+
+    // STEP 7: Return
     return {
       questionText: `The shaded region shown represents the solutions to an inequality. Which ordered pair $(x, y)$ is a solution to this inequality?`,
-      figureCode: mafsCode,
+      figureCode: figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `(${testX}, ${testY})`,
+      correctAnswer: correctText,
       explanation: explanation
     };
   }

@@ -1,16 +1,21 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 790
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [x bound: 22, y < x relationship]
  * - Difficulty factors: [System verification with table, two constraints]
- * - Distractor patterns: [B=fails y<x, C/D=fail x<22]
- * - Constraints: [Must satisfy y < x AND x < 22]
- * - Question type: [Table→Multiple Choice Text]
- * - Figure generation: [HTML Table in question content]
+ * - Distractor patterns: [B=fails y<x, C=fails x<bound, D=fails both]
+ * - Constraints: [Every (x,y) row of the correct table satisfies y < x AND x < bound]
+ * - Question type: [Table -> Multiple Choice (figure options)]
+ * - Figure generation: [HTML tables live in the options]
+ *
+ * The options are HTML tables, so the correct answer is returned as the numeric
+ * index of the correct (shuffled) option (see question_772 for the same pattern).
+ * No pre-baked "Table A/B/C/D" label is placed in the option text, because the
+ * choice letter is only known after shuffling.
  */
 
 export const generator_790 = {
@@ -21,78 +26,80 @@ export const generator_790 = {
     skill: "Linear Inequalities In One Or Two Variables",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values (MATCH ORIGINAL RANGES)
-    // Original: y < x and x < 22, with x values 19,20,21 and y=x-1
-    // Generate similar upper bound and pattern
-    const xBound = getRandomInt(15, 30); // Upper bound for x
-    const baseX = xBound - getRandomInt(2, 5); // Starting x value
-    
-    // STEP 2: Generate table data
-    // Correct table (A pattern): x values ascending, y = x - 1
-    const x1 = baseX;
-    const x2 = baseX + 1;
-    const x3 = baseX + 2;
-    const yA1 = x1 - 1;
-    const yA2 = x2 - 1;
-    const yA3 = x3 - 1;
-    
-    // Table B pattern: y > x (fails y < x)
-    const yB1 = x1 + 1;
-    const yB2 = x2 + 2;
-    const yB3 = x3 + 3;
-    
-    // Table C pattern: x > bound (fails x < bound)
-    const xC1 = xBound + 1;
-    const xC2 = xBound + 2;
-    const xC3 = xBound + 3;
-    const yC1 = xC1 - 1;
-    const yC2 = xC2 - 1;
-    const yC3 = xC3 - 1;
-    
-    // Table D pattern: both wrong
-    const xD1 = xBound + 1;
-    const xD2 = xBound + 2;
-    const xD3 = xBound + 3;
-    const yD1 = xD1 + 1;
-    const yD2 = xD2 + 2;
-    const yD3 = xD3 + 3;
-    
-    // STEP 3: Build table HTML strings
-    const tableA = `<table style="border-collapse: collapse; margin: 10px auto;"><thead><tr><th style="border: 1px solid currentColor; padding: 8px;">x</th><th style="border: 1px solid currentColor; padding: 8px;">y</th></tr></thead><tbody><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${x1}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yA1}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${x2}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yA2}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${x3}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yA3}</td></tr></tbody></table>`;
-    
-    const tableB = `<table style="border-collapse: collapse; margin: 10px auto;"><thead><tr><th style="border: 1px solid currentColor; padding: 8px;">x</th><th style="border: 1px solid currentColor; padding: 8px;">y</th></tr></thead><tbody><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${x1}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yB1}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${x2}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yB2}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${x3}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yB3}</td></tr></tbody></table>`;
-    
-    const tableC = `<table style="border-collapse: collapse; margin: 10px auto;"><thead><tr><th style="border: 1px solid currentColor; padding: 8px;">x</th><th style="border: 1px solid currentColor; padding: 8px;">y</th></tr></thead><tbody><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${xC1}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yC1}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${xC2}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yC2}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${xC3}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yC3}</td></tr></tbody></table>`;
-    
-    const tableD = `<table style="border-collapse: collapse; margin: 10px auto;"><thead><tr><th style="border: 1px solid currentColor; padding: 8px;">x</th><th style="border: 1px solid currentColor; padding: 8px;">y</th></tr></thead><tbody><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${xD1}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yD1}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${xD2}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yD2}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${xD3}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${yD3}</td></tr></tbody></table>`;
-    
-    // STEP 4: Create options with tracking
+    // STEP 1: Random bound and three ascending x-values, all strictly below it.
+    // xBound in [18, 30]; x-values are xBound-3, xBound-2, xBound-1, so each is
+    // < xBound with room to spare.
+    const xBound = getRandomInt(18, 30);
+    const x1 = xBound - 3;
+    const x2 = xBound - 2;
+    const x3 = xBound - 1;
+
+    // STEP 2: Correct table. y = x - d with d in [1,3] guarantees y < x for
+    // every row, and every x is already < xBound. Both constraints hold.
+    const yCorrect1 = x1 - getRandomInt(1, 3);
+    const yCorrect2 = x2 - getRandomInt(1, 3);
+    const yCorrect3 = x3 - getRandomInt(1, 3);
+
+    // STEP 3: Distractor B fails y < x. Keep x < xBound (so the ONLY failure is
+    // the y < x constraint) but make the middle row have y > x.
+    const yB1 = x1 - getRandomInt(1, 3);
+    const yB2 = x2 + getRandomInt(1, 3); // y > x -> violates y < x
+    const yB3 = x3 - getRandomInt(1, 3);
+
+    // STEP 4: Distractor C fails x < xBound. Every y < x still holds, but the
+    // third x-value sits at/above the bound.
+    const xC3 = xBound + getRandomInt(0, 3); // >= xBound -> violates x < xBound
+    const yC1 = x1 - getRandomInt(1, 3);
+    const yC2 = x2 - getRandomInt(1, 3);
+    const yC3 = xC3 - getRandomInt(1, 3);
+
+    // STEP 5: Distractor D fails both. Third x-value above the bound AND its y
+    // exceeds its x.
+    const xD3 = xBound + getRandomInt(1, 4); // > xBound
+    const yD1 = x1 - getRandomInt(1, 3);
+    const yD2 = x2 - getRandomInt(1, 3);
+    const yD3 = xD3 + getRandomInt(1, 3); // y > x too
+
+    // STEP 6: Table builder (plain HTML string, currentColor strokes).
+    const buildTable = (
+      rx1: number, ry1: number,
+      rx2: number, ry2: number,
+      rx3: number, ry3: number
+    ) =>
+      `<table style="border-collapse: collapse; margin: 10px auto;"><thead><tr><th style="border: 1px solid currentColor; padding: 8px;">x</th><th style="border: 1px solid currentColor; padding: 8px;">y</th></tr></thead><tbody>` +
+      `<tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${rx1}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${ry1}</td></tr>` +
+      `<tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${rx2}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${ry2}</td></tr>` +
+      `<tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${rx3}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${ry3}</td></tr>` +
+      `</tbody></table>`;
+
     const optionsData = [
-      { text: `Table A\n${tableA}`, isCorrect: true },
-      { text: `Table B\n${tableB}`, isCorrect: false },
-      { text: `Table C\n${tableC}`, isCorrect: false },
-      { text: `Table D\n${tableD}`, isCorrect: false }
+      { text: buildTable(x1, yCorrect1, x2, yCorrect2, x3, yCorrect3), isCorrect: true },
+      { text: buildTable(x1, yB1, x2, yB2, x3, yB3), isCorrect: false },
+      { text: buildTable(x1, yC1, x2, yC2, xC3, yC3), isCorrect: false },
+      { text: buildTable(x1, yD1, x2, yD2, xD3, yD3), isCorrect: false }
     ];
-    
-    // STEP 5: Shuffle and assign letters
+
+    // STEP 7: Shuffle and assign display letters.
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
-    
-    // STEP 6: Build explanation
-    const explanation = `Choice ${correctOption.letter} is correct. For the correct choice, all x-values (${x1}, ${x2}, ${x3}) are less than ${xBound}. Also, for each pair, $y < x$ (${yA1} < ${x1}, ${yA2} < ${x2}, ${yA3} < ${x3}). The other tables either fail $y < x$ or fail $x < ${xBound}$.`;
-    
-    // STEP 7: Return question data
+
+    const correctIndex = shuffledOptions.findIndex(o => o.isCorrect);
+    const correctOption = shuffledOptions[correctIndex];
+
+    // STEP 8: Explanation from live values; letter from shuffled array.
+    const explanation = `Choice ${correctOption.letter} is correct. The point $(x, y)$ must satisfy both $y < x$ and $x < ${xBound}$. In the table for choice ${correctOption.letter}, each $x$-value (${x1}, ${x2}, ${x3}) is less than ${xBound}, and each $y$-value is less than its $x$-value: ${yCorrect1} < ${x1}, ${yCorrect2} < ${x2}, and ${yCorrect3} < ${x3}. The other tables each break at least one condition: one has a row where $y > x$, one has an $x$-value that is not less than ${xBound}, and one fails both.`;
+
+    // STEP 9: Return. correctAnswer is the numeric index of the correct option
+    // because the options are figures (HTML tables), not short text.
     return {
-      questionText: `For which of the following tables are all the values of $x$ and their corresponding values of $y$ solutions to the given system of inequalities? $y < x$ and $x < ${xBound}`,
+      questionText: `For which of the following tables are all the values of $x$ and their corresponding values of $y$ solutions to the given system of inequalities? $y < x$ and $x < ${xBound}$`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `Table ${correctOption.letter}`,
+      correctAnswer: correctIndex,
       explanation: explanation
     };
   }

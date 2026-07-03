@@ -104,30 +104,44 @@ export const generator_797 = {
 `;
     
     // STEP 4: Build Options
-    const optionsData = [
-        { text: `$x = ${xSol}, y = ${ySol}$`, isCorrect: true },
-        { text: `$x = ${-xSol}, y = ${ySol}$`, isCorrect: false }, // Wrong sign x
-        { text: `$x = ${xSol}, y = ${-ySol}$`, isCorrect: false }, // Wrong sign y
-        { text: `$x = ${ySol}, y = ${xSol}$`, isCorrect: false }  // Swapped
-    ];
-    
-    // Filter duplicates (e.g., if x=0 or x=y)
-    const uniqueMap = new Map();
-    optionsData.forEach(opt => uniqueMap.set(opt.text, opt));
-    
-    // Add fillers if duplicates reduced count
-    while (uniqueMap.size < 4) {
-        const fx = getRandomInt(-5, 5);
-        const fy = getRandomInt(-5, 5);
-        const txt = `$x = ${fx}, y = ${fy}$`;
-        if (!uniqueMap.has(txt)) uniqueMap.set(txt, { text: txt, isCorrect: false });
+    // Track solution pairs so distractors never collide with the correct
+    // answer or each other (which would otherwise clobber the correct flag or
+    // trip DUP_OPTIONS when xSol===ySol, xSol===0, or ySol===0).
+    const fmt = (x: number, y: number) => `$x = ${x}, y = ${y}$`;
+    const usedPairs = new Set<string>();
+    const pairKey = (x: number, y: number) => `${x},${y}`;
+
+    const optionsData: { text: string; isCorrect: boolean }[] = [];
+    const addOption = (x: number, y: number, isCorrect: boolean) => {
+      const key = pairKey(x, y);
+      if (usedPairs.has(key)) return false;
+      usedPairs.add(key);
+      optionsData.push({ text: fmt(x, y), isCorrect });
+      return true;
+    };
+
+    // Correct answer first so its flag is never overwritten.
+    addOption(xSol, ySol, true);
+
+    // Candidate distractors from common misconceptions; each only added if it
+    // does not collide with an already-used pair.
+    addOption(-xSol, ySol, false); // Wrong sign on x
+    addOption(xSol, -ySol, false); // Wrong sign on y
+    addOption(ySol, xSol, false);  // Swapped coordinates
+
+    // Backfill with nearby lattice points if misconception distractors collided.
+    let tries = 0;
+    while (optionsData.length < 4 && tries++ < 50) {
+      const fx = getRandomInt(-6, 6);
+      const fy = getRandomInt(-6, 6);
+      addOption(fx, fy, false);
     }
 
-    const shuffledOptions = shuffle(Array.from(uniqueMap.values())).map((opt, index) => ({
+    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     
     // STEP 5: Return Data

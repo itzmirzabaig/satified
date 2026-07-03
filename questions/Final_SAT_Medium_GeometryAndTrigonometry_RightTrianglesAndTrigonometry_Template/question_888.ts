@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 888
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [Hypotenuse: 8, 30° angle, opposite side: 4 (half hypotenuse)]
  * - Difficulty factors: [30-60-90 triangle properties, side opposite 30° is half hypotenuse]
@@ -21,92 +21,63 @@ export const generator_888 = {
     skill: "Right Triangles And Trigonometry",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate 30-60-90 triangle
-    // Original: hypotenuse = 8, answer = 4
-    // Use even hypotenuse so answer is integer
-    const hypotenuse = getRandomInt(6, 20) * 2; // Even numbers 12-40
-    
-    // Calculate sides
-    const shortLeg = hypotenuse / 2; // Opposite 30°
-    const longLeg = (hypotenuse * Math.sqrt(3)) / 2; // Opposite 60°
-    
-    // Position: P at origin (30°), R at right angle, Q at top (60°)
-    // Actually: standard position with right angle at R
-    const pX = 0;
-    const pY = 0;
-    const rX = longLeg;
-    const rY = 0;
-    const qX = longLeg;
-    const qY = shortLeg;
-    
-    // Calculate viewBox bounds
-    const xMin = -1;
-    const xMax = longLeg + 2;
-    const yMin = -1;
-    const yMax = shortLeg + 2;
-    
-    // STEP 2: Build Mafs code
-    const _svg_0 = yMax; const _svg_1 = yMin; const _svg_2 = xMax; const _svg_3 = xMin;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_3,xmax=_svg_2;
-      const ymin=_svg_1,ymax=_svg_0;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=(yMin),ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(-0.5)+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">P(30^°)</text>';
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=(yMin),ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((longLeg + 0.4))+'" y="'+my((shortLeg + 0.2))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">Q(60^°)</text>';
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=(yMin),ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((longLeg + 0.4))+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">R(90^°)</text>';
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=(yMin),ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((longLeg / 2))+'" y="'+my((shortLeg / 2 + 0.5))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">${hypotenuse</text>';
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=(yMin),ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((longLeg + 0.8))+'" y="'+my((shortLeg / 2))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">x</text>';
-    })()}</svg></div>`;
-    
-    // STEP 3: Answer is half the hypotenuse
+    // STEP 1: Generate 30-60-90 triangle.
+    // Original: hypotenuse = 8, answer = 4.
+    // Use an even hypotenuse so the short leg (answer) is an integer.
+    const hypotenuse = getRandomInt(6, 20) * 2; // Even numbers 12..40
+
+    // 30-60-90 side relationships (right angle at R):
+    //   short leg = opposite 30°  = hypotenuse / 2   (this is the answer)
+    //   long  leg = opposite 60°  = short leg * sqrt(3)
+    const shortLeg = hypotenuse / 2; // integer 6..20
+    const longLeg = (hypotenuse * Math.sqrt(3)) / 2; // used only for figure geometry
+
+    // STEP 2: Build a clean SVG figure that actually draws the triangle.
+    // Vertices: P (30° angle) at origin, R (right angle) on the x-axis,
+    // Q (60° angle) above R. Segment PQ is the hypotenuse; QR is the short
+    // leg (opposite the 30° angle at P) and is labelled x.
+    const W = 420, H = 300, M = 46;
+    const spanX = longLeg;   // horizontal extent (P to R)
+    const spanY = shortLeg;  // vertical extent (R to Q)
+    const sx = (W - 2 * M) / spanX;
+    const sy = (H - 2 * M) / spanY;
+    const s = Math.min(sx, sy);
+    // Screen coordinates (y grows downward), baseline near the bottom.
+    const baseY = H - M;
+    const Px = M, Py = baseY;
+    const Rx = M + longLeg * s, Ry = baseY;
+    const Qx = M + longLeg * s, Qy = baseY - shortLeg * s;
+    const r2 = (v: number) => Math.round(v * 100) / 100;
+    const P = `${r2(Px)},${r2(Py)}`;
+    const R = `${r2(Rx)},${r2(Ry)}`;
+    const Q = `${r2(Qx)},${r2(Qy)}`;
+    // Small square marking the right angle at R.
+    const box = 12;
+    const rightAngle = `M ${r2(Rx)} ${r2(Ry - box)} L ${r2(Rx - box)} ${r2(Ry - box)} L ${r2(Rx - box)} ${r2(Ry)}`;
+
+    const figureCode = `<div style="width:100%;max-width:420px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      `<polygon points="${P} ${R} ${Q}" fill="#3b82f6" fill-opacity="0.08" stroke="#3b82f6" stroke-width="2"/>` +
+      `<path d="${rightAngle}" fill="none" stroke="currentColor" stroke-width="1.4"/>` +
+      `<text x="${r2(Px - 6)}" y="${r2(Py + 18)}" text-anchor="middle" font-size="14" fill="currentColor">P</text>` +
+      `<text x="${r2(Px + 30)}" y="${r2(Py - 8)}" text-anchor="middle" font-size="13" fill="currentColor">30°</text>` +
+      `<text x="${r2(Rx + 14)}" y="${r2(Ry + 18)}" text-anchor="middle" font-size="14" fill="currentColor">R</text>` +
+      `<text x="${r2(Qx + 14)}" y="${r2(Qy - 6)}" text-anchor="middle" font-size="14" fill="currentColor">Q</text>` +
+      `<text x="${r2((Px + Qx) / 2 - 10)}" y="${r2((Py + Qy) / 2 - 6)}" text-anchor="end" font-size="14" font-style="italic" fill="currentColor">${hypotenuse}</text>` +
+      `<text x="${r2(Rx + 12)}" y="${r2((Ry + Qy) / 2 + 4)}" text-anchor="start" font-size="14" font-style="italic" fill="currentColor">x</text>` +
+      `</svg></div>`;
+
+    // STEP 3: Answer is the side opposite the 30° angle = half the hypotenuse.
     const answer = shortLeg;
-    
-    // STEP 4: Return question data
+
+    // STEP 4: Return question data.
     return {
-      questionText: "In the right triangle shown above, what is the length of the side opposite the 30° angle?",
-      figureCode: mafsCode,
-      options: null, // Fill-in-the-blank
+      questionText: "In right triangle $PQR$ shown above, the measure of angle $P$ is 30 degrees and the measure of angle $R$ is 90 degrees. If the hypotenuse has length " + hypotenuse + ", what is the length of side $x$, the side opposite the 30-degree angle?",
+      figureCode,
+      options: [], // Fill-in-the-blank
       correctAnswer: answer.toString(),
-      explanation: `In a 30-60-90 triangle, the length of the side opposite the 30° angle is half the length of the hypotenuse. If the hypotenuse is ${hypotenuse}, the side opposite the 30° angle is ${answer}.`
+      explanation: `In a 30-60-90 right triangle, the side opposite the 30-degree angle is half the length of the hypotenuse. The hypotenuse here has length ${hypotenuse}, so $x = \\frac{${hypotenuse}}{2} = ${answer}$.`
     };
   }
 };

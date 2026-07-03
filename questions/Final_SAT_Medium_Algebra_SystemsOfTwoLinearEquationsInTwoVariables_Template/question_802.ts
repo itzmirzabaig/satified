@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 802
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [coefficients: 1, 2, 3, 5, -3]
  * - Difficulty factors: [Substitution, solve for y]
@@ -11,6 +11,14 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Integer solution]
  * - Question type: [Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * REBUILD: original computed m3 with numerator/denominator swapped, so the
+ * displayed second equation did not pass through the solution point and the
+ * explanation's "double check" failed; it also produced repeating decimals.
+ * Rebuilt answer-first: line 2 (m2*y = m3*x) passes through the origin, so
+ * parameterizing the solution as (x,y) = (m2*t, m3*t) puts the point exactly
+ * on it. Line 1 (y = m*x + b) is then fitted with integer m and b. Everything
+ * is integer for every draw.
  */
 
 export const generator_802 = {
@@ -22,96 +30,81 @@ export const generator_802 = {
     skill: "Systems Of Two Linear Equations In Two Variables",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values
-    const m = getRandomInt(2, 5);
-    const b = -1 * getRandomInt(1, 5);
-    const m2 = getRandomInt(3, 8);
-    
-    // y = mx + b, m2*y = m3*x
-    // y = m2/m3 * x
-    // mx + b = m2/m3 * x
-    // b = (m2/m3 - m) * x
-    
-    const xValue = getRandomInt(5, 15);
-    const m3Raw = m2 * xValue / (m * xValue + b);
-    const yValue = m * xValue + b;
-    
-    // Helper to format number as fraction if it has long decimals
-    const formatNumber = (num: number): string => {
-      // Check if it's essentially an integer
-      if (Number.isInteger(num)) {
-        return num.toString();
-      }
-      
-      // Check if it has a simple decimal (1-2 places)
-      const rounded = Math.round(num * 100) / 100;
-      if (Math.abs(num - rounded) < 0.0001 && rounded.toString().length <= 4) {
-        return rounded.toString();
-      }
-      
-      // Convert to fraction using the original calculation components
-      // m3 = m2 * xValue / (m * xValue + b)
-      // So numerator = m2 * xValue, denominator = m * xValue + b = yValue
-      const numerator = m2 * xValue;
-      const denominator = yValue;
-      
-      // Simplify fraction using GCD
-      const gcd = (a: number, b: number): number => {
-        let num1 = Math.abs(a);
-        let num2 = Math.abs(b);
-        while (num2 !== 0) {
-          const temp = num2;
-          num2 = num1 % num2;
-          num1 = temp;
-        }
-        return num1;
-      };
-      
-      const common = gcd(numerator, denominator);
-      const simpNum = numerator / common;
-      const simpDen = denominator / common;
-      
-      // Handle negative denominator
-      if (simpDen < 0) {
-        return `-\\frac{${-simpNum}}{${-simpDen}}`;
-      }
-      
-      return `\\frac{${simpNum}}{${simpDen}}`;
-    };
-    
-    const m3 = formatNumber(m3Raw);
-    
-    // STEP 2: Build question text
-    const signStr = b >= 0 ? '+' : '';
+    // Build a consistent integer system with a unique solution.
+    //   Line 1: y = m*x + b        (b negative)
+    //   Line 2: m2*y = m3*x        (through the origin)
+    // Point (x,y) = (m2*t, m3*t) lies on line 2 for any t. Fit line 1 to it.
+    let m = 0, b = 0, m2 = 0, m3 = 0, t = 0, xValue = 0, yValue = 0;
+    let ok = false;
+    let tries = 0;
+    while (!ok && tries++ < 50) {
+      m2 = getRandomInt(2, 5);
+      m3 = getRandomInt(3, 8);
+      t = getRandomInt(1, 2);
+      m = getRandomInt(2, 5);
+
+      xValue = m2 * t;
+      yValue = m3 * t;
+      b = yValue - m * xValue; // makes line 1 pass through (xValue, yValue)
+
+      // Require: distinct positive x,y (m2 != m3), a genuinely negative and
+      // bounded intercept, and non-parallel lines (unique solution).
+      ok =
+        m2 !== m3 &&
+        b <= -1 && b >= -9 &&
+        (m2 * m - m3) !== 0;
+    }
+    // Deterministic fallback (never hit in practice, keeps output valid).
+    if (!ok) {
+      m2 = 2; m3 = 5; t = 1; m = 3;
+      xValue = 2; yValue = 5; b = yValue - m * xValue; // = -1
+    }
+
+    // Sign helpers for line 1 display: y = m x (+/-) |b|
+    const bSign = b >= 0 ? '+' : '-';
     const absB = Math.abs(b);
-    const questionText = `In the solution to the system of equations below, what is the value of $y$?\n\n$$\\begin{cases} y = ${m}x ${signStr}${absB} \\\\ ${m2}y = ${m3}x \\end{cases}$$`;
-    
-    // STEP 3: Create options
+
+    // STEP 2: Build question text
+    const questionText = `In the solution to the system of equations below, what is the value of $y$?\n\n$$\\begin{cases} y = ${m}x ${bSign} ${absB} \\\\ ${m2}y = ${m3}x \\end{cases}$$`;
+
+    // STEP 3: Create options. With x = m2*t, y = m3*t, m2 != m3, and both
+    // positive, the four values below are always distinct.
     const optionsData = [
+      { text: yValue.toString(), isCorrect: true },
       { text: (-yValue).toString(), isCorrect: false },
-      { text: (-xValue).toString(), isCorrect: false },
       { text: xValue.toString(), isCorrect: false },
-      { text: yValue.toString(), isCorrect: true }
+      { text: (-xValue).toString(), isCorrect: false }
     ];
-    
+
     // STEP 4: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(o => o.isCorrect);
-    const correctLetter = correctOption!.letter;
-    
-    // STEP 5: Return question data
+
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const correctLetter = correctOption.letter;
+
+    // STEP 5: Explanation — substitute line 1 into line 2, all integer, all
+    // math wrapped in balanced $...$.
+    const distM = m2 * m;                 // coefficient of x from m2*(m*x)
+    const constTerm = m2 * b;             // m2*b  (negative)
+    const constSign = constTerm >= 0 ? '+' : '-';
+    const absConst = Math.abs(constTerm);
+    const xCoeff = distM - m3;            // (m2*m - m3), nonzero by guard
+    const rhsForX = -constTerm;           // move constant to the right side
+
+    const explanation = `Substitute the expression for $y$ from the first equation into the second.\n\nStart with $${m2}y = ${m3}x$ and replace $y$ with $${m}x ${bSign} ${absB}$:\n\n$${m2}(${m}x ${bSign} ${absB}) = ${m3}x$\n\nDistribute $${m2}$: $${distM}x ${constSign} ${absConst} = ${m3}x$.\n\nCollect the $x$ terms on one side: $${xCoeff}x = ${rhsForX}$, so $x = ${xValue}$.\n\nSubstitute $x = ${xValue}$ back into the first equation: $y = ${m}(${xValue}) ${bSign} ${absB} = ${yValue}$.\n\nSo the correct choice is $${correctLetter}$: $y = ${yValue}$.`;
+
+    // STEP 6: Return question data
     return {
       questionText: questionText,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: yValue.toString(),
-      explanation: `To find the value of $y$, we need to solve the system of linear equations.\n\nGiven:\n1) $y = ${m}x ${signStr}${absB}$\n2) ${m2}y = ${m3}x$\n\nWe can use the substitution method. Since the first equation already expresses $y$ in terms of $x$ ($y = ${m}x ${signStr}${absB}$), we can substitute this expression for $y$ into the second equation.\n\nSubstitute $(${m}x ${signStr}${absB})$ for $y$ in the second equation:\n$${m2}(${m}x ${signStr}${absB}) = ${m3}x$\n\nDistribute the $${m2}$:\n$${m2 * m}x ${signStr}${m2 * absB} = ${m3}x$\n\nSubtract $${m3}x$ from both sides to isolate the $x$ term:\n$${m2 * m}x - ${m3}x ${signStr}${m2 * absB} = 0$\n$${m2 * m}x - ${m3}x ${signStr}${m2 * absB} = 0$\n\n${b >= 0 ? 'Subtract' : 'Add'} $${Math.abs(m2 * absB)}$ from both sides:\n$${m2 * m}x - ${m3}x = ${-m2 * b}$\n\nCombine like terms and solve for $x$:\n$x = ${xValue}$\n\nNow that we have the value of $x$, we can find $y$ by substituting $x = ${xValue}$ into either of the original equations. Let's use the first one, as it's simpler:\n$y = ${m}(${xValue}) ${signStr}${absB}$\n$y = ${m * xValue} ${signStr}${absB}$\n$y = ${yValue}$\n\nLet's double-check with the second equation:\n$${m2}y = ${m3}x$\n$${m2}(${yValue}) = ${m3}(${xValue})$\n$${m2 * yValue} = ${m3Raw * xValue === Math.round(m3Raw * xValue) ? m3Raw * xValue : formatNumber(m3Raw * xValue)}$\nThe solution works for both equations.\n\nTherefore, the value of $y$ is $${yValue}$.`
+      explanation: explanation
     };
   }
 };

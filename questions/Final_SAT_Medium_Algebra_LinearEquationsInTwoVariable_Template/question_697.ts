@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 697
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [2 squares, 6 triangles, side lengths r and t, total perimeter: 210]
  * - Difficulty factors: [Calculating perimeters, setting up equation]
@@ -21,38 +21,55 @@ export const generator_697 = {
     skill: "Linear Equations In Two Variable",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate parameters
-    const numSquares = getRandomInt(2, 5);
-    const numTriangles = getRandomInt(4, 8);
-    const totalPerimeter = getRandomInt(150, 300);
-    
-    const squareCoeff = numSquares * 4;
-    const triangleCoeff = numTriangles * 3;
-    
-    // STEP 2: Create options
-    const optionsData = [
-      { text: `$${numSquares * 3}r + ${numTriangles * 4}t = ${totalPerimeter}$`, isCorrect: false },
-      { text: `$${numSquares}r + ${numTriangles}t = ${totalPerimeter}$`, isCorrect: false },
-      { text: `$${squareCoeff}r + ${triangleCoeff}t = ${totalPerimeter}$`, isCorrect: true },
-      { text: `$${numTriangles * 4}r + ${numSquares * 3}t = ${totalPerimeter}$`, isCorrect: false }
-    ];
-    
+    // STEP 1: Generate parameters. Redraw (bounded) until the four option
+    // strings are guaranteed pairwise distinct — the reversed distractor
+    // collides with the correct answer whenever numSquares === numTriangles.
+    let numSquares = 0;
+    let numTriangles = 0;
+    let squareCoeff = 0;
+    let triangleCoeff = 0;
+    let totalPerimeter = 0;
+    let optionsData: { text: string; isCorrect: boolean }[] = [];
+
+    let tries = 0;
+    do {
+      numSquares = getRandomInt(2, 5);
+      numTriangles = getRandomInt(4, 8);
+      totalPerimeter = getRandomInt(150, 300);
+
+      squareCoeff = numSquares * 4;   // perimeter of one square is 4r
+      triangleCoeff = numTriangles * 3; // perimeter of one equilateral triangle is 3t
+
+      optionsData = [
+        // A: multiplies sides by the wrong shape's side count (wrong calculation)
+        { text: `$${numSquares * 3}r + ${numTriangles * 4}t = ${totalPerimeter}$`, isCorrect: false },
+        // B: counts shapes instead of summing perimeters
+        { text: `$${numSquares}r + ${numTriangles}t = ${totalPerimeter}$`, isCorrect: false },
+        // C: correct — 4r per square, 3t per triangle
+        { text: `$${squareCoeff}r + ${triangleCoeff}t = ${totalPerimeter}$`, isCorrect: true },
+        // D: reverses which count goes with which side
+        { text: `$${numTriangles * 4}r + ${numSquares * 3}t = ${totalPerimeter}$`, isCorrect: false }
+      ];
+    } while (
+      new Set(optionsData.map(o => o.text)).size !== optionsData.length &&
+      ++tries < 50
+    );
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
-    
+
     return {
-      questionText: `A total of ${numSquares} squares each have side length $r$. A total of ${numTriangles} equilateral triangles each have side length $t$. None of these squares and triangles shares a side. The sum of the perimeters of all these squares and triangles is ${totalPerimeter}. Which equation represents this situation?`,
+      questionText: `A total of ${numSquares} squares each have side length $r$. A total of ${numTriangles} equilateral triangles each have side length $t$. No square or triangle shares a side with another shape. The sum of the perimeters of all of these squares and triangles is ${totalPerimeter}. Which equation represents this situation?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
-      explanation: `Choice ${correctLetter} is correct. \n\n1. **Analyze the perimeter of the squares:**\n   - There are ${numSquares} squares.\n   - Each square has a perimeter of $4r$.\n   - Total perimeter for squares: $${numSquares} \\times 4r = ${squareCoeff}r$.\n\n2. **Analyze the perimeter of the triangles:**\n   - There are ${numTriangles} equilateral triangles.\n   - Each triangle has a perimeter of $3t$.\n   - Total perimeter for triangles: $${numTriangles} \\times 3t = ${triangleCoeff}t$.\n\n3. **Formulate the equation:**\n   - Total perimeter = $${squareCoeff}r + ${triangleCoeff}t = ${totalPerimeter}$.`
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctOption.letter} is correct. Each square has perimeter $4r$, so the ${numSquares} squares contribute $${numSquares} \\times 4r = ${squareCoeff}r$. Each equilateral triangle has perimeter $3t$, so the ${numTriangles} triangles contribute $${numTriangles} \\times 3t = ${triangleCoeff}t$. Adding these and setting the total equal to ${totalPerimeter} gives $${squareCoeff}r + ${triangleCoeff}t = ${totalPerimeter}$.`
     };
   }
 };

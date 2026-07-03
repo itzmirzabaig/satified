@@ -4,13 +4,12 @@ import type { QuestionData } from '../../study/types';
 /**
  * Question 961
  *
- * FIXES:
- * - Changed \\\\frac to \\frac
- * - Updated table styling
- * - Added local gcd function
+ * Two-way table (coat color x eye color). Asks: of the chocolate-colored
+ * kittens, what fraction has deep blue eyes? Answer = chocBlue / chocTotal.
+ * Distractors are plausible wrong ratios drawn from the same table. All four
+ * option values are guaranteed pairwise-distinct via a bounded retry so no
+ * two rendered fractions can collide numerically.
  */
-
-const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
 
 export const generator_961 = {
   metadata: {
@@ -21,28 +20,47 @@ export const generator_961 = {
   },
 
   generate: (): QuestionData => {
-    // STEP 1: Generate table values
-    // Cream-tortoiseshell row
-    const creamBlue = getRandomInt(12, 20);
-    const creamBrown = getRandomInt(12, 20);
-    const creamTotal = creamBlue + creamBrown;
+    // STEP 1: Generate table values, redrawing until the four candidate
+    // option fractions are all numerically distinct (bounded retry).
+    let creamBlue = 0, creamBrown = 0, chocBlue = 0, chocBrown = 0;
+    let creamTotal = 0, chocTotal = 0, totalKittens = 0, totalBlue = 0, totalBrown = 0;
 
-    // Chocolate row
-    const chocBlue = getRandomInt(8, 16);
-    const chocBrown = getRandomInt(3, 8);
-    const chocTotal = chocBlue + chocBrown;
+    let tries = 0;
+    while (tries++ < 50) {
+      // Cream-tortoiseshell row
+      creamBlue = getRandomInt(12, 20);
+      creamBrown = getRandomInt(12, 20);
+      creamTotal = creamBlue + creamBrown;
 
-    const totalKittens = creamTotal + chocTotal;
-    const totalBlue = creamBlue + chocBlue;
-    const totalBrown = creamBrown + chocBrown;
+      // Chocolate row
+      chocBlue = getRandomInt(8, 16);
+      chocBrown = getRandomInt(3, 8);
+      chocTotal = chocBlue + chocBrown;
 
-    // STEP 2: Calculate correct answer (conditional probability)
+      totalKittens = creamTotal + chocTotal;
+      totalBlue = creamBlue + chocBlue;
+      totalBrown = creamBrown + chocBrown;
+
+      // Candidate fraction values that will be rendered as options.
+      const vals = [
+        chocBlue / chocTotal,   // correct
+        chocBlue / totalKittens, // dist1
+        chocBlue / totalBlue,    // dist2
+        creamBlue / creamTotal   // dist3
+      ];
+
+      let distinct = true;
+      for (let a = 0; a < vals.length && distinct; a++) {
+        for (let b = a + 1; b < vals.length; b++) {
+          if (Math.abs(vals[a] - vals[b]) < 1e-9) { distinct = false; break; }
+        }
+      }
+      if (distinct) break;
+    }
+
+    // STEP 2: Correct answer (conditional probability) — displayed unsimplified.
     const numerator = chocBlue;
     const denominator = chocTotal;
-    // Simplify answer for fraction option
-    const g = gcd(numerator, denominator);
-    const simpleNum = numerator / g;
-    const simpleDen = denominator / g;
 
     // STEP 3: Build HTML table
     const tableCode = `<table style="border-collapse: collapse; margin: 0 auto; text-align: center; background: transparent; width: 100%; max-width: 450px;">
@@ -76,21 +94,17 @@ export const generator_961 = {
   </tbody>
 </table>`;
 
-    // STEP 4: Create options
-    // Note: options might not be simplified in all distractor cases, but correct answer usually is.
-    // Based on original, we return fractions.
-    
-    // Distractors
-    const dist1 = `\\frac{${chocBlue}}{${totalKittens}}`;
-    const dist2 = `\\frac{${chocBlue}}{${totalBlue}}`;
-    const dist3 = `\\frac{${creamBlue}}{${creamTotal}}`;
-    const correctText = `\\frac{${numerator}}{${denominator}}`;
-    
+    // STEP 4: Create options (unsimplified fractions straight from the table).
+    const correctText = `$\\frac{${numerator}}{${denominator}}$`;
+    const dist1 = `$\\frac{${chocBlue}}{${totalKittens}}$`;
+    const dist2 = `$\\frac{${chocBlue}}{${totalBlue}}$`;
+    const dist3 = `$\\frac{${creamBlue}}{${creamTotal}}$`;
+
     const optionsData = [
-      { text: `$${dist1}$`, isCorrect: false },
-      { text: `$${dist2}$`, isCorrect: false },
-      { text: `$${dist3}$`, isCorrect: false },
-      { text: `$${correctText}$`, isCorrect: true }
+      { text: dist1, isCorrect: false },
+      { text: dist2, isCorrect: false },
+      { text: dist3, isCorrect: false },
+      { text: correctText, isCorrect: true }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

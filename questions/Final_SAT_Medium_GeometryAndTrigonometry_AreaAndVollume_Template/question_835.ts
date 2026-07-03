@@ -22,49 +22,55 @@ export const generator_835 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values (MATCH ORIGINAL RANGES)
-    const radiusA = getRandomInt(10, 20);
+    // STEP 1: Random values.
+    // radiusA is a multiple of 4 so a 25% increase is EXACT: radiusB = 5*radiusA/4
+    // is an integer (no rounding, no float artifact). {8,12,16} -> radiusB {10,15,20}.
+    // 20 is excluded because it would make radiusB = 25, colliding with the
+    // "used 25 as the radius" distractor (25^2*h). height is any integer in [40,60];
+    // all volumes stay integers.
+    const radiusA = getRandomInt(2, 4) * 4; // 8, 12, or 16
     const height = getRandomInt(40, 60);
-    const percentIncrease = 25; // Fixed at 25% for clean math (1.25 = 5/4)
-    
-    // STEP 2: Calculate derived values
-    const radiusB = Math.round(radiusA * 1.25); // 25% increase
-    const volumeA = radiusA * radiusA * height;
-    const volumeB = radiusB * radiusB * height;
-    
-    // STEP 3: Create options with tracking
-    // FIXED: Use \\pi (single escaped) not \\\\pi (double escaped)
-    const correctText = `${volumeB.toLocaleString()} \\pi`;
-    
-    // Distractors
-    const distractorA = `${volumeA.toLocaleString()} \\pi`; // Volume of A
-    const distractorC = `${Math.round(volumeB * 1.25).toLocaleString()} \\pi`; // Calculation error
-    const distractorD = `${(25 * 25 * height).toLocaleString()} \\pi`; // Using 25 as radius
-    
+
+    // STEP 2: Derived values (all exact integers).
+    const radiusB = (radiusA * 5) / 4;           // 25% longer, exact
+    const volumeA = radiusA * radiusA * height;  // V/pi for container A
+    const volumeB = radiusB * radiusB * height;  // V/pi for container B (correct)
+
+    // STEP 3: Options — coefficients of pi, wrapped in $...$ per house style.
+    const correctVal = volumeB;
+    const distAVal = volumeA;                 // forgot to scale the radius
+    const distCVal = (radiusA * radiusA * 5 / 4) * height; // scaled volume 25% instead of radius = 1.25*volumeA
+    const distDVal = 25 * 25 * height;        // used "25" from 25% as the radius
+
+    const correctText = `$${correctVal}\\pi$`;
+    const distractorA = `$${distAVal}\\pi$`;
+    const distractorC = `$${distCVal}\\pi$`;
+    const distractorD = `$${distDVal}\\pi$`;
+
     const optionsData = [
-      { text: distractorA, isCorrect: false },
-      { text: correctText, isCorrect: true },
-      { text: distractorC, isCorrect: false },
-      { text: distractorD, isCorrect: false }
+      { text: distractorA, isCorrect: false, val: distAVal },
+      { text: correctText, isCorrect: true, val: correctVal },
+      { text: distractorC, isCorrect: false, val: distCVal },
+      { text: distractorD, isCorrect: false, val: distDVal }
     ];
-    
-    // STEP 4: Shuffle and assign letters
+
+    // STEP 4: Shuffle and assign letters (letters meaningful only post-shuffle).
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(o => o.isCorrect);
-    const correctLetter = correctOption!.letter;
-    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
-    // STEP 5: Build explanation
-    // FIXED: All \\pi instead of \\\\pi, proper $ delimiters
-    const explanation = `Choice ${correctLetter} is correct. The radius of container B is $${radiusA} + 0.25(${radiusA}) = ${radiusB}$ cm. The volume is $V = \\pi r^2 h = \\pi(${radiusB})^2(${height}) = \\pi(${radiusB * radiusB})(${height}) = ${volumeB.toLocaleString()}\\pi$ cubic centimeters. Choice ${incorrectOptions[0].letter} is incorrect; this is the volume of container A ($\\pi(${radiusA})^2(${height}) = ${volumeA.toLocaleString()}\\pi$). Choice ${incorrectOptions[1].letter} is incorrect; this appears to be a calculation error. Choice ${incorrectOptions[2].letter} is incorrect; this incorrectly uses 25 (from the percentage) as the radius instead of calculating the actual radius of ${radiusB}.`;
-    
+
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const correctLetter = correctOption.letter;
+    const incorrect = shuffledOptions.filter(o => !o.isCorrect);
+    const letterOf = (v: number) => incorrect.find(o => o.val === v)!.letter;
+
+    // STEP 5: Explanation — every $...$ segment opens with a letter/backslash so
+    // no bare "$<digit>" appears (keeps currency/math heuristics clean).
+    const explanation = `Choice ${correctLetter} is correct. A 25% increase multiplies the radius by $\\tfrac{5}{4}$, so the radius of container B is $r_B = \\tfrac{5}{4}\\times ${radiusA} = ${radiusB}$ cm. The volume of a cylinder is $V = \\pi r^{2} h$, so container B has volume $V = \\pi (${radiusB})^{2}(${height}) = \\pi \\cdot ${radiusB * radiusB} \\cdot ${height} = ${volumeB}\\pi$ cubic centimeters. Choice ${letterOf(distAVal)} is incorrect; it uses radius ${radiusA} (container A), giving $V = \\pi (${radiusA})^{2}(${height}) = ${volumeA}\\pi$. Choice ${letterOf(distCVal)} is incorrect; it enlarges the volume of container A by 25% instead of the radius, giving $\\tfrac{5}{4}\\times ${volumeA} = ${distCVal}$ as the coefficient of $\\pi$. Choice ${letterOf(distDVal)} is incorrect; it uses 25 (from "25%") as the radius, giving $\\pi (25)^{2}(${height}) = ${distDVal}\\pi$.`;
+
     return {
-      // FIXED: Proper $ delimiters around math expressions
-      questionText: `A manufacturing company produces two sizes of cylindrical containers that each have a height of $${height}$ centimeters. The radius of container A is $${radiusA}$ centimeters, and the radius of container B is $25\\%$ longer than the radius of container A. What is the volume, in cubic centimeters, of container B?`,
+      questionText: `A manufacturing company produces two sizes of cylindrical containers that each have a height of ${height} centimeters. The radius of container A is ${radiusA} centimeters, and the radius of container B is 25% longer than the radius of container A. What is the volume, in cubic centimeters, of container B?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,

@@ -1,14 +1,14 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 775
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [birth weight: 200, gain: 2-3 lbs/day, days: 365]
  * - Difficulty factors: [Compound inequality with multiplication, addition of base value]
- * - Distractor patterns: [A=wrong calculation, B=wrong base, C=forgot birth weight]
- * - Constraints: [200 + 365*2 < w < 200 + 365*3]
+ * - Distractor patterns: [A=forgot to multiply by days, B=forgot birth weight, C=added birth weight twice]
+ * - Constraints: [birthWeight + days*minGain < w < birthWeight + days*maxGain]
  * - Question type: [Word Problem→Multiple Choice Text]
  * - Figure generation: [None]
  */
@@ -21,58 +21,63 @@ export const generator_775 = {
     skill: "Linear Inequalities In One Or Two Variables",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
     // STEP 1: Generate random values (MATCH ORIGINAL RANGES)
-    // Original: 200 lbs at birth, gain 2-3 lbs/day for 365 days
-    // Generate similar: birth weight, daily gain range, days
-    const birthWeight = getRandomInt(150, 250); // Birth weight
-    const minGain = getRandomInt(1, 3); // Min daily gain
-    const maxGain = minGain + getRandomInt(1, 2); // Max daily gain (close to min)
-    const days = getRandomInt(300, 400); // Days in period
-    
-    // STEP 2: Calculate weight range
-    const minTotalGain = days * minGain;
-    const maxTotalGain = days * maxGain;
-    const minWeight = birthWeight + minTotalGain;
-    const maxWeight = birthWeight + maxTotalGain;
-    
-    // STEP 3: Create distractors
-    // A: Wrong calculation (maybe just added min/max to birth)
-    const distA = `${birthWeight + minGain * 2} < w < ${birthWeight + maxGain * 2}`;
-    
-    // B: Used wrong base or partial calculation
-    const distB = `${birthWeight + minTotalGain / 2} < w < ${birthWeight + maxTotalGain / 2}`;
-    
-    // C: Forgot birth weight (just the gain)
-    const distC = `${minTotalGain} < w < ${maxTotalGain}`;
-    
-    // STEP 4: Create options with tracking
+    const birthWeight = getRandomInt(150, 250); // pounds at birth
+    const minGain = getRandomInt(1, 3);         // min daily gain
+    const maxGain = minGain + getRandomInt(1, 2); // max daily gain (> minGain)
+    const days = getRandomInt(300, 400);          // days after birth
+
+    // STEP 2: Correct compound inequality.
+    // The animal gains strictly between minGain and maxGain per day for `days`
+    // days, so total gain is between days*minGain and days*maxGain; add the
+    // birth weight to both bounds.
+    const minWeight = birthWeight + days * minGain;
+    const maxWeight = birthWeight + days * maxGain;
+
+    // STEP 3: Distractors — all integer-valued and provably distinct from the
+    // correct answer and from each other for every draw in the declared ranges.
+    //  correct lower  = birthWeight + days*minGain
+    //  A lower        = birthWeight + minGain      (forgot to multiply by days)
+    //  B lower        = days*minGain               (forgot the birth weight)
+    //  C lower        = 2*birthWeight + days*minGain (added birth weight twice)
+    // Since days >= 300 and 150 <= birthWeight <= 250, the four lower bounds are
+    // pairwise distinct, so no two options can ever coincide.
+    const distA = { lo: birthWeight + minGain, hi: birthWeight + maxGain };
+    const distB = { lo: days * minGain, hi: days * maxGain };
+    const distC = { lo: 2 * birthWeight + days * minGain, hi: 2 * birthWeight + days * maxGain };
+
+    const fmt = (lo: number, hi: number) => `$${lo} < w < ${hi}$`;
+
+    // STEP 4: Options tagged by kind so the explanation can find each letter
+    // after shuffling (letters are only meaningful post-shuffle).
     const optionsData = [
-      { text: `$${distA}$`, isCorrect: false },
-      { text: `$${distB}$`, isCorrect: false },
-      { text: `$${distC}$`, isCorrect: false },
-      { text: `$${minWeight} < w < ${maxWeight}$`, isCorrect: true }
+      { text: fmt(minWeight, maxWeight), isCorrect: true, kind: 'correct' },
+      { text: fmt(distA.lo, distA.hi), isCorrect: false, kind: 'noDays' },
+      { text: fmt(distB.lo, distB.hi), isCorrect: false, kind: 'noBirth' },
+      { text: fmt(distC.lo, distC.hi), isCorrect: false, kind: 'doubleBirth' }
     ];
-    
+
     // STEP 5: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
-    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    // STEP 6: Build explanation
-    const explanation = `Choice ${correctOption.letter} is correct. The elephant gains between ${minGain} and ${maxGain} pounds per day for ${days} days, so total gain is between $${days} \\times ${minGain} = ${minTotalGain}$ and $${days} \\times ${maxGain} = ${maxTotalGain}$ pounds. Adding the birth weight of ${birthWeight} pounds gives $${minWeight} < w < ${maxWeight}$. Choice ${incorrectOptions[0].letter} incorrectly calculates the gain. Choice ${incorrectOptions[1].letter} uses incorrect values. Choice ${incorrectOptions[2].letter} is incorrect because it only shows the weight gained and forgets to add the initial birth weight of ${birthWeight} pounds.`;
-    
+    const letterOf = (kind: string) => shuffledOptions.find(o => o.kind === kind)!.letter;
+
+    // STEP 6: Build explanation — each distractor is described by its own
+    // shuffled letter, so the reasons always match the choices shown.
+    const explanation = `Choice ${correctOption.letter} is correct. The animal gains between ${minGain} and ${maxGain} pounds per day for ${days} days, so the total gain is between $${days} \\times ${minGain} = ${days * minGain}$ and $${days} \\times ${maxGain} = ${days * maxGain}$ pounds. Adding the birth weight of ${birthWeight} pounds to each bound gives $${minWeight} < w < ${maxWeight}$. Choice ${letterOf('noDays')} adds only a single day's gain instead of multiplying by ${days} days. Choice ${letterOf('noBirth')} forgets to add the birth weight of ${birthWeight} pounds. Choice ${letterOf('doubleBirth')} adds the birth weight twice.`;
+
     // STEP 7: Return question data
     return {
-      questionText: `A certain elephant weighs $${birthWeight}$ pounds at birth and gains more than $${minGain}$ but less than $${maxGain}$ pounds per day during its first year. Which of the following inequalities represents all possible weights $w$, in pounds, for the elephant $${days}$ days after birth?`,
+      questionText: `A certain animal weighs $${birthWeight}$ pounds at birth and gains more than $${minGain}$ but less than $${maxGain}$ pounds per day during its first year. Which of the following inequalities represents all possible weights $w$, in pounds, of the animal $${days}$ days after birth?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `${minWeight} < w < ${maxWeight}`,
+      correctAnswer: correctOption.text,
       explanation: explanation
     };
   }

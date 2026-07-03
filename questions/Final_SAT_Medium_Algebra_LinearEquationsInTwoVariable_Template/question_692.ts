@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -40,14 +40,13 @@ export const generator_692 = {
     }));
     
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
-    
+
     return {
       questionText: `In triangle QRS, sides QR and RS each have a length of x centimeters and side SQ has a length of y centimeters. The equation 2x + y = ${perimeter} represents this situation. Which of the following is the best interpretation of ${perimeter} in this context?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
-      explanation: `Choice ${correctLetter} is correct. The expression 2x represents the sum of lengths of sides QR and RS (both x cm). The expression y represents the length of side SQ. Therefore, 2x + y represents the sum of all three sides, which is the perimeter of the triangle. Since 2x + y = ${perimeter}, the value ${perimeter} represents the perimeter of the triangle.`
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctOption.letter} is correct. The expression 2x represents the combined length of sides QR and RS (each x cm). The expression y represents the length of side SQ. Therefore, 2x + y represents the sum of the lengths of all three sides, which is the perimeter of the triangle. Since 2x + y = ${perimeter}, the value ${perimeter} represents the perimeter of the triangle, that is, the sum of the lengths of its three sides.`
     };
   }
 };
