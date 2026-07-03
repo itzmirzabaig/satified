@@ -27,28 +27,34 @@ export const generator_1094 = {
   generate: (): QuestionData => {
     const initial = getRandomInt(10, 30);
     const decrease = getRandomInt(30, 60);
-    const decayFactor = (100 - decrease) / 100;
-    
+    const decayStr = ((100 - decrease) / 100).toFixed(2);
+    const growthStr = ((100 + decrease) / 100).toFixed(2);
+
+    const correctText = `$q(x)=${initial}(${decayStr})^x$`;
+
     const optionsData = [
-      { text: `$q(x)=${decayFactor.toFixed(2)}(${initial})^x$`, isCorrect: false },
-      { text: `$q(x)=${(1 + decrease/100).toFixed(2)}(${initial})^x$`, isCorrect: false },
-      { text: `$q(x)=${initial}(${decayFactor.toFixed(2)})^x$`, isCorrect: true },
-      { text: `$q(x)=${initial}(${(1 + decrease/100).toFixed(2)})^x$`, isCorrect: false }
+      { key: 'correct', text: correctText, isCorrect: true },
+      { key: 'swapDecay', text: `$q(x)=${decayStr}(${initial})^x$`, isCorrect: false },
+      { key: 'swapGrowth', text: `$q(x)=${growthStr}(${initial})^x$`, isCorrect: false },
+      { key: 'growth', text: `$q(x)=${initial}(${growthStr})^x$`, isCorrect: false }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
-    
+
+    const correctLetter = shuffledOptions.find(o => o.key === 'correct')!.letter;
+    const swapDecayLetter = shuffledOptions.find(o => o.key === 'swapDecay')!.letter;
+    const swapGrowthLetter = shuffledOptions.find(o => o.key === 'swapGrowth')!.letter;
+    const growthLetter = shuffledOptions.find(o => o.key === 'growth')!.letter;
+
     return {
-      questionText: `$q(0)=${initial}$ and $q$ decreases by ${decrease}% for each increase of $x$ by 1. Which defines $q$?`,
+      questionText: `The function $q$ is such that $q(0)=${initial}$, and the value of $q(x)$ decreases by ${decrease}% for each increase of $x$ by $1$. Which of the following equations defines $q$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `$q(x)=${initial}(${decayFactor.toFixed(2)})^x$`,
-      explanation: `Choice ${correctLetter} is correct. A ${decrease}% decrease means retaining ${100-decrease}%, or ${decayFactor.toFixed(2)}$. The initial value is ${initial}.`
+      correctAnswer: correctText,
+      explanation: `Choice ${correctLetter} is correct. A ${decrease}% decrease for each increase of $x$ by $1$ means the value retains ${100 - decrease}% of its previous value, so the decay factor is $\\frac{${100 - decrease}}{100}=${decayStr}$. Since $q(0)=${initial}$, the initial value is ${initial}, giving $q(x)=${initial}(${decayStr})^x$. Choice ${swapDecayLetter} is incorrect; it swaps the initial value and the decay factor. Choice ${growthLetter} is incorrect because a base of ${growthStr} models a ${decrease}% increase, not a decrease. Choice ${swapGrowthLetter} is incorrect; it uses the growth factor ${growthStr} and also swaps it with the initial value.`
     };
   }
 };

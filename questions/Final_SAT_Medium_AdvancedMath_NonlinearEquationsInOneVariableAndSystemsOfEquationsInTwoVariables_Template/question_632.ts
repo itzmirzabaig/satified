@@ -23,9 +23,14 @@ export const generator_632 = {
  },
  
  generate: (): QuestionData => {
-   // STEP 1: Generate coefficient
-   const num = getRandomInt(2, 5);
-   const den = getRandomInt(2, 5);
+   // STEP 1: Generate coefficient num/den with num !== den and gcd(num, den) === 1,
+   // so the fraction is never 1 (which would collapse all options into duplicates)
+   // and is always in lowest terms.
+   const coprimePairs: [number, number][] = [
+     [2, 3], [2, 5], [3, 2], [3, 4], [3, 5],
+     [4, 3], [4, 5], [5, 2], [5, 3], [5, 4]
+   ];
+   const [num, den] = getRandomElement(coprimePairs);
    
    // STEP 2: Create options
    const correctText = `$p = \\frac{${den}}{${num}}s$`;

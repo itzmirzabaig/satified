@@ -1,11 +1,11 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1079
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [line: 2y=4.5, parabola: y=-4x²+bx, b is positive]
+ * - Number ranges: [line: cy=d (like 2y=4.5), parabola: y=-ax²+bx, b is positive]
  * - Difficulty factors: [Horizontal line intersects parabola at exactly one point, discriminant = 0]
  * - Distractor patterns: [N/A - fill in blank]
  * - Constraints: [Horizontal line gives constant y, discriminant must be 0 for single intersection, b > 0]
@@ -21,62 +21,33 @@ export const generator_1079 = {
     skill: "Nonlinear Equations In One Variable And Systems Of Equations In Two Variables",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values preserving difficulty
-    // Original: 2y = 4.5, y = -4x² + bx
-    // Pattern: lineCoeff*y = lineConstant, parabola y = -a*x² + bx
-    
-    const lineCoeff = getRandomInt(2, 5);
-    const lineConstant = getRandomInt(3, 9);
-    const parabolaA = getRandomInt(2, 6); // Coefficient of x² (will be negated)
-    
-    // y = lineConstant/lineCoeff
-    const yValue = lineConstant / lineCoeff;
-    
-    // For exactly one intersection: line y = k intersects parabola y = -ax² + bx
-    // Substituting: k = -ax² + bx → ax² - bx + k = 0
-    // Discriminant: b² - 4ak = 0 → b² = 4ak → b = √(4ak) = 2√(ak)
-    
-    // We need 4*a*k to be a perfect square for b to be integer
-    // k = lineConstant/lineCoeff, so we need 4*a*lineConstant/lineCoeff to be perfect square
-    
-    // Let's work backwards: choose b first, then ensure consistency
-    const b = getRandomInt(4, 12) * 2; // Even number for clean math
-    
-    // From b² = 4*a*yValue = 4*a*lineConstant/lineCoeff
-    // We need: b² * lineCoeff = 4*a*lineConstant
-    
-    // Actually let's be more careful. Choose parameters so discriminant = 0 works out nicely.
-    
-    // Alternative: Choose a and b, then determine what lineConstant/lineCoeff should be
-    // b² = 4*a*k → k = b²/(4a)
-    
-    const chosenB = getRandomInt(4, 12);
-    const chosenA = getRandomInt(1, 4);
-    
-    // k = b²/(4a) must equal lineConstant/lineCoeff
-    const kValue = (chosenB * chosenB) / (4 * chosenA);
-    
-    // Verify kValue * 4a = b² is perfect square condition
-    // And we need to express kValue as lineConstant/lineCoeff with reasonable integers
-    
-    // Let's use lineCoeff = 2 (or 4) and lineConstant = 2*kValue (or 4*kValue)
-    const finalLineCoeff = 2;
-    const finalLineConstant = 2 * kValue;
-    
-    // STEP 2: Calculate derived values
-    const bValue = chosenB;
-    
-    // STEP 3: No figure needed
-    const figureCode = null;
-    
+    // Answer-first construction: pick the parabola y = -a x^2 + b x with the
+    // integer answer b, then build the tangent horizontal line from it.
+    const a = getRandomInt(2, 5); // coefficient of x^2 (displayed negated)
+    const b = getRandomInt(3, 9); // the positive constant students solve for
+
+    // Tangency: y = k meets y = -ax^2 + bx once  ⇔  ax^2 - bx + k = 0 has
+    // discriminant b^2 - 4ak = 0  ⇔  k = b^2/(4a).
+    // Present the line as (lineC)y = (lineD) using the reduced integer form
+    // of b^2/(4a), so every displayed value is an integer (no float artifacts).
+    const gcd = (m: number, n: number): number => (n === 0 ? m : gcd(n, m % n));
+    const g = gcd(b * b, 4 * a);
+    let lineC = (4 * a) / g;
+    let lineD = (b * b) / g;
+    if (lineC === 1) { lineC = 2; lineD *= 2; } // keep the "cy = d" form when k is an integer
+
+    // k = lineD/lineC exactly; lineC divides 4a, so 4a·k = (4a/lineC)·lineD = b².
+    const kIsInt = lineD % lineC === 0;
+    const kTex = kIsInt ? `${lineD / lineC}` : `\\frac{${lineD}}{${lineC}}`;
+
     return {
-      questionText: `In the $xy$-plane, a line with equation $${finalLineCoeff}y=${finalLineConstant}$ intersects a parabola at exactly one point. If the parabola has equation $y=-${chosenA}x^2+bx$, where $b$ is a positive constant, what is the value of $b$?`,
-      figureCode: figureCode,
+      questionText: `In the $xy$-plane, the line with equation $\\,${lineC}y=${lineD}$ intersects the parabola with equation $y=-${a}x^2+bx$, where $b$ is a positive constant, at exactly one point. What is the value of $b$?`,
+      figureCode: null,
       options: null,
-      correctAnswer: bValue.toString(),
-      explanation: `The correct answer is $${bValue}$. From the line equation, $y = ${kValue}$. Substituting into the parabola: $${kValue} = -${chosenA}x^2 + bx$, which gives $${chosenA}x^2 - ${bValue}x + ${kValue} = 0$. For exactly one solution, the discriminant equals 0: $(-${bValue})^2 - 4(${chosenA})(${kValue}) = ${bValue*bValue} - ${4*chosenA*kValue} = 0$. Thus $b = ${bValue}$.`
+      correctAnswer: b.toString(),
+      explanation: `The correct answer is $\\,${b}$. Dividing both sides of the line's equation by $\\,${lineC}$ shows that the line is horizontal: $y=${kTex}$. Substituting $\\,${kTex}$ for $y$ in the parabola's equation gives $\\,${kTex}=-${a}x^2+bx$, which can be rewritten as $\\,${a}x^2-bx+${kTex}=0$. The line and the parabola intersect at exactly one point precisely when this quadratic equation has exactly one solution, which happens when its discriminant is zero: $b^2-4(${a})\\left(${kTex}\\right)=b^2-${b * b}=0$. Therefore $b^2=${b * b}$, and since $b$ is positive, $b=${b}$.`
     };
   }
 };

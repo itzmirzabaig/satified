@@ -3,7 +3,7 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1080
- * 
+ *
  * ANALYSIS:
  * - Domain: Advanced Math
  * - Skill: Rational Equations
@@ -20,113 +20,99 @@ export const generator_1080 = {
     skill: "Nonlinear Equations In One Variable And Systems Of Equations In Two Variables",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
     // 1. Setup Parameters
-    // We want denominator x^2 - p^2
-    const p = getRandomInt(3, 6); 
+    // Denominator is x^2 - p^2, so x = p and x = -p are excluded values.
+    const p = getRandomInt(3, 6);
     const pSq = p * p;
 
-    // 2. Determine Target Solution (x)
-    // We want x to be a simple fraction like 1/2, -1/2, 3/2, -3/2, or integer
-    // constraint: x != p and x != -p
-    const targetNumerator = getRandomElement([1, -1, 3, -3, 5]); 
-    const targetDenominator = getRandomElement([1, 2]); // Allow integers or halves
-    const targetX = targetNumerator / targetDenominator;
-
-    // Retry if we accidentally picked the extraneous solution (unlikely with halves, but good practice)
-    if (Math.abs(targetX) === p) {
-        return generator_1080.generate();
+    // 2. Determine Target Solution (x = num/den, integer or half)
+    // Construct the candidate pool so |x| can NEVER equal p (no retry needed).
+    const candidates: Array<[number, number]> = [];
+    for (const num of [1, -1, 3, -3, 5]) {
+      for (const den of [1, 2]) {
+        if (Math.abs(num / den) !== p) candidates.push([num, den]);
+      }
     }
+    const [targetNumerator, targetDenominator] = getRandomElement(candidates);
+    const targetX = targetNumerator / targetDenominator;
 
     // 3. Work Backwards to find coefficients
     // Equation: A/(x^2-p^2) - (Bx+C)/(x^2-p^2) = (x+p)/(x^2-p^2)
-    // Eliminating denominator: A - (Bx + C) = x + p
-    // A - Bx - C = x + p
-    // A - C - p = x(B + 1)
-    
-    // Pick B such that (B+1) works well with our target X
-    // If target denom is 2, make B+1 even (so B is odd)
-    // If target denom is 1, B can be anything
-    let B: number;
-    if (targetDenominator === 2) {
-        B = getRandomElement([1, 3, 5]); 
-    } else {
-        B = getRandomInt(2, 5);
-    }
+    // Clearing the denominator: A - (Bx + C) = x + p
+    //   => A - C - p = (B + 1)x  =>  x = (A - C - p)/(B + 1)
+    // Pick B so (B+1)*targetX is an integer:
+    // if target denominator is 2, make B odd so B+1 is even.
+    const B = targetDenominator === 2
+      ? getRandomElement([1, 3, 5])
+      : getRandomInt(2, 5);
 
-    // Calculate the required constant term on LHS
-    // LHS_const = x(B+1) + p
-    const rhsVal = targetX * (B + 1) + p;
-    
-    // We need A - C = rhsVal
-    // Pick C randomly, solve for A
-    const C = getRandomInt(-5, 5);
+    // Need A - C = targetX*(B+1) + p; pick a nonzero C that keeps A nonzero.
+    const rhsVal = targetX * (B + 1) + p; // always an integer by construction
+    const cPool = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5].filter(c => rhsVal + c !== 0);
+    const C = getRandomElement(cPool);
     const A = rhsVal + C;
 
     // 4. Formatting
     const formatPoly = (coef: number, constant: number) => {
-        const sign = constant >= 0 ? '+' : '-';
-        return `${coef}x ${sign} ${Math.abs(constant)}`;
+      const sign = constant >= 0 ? '+' : '-';
+      return `${coef}x ${sign} ${Math.abs(constant)}`;
     };
 
-    const fractionX = targetDenominator === 1 
-        ? `${targetNumerator}` 
-        : `\\frac{${targetNumerator}}{${targetDenominator}}`;
+    const fractionX = targetDenominator === 1
+      ? `${targetNumerator}`
+      : `\\frac{${targetNumerator}}{${targetDenominator}}`;
 
     const equation = `$$
     \\frac{${A}}{x^2 - ${pSq}} - \\frac{${formatPoly(B, C)}}{x^2 - ${pSq}} = \\frac{x + ${p}}{x^2 - ${pSq}}
     $$`;
 
-    // 5. Options
-    // Correct answer
-    const optCorrect = fractionX;
-    
-    // Distractors
-    const optExtraneous1 = `${p}`;   // Makes denominator zero
-    const optExtraneous2 = `${-p}`;  // Makes denominator zero
-    const optSignError = targetDenominator === 1 
-        ? `${-targetNumerator}` 
-        : `\\frac{${-targetNumerator}}{${targetDenominator}}`; // Opposite sign
+    // 5. Options (each is guaranteed distinct for every draw:
+    //    |targetX| != p by construction, so targetX and -targetX can never
+    //    equal p or -p, and targetX != -targetX since targetX != 0.)
+    type Opt = { text: string; isCorrect: boolean };
+    const optCorrect: Opt = {
+      text: targetDenominator === 1 ? `$${targetNumerator}$` : `$\\frac{${targetNumerator}}{${targetDenominator}}$`,
+      isCorrect: true
+    };
+    const optExtraneous1: Opt = { text: `$${p}$`, isCorrect: false };   // makes denominator zero
+    const optExtraneous2: Opt = { text: `$${-p}$`, isCorrect: false };  // makes denominator zero
+    const optSignError: Opt = {
+      text: targetDenominator === 1 ? `$${-targetNumerator}$` : `$\\frac{${-targetNumerator}}{${targetDenominator}}$`,
+      isCorrect: false
+    };
 
-    // Shuffle
-    const optionsData = [
-        { text: optCorrect, isCorrect: true },
-        { text: optExtraneous1, isCorrect: false },
-        { text: optExtraneous2, isCorrect: false },
-        { text: optSignError, isCorrect: false }
-    ];
-    
-    const shuffledOptions = shuffle(optionsData);
-    const correctLetter = String.fromCharCode(65 + shuffledOptions.findIndex(o => o.isCorrect));
+    const shuffledOptions = shuffle<Opt>([optCorrect, optExtraneous1, optExtraneous2, optSignError]);
+    const letterOf = (opt: Opt) => String.fromCharCode(65 + shuffledOptions.indexOf(opt));
+    const correctLetter = letterOf(optCorrect);
 
-    // 6. Explanation
-    // Reconstruct the linear steps for explanation text
-    const term1 = A - C; // The constant after combining A and -C
-    const termX = -(B + 1); // The x coefficient after moving x to LHS ( -Bx - x ) -> actually better to move x to RHS
-    // A - C - p = x(B+1)
-    const constantLHS = A - C - p;
-    const coeffRHS = B + 1;
+    // 6. Explanation (all numbers computed from the live variables above)
+    const constantLHS = A - C - p;   // left side after collecting constants
+    const coeffRHS = B + 1;          // x-coefficient after collecting x terms
+    const distributeStep = `${A} - ${B}x ${C >= 0 ? '-' : '+'} ${Math.abs(C)} = x + ${p}`;
+    const finalStep = (coeffRHS === targetDenominator && constantLHS === targetNumerator)
+      ? `$$ x = ${fractionX} $$`
+      : `$$ x = \\frac{${constantLHS}}{${coeffRHS}} = ${fractionX} $$`;
 
     return {
       questionText: `What value of $x$ satisfies the equation below?\n${equation}`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: correctLetter, // Or text depending on platform reqs
+      correctAnswer: optCorrect.text,
       explanation: `
-        Multiplying the entire equation by the common denominator $(x^2 - ${pSq})$ (assuming $x \\neq \\pm ${p}$):
+        Every term has the same denominator, $x^2 - ${pSq}$, which equals zero when $x = ${p}$ or $x = ${-p}$; those values must be excluded. Multiplying both sides of the equation by $x^2 - ${pSq}$ leaves an equation of the numerators:
         $$ ${A} - (${formatPoly(B, C)}) = x + ${p} $$
         Distribute the negative sign:
-        $$ ${A} - ${B}x - ${C >= 0 ? C : `(${C})`} = x + ${p} $$
-        Combine constant terms on the left ($ ${A} - ${C} = ${A-C} $):
-        $$ ${A-C} - ${B}x = x + ${p} $$
-        Add $${B}x$ to both sides and subtract ${p} from both sides:
-        $$ ${A-C} - ${p} = x + ${B}x $$
-        $$ ${A-C-p} = ${B+1}x $$
-        Divide by ${B+1}:
-        $$ x = ${fractionX} $$
-        
-        Finally, we check for extraneous solutions. The denominator is zero when $x = ${p}$ or $x = ${-p}$. Since our solution is neither, it is valid.
+        $$ ${distributeStep} $$
+        Combine the constants on the left side:
+        $$ ${A - C === 0 ? `-${B}x` : `${A - C} - ${B}x`} = x + ${p} $$
+        Collect the $x$ terms on the right side and the constants on the left side:
+        $$ ${constantLHS} = ${coeffRHS}x $$
+        Divide both sides by ${coeffRHS}:
+        ${finalStep}
+        Because this value is neither ${p} nor ${-p}, it does not make a denominator zero, so it is not extraneous. Choice ${correctLetter} is correct.
+        Choice ${letterOf(optExtraneous1)} is incorrect because $x = ${p}$ makes each denominator zero, so it cannot be a solution. Choice ${letterOf(optExtraneous2)} is incorrect because $x = ${-p}$ also makes each denominator zero. Choice ${letterOf(optSignError)} is incorrect because it results from a sign error when distributing the negative sign across the second numerator.
       `
     };
   }

@@ -31,9 +31,9 @@ export const generator_630 = {
    
    const optionsData = [
      { text: correctText, isCorrect: true, reason: "correctly multiplies both sides by the coefficient and x" },
-     { text: `$w=-\\frac{${coeff}v}{x}$`, isCorrect: false, reason: "results from $v = -\\frac{wx}{${coeff}}$ (incorrect variable placement)" },
-     { text: `$w=-\\frac{x}{${coeff}v}$`, isCorrect: false, reason: "results from $v = -\\frac{x}{${coeff}w}$ (swapping variables)" },
-     { text: `$w=v+${coeff}x$`, isCorrect: false, reason: "results from treating the equation as linear $v = w - ${coeff}x$" }
+     { text: `$w=-\\frac{${coeff}v}{x}$`, isCorrect: false, reason: `results from $v = -\\frac{wx}{${coeff}}$ (incorrect variable placement)` },
+     { text: `$w=-\\frac{x}{${coeff}v}$`, isCorrect: false, reason: `results from $v = -\\frac{x}{${coeff}w}$ (swapping variables)` },
+     { text: `$w=v+${coeff}x$`, isCorrect: false, reason: `results from treating the equation as linear $v = w - ${coeff}x$` }
    ];
    
    // STEP 3: Shuffle and assign letters

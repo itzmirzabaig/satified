@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -23,28 +23,31 @@ export const generator_173 = {
     // Randomize costs
     const c1 = getRandomInt(25, 60);
     const c2 = getRandomInt(15, 35);
-    // Randomize number of sweaters (1-3)
+    // Number of sweaters (1-3)
     const x = getRandomInt(1, 3);
-    // Calculate total to ensure integer result for y
-    const y = getRandomInt(2, 6);
+    // Number of shirts: constructed as x + (2 or 3), so y is in 3-6 and the
+    // four option values {y, y-1, y+1, x} are pairwise distinct every draw
+    // (y - 1 >= x + 1 > x, so x can never collide with y or y +/- 1).
+    const y = x + getRandomInt(2, 3);
+    // Total built answer-first, so y is an integer by construction.
     const total = c1 * x + c2 * y;
 
     const optionsData = [
-      { text: y.toString(), isCorrect: true },
-      { text: (y - 1).toString(), isCorrect: false, reason: "subtraction error" },
-      { text: (y + 1).toString(), isCorrect: false, reason: "addition error" },
-      { text: x.toString(), isCorrect: false, reason: "uses sweater count" }
+      { key: 'correct', text: y.toString(), isCorrect: true },
+      { key: 'minusOne', text: (y - 1).toString(), isCorrect: false }, // subtraction error
+      { key: 'plusOne', text: (y + 1).toString(), isCorrect: false },  // addition error
+      { key: 'sweaters', text: x.toString(), isCorrect: false }        // uses sweater count
     ];
 
     const shuffled = shuffle(optionsData).map((opt, i) => ({ ...opt, letter: String.fromCharCode(65 + i) }));
-    const correctLetter = shuffled.find(o => o.isCorrect)!.letter;
+    const letterOf = (key: string) => shuffled.find(o => o.key === key)!.letter;
 
     return {
-      questionText: `$${c1}x + ${c2}y = ${total}$ represents sweaters ($x$) and shirts ($y$). If Yesenia bought ${x} sweaters, how many shirts did she buy?`,
+      questionText: `The equation $ ${c1}x + ${c2}y = ${total} $ gives the total cost, in dollars, of buying $x$ sweaters and $y$ shirts at a clothing store. If a customer spent this total and bought ${x} sweater${x === 1 ? '' : 's'}, how many shirts did the customer buy?`,
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: y.toString(),
-      explanation: `Choice ${correctLetter} is correct. Substitute $x=${x}$: $${c1}(${x}) + ${c2}y = ${total} \rightarrow ${c1*x} + ${c2}y = ${total} \rightarrow ${c2}y = ${total - c1*x} \rightarrow y = ${y}$.`
+      explanation: `Choice ${letterOf('correct')} is correct. Substituting $x = ${x}$ into the equation gives $ ${c1}(${x}) + ${c2}y = ${total} $, which simplifies to $ ${c1 * x} + ${c2}y = ${total} $. Subtracting ${c1 * x} from both sides gives $ ${c2}y = ${total - c1 * x} $, so $ y = ${total - c1 * x} \\div ${c2} = ${y} $. The customer bought ${y} shirts. Choice ${letterOf('minusOne')} is incorrect; it is one less than the correct number of shirts. Choice ${letterOf('plusOne')} is incorrect; it is one more than the correct number of shirts. Choice ${letterOf('sweaters')} is incorrect; it is the number of sweaters the customer bought, not the number of shirts.`
     };
   }
 };

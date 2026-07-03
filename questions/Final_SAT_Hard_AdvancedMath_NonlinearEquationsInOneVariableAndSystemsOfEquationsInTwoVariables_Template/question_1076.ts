@@ -1,15 +1,15 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, getRandomElement } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1076
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [denominator is perfect square trinomial, equals 4]
  * - Difficulty factors: [Rational equation, perfect square recognition, reciprocal, extraneous solution check]
- * - Distractor patterns: [N/A - fill in blank with multiple accepted answers]
+ * - Distractor patterns: [N/A - fill in blank; asks for the greater or lesser of the two solutions]
  * - Constraints: [Denominator factors as (x+p)², solutions must not make denominator zero]
- * - Question type: [Fill-in-the-blank with multiple accepted answers]
+ * - Question type: [Fill-in-the-blank, single fraction answer]
  * - Figure generation: [None]
  */
 
@@ -21,55 +21,37 @@ export const generator_1076 = {
     skill: "Nonlinear Equations In One Variable And Systems Of Equations In Two Variables",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values preserving difficulty
-    // Original: 1/(x²+10x+25) = 4, denominator is (x+5)²
-    // Pattern: 1/(x+p)² = k where k is a perfect square reciprocal or similar
-    
+    // Pattern: 1/(x+p)^2 = k with k a perfect square, so x = -p ± 1/sqrt(k).
     const p = getRandomInt(3, 8); // The value in (x+p)
-    const k = getRandomInt(2, 6); // Right side value
-    
-    // (x+p)² = 1/k
-    // x+p = ±1/√k
-    // x = -p ± 1/√k
-    
-    // For clean fractions, let's use k = 4 (so √k = 2) or similar
-    const perfectSquare = [4, 9, 16, 25];
-    const kValue = getRandomElement(perfectSquare);
-    const sqrtK = Math.sqrt(kValue);
-    
-    // Solutions: x = -p ± 1/sqrtK = (-p*sqrtK ± 1)/sqrtK
-    
-    // STEP 2: Calculate solutions
-    const solution1Num = -p * sqrtK + 1;
-    const solution1Den = sqrtK;
-    const solution2Num = -p * sqrtK - 1;
-    const solution2Den = sqrtK;
-    
-    // Simplify fractions
-    const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
-    const gcd1 = gcd(Math.abs(solution1Num), solution1Den);
-    const gcd2 = gcd(Math.abs(solution2Num), solution2Den);
-    
-    const sol1 = solution1Den / gcd1 === 1 ? (solution1Num / gcd1).toString() : `${solution1Num / gcd1}/${solution1Den / gcd1}`;
-    const sol2 = solution2Den / gcd2 === 1 ? (solution2Num / gcd2).toString() : `${solution2Num / gcd2}/${solution2Den / gcd2}`;
-    
-    // Check extraneous: neither solution should equal -p
-    // -p ± 1/sqrtK = -p would require 1/sqrtK = 0, impossible. Good.
-    
-    // STEP 3: No figure needed
-    const figureCode = null;
-    
-    // Correct answer is both solutions (comma-separated for multi-accept)
-    const correctAnswer = `${sol1}, ${sol2}`;
-    
+    // k restricted to squares whose root divides a power of 10 (2, 4, 5),
+    // so both solutions also have exact clean-decimal forms.
+    const kValue = getRandomElement([4, 16, 25]);
+    const s = Math.sqrt(kValue); // 2, 4, or 5
+
+    // Solutions: x = -p ± 1/s = (±1 - p*s)/s.
+    // The numerator is ≡ ±1 (mod s), so gcd(numerator, s) = 1 and each
+    // fraction is already in lowest terms with denominator s ≥ 2.
+    const numGreater = 1 - p * s;  // numerator of the greater solution (negative)
+    const numLesser = -1 - p * s;  // numerator of the lesser solution (negative)
+
+    // Ask for one specific solution so the fill-in answer is a single fraction.
+    const askGreater = getRandomInt(0, 1) === 1;
+    const num = askGreater ? numGreater : numLesser;
+    const which = askGreater ? 'greater' : 'lesser';
+
+    // num is always negative, so the string is "-N/s" — a valid a/b answer.
+    const correctAnswer = `${num}/${s}`;
+
+    // Extraneous check: neither solution equals -p, since ±1/s ≠ 0.
+
     return {
-      questionText: `$\\frac{1}{x^2+${2*p}x+${p*p}}=${kValue}$\n\nWhat is the solution to the given equation?`,
-      figureCode: figureCode,
+      questionText: `$\\frac{1}{x^2+${2 * p}x+${p * p}}=${kValue}$\n\nWhat is the ${which} solution to the given equation? (Enter your answer as a fraction or decimal.)`,
+      figureCode: null,
       options: null,
       correctAnswer: correctAnswer,
-      explanation: `The correct answer is $${sol1}$ or $${sol2}$. Recognizing that $x^2+${2*p}x+${p*p}=(x+${p})^2$, the equation becomes $\\frac{1}{(x+${p})^2}=${kValue}$. Taking reciprocals: $(x+${p})^2=\\frac{1}{${kValue}}$. So $x+${p}=\\pm\\frac{1}{${sqrtK}}$, giving $x=-${p}\\pm\\frac{1}{${sqrtK}}$. This yields $x=${sol1}$ and $x=${sol2}$. Neither value makes the denominator zero, so both are valid.`
+      explanation: `The correct answer is $-\\frac{${-num}}{${s}}$ (equivalently, $${num / s}$). Since $x^2+${2 * p}x+${p * p}=(x+${p})^2$, the equation can be written as $\\frac{1}{(x+${p})^2}=${kValue}$. Taking the reciprocal of both sides gives $(x+${p})^2=\\frac{1}{${kValue}}$. Taking square roots of both sides, $x+${p}=\\pm\\frac{1}{${s}}$, so $x=-${p}\\pm\\frac{1}{${s}}$. The two solutions are $-\\frac{${-numGreater}}{${s}}$ and $-\\frac{${-numLesser}}{${s}}$; neither value makes the denominator $(x+${p})^2$ equal zero, so neither is extraneous. The ${which} of the two solutions is $-\\frac{${-num}}{${s}}=${num / s}$.`
     };
   }
 };

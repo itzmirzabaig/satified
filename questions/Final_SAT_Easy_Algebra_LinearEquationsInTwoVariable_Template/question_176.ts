@@ -26,16 +26,20 @@ export const generator_176 = {
     const slopeK = getRandomInt(2, 6);
     const interceptK = getRandomInt(10, 30);
 
+    // Correct: negative reciprocal of slopeK. Distractors follow the declared
+    // patterns and can never collide with the correct answer or each other for
+    // any slopeK in [2, 6]: -k, 1/k, and k are all distinct from -1/k and from
+    // one another when k >= 2.
     const slopeJText = `-\\frac{1}{${slopeK}}`;
-    const distractor1 = `-\\frac{1}{${slopeK * 4}}`;
-    const distractor2 = `-\\frac{1}{${slopeK * 6}}`;
-    const distractor3 = `-\\frac{1}{${slopeK * slopeK}}`;
+    const distractor1 = `-${slopeK}`;
+    const distractor2 = `\\frac{1}{${slopeK}}`;
+    const distractor3 = `${slopeK}`;
 
     const optionsData = [
-      { text: `$${slopeJText}$`, isCorrect: true },
-      { text: `$${distractor1}$`, isCorrect: false, reason: "results from incorrect calculation of the reciprocal" },
-      { text: `$${distractor2}$`, isCorrect: false, reason: "results from confusing the slope with the intercept" },
-      { text: `$${distractor3}$`, isCorrect: false, reason: "results from using the square of the slope in the denominator" }
+      { text: `$${slopeJText}$`, isCorrect: true, reason: "" },
+      { text: `$${distractor1}$`, isCorrect: false, reason: "negates the slope of line $k$ but does not take the reciprocal" },
+      { text: `$${distractor2}$`, isCorrect: false, reason: "takes the reciprocal of the slope but does not change its sign" },
+      { text: `$${distractor3}$`, isCorrect: false, reason: "is the slope of line $k$ itself; perpendicular lines do not have equal slopes" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

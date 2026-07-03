@@ -26,19 +26,20 @@ export const generator_629 = {
    // STEP 1: Generate random constant (difference of squares)
    const c = getRandomInt(10, 50); // Like 30
    const subValue = getRandomInt(2, 10); // Like 7
-   
+
    // STEP 2: Calculate solutions
    // (d-c)(d+c) - subValue = -subValue => (d-c)(d+c) = 0 => d = ±c
-   const sol1 = c;
-   const sol2 = -c;
-   
-   // STEP 3: Return with multi-accept format
+   // The grader accepts a single typed value, so the question asks for the
+   // positive solution (d = c); the explanation still derives both.
+   const posSol = c;
+   const negSol = -c;
+
    return {
-     questionText: `$$(d-${c})(d+${c})-${subValue}=-${subValue}$$\nWhat is a solution to the given equation?`,
+     questionText: `$$(d-${c})(d+${c})-${subValue}=-${subValue}$$\nWhat is the positive solution to the given equation?`,
      figureCode: null,
-     options: null,
-     correctAnswer: `${sol1}, ${sol2}`,
-     explanation: `The given equation is $(d-${c})(d+${c})-${subValue}=-${subValue}$. Add $${subValue}$ to both sides: $(d-${c})(d+${c})=0$. By the zero product property, $d-${c}=0$ or $d+${c}=0$, so $d=${sol1}$ or $d=${sol2}$. Both are solutions.`
+     options: [],
+     correctAnswer: `${posSol}`,
+     explanation: `Adding ${subValue} to both sides of the given equation results in $(d-${c})(d+${c})=0$. By the zero product property, the product on the left-hand side equals zero when $d-${c}=0$ or $d+${c}=0$, so the two solutions are $d=${posSol}$ and $d=${negSol}$. The positive solution is $d=${posSol}$, so the correct answer is ${posSol}.`
    };
  }
 };

@@ -23,14 +23,31 @@ export const generator_146 = {
   },
 
   generate: (): QuestionData => {
-    const coeff = getRandomInt(2, 9);
-    const rightSide = coeff * getRandomInt(3, 8);
-    const targetCoeff = getRandomInt(2, 5) * coeff;
-    const result = (targetCoeff / coeff) * rightSide;
+    // Redraw until all four option values are distinct (collision only occurs
+    // when multiplier === 3 * scale - 2, so this converges immediately).
+    let coeff = 2, rightSide = 6, targetCoeff = 4, result = 12;
+    let distractorA = 0, distractorC = 0, distractorD = 0;
+    let tries = 0;
+    do {
+      coeff = getRandomInt(2, 9);
+      rightSide = coeff * getRandomInt(3, 8);
+      targetCoeff = getRandomInt(2, 5) * coeff;
+      result = (targetCoeff / coeff) * rightSide;
 
-    const distractorA = rightSide - coeff;
-    const distractorC = (targetCoeff - coeff) * 3;
-    const distractorD = targetCoeff * rightSide;
+      distractorA = rightSide - coeff;
+      distractorC = (targetCoeff - coeff) * 3;
+      distractorD = targetCoeff * rightSide;
+      tries++;
+    } while (
+      new Set([result, distractorA, distractorC, distractorD]).size < 4 &&
+      tries < 50
+    );
+
+    // Deterministic fallback: nudging C to 3 * targetCoeff cannot collide with
+    // result, A, or D anywhere in the declared ranges when the loop condition fired.
+    if (new Set([result, distractorA, distractorC, distractorD]).size < 4) {
+      distractorC = targetCoeff * 3;
+    }
 
     const optionsData = [
       { text: distractorA.toString(), isCorrect: false, reason: "results from subtracting instead of dividing" },

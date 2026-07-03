@@ -23,14 +23,23 @@ export const generator_156 = {
   },
 
   generate: (): QuestionData => {
+    // addend must differ from multiplier, otherwise the swapped-coefficient
+    // distractors become identical to the other options (bounded retry).
     const multiplier = getRandomInt(2, 4);
-    const addend = getRandomInt(2, 8);
+    let addend = getRandomInt(2, 8);
+    let tries = 0;
+    while (addend === multiplier && tries++ < 50) {
+      addend = getRandomInt(2, 8);
+    }
+    if (addend === multiplier) {
+      addend = multiplier + 1; // deterministic fallback, still within [2, 8]
+    }
 
     const optionsData = [
-      { text: `\\( ${addend}n - ${multiplier} \\)`, isCorrect: false, reason: "represents subtraction with wrong coefficient" },
-      { text: `\\( ${addend}n + ${multiplier} \\)`, isCorrect: false, reason: "uses wrong coefficient for n" },
-      { text: `\\( ${multiplier}n - ${addend} \\)`, isCorrect: false, reason: "represents subtraction instead of addition" },
-      { text: `\\( ${multiplier}n + ${addend} \\)`, isCorrect: true }
+      { text: `$${addend}n - ${multiplier}$`, isCorrect: false, reason: "it swaps the coefficient and the constant and also subtracts instead of adds" },
+      { text: `$${addend}n + ${multiplier}$`, isCorrect: false, reason: "it swaps the coefficient and the constant" },
+      { text: `$${multiplier}n - ${addend}$`, isCorrect: false, reason: "it represents subtraction instead of addition" },
+      { text: `$${multiplier}n + ${addend}$`, isCorrect: true }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -42,11 +51,11 @@ export const generator_156 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `Cathy has \\( n \\) CDs. Gerry has ${addend} more than ${multiplier} times the number of CDs that Cathy has. In terms of \\( n \\), how many CDs does Gerry have?`,
+      questionText: `A student has $n$ CDs. A classmate has ${addend} more than ${multiplier} times the number of CDs that the student has. In terms of $n$, how many CDs does the classmate have?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: `\\( ${multiplier}n + ${addend} \\)`,
-      explanation: `"${multiplier} times n" = ${multiplier}n. "${addend} more than" = + ${addend}. So: ${multiplier}n + ${addend}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      correctAnswer: `$${multiplier}n + ${addend}$`,
+      explanation: `"${multiplier} times the number of CDs" translates to $${multiplier}n$, and "${addend} more than" means adding ${addend}, giving $${multiplier}n + ${addend}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
     };
   }
 };

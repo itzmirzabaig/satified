@@ -22,19 +22,42 @@ export const generator_148 = {
   },
 
   generate: (): QuestionData => {
-    const buyPrice = getRandomInt(5, 15);
-    const numBought = getRandomInt(2, 5);
-    const rentalPrice = getRandomInt(1, 4);
-    const numRentals = getRandomInt(10, 30);
-    const spent = buyPrice * numBought;
-    const remaining = rentalPrice * numRentals;
-    const giftCard = remaining + spent;
+    // Redraw until all four option values are distinct. The only possible
+    // collision is floor(giftCard / rentalPrice) === numRentals + 10, which
+    // needs floor(spent / rentalPrice) === 10, so this converges immediately.
+    let buyPrice = 5, numBought = 2, rentalPrice = 1, numRentals = 10;
+    let spent = 10, remaining = 10, giftCard = 20;
+    let distractorA = 5, distractorC = 20, distractorD = 20;
+    let tries = 0;
+    do {
+      buyPrice = getRandomInt(5, 15);
+      numBought = getRandomInt(2, 5);
+      rentalPrice = getRandomInt(1, 4);
+      numRentals = getRandomInt(10, 30);
+      spent = buyPrice * numBought;
+      remaining = rentalPrice * numRentals;
+      giftCard = remaining + spent;
+
+      distractorA = numRentals - 5;
+      distractorC = numRentals + 10;
+      distractorD = Math.floor(giftCard / rentalPrice);
+      tries++;
+    } while (
+      new Set([numRentals, distractorA, distractorC, distractorD]).size < 4 &&
+      tries < 50
+    );
+
+    // Deterministic fallback: D only ever collides with C, so shifting it by 1
+    // (still far above the correct answer) restores uniqueness.
+    if (distractorD === distractorC) {
+      distractorD = distractorD + 1;
+    }
 
     const optionsData = [
-      { text: (numRentals - 5).toString(), isCorrect: false, reason: "wrong calculation" },
+      { text: distractorA.toString(), isCorrect: false, reason: "it results from a subtraction error when finding the remaining balance" },
       { text: numRentals.toString(), isCorrect: true },
-      { text: (numRentals + 10).toString(), isCorrect: false, reason: "wrong subtraction" },
-      { text: Math.floor(giftCard / rentalPrice).toString(), isCorrect: false, reason: "ignores movies bought" }
+      { text: distractorC.toString(), isCorrect: false, reason: "it results from an arithmetic error in the final division" },
+      { text: distractorD.toString(), isCorrect: false, reason: "it results from dividing the entire gift card balance by the rental price, ignoring the movies bought" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -46,7 +69,7 @@ export const generator_148 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `Henry has a ${giftCard} dollar gift card. He buys ${numBought} movies at ${buyPrice} dollars each, then spends the rest of his balance renting movies at ${rentalPrice} dollars each. How many movies can he rent?`,
+      questionText: `A customer has a \\$${giftCard} gift card. She buys ${numBought} movies at \\$${buyPrice} each, then spends the rest of her balance renting movies at \\$${rentalPrice} each. How many movies can she rent?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: numRentals.toString(),

@@ -24,10 +24,27 @@ export const generator_622 = {
   
   generate: (): QuestionData => {
     // STEP 1: Generate base expression: (a * x^m * y^n)^p
-    const coeff = getRandomInt(2, 4);      // Inner coefficient
-    const xExp = getRandomInt(1, 3);       // Inner x exponent
-    const yExp = getRandomInt(1, 2);       // Inner y exponent
-    const outerExp = getRandomInt(2, 3);   // Outer exponent (power)
+    // Bounded retry: the "add exponents / multiply coefficient" distractor
+    // collides with the correct answer exactly when coeff*outer == coeff^outer
+    // AND xExp+outer == xExp*outer AND yExp+outer == yExp*outer — i.e. the
+    // single draw (2x^2y^2)^2, where both give 4x^4y^4. Reject that draw.
+    // (No other pair of options can collide: distractor B keeps the raw
+    // coefficient, distractor C keeps the raw exponents, and outerExp >= 2.)
+    let coeff = 3, xExp = 1, yExp = 1, outerExp = 2; // safe fallback: 9x^2y^2 vs 6x^3y^3, 3x^2y^2, 6xy
+    let tries = 0;
+    while (tries++ < 50) {
+      const c = getRandomInt(2, 4);      // Inner coefficient
+      const xe = getRandomInt(1, 3);     // Inner x exponent
+      const ye = getRandomInt(1, 2);     // Inner y exponent
+      const oe = getRandomInt(2, 3);     // Outer exponent (power)
+      const collides =
+        c * oe === Math.pow(c, oe) &&
+        xe + oe === xe * oe &&
+        ye + oe === ye * oe;
+      if (collides) continue;
+      coeff = c; xExp = xe; yExp = ye; outerExp = oe;
+      break;
+    }
     
     // STEP 2: Calculate resulting exponents
     const resultCoeff = Math.pow(coeff, outerExp);  // coefficient^outerExp

@@ -31,8 +31,9 @@ export const generator_1091 = {
     // Product: (-m-14)(-n-14) = (m+14)(n+14)
     
     const m = getRandomInt(10, 20);
-    const n = getRandomInt(5, 12);
-    
+    let n = getRandomInt(5, 12);
+    if (n === m) n = m - 1; // keep the two inputs distinct; m >= 10 keeps n in [5, 12]
+
     const val1 = -(m + 14);
     const val2 = -(n + 14);
     const product = val1 * val2;
@@ -42,7 +43,7 @@ export const generator_1091 = {
       figureCode: null,
       options: null,
       correctAnswer: product.toString(),
-      explanation: `Since $a<0$, the value ${m}a$ is negative, so $|${m}a|=-${m}a$. Thus $g(${m}a)=\\frac{-${m}a}{a}-14=-${m}-14=${val1}$. Similarly, $g(${n}a)=\\frac{-${n}a}{a}-14=-${n}-14=${val2}$. The product is $(${val1})(${val2})=${product}$.`
+      explanation: `Since $a<0$, the value $${m}a$ is negative, so $|${m}a|=-${m}a$. Thus $g(${m}a)=\\frac{-${m}a}{a}-14=-${m}-14=${val1}$. Similarly, $g(${n}a)=\\frac{-${n}a}{a}-14=-${n}-14=${val2}$. The product is $(${val1})(${val2})=${product}$.`
     };
   }
 };

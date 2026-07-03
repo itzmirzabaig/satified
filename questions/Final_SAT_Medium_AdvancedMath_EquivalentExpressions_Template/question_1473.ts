@@ -19,12 +19,26 @@ export const generator_1473 = {
   },
 
   generate: (): QuestionData => {
-    // 1. Math Setup
-    const a = getRandomInt(2, 5);
-    const c = getRandomInt(2, 5);
-    const b = getRandomInt(1, 9) * (Math.random() < 0.5 ? 1 : -1);
-    const d = getRandomInt(1, 9) * (Math.random() < 0.5 ? 1 : -1);
-    
+    // 1. Math Setup — bounded retry so every option is distinct and no
+    //    x-coefficient is 0 (avoids "0x" terms and duplicate options).
+    //    Middles used by the options: correct = ad+bc, d1 = ad-bc, d2 = a+c.
+    //    d3 flips the constant's sign (bd is never 0 since b, d are nonzero).
+    let a = 2, c = 3, b = 1, d = 5; // safe fallback: middles 13, 7, 5 all distinct & nonzero
+    let tries = 0;
+    while (tries++ < 50) {
+      const aa = getRandomInt(2, 5);
+      const cc = getRandomInt(2, 5);
+      const bb = getRandomInt(1, 9) * (getRandomInt(0, 1) === 0 ? 1 : -1);
+      const dd = getRandomInt(1, 9) * (getRandomInt(0, 1) === 0 ? 1 : -1);
+      const mid = aa * dd + bb * cc;
+      const altMid = aa * dd - bb * cc;
+      const sumMid = aa + cc;
+      if (mid === 0 || altMid === 0) continue;
+      if (altMid === mid || sumMid === mid || altMid === sumMid) continue;
+      a = aa; c = cc; b = bb; d = dd;
+      break;
+    }
+
     // (ax + b)(cx + d)
     const term1 = a * c; // x^2 coeff
     const term2 = a * d + b * c; // x coeff
@@ -60,14 +74,15 @@ export const generator_1473 = {
     }));
     
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const letterFor = (text: string) => shuffledOptions.find(o => o.text === text)!.letter;
 
     return {
       questionText: `Which of the following is equivalent to the expression $(${bin1})(${bin2})$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. 
-      
+      explanation: `Choice ${correctOption.letter} is correct.
+
 To expand the expression $(${bin1})(${bin2})$, multiply each term in the first binomial by each term in the second binomial (FOIL method):
 
 1.  **First terms:** $(${a}x)(${c}x) = ${term1}x^2$
@@ -75,11 +90,11 @@ To expand the expression $(${bin1})(${bin2})$, multiply each term in the first b
 3.  **Inner terms:** $(${b})(${c}x) = ${b*c}x$
 4.  **Last terms:** $(${b})(${d}) = ${term3}$
 
-Combine like terms ($${a*d}x + ${b*c}x$):
-$${term1}x^2 + (${a*d + b*c})x + ${term3}$
+Combine the like terms: $${a*d}x ${b*c >= 0 ? '+' : '-'} ${Math.abs(b*c)}x = ${term2}x$.
 
-Which simplifies to:
-$${correctPoly}$`
+So the product is $${correctPoly}$.
+
+Choice ${letterFor(d1)} is incorrect; it results from subtracting the inner product from the outer product instead of adding them when combining the middle terms. Choice ${letterFor(d2)} is incorrect; it adds the leading coefficients of the two binomials, $${a} + ${c} = ${a + c}$, and uses that sum as the coefficient of the middle term instead of combining the outer and inner products. Choice ${letterFor(d3)} is incorrect; it results from a sign error on the constant term: $(${b})(${d}) = ${term3}$, not $${-term3}$.`
     };
   }
 };

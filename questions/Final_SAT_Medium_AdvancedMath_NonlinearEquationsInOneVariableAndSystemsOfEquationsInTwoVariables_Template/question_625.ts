@@ -31,10 +31,10 @@ export const generator_625 = {
    const correctText = `$$k = \\frac{m-${coeff1}j}{${coeff2}}$$`;
    
    const optionsData = [
-     { text: correctText, isCorrect: true, reason: "correctly subtracts and divides entirely" },
-     { text: `$$k = \\frac{1}{${coeff2}}m - ${coeff1}j$$`, isCorrect: false, reason: "divides only $m$ by ${coeff2} and not ${coeff1}j" },
-     { text: `$$k = \\frac{${coeff1}j-m}{${coeff2}}$$`, isCorrect: false, reason: "reverses the sign" },
-     { text: `$$k = ${coeff2}m - ${coeff1}j$$`, isCorrect: false, reason: "multiplies $m$ by ${coeff2} instead of dividing" }
+     { text: correctText, isCorrect: true, reason: `correctly subtracts and divides entirely` },
+     { text: `$$k = \\frac{1}{${coeff2}}m - ${coeff1}j$$`, isCorrect: false, reason: `divides only $m$ by $${coeff2}$ instead of dividing the entire expression $m-${coeff1}j$ by $${coeff2}$` },
+     { text: `$$k = \\frac{${coeff1}j-m}{${coeff2}}$$`, isCorrect: false, reason: `reverses the sign of the numerator: subtracting $${coeff1}j$ from both sides gives $m-${coeff1}j$, not $${coeff1}j-m$` },
+     { text: `$$k = ${coeff2}m - ${coeff1}j$$`, isCorrect: false, reason: `multiplies $m$ by $${coeff2}$ instead of dividing by $${coeff2}$` }
    ];
    
    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -49,7 +49,7 @@ export const generator_625 = {
    const explanation = `Subtract $${coeff1}j$ from both sides: $${coeff2}k = m-${coeff1}j$. Divide by $${coeff2}$: $k = \\frac{m-${coeff1}j}{${coeff2}}$. Option ${correctLetter} is correct. Option ${incorrectOptions[0].letter} ${incorrectOptions[0].reason}. Option ${incorrectOptions[1].letter} ${incorrectOptions[1].reason}. Option ${incorrectOptions[2].letter} ${incorrectOptions[2].reason}.`;
    
    return {
-     questionText: `$$${coeff1}j + ${coeff2}k = m$$\nThe given equation relates the numbers $j, k$ and $m$. Which equation correctly expresses $k$ in terms of $j$ and $m$?`,
+     questionText: `$$${coeff1}j + ${coeff2}k = m$$\nThe given equation relates the numbers $j$, $k$, and $m$. Which equation correctly expresses $k$ in terms of $j$ and $m$?`,
      figureCode: null,
      options: shuffledOptions.map(o => ({ text: o.text })),
      correctAnswer: correctText,

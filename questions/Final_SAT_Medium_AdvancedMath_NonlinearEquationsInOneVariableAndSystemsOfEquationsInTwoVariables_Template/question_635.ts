@@ -24,20 +24,24 @@ export const generator_635 = {
  
  generate: (): QuestionData => {
    // STEP 1: Generate factorable quadratic
-   // (z - r1)(z + r2) where r2 > r1
+   // (z - r1)(z + r2) = z^2 + (r2 - r1)z - r1*r2, with r2 > r1 so the roots
+   // are one positive (r1) and one negative (-r2) — "positive solution" is
+   // always unambiguous, and b = r2 - r1 >= 1 is always positive.
    const r1 = getRandomInt(1, 5);
    const r2 = getRandomInt(6, 15);
-   
-   const b = r2 - r1; // Coefficient of z
-   const c = -r1 * r2; // Constant term
-   
-   // STEP 2: Return multi-accept
+
+   const b = r2 - r1; // Coefficient of z (1..14, never 0)
+   const c = -r1 * r2; // Constant term (always negative, renders its own minus sign)
+   const bTerm = b === 1 ? 'z' : `${b}z`;
+
+   // STEP 2: Ask for the positive solution so the fill-in answer is a single
+   // plain integer (the grader accepts exactly one typed value).
    return {
-     questionText: `$$z^2+${b}z${c}=0$$\nWhat is one of the solutions to the given equation?`,
+     questionText: `$$z^2+${bTerm}${c}=0$$\nWhat is the positive solution to the given equation?`,
      figureCode: null,
      options: null,
-     correctAnswer: `${r1}, -${r2}`,
-     explanation: `Factor: $(z-${r1})(z+${r2})=0$. Solutions: $z=${r1}$ and $z=-${r2}$. Either is correct.`
+     correctAnswer: `${r1}`,
+     explanation: `The left-hand side of the given equation factors as $(z-${r1})(z+${r2})$, since $-${r1} \\cdot ${r2} = ${c}$ and $-${r1} + ${r2} = ${b}$. Setting each factor equal to zero gives the solutions $z=${r1}$ and $z=-${r2}$. The positive solution is $z=${r1}$.`
    };
  }
 };
