@@ -54,7 +54,7 @@ export const generator_445 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${calculatedPercentage}%`,
-      explanation: `Choice ${correctOption.letter} is correct. To find the percentage of paper clips that are large, divide the number of large paper clips by the total number of paper clips and multiply by $100$: $\\frac{${formatNumber(large)}}{${formatNumber(total)}} \\times 100 = ${calculatedPercentage}%. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the percentage of paper clips that are large, divide the number of large paper clips by the total number of paper clips and multiply by one hundred: $\\frac{${formatNumber(large)}}{${formatNumber(total)}} \\times 100 = ${calculatedPercentage}$, so ${calculatedPercentage}% of the paper clips are size large. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

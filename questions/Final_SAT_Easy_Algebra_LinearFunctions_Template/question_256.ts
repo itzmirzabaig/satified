@@ -54,11 +54,11 @@ export const generator_256 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `The total cost $f(x)$, in dollars, to lease a car for $${numMonths}$ months from a particular car dealership is given by $f(x) = ${numMonths}x + ${fixedCost}$, where $x$ is the monthly payment, in dollars. What is the total cost to lease a car when the monthly payment is $${monthlyPayment}$?`,
+      questionText: `The total cost $f(x)$, in dollars, to lease a car for ${numMonths} months from a particular car dealership is given by $f(x) = ${numMonths}x + ${fixedCost}$, where $x$ is the monthly payment, in dollars. What is the total cost to lease a car when the monthly payment is \\$${monthlyPayment}?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: totalCost.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting $${monthlyPayment}$ for $x$ gives $f(${monthlyPayment}) = ${numMonths}(${monthlyPayment}) + ${fixedCost} = $${monthlyPayment * numMonths} + $${fixedCost} = $${totalCost}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting \\$${monthlyPayment} for $x$ gives $f(${monthlyPayment}) = ${numMonths}(${monthlyPayment}) + ${fixedCost} = ${monthlyPayment * numMonths} + ${fixedCost} = ${totalCost}$, so the total cost is \\$${totalCost}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

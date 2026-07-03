@@ -24,7 +24,14 @@ export const generator_304 = {
 
   generate: (): QuestionData => {
     const needed = getRandomInt(50, 100);
-    const collected = getRandomInt(30, needed - 5);
+    // Draw "collected" so that no two options coincide. The only possible
+    // collision is distractor2 (= collected) equaling the correct answer
+    // (additional = needed - collected), which happens iff needed = 2*collected.
+    let collected = getRandomInt(30, needed - 5);
+    let tries = 0;
+    while (collected === needed - collected && tries++ < 50) {
+      collected = getRandomInt(30, needed - 5);
+    }
     const additional = needed - collected;
     const distractor1 = needed + collected;
     const distractor2 = collected;

@@ -42,11 +42,11 @@ export const generator_263 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `For a training program, Juan rides his bike at an average rate of $${rate}$ minutes per mile. Which function $m$ models the number of minutes it will take Juan to ride $x$ miles at this rate?`,
+      questionText: `For a training program, a cyclist rides at an average rate of ${rate} minutes per mile. Which function $m$ models the number of minutes it will take the cyclist to ride $x$ miles at this rate?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `m(x) = ${rate}x`,
-      explanation: `Choice ${correctOption.letter} is correct. The total minutes equals the rate ($${rate}$ minutes per mile) times the number of miles ($x$), giving $m(x) = ${rate}x$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The total number of minutes equals the rate of ${rate} minutes per mile times the number of miles $x$, giving $m(x) = ${rate}x$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

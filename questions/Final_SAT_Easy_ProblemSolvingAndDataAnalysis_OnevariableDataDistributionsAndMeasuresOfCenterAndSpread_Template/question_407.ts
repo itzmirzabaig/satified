@@ -24,7 +24,9 @@ export const generator_407 = {
   generate: (): QuestionData => {
     const base = getRandomInt(60, 75);
     const values = Array.from({ length: 9 }, (_, i) => base + (i * 2) + getRandomInt(0, 1)).sort((a, b) => a - b);
-    const median = values;
+    // Median of 9 ordered values is the 5th value (index 4). The array is sorted
+    // above, so this is correct even when the random jitter reorders neighbors.
+    const median = values[4];
 
     return {
       questionText: `What is the median of the data shown?\n\n${values.join(', ')}`,

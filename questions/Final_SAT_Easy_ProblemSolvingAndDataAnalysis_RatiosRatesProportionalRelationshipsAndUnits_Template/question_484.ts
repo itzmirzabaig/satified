@@ -23,21 +23,33 @@ export const generator_484 = {
   },
 
   generate: (): QuestionData => {
-    const ratioBlack = getRandomInt(3, 9);
-    const ratioRed = getRandomInt(1, 3);
-    const multiplier = getRandomInt(3, 8);
-    const blackPens = ratioBlack * multiplier;
-    const redPens = ratioRed * multiplier;
+    // Draw a ratio black:red with black strictly larger, then scale by a
+    // multiplier so both counts are whole numbers. Retry (bounded) until all
+    // four answer choices are distinct.
+    let ratioBlack = 0, ratioRed = 0, multiplier = 0;
+    let blackPens = 0, redPens = 0, distractor1 = 0, distractor2 = 0, distractor3 = 0;
+    let tries = 0;
+    do {
+      ratioRed = getRandomInt(1, 3);
+      ratioBlack = getRandomInt(ratioRed + 2, 9); // black part strictly larger than red part
+      multiplier = getRandomInt(3, 8);
+      blackPens = ratioBlack * multiplier;
+      redPens = ratioRed * multiplier;
 
-    const distractor1 = ratioBlack;
-    const distractor2 = blackPens;
-    const distractor3 = blackPens * ratioBlack;
+      distractor1 = ratioBlack;              // the ratio part, not a count
+      distractor2 = blackPens;               // the given black-pen count
+      distractor3 = blackPens * ratioBlack;  // multiplied instead of divided
+      tries++;
+    } while (
+      tries < 50 &&
+      new Set([redPens, distractor1, distractor2, distractor3]).size !== 4
+    );
 
     const optionsData = [
       { text: redPens.toString(), isCorrect: true, reason: null },
-      { text: distractor1.toString(), isCorrect: false, reason: "This is the part of the ratio representing black pens, not the quantity of red pens." },
-      { text: distractor2.toString(), isCorrect: false, reason: "This is the number of black pens given in the problem, not the red pens." },
-      { text: distractor3.toString(), isCorrect: false, reason: "This would be the result if you multiplied the number of black pens by ${ratioBlack}, which implies you reversed the ratio or misunderstood the relationship." }
+      { text: distractor1.toString(), isCorrect: false, reason: "This is the part of the ratio that represents black pens, not the quantity of red pens." },
+      { text: distractor2.toString(), isCorrect: false, reason: "This is the number of black pens given in the problem, not the number of red pens." },
+      { text: distractor3.toString(), isCorrect: false, reason: "This multiplies the number of black pens by the ratio part instead of dividing, reversing the relationship." }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -49,7 +61,7 @@ export const generator_484 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `The problem states that the ratio of black pens to red pens is ${ratioBlack}:${ratioRed}. This can be written as the fraction:\\n\\(\\frac{\\text{black pens}}{\\text{red pens}} = \\frac{${ratioBlack}}{${ratioRed}}\\)\\n\\nWe are given that there are ${blackPens} black pens. Let \\(x\\) represent the number of red pens. We can set up a proportion:\\n\\(\\frac{${blackPens}}{x} = \\frac{${ratioBlack}}{${ratioRed}}\\)\\n\\nTo solve for \\(x\\), we can cross-multiply:\\n\\(${blackPens} \\times ${ratioRed} = ${ratioBlack} \\times x\\)\\n\\(${blackPens * ratioRed} = ${ratioBlack}x\\)\\n\\nNow, divide both sides by ${ratioBlack} to isolate \\(x\\):\\n\\(x = \\frac{${blackPens * ratioRed}}{${ratioBlack}}\\)\\n\\(x = ${redPens}\\)\\n\\nSo, there are ${redPens} red pens in the box.\\n\\nLet's check why the other options are incorrect:\\n- **Choice ${incorrectOptions[0].letter}:** ${incorrectOptions[0].reason}\\n- **Choice ${incorrectOptions[1].letter}:** ${incorrectOptions[1].reason}\\n- **Choice ${incorrectOptions[2].letter}:** ${incorrectOptions[2].reason}`;
+    const explanation = `The ratio of black pens to red pens is ${ratioBlack} to ${ratioRed}, which can be written as the fraction $\\frac{${ratioBlack}}{${ratioRed}}$. There are ${blackPens} black pens, so if $x$ is the number of red pens, the proportion is $\\frac{${blackPens}}{x} = \\frac{${ratioBlack}}{${ratioRed}}$. Cross-multiplying gives $(${blackPens})(${ratioRed}) = (${ratioBlack})(x)$, so $\\frac{${blackPens * ratioRed}}{${ratioBlack}} = x$. This gives $x = ${redPens}$, so there are ${redPens} red pens in the box. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}`;
 
     return {
       questionText: `In a box of pens, the ratio of black pens to red pens is ${ratioBlack} to ${ratioRed}. There are ${blackPens} black pens in the box. How many red pens are in the box?`,

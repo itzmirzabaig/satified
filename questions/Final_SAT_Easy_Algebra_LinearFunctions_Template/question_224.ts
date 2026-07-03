@@ -25,7 +25,14 @@ export const generator_224 = {
   generate: (): QuestionData => {
     const activationFee = getRandomInt(25, 50);
 
-    const monthlyCost = getRandomInt(20, 30);
+    // monthlyCost must differ from activationFee so the correct equation and the
+    // "swapped parameters" distractor (which reuse these two numbers) never
+    // collide; their ranges overlap on 25-30.
+    let monthlyCost = getRandomInt(20, 30);
+    let tries = 0;
+    while (monthlyCost === activationFee && tries++ < 50) {
+      monthlyCost = getRandomInt(20, 30);
+    }
 
     const correctEquation = `c=${monthlyCost}t+${activationFee}`;
 
@@ -52,11 +59,11 @@ export const generator_224 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `A contract for a certain service requires a onetime activation cost of ${activationFee} and a monthly cost of ${monthlyCost}. Which equation represents this situation, where $c$ is the total cost, in dollars, of this service contract for $t$ months?`,
+      questionText: `A contract for a certain service requires a one-time activation cost of \\$${activationFee} and a monthly cost of \\$${monthlyCost}. Which equation represents this situation, where $c$ is the total cost, in dollars, of this service contract for $t$ months?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. The total cost is the monthly cost ($${monthlyCost}$) times the number of months ($t$) plus the one-time activation fee ($${activationFee}$), giving $c = ${monthlyCost}t + ${activationFee}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The total cost is the monthly cost, \\$${monthlyCost}, times the number of months, $t$, plus the one-time activation fee, \\$${activationFee}. This gives $c = ${monthlyCost}t + ${activationFee}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

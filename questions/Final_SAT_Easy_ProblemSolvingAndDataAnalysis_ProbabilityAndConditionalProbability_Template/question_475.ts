@@ -23,21 +23,25 @@ export const generator_475 = {
   },
 
   generate(): QuestionData {
+    // The favorable group is targetCount out of totalCount, where
+    // totalCount = targetCount * ratio, so the reduced probability is 1/ratio.
     const ratio = getRandomInt(2, 5);
-    const rockyCount = getRandomInt(2, 6);
-    const totalCount = rockyCount * ratio;
+    const targetCount = getRandomInt(2, 6);
+    const totalCount = targetCount * ratio;
 
-    const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
-    const divisor = gcd(rockyCount, totalCount);
-    const simplifiedNum = rockyCount / divisor;
-    const simplifiedDen = totalCount / divisor;
-    const correctText = `\\frac{${simplifiedNum}}{${simplifiedDen}}`;
+    // Correct probability targetCount/totalCount reduces to 1/ratio.
+    const correctText = `\\frac{1}{${ratio}}`;
 
+    // Distractors, all provably distinct from the correct answer and from
+    // each other across ratio in [2,5], targetCount in [2,6]:
+    //  - flipped ratio: an integer >= 2 (total / target)         -> never a unit fraction
+    //  - 1/totalCount: only one favorable outcome                -> totalCount = target*ratio > ratio
+    //  - 1/(ratio+1): off-by-one denominator                     -> denominator differs from ratio and from totalCount
     const optionsData = [
-      { text: `\\frac{1}{${totalCount}}`, isCorrect: false, reason: "represents the probability if only 1 of the items had the target property" },
-      { text: `\\frac{1}{${Math.floor(totalCount/2)}}`, isCorrect: false, reason: "represents the probability if 2 of the items had the target property" },
+      { text: `\\frac{1}{${totalCount}}`, isCorrect: false, reason: "represents the probability if only 1 of the items had the characteristic" },
+      { text: `\\frac{1}{${ratio + 1}}`, isCorrect: false, reason: "uses a denominator that is one more than the correct simplified value" },
       { text: correctText, isCorrect: true },
-      { text: ratio.toString(), isCorrect: false, reason: "results from dividing the total by the target group instead of the other way around" }
+      { text: ratio.toString(), isCorrect: false, reason: "divides the total by the number with the characteristic instead of the other way around" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -48,10 +52,10 @@ export const generator_475 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. If one of these items is selected at random, the probability is calculated by dividing the number with the target property by the total number. There are ${rockyCount} with the property out of ${totalCount} total, giving $\\frac{${rockyCount}}{${totalCount}} = \\frac{${simplifiedNum}}{${simplifiedDen}}$. Choice ${incorrectOptions[0].letter} is incorrect; this ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; this ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; this ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. If one of these items is selected at random, the probability is the number with the characteristic divided by the total number. There are ${targetCount} with the characteristic out of ${totalCount} total, giving $\\frac{${targetCount}}{${totalCount}} = \\frac{1}{${ratio}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `Of the $${totalCount}$ items in a group, $${rockyCount}$ have a certain characteristic. If one item is selected at random from the group, what is the probability of selecting an item with that characteristic?`,
+      questionText: `Of the $${totalCount}$ items in a group, $${targetCount}$ have a certain characteristic. If one item is selected at random from the group, what is the probability of selecting an item with that characteristic?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,

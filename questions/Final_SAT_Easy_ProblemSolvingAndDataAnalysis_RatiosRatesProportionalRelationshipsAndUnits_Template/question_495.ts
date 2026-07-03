@@ -5,10 +5,10 @@ import type { QuestionData } from '../../study/types';
 * Question 495
 *
 * ORIGINAL ANALYSIS:
-* - Number ranges: [ratio x:y = 12:t, x=156, answer: y=13t]
+* - Number ranges: [ratio x:y = r:t, x = r*m, answer: y = m*t]
 * - Difficulty factors: [Proportion with variables, solving for expression]
-* - Distractor patterns: [A: 13t (correct), B: 12t (no division), C: 144t (156-12), D: 168t (156+12)]
-* - Constraints: [156/12 = 13 must be integer]
+* - Distractor patterns: [correct m*t; r*t (used numerator directly); r*m*t (no division); (m+r)*t (added instead)]
+* - Constraints: [x = r*m so x/r = m is a clean integer coefficient]
 * - Question type: [Multiple Choice Text with algebraic expressions]
 * - Figure generation: [None]
 */
@@ -23,22 +23,45 @@ export const generator_495 = {
   },
 
   generate: (): QuestionData => {
-    const ratioFirst = getRandomInt(10, 16);
-    const multiplier = getRandomInt(11, 16);
-    const xValue = ratioFirst * multiplier;
-    const correctCoefficient = multiplier;
-    const correctAnswer = `${correctCoefficient}t`;
+    const ratioFirst = getRandomInt(10, 16);        // r  (numerator of the given ratio r : t)
+    const multiplier = getRandomInt(11, 16);        // m  (the correct coefficient of t)
+    const xValue = ratioFirst * multiplier;         // x = r * m  (so x / r = m exactly)
+    const correctCoefficient = multiplier;          // y = m * t
 
-    const distractor1 = `${ratioFirst}t`;
-    const distractor2 = `${ratioFirst * ratioFirst}t`;
-    const distractor3 = `${(xValue + ratioFirst)}t`;
+    // Candidate distractor coefficients modelling real student errors.
+    // Build a set of 4 DISTINCT coefficients so no two options can ever collide.
+    const coefficients: number[] = [correctCoefficient];
+    const addCoeff = (c: number): boolean => {
+      if (c > 0 && !coefficients.includes(c)) { coefficients.push(c); return true; }
+      return false;
+    };
 
-    const optionsData = [
-      { text: correctAnswer, isCorrect: true, reason: null },
-      { text: distractor1, isCorrect: false, reason: "ignoring the division" },
-      { text: distractor2, isCorrect: false, reason: "incorrect operation" },
-      { text: distractor3, isCorrect: false, reason: "addition" }
-    ];
+    // Error 1: read the ratio's first term as the answer (skips the division).
+    addCoeff(ratioFirst);
+    // Error 2: forget to divide entirely (leave the coefficient as x itself).
+    addCoeff(xValue);
+    // Error 3: add the two given numbers instead of dividing.
+    addCoeff(multiplier + ratioFirst);
+
+    // Backfill (bounded) in the unlikely event any candidate collided, so we
+    // always reach exactly 4 distinct positive coefficients.
+    let tries = 0;
+    while (coefficients.length < 4 && tries++ < 50) {
+      addCoeff(correctCoefficient + getRandomInt(1, 40));
+    }
+
+    const reasonFor = (c: number): string => {
+      if (c === ratioFirst) return "using the first term of the ratio directly instead of dividing $x$ by it";
+      if (c === xValue) return "forgetting to divide by the first term of the ratio";
+      if (c === multiplier + ratioFirst) return "adding the two given numbers instead of dividing";
+      return "a computational error";
+    };
+
+    const optionsData = coefficients.map((c, i) => ({
+      text: `${c}t`,
+      isCorrect: i === 0,
+      reason: i === 0 ? null : reasonFor(c),
+    }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -49,13 +72,13 @@ export const generator_495 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Given $x/y = ${ratioFirst}/t$ and $x = ${xValue}$, we have $${xValue}/y = ${ratioFirst}/t$, so $y = ${xValue}t / ${ratioFirst} = ${correctCoefficient}t$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `Since $x$ to $y$ has the same ratio as the numbers given, you can write $\\frac{x}{y} = \\frac{${ratioFirst}}{t}$. Substituting $x = ${xValue}$ gives $\\frac{${xValue}}{y} = \\frac{${ratioFirst}}{t}$. Solving for $y$: $y = \\frac{${xValue}\\,t}{${ratioFirst}} = ${correctCoefficient}t$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it results from ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `The ratio x to y is equivalent to the ratio ${ratioFirst} to t. When x=${xValue}, what is the value of y in terms of t?`,
+      questionText: `The ratio $x$ to $y$ is equivalent to $x : y = ${ratioFirst} : t$. When $x = ${xValue}$, what is the value of $y$ in terms of $t$?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
-      correctAnswer: correctAnswer,
+      correctAnswer: `${correctCoefficient}t`,
       explanation: explanation
     };
   }

@@ -23,23 +23,43 @@ export const generator_479 = {
   },
 
   generate: (): QuestionData => {
-    const ozPerMuffinOptions = [2.0, 2.5, 3.0, 3.5];
-    const ozPerMuffin = ozPerMuffinOptions[getRandomInt(0, ozPerMuffinOptions.length - 1)];
-    const poundsNeeded = getRandomInt(5, 10) + 0.5;
-    const totalOz = poundsNeeded * 16;
-    const numMuffins = Math.round(totalOz / ozPerMuffin);
-    const actualTotalOz = ozPerMuffin * numMuffins;
-    const correctPounds = actualTotalOz / 16;
+    // Answer-first construction: pick a whole number of pounds and an
+    // ounces-per-muffin rate, then derive a whole muffin count so that
+    // ozPerMuffin * numMuffins is exactly correctPounds * 16 (a multiple of
+    // 16). This guarantees integer pounds with no float artifacts.
+    const ozPerMuffinOptions = [2.0, 2.5, 3.0, 4.0];
+    let ozPerMuffin = 2.0;
+    let correctPounds = 5;
+    let numMuffins = 40;
+    let tries = 0;
+    do {
+      correctPounds = getRandomInt(3, 12);
+      ozPerMuffin = ozPerMuffinOptions[getRandomInt(0, ozPerMuffinOptions.length - 1)];
+      numMuffins = (correctPounds * 16) / ozPerMuffin;
+    } while ((!Number.isInteger(numMuffins) || numMuffins < 12) && tries++ < 50);
+    // Fallback that always satisfies the constraint (oz = 2 divides evenly).
+    if (!Number.isInteger(numMuffins) || numMuffins < 12) {
+      ozPerMuffin = 2.0;
+      correctPounds = getRandomInt(3, 12);
+      numMuffins = (correctPounds * 16) / ozPerMuffin;
+    }
 
-    const distractor1 = Math.round(correctPounds) + 2;
-    const distractor2 = ozPerMuffin + numMuffins;
-    const distractor3 = actualTotalOz;
+    const totalOz = correctPounds * 16; // = ozPerMuffin * numMuffins, integer
+
+    // Distractors constructed to be provably distinct from the answer and,
+    // via a bounded uniqueness guard, from each other.
+    const dOunces = totalOz;              // forgot to convert oz -> pounds
+    const dHalfConversion = correctPounds * 2; // divided by 8 instead of 16
+    let dAdd = ozPerMuffin + numMuffins;  // just added the two given numbers
+    const used = new Set<number>([correctPounds, dOunces, dHalfConversion]);
+    let guard = 0;
+    while (used.has(dAdd) && guard++ < 50) dAdd += 1;
 
     const optionsData = [
       { text: correctPounds.toString(), isCorrect: true, reason: null },
-      { text: distractor1.toString(), isCorrect: false, reason: "This might result from an estimation error or incorrect division." },
-      { text: distractor2.toString(), isCorrect: false, reason: "This is likely the result of simply adding the numbers in the problem." },
-      { text: distractor3.toString(), isCorrect: false, reason: "This is the total amount in *ounces*, not pounds." }
+      { text: dHalfConversion.toString(), isCorrect: false, reason: "this results from dividing the total ounces by $8$ instead of by $16$." },
+      { text: dAdd.toString(), isCorrect: false, reason: "this is the result of simply adding the two numbers in the problem." },
+      { text: dOunces.toString(), isCorrect: false, reason: "this is the total amount in ounces, not pounds." }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -51,10 +71,10 @@ export const generator_479 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `To find the total amount of chocolate needed in pounds, we need to follow these steps:\\n\\n1. **Calculate the total ounces needed:** $${ozPerMuffin}$ ounces/muffin \\( \\times \\) $${numMuffins}$ muffins = $${actualTotalOz}$ ounces\\n\\n2. **Convert ounces to pounds:** $${actualTotalOz}$ ounces \\( \\div \\) $16$ ounces/pound = $${correctPounds}$ pounds\\n\\nTherefore, $${correctPounds}$ pounds of chocolate are needed. **Analysis of other options:** Choice ${incorrectOptions[0].letter} is incorrect and ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter} is incorrect and ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter} is incorrect and ${incorrectOptions[2].reason}`;
+    const explanation = `The correct answer is Choice ${correctLetter}. First, find the total ounces of chocolate needed: $${ozPerMuffin} \\times ${numMuffins} = ${totalOz}$ ounces. Then convert ounces to pounds by dividing by $16$: $${totalOz} \\div 16 = ${correctPounds}$ pounds. So $${correctPounds}$ pounds of chocolate are needed. Choice ${incorrectOptions[0].letter} is incorrect because ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter} is incorrect because ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter} is incorrect because ${incorrectOptions[2].reason}`;
 
     return {
-      questionText: `To make a bakery's signature chocolate muffins, a baker needs $${ozPerMuffin}$ ounces of chocolate for each muffin. How many pounds of chocolate are needed to make $${numMuffins}$ signature chocolate muffins? ($1$ pound = $16$ ounces)`,
+      questionText: `To make a bakery's signature chocolate muffins, a baker needs $${ozPerMuffin}$ ounces of chocolate for each muffin. How many pounds of chocolate are needed to make $${numMuffins}$ signature chocolate muffins? ($1$ pound $= 16$ ounces)`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: correctPounds.toString(),

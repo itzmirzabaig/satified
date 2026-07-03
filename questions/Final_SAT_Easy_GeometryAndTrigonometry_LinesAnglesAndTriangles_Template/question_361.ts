@@ -10,6 +10,9 @@ import type { QuestionData } from '../../study/types';
 * - Distractor patterns: [Subtraction error, choose given angle, subtract from 100 error]
 * - Constraints: [Acute angles sum to 90]
 * - Question type: [Conceptual (no figure)→Multiple Choice Text]
+*
+* Intent: the two acute angles of a right triangle are complementary, so the
+* other acute angle is 90 - givenAngle.
 */
 
 export const generator_361 = {
@@ -23,17 +26,33 @@ export const generator_361 = {
 
   generate: (): QuestionData => {
     const givenAngle = getRandomInt(40, 55);
-    const otherAngle = 90 - givenAngle;
-    const distractorA = givenAngle - 45;
-    const distractorC = 100 - givenAngle;
-    const distractorD = givenAngle;
+    const otherAngle = 90 - givenAngle; // correct: 35-50
     const correctAnswer = otherAngle.toString();
 
+    // Candidate distractors with pedagogical reasons. Dedupe against the
+    // correct answer and each other, and require positive angle measures, so
+    // no collision (e.g. givenAngle == 45 or givenAngle == 50) can occur.
+    const candidates: { val: number; reason: string }[] = [
+      { val: givenAngle, reason: "chooses the given angle instead of its complement" },
+      { val: 100 - givenAngle, reason: "subtracts from 100 instead of from 90" },
+      { val: 180 - givenAngle, reason: "subtracts from 180 (as if a straight angle) instead of from 90" },
+      { val: otherAngle + 10, reason: "results from a subtraction error" },
+      { val: otherAngle - 5, reason: "results from a subtraction error" }
+    ];
+
+    const usedVals = new Set<number>([otherAngle]);
+    const distractors: { text: string; isCorrect: boolean; reason: string }[] = [];
+    for (const c of candidates) {
+      if (distractors.length === 3) break;
+      if (c.val > 0 && !usedVals.has(c.val)) {
+        usedVals.add(c.val);
+        distractors.push({ text: c.val.toString(), isCorrect: false, reason: c.reason });
+      }
+    }
+
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: "results from calculation error" },
-      { text: correctAnswer, isCorrect: true },
-      { text: distractorC.toString(), isCorrect: false, reason: "subtracts from 100 instead of 90" },
-      { text: distractorD.toString(), isCorrect: false, reason: "chooses the given angle instead of the complementary angle" }
+      { text: correctAnswer, isCorrect: true, reason: "" },
+      ...distractors
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -49,7 +68,7 @@ export const generator_361 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. In a right triangle, the two acute angles are complementary (sum to $90^{\\circ}$). Therefore, the other acute angle is $90^{\\circ} - ${givenAngle}^{\\circ} = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In a right triangle, the two acute angles are complementary (their measures sum to $90^{\\circ}$). Therefore, the other acute angle is $90^{\\circ} - ${givenAngle}^{\\circ} = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

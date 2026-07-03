@@ -25,18 +25,18 @@ export const generator_480 = {
   generate: (): QuestionData => {
     const rods = getRandomInt(60, 90);
     const yardsPerRod = 5.5;
-    const yards = rods * yardsPerRod;
+    const yards = rods * yardsPerRod; // integer or x.5, always <= 1 decimal place
     const fractionNumerator = rods * 11;
-    const fractionForm = `${fractionNumerator}/2`;
+    const fractionForm = `${fractionNumerator}/2`; // equivalent fraction, e.g. 671/2
 
-    const questionText = `How many yards are equivalent to ${rods} rods? (${yardsPerRod} yards = 1 rod)`;
-    const explanation = `The correct answer is ${yards}. It's given that ${yardsPerRod} yards = 1 rod. Therefore, ${rods} rods is equivalent to (${rods} rods) (${yardsPerRod} yards/1 rod), or ${yards} yards. Note that ${yards} and ${fractionForm} are examples of ways to enter a correct answer.`;
+    const questionText = `How many yards are equivalent to ${rods} rods? (${yardsPerRod} yards = 1 rod) Enter your answer as a decimal or fraction.`;
+    const explanation = `It's given that ${yardsPerRod} yards = 1 rod. Therefore, ${rods} rods is equivalent to (${rods} rods)(${yardsPerRod} yards per rod), or ${yards} yards. So the correct answer is ${yards}. This can also be entered as the equivalent fraction ${fractionForm}.`;
 
     return {
       questionText: questionText,
       figureCode: null,
       options: null,
-      correctAnswer: `${yards}, ${fractionForm}`,
+      correctAnswer: yards.toString(),
       explanation: explanation
     };
   }

@@ -52,7 +52,7 @@ export const generator_261 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: aValue.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$: $g(${xValue}) = ${slope}(${xValue}) + a = ${slope * xValue} + a$. Setting this equal to ${result}: ${slope * xValue} + a = ${result}$, so $a = ${aValue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting $x = ${xValue}$ gives $g(${xValue}) = ${slope}(${xValue}) + a = ${slope * xValue} + a$. Since $g(${xValue}) = ${result}$, we solve $a = ${result} - ${slope * xValue} = ${aValue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

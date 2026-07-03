@@ -24,18 +24,25 @@ export const generator_477 = {
 
   generate: (): QuestionData => {
     const numSides = getRandomInt(10, 20);
-    const targetNumber = getRandomInt(1, numSides);
+    // Keep targetNumber in [2, numSides - 3] so the "value as numerator"
+    // distractor (target/numSides) can never coincide with the correct answer
+    // (1/numSides, requires target = 1) nor with the complementary distractors
+    // (N-2)/N and (N-1)/N (require target = N-2 or N-1). Range is non-empty
+    // because numSides >= 10.
+    const targetNumber = getRandomInt(2, numSides - 3);
 
-    const probabilityNumerator = 1;
-    const probabilityDenominator = numSides;
+    const correctText = `\\frac{1}{${numSides}}`;
 
-    const correctText = `\\frac{${probabilityNumerator}}{${probabilityDenominator}}`;
-
+    // Distractors, all provably distinct from 1/numSides and from each other
+    // for numSides in [10,20] and targetNumber in [2, numSides-3]:
+    //  - target/numSides : confuses the face value with a count of outcomes
+    //  - (N-2)/numSides  : mistaken "not the target and not 1" complement
+    //  - (N-1)/numSides  : the complement, P(not rolling the target)
     const optionsData = [
-      { text: `\\frac{${probabilityNumerator}}{${probabilityDenominator}}`, isCorrect: true },
-      { text: `\\frac{${targetNumber}}{${numSides}}`, isCorrect: false, reason: "confuses the value of the outcome with the number of outcomes" },
-      { text: `\\frac{${numSides - 2}}{${numSides}}`, isCorrect: false, reason: "represents probability of not rolling target or 1 (miscalculation)" },
-      { text: `\\frac{${numSides - 1}}{${numSides}}`, isCorrect: false, reason: "represents probability of not rolling the target number" }
+      { text: correctText, isCorrect: true },
+      { text: `\\frac{${targetNumber}}{${numSides}}`, isCorrect: false, reason: "confuses the value showing on the face with the number of favorable outcomes" },
+      { text: `\\frac{${numSides - 2}}{${numSides}}`, isCorrect: false, reason: "represents the probability of not rolling the target or a 1, which is a miscalculation" },
+      { text: `\\frac{${numSides - 1}}{${numSides}}`, isCorrect: false, reason: "represents the probability of not rolling the target number" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -46,7 +53,7 @@ export const generator_477 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The die has ${numSides} faces in total, labeled 1 through ${numSides}. This means there are ${numSides} possible outcomes when rolling the die. The event is "rolling a ${targetNumber}". There is only one face labeled with the number ${targetNumber}. Therefore, the probability is calculated as: $P = \\frac{\\text{Number of favorable outcomes}}{\\text{Total number of possible outcomes}} = \\frac{1}{${numSides}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The die has ${numSides} faces in total, labeled 1 through ${numSides}, so there are ${numSides} equally likely outcomes when it is rolled. Only one face is labeled ${targetNumber}, so there is exactly one favorable outcome. The probability is $P = \\frac{\\text{favorable outcomes}}{\\text{total outcomes}} = \\frac{1}{${numSides}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `Each face of a fair $${numSides}$-sided die is labeled with a number from $1$ through $${numSides}$, with a different number appearing on each face. If the die is rolled one time, what is the probability of rolling a $${targetNumber}$?`,

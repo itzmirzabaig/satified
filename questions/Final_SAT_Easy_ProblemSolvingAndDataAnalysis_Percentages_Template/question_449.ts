@@ -28,16 +28,23 @@ export const generator_449 = {
     const taxAmount = (price * taxRate) / 100;
     const totalCost = price + taxAmount;
     const formattedTotal = totalCost.toFixed(2);
+    const formattedTax = taxAmount.toFixed(2);
+    const halfRate = taxRate / 2;
 
-    const distractorA = (price + (taxRate / 100)).toFixed(2);
-    const distractorB = (price + (price * (taxRate / 2) / 100)).toFixed(2);
+    // Distractors (all provably distinct from the correct total across the
+    // full range 15<=price<=50, 4<=taxRate<=9 — verified: no collisions):
+    //  A: treats the tax as $tax_rate/100 in dollars (decimal misplacement)
+    //  B: uses half the tax rate
+    //  D: adds the tax rate as dollars instead of a percentage
+    const distractorA = (price + taxRate / 100).toFixed(2);
+    const distractorB = (price + price * halfRate / 100).toFixed(2);
     const distractorD = (price + taxRate).toFixed(2);
 
     const optionsData = [
-      { text: `$${distractorA}`, isCorrect: false, reason: "results from calculating the tax as $${(taxRate/100).toFixed(2)} or misplacing the decimal, rather than calculating ${taxRate}% of $${price}" },
-      { text: `$${distractorB}`, isCorrect: false, reason: "would be the result if the tax was calculated as ${(taxRate/2)}%, not ${taxRate}%" },
-      { text: `$${formattedTotal}`, isCorrect: true },
-      { text: `$${distractorD}`, isCorrect: false, reason: "results from simply adding ${taxRate} to the original price (treating ${taxRate}% as ${taxRate}), rather than calculating the percentage" }
+      { text: `\\$${distractorA}`, isCorrect: false, reason: `results from adding only \\$${(taxRate / 100).toFixed(2)} of tax (misplacing the decimal) instead of computing ${taxRate}% of \\$${price}` },
+      { text: `\\$${distractorB}`, isCorrect: false, reason: `would be the result if the tax rate were ${halfRate}% instead of ${taxRate}%` },
+      { text: `\\$${formattedTotal}`, isCorrect: true, reason: "" },
+      { text: `\\$${distractorD}`, isCorrect: false, reason: `results from adding ${taxRate} dollars to the price (treating ${taxRate}% as \\$${taxRate}) instead of computing the percentage` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -49,11 +56,11 @@ export const generator_449 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `The cost of a certain shirt is ${price} before a ${taxRate}% sales tax is added. What is the total cost, including sales tax, to purchase the shirt?`,
+      questionText: `The cost of a certain shirt is \\$${price} before a ${taxRate}% sales tax is added. What is the total cost, including sales tax, to purchase the shirt?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: `$${formattedTotal}`,
-      explanation: `Choice ${correctOption.letter} is correct. The sales tax is ${taxRate}% of $$${price}, which is $${taxAmount.toFixed(2)}. Adding this to the original price gives $$${price} + $${taxAmount.toFixed(2)} = $${formattedTotal}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      correctAnswer: `\\$${formattedTotal}`,
+      explanation: `Choice ${correctOption.letter} is correct. The sales tax is ${taxRate}% of \\$${price}, which is \\$${formattedTax}. Adding this to the original price gives \\$${price} + \\$${formattedTax} = \\$${formattedTotal}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

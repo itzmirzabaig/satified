@@ -23,18 +23,29 @@ export const generator_476 = {
   },
 
   generate(): QuestionData {
-    const lightYes = getRandomInt(90, 130);
-    const lightNo = getRandomInt(120, 170);
-    const mediumYes = getRandomInt(120, 160);
-    const mediumNo = getRandomInt(140, 190);
-    const heavyYes = getRandomInt(140, 190);
-    const heavyNo = getRandomInt(60, 100);
+    let lightYes = 0, lightNo = 0, mediumYes = 0, mediumNo = 0, heavyYes = 0, heavyNo = 0;
+    let totalYes = 0, totalNo = 0;
+
+    // Redraw until the "yes" and "no" column totals differ. If they were equal,
+    // the correct answer (totalYes/grandTotal) and distractor D
+    // (totalNo/grandTotal) would render as the same fraction. The other option
+    // values are structurally distinct (see optionsData below), so this single
+    // guard makes all four options unique for every draw.
+    let tries = 0;
+    do {
+      lightYes = getRandomInt(90, 130);
+      lightNo = getRandomInt(120, 170);
+      mediumYes = getRandomInt(120, 160);
+      mediumNo = getRandomInt(140, 190);
+      heavyYes = getRandomInt(140, 190);
+      heavyNo = getRandomInt(60, 100);
+      totalYes = lightYes + mediumYes + heavyYes;
+      totalNo = lightNo + mediumNo + heavyNo;
+    } while (totalYes === totalNo && tries++ < 50);
 
     const totalLight = lightYes + lightNo;
     const totalMedium = mediumYes + mediumNo;
     const totalHeavy = heavyYes + heavyNo;
-    const totalYes = lightYes + mediumYes + heavyYes;
-    const totalNo = lightNo + mediumNo + heavyNo;
     const grandTotal = totalYes + totalNo;
 
     const tableCode = `<table><thead><tr><th>Texting behavior</th><th>Talks on cell phone daily</th><th>Does not talk on cell phone daily</th><th>Total</th></tr></thead><tbody><tr><td>Light</td><td>${lightYes}</td><td>${lightNo}</td><td>${totalLight}</td></tr><tr><td>Medium</td><td>${mediumYes}</td><td>${mediumNo}</td><td>${totalMedium}</td></tr><tr><td>Heavy</td><td>${heavyYes}</td><td>${heavyNo}</td><td>${totalHeavy}</td></tr><tr><td>Total</td><td>${totalYes}</td><td>${totalNo}</td><td>${grandTotal}</td></tr></tbody></table>`;
@@ -44,7 +55,7 @@ export const generator_476 = {
     const optionsData = [
       { text: `\\frac{1}{${grandTotal}}`, isCorrect: false, reason: "represents the probability of selecting any one specific teen" },
       { text: correctText, isCorrect: true },
-      { text: `\\frac{${totalNo}}{${totalYes}}`, isCorrect: false, reason: "results from conceptual errors" },
+      { text: `\\frac{${totalNo}}{${totalYes}}`, isCorrect: false, reason: "gives the ratio of those who do not talk daily to those who do, instead of a probability out of the whole group" },
       { text: `\\frac{${totalNo}}{${grandTotal}}`, isCorrect: false, reason: "represents the probability of selecting a teen who doesn't talk on cell phone daily" }
     ];
 

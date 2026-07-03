@@ -23,9 +23,26 @@ export const generator_274 = {
   },
 
   generate: (): QuestionData => {
-    const coefficient = getRandomInt(4, 12);
-
-    const answer = getRandomInt(5, 15);
+    // Draw coefficient and answer, retrying until all four option values are
+    // distinct. Collisions across the declared ranges (coefficient 4-12,
+    // answer 5-15): coefficient can equal answer (5-12), and coefficient^2 can
+    // equal result+coefficient when coefficient = answer+1. Bounded retry
+    // (~85% of pairs are already clean, so this converges immediately).
+    let coefficient = getRandomInt(4, 12);
+    let answer = getRandomInt(5, 15);
+    let tries = 0;
+    while (
+      new Set([
+        coefficient,
+        coefficient * coefficient,
+        coefficient * answer + coefficient,
+        answer
+      ]).size !== 4 &&
+      tries++ < 50
+    ) {
+      coefficient = getRandomInt(4, 12);
+      answer = getRandomInt(5, 15);
+    }
 
     const result = coefficient * answer;
 
@@ -56,7 +73,7 @@ export const generator_274 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: answer.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. To find the value of $x$ for which $f(x) = ${result}$, set up the equation ${coefficient}x = ${result}$. Dividing both sides by ${coefficient} gives $x = ${answer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the value of $x$ for which $f(x) = ${result}$, set up the equation $f(x) = ${coefficient}x = ${result}$. Dividing both sides by ${coefficient} gives $x = ${answer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

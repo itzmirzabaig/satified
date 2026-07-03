@@ -9,6 +9,11 @@ import type { QuestionData } from '../../study/types';
  * Distractor patterns: [Calculation error, confuses with angle a]
  * Constraints: [Based on specific geometric configuration]
  * Question type: [Figure→Multiple Choice Text]
+ *
+ * Intent: two parallel lines m and n are cut by a transversal. The obtuse
+ * same-side interior angle is the given angle; b is the acute same-side
+ * interior angle. Since consecutive (same-side) interior angles are
+ * supplementary, b = 180 - givenAngle.
  */
 export const generator_357 = {
   metadata: {
@@ -20,47 +25,60 @@ export const generator_357 = {
   },
 
   generate: (): QuestionData => {
-    const givenAngle = getRandomInt(120, 140);
-    const correctAnswerVal = 180 - givenAngle;
+    const givenAngle = getRandomInt(120, 140); // obtuse interior angle
+    const correctAnswerVal = 180 - givenAngle; // b, acute interior angle (40-60)
 
-    // Visual setup:
-    // Parallel lines at y=0 and y=2.
-    // Transversal y = x + 1 (slope 1).
-    // Top intersection: (1, 2). Bottom intersection: (-1, 0).
-    // Top interior angle (right side) is obtuse (matches givenAngle).
-    // Bottom interior angle (right side) is acute (matches b).
-    
-    // FIX: Use Unicode degree symbol (°) instead of LaTeX (^\circ) inside Text components
-    const mafsCode = `
-      <Mafs viewBox={{ x: [-5, 5], y: [-1, 4] }}>
-        <Coordinates.Cartesian xAxis={{ labels: false, axis: false }} yAxis={{ labels: false, axis: false }} />
-        
-        {/* Parallel Line m */}
-        <Line.Segment point1={[-4, 2]} point2={[4, 2]} />
-        <Text x={4.2} y={2} attach="e">m</Text>
-        
-        {/* Parallel Line n */}
-        <Line.Segment point1={[-4, 0]} point2={[4, 0]} />
-        <Text x={4.2} y={0} attach="e">n</Text>
-
-        {/* Transversal Line */}
-        <Line.Segment point1={[-2.5, -1.5]} point2={[2.5, 3.5]} />
-
-        {/* Label for given angle (Obtuse interior) */}
-        {/* Positioned inside the angle at top-right of intersection (1,2) */}
-        <Text x={1.6} y={1.7}>${givenAngle}°</Text>
-        
-        {/* Label for b (Acute interior) */}
-        {/* Positioned inside the angle at bottom-right of intersection (-1,0) */}
-        <Text x={-0.4} y={0.3}>b</Text>
-      </Mafs>
+    // --- Figure: two parallel horizontal lines cut by a transversal (plain SVG) ---
+    const width = 450;
+    const height = 250;
+    // Parallel lines m (top) and n (bottom); transversal crosses both.
+    const yTop = 80;
+    const yBot = 175;
+    const xTopHit = 250; // transversal crosses line m here
+    const xBotHit = 190; // transversal crosses line n here
+    const figureCode = `
+      <div style="text-align:center;">
+        <svg viewBox="0 0 ${width} ${height}" style="width:100%; max-width:${width}px; height:auto; font-family:sans-serif; user-select:none;">
+          <!-- Parallel line m -->
+          <line x1="40" y1="${yTop}" x2="410" y2="${yTop}" stroke="currentColor" stroke-width="2"/>
+          <text x="418" y="${yTop + 4}" font-size="16" font-style="italic" fill="currentColor">m</text>
+          <!-- Parallel line n -->
+          <line x1="40" y1="${yBot}" x2="410" y2="${yBot}" stroke="currentColor" stroke-width="2"/>
+          <text x="418" y="${yBot + 4}" font-size="16" font-style="italic" fill="currentColor">n</text>
+          <!-- Transversal -->
+          <line x1="${xBotHit - 55}" y1="${yBot + 45}" x2="${xTopHit + 55}" y2="${yTop - 45}" stroke="currentColor" stroke-width="2"/>
+          <!-- Given (obtuse) same-side interior angle at line m, on the lower-right -->
+          <text x="${xTopHit + 12}" y="${yTop + 26}" font-size="15" fill="currentColor">${givenAngle}&#176;</text>
+          <!-- Unknown angle b at line n, on the upper-right (same side) -->
+          <text x="${xBotHit + 12}" y="${yBot - 12}" font-size="15" font-style="italic" fill="currentColor">b</text>
+        </svg>
+      </div>
     `;
 
+    // --- Options: correct plus 3 guaranteed-distinct distractors ---
+    // Candidate distractors (with pedagogical reasons); dedupe against the
+    // correct answer and each other so no collision can occur for any draw.
+    const candidates: { val: number; reason: string }[] = [
+      { val: givenAngle, reason: "gives the measure of the given obtuse angle instead of its supplement" },
+      { val: givenAngle - 90, reason: "subtracts 90 instead of subtracting from 180" },
+      { val: 90, reason: "assumes the angle is a right angle" },
+      { val: correctAnswerVal + 10, reason: "results from an arithmetic error" },
+      { val: correctAnswerVal - 5, reason: "results from an arithmetic error" }
+    ];
+
+    const usedVals = new Set<number>([correctAnswerVal]);
+    const distractors: { text: string; isCorrect: boolean; reason: string }[] = [];
+    for (const c of candidates) {
+      if (distractors.length === 3) break;
+      if (c.val > 0 && !usedVals.has(c.val)) {
+        usedVals.add(c.val);
+        distractors.push({ text: `${c.val}`, isCorrect: false, reason: c.reason });
+      }
+    }
+
     const optionsData = [
-      { text: `${correctAnswerVal}`, isCorrect: true },
-      { text: `${givenAngle}`, isCorrect: false, reason: "confuses with angle a" },
-      { text: `${Math.abs(givenAngle - 90)}`, isCorrect: false, reason: "calculation error" },
-      { text: "90", isCorrect: false, reason: "calculation error" }
+      { text: `${correctAnswerVal}`, isCorrect: true, reason: "" },
+      ...distractors
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -73,20 +91,10 @@ export const generator_357 = {
 
     return {
       questionText: `In the figure above, lines $m$ and $n$ are parallel. What is the value of $b$?`,
-      figureCode: mafsCode,
+      figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. 
-
-The angle labeled ${givenAngle}° and the angle labeled $b$ are **consecutive interior angles** (also known as same-side interior angles). 
-
-Because lines $m$ and $n$ are parallel, consecutive interior angles are supplementary, meaning their measures add up to $180°$.
-
-$$b + ${givenAngle}° = 180°$$
-$$b = 180 - ${givenAngle}$$
-$$b = ${correctAnswerVal}$$
-
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The given angle, which measures $a = ${givenAngle}^{\\circ}$, and the angle labeled $b$ are consecutive interior angles (same-side interior angles). Because lines $m$ and $n$ are parallel, consecutive interior angles are supplementary, so their measures add to a straight angle: $b + a = 180^{\\circ}$, which gives $b = 180 - ${givenAngle} = ${correctAnswerVal}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

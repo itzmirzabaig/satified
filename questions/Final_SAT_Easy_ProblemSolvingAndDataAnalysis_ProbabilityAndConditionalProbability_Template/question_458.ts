@@ -23,9 +23,22 @@ export const generator_458 = {
   },
 
   generate: (): QuestionData => {
-    const redCount = getRandomInt(5, 15);
-    const blueCount = getRandomInt(8, 18);
-    const greenCount = getRandomInt(15, 30);
+    // Redraw until the four option NUMERATORS (all over the same denominator
+    // totalCount) are pairwise distinct, so no two options can ever collide
+    // (exactly or numerically). Numerators: blue (correct), red+green (not
+    // blue), green, red+blue (not green). Bounded retry — distinct numerators
+    // are the common case, so this almost never loops.
+    let redCount = getRandomInt(5, 15);
+    let blueCount = getRandomInt(8, 18);
+    let greenCount = getRandomInt(15, 30);
+    let tries = 0;
+    while (tries++ < 50) {
+      const nums = [blueCount, redCount + greenCount, greenCount, redCount + blueCount];
+      if (new Set(nums).size === 4) break;
+      redCount = getRandomInt(5, 15);
+      blueCount = getRandomInt(8, 18);
+      greenCount = getRandomInt(15, 30);
+    }
     const totalCount = redCount + blueCount + greenCount;
 
     const tableCode = `<table><thead><tr><th>Color</th><th>Number</th></tr></thead><tbody><tr><td>Red</td><td>${redCount}</td></tr><tr><td>Blue</td><td>${blueCount}</td></tr><tr><td>Green</td><td>${greenCount}</td></tr><tr><td>Total</td><td>${totalCount}</td></tr></tbody></table>`;

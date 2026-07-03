@@ -47,9 +47,12 @@ export const generator_423 = {
       </table>
     `;
 
+    // Distractors are the answer offset by -9, +9, and +18. Because they are
+    // fixed offsets of xValue with distinct gaps (9, 18, 27), no two options —
+    // and none versus the correct answer — can ever be equal for any draw.
     const optionsData = [
       { text: (xValue - 9).toString(), isCorrect: false },
-      { text: b4.toString(), isCorrect: false },
+      { text: (xValue + 18).toString(), isCorrect: false },
       { text: xValue.toString(), isCorrect: true },
       { text: (xValue + 9).toString(), isCorrect: false }
     ];

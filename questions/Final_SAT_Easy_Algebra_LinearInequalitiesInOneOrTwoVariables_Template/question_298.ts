@@ -48,7 +48,7 @@ export const generator_298 = {
     const explanation = `Choice ${correctLetter} is correct. Normal body temperature is between $${minTemp}^{\\circ}\\text{F}$ and $${maxTemp}^{\\circ}\\text{F}$. Only $${correctTemp}^{\\circ}\\text{F}$ falls within this range.`;
 
     return {
-      questionText: `Normal body temperature for an adult is between $${minTemp}^{\\circ}\\text{F}$ and $${maxTemp}^{\\circ}\\text{F}$, inclusive. If Kevin, an adult male, has a body temperature that is considered to be normal, which of the following could be his body temperature?`,
+      questionText: `Normal body temperature for an adult is between $${minTemp}^{\\circ}\\text{F}$ and $${maxTemp}^{\\circ}\\text{F}$, inclusive. If a patient has a body temperature that is considered to be normal, which of the following could be the patient's body temperature?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,

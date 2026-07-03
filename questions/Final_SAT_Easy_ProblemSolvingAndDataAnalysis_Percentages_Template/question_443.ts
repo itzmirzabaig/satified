@@ -36,7 +36,7 @@ export const generator_443 = {
     const distractorC = Math.floor(calculatedPercent * 0.78);
 
     const optionsData = [
-      { text: `${complement}%`, isCorrect: false, reason: "this is the percentage of items that are not silver (the complement), calculated as 100% - ${calculatedPercent}%" },
+      { text: `${complement}%`, isCorrect: false, reason: `this is the percentage of beads that are not silver (the complement), found by subtracting the correct percentage from one hundred to get ${complement}` },
       { text: `${distractorB}%`, isCorrect: false, reason: "results from a calculation error" },
       { text: `${distractorC}%`, isCorrect: false, reason: "results from a calculation error" },
       { text: `${calculatedPercent}%`, isCorrect: true }
@@ -55,7 +55,7 @@ export const generator_443 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${calculatedPercent}%`,
-      explanation: `Choice ${correctOption.letter} is correct. To find the percentage of beads that are silver, divide the number of silver beads by the total number of beads and multiply by 100: $\\frac{${part.toLocaleString()}}{${total.toLocaleString()}} \\times 100 = ${calculatedPercent}%. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the percentage of beads that are silver, divide the number of silver beads by the total number of beads and multiply by one hundred: $\\frac{${part.toLocaleString()}}{${total.toLocaleString()}} \\times 100 = ${calculatedPercent}$, so ${calculatedPercent}% of the beads are silver. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
     };
   }
 };

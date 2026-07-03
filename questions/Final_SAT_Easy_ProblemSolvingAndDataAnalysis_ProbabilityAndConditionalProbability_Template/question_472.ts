@@ -24,7 +24,10 @@ export const generator_472 = {
 
   generate(): QuestionData {
     const totalHouses = getRandomInt(5, 12);
-    const blueHouses = getRandomInt(2, Math.floor(totalHouses / 2));
+    // Keep blue houses a strict minority so the correct probability can never
+    // equal the "not blue" distractor (that collision happens exactly when
+    // blueHouses === nonBlueHouses, i.e. blueHouses === totalHouses / 2).
+    const blueHouses = getRandomInt(2, Math.ceil(totalHouses / 2) - 1);
     const nonBlueHouses = totalHouses - blueHouses;
 
     const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);

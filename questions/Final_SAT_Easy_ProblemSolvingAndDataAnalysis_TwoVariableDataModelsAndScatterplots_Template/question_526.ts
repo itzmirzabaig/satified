@@ -8,6 +8,7 @@ import type { QuestionData } from '../../study/types';
  * - Graph scales correctly to show Years (X) and Enrollment (Y).
  * - Logic updated to randomize which year has the minimum enrollment (instead of always the first one).
  * - Added grid lines and clear labels for readability.
+ * - Reduced to exactly 4 class years so the multiple-choice question has 4 options.
  */
 
 export const generator_526 = {
@@ -20,12 +21,12 @@ export const generator_526 = {
   },
 
   generate: (): QuestionData => {
-    // 1. Generate Data
-    const baseYear = getRandomInt(2002, 2005);
-    const years = [baseYear, baseYear + 1, baseYear + 2, baseYear + 3, baseYear + 4];
-    
+    // 1. Generate Data (exactly 4 class years -> 4 answer options)
+    const baseYear = getRandomInt(2002, 2006);
+    const years = [baseYear, baseYear + 1, baseYear + 2, baseYear + 3];
+
     // Determine which index will be the minimum
-    const minIndex = getRandomInt(0, 4);
+    const minIndex = getRandomInt(0, 3);
     const minEnrollment = getRandomInt(120, 160);
 
     const dataPoints = years.map((year, i) => {

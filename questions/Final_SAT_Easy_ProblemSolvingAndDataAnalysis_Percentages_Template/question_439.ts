@@ -5,12 +5,22 @@ import type { QuestionData } from '../../study/types';
  * Question 439
  *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [total: 1,200, percentage1: 63%, percentage2: 13%]
- * - Difficulty factors: [Table reading, summing percentages, applying to total]
- * - Distractor patterns: [865 = doctor+magazines (wrong pair), 887 = ~74%, 926 = ~77%]
- * - Constraints: [Must use table data]
- * - Question type: [Table→Multiple Choice Text]
+ * - Number ranges: [total surveyed, doctor %, Internet %]
+ * - Difficulty factors: [Table reading, summing two percentages, applying to total]
+ * - Distractor patterns: [doctor only, doctor+magazines, doctor+Internet+magazines]
+ * - Constraints: [Must use table data; table sums to 100%]
+ * - Question type: [Table -> Multiple Choice Text]
  * - Figure generation: [HTML Table]
+ *
+ * FIXED:
+ * - Reasons were double-quoted strings, so ${...} leaked verbatim (TEMPLATE_LEFTOVER)
+ *   and produced odd unescaped-$ counts (TEX_UNBALANCED). Rebuilt as template
+ *   literals computed from live variables.
+ * - Redesigned distractor percentages to {doctor, doctor+9, doctor+internet,
+ *   doctor+internet+9}; these are pairwise distinct in percent for every draw,
+ *   and with total >= 800 each 1% gap (>= 8) survives rounding, so no numeric
+ *   DUP_OPTIONS is possible.
+ * - Ranges narrowed so the table percentages sum to exactly 100.
  */
 
 export const generator_439 = {
@@ -23,11 +33,19 @@ export const generator_439 = {
   },
 
   generate: (): QuestionData => {
+    // Ranges chosen so the table sums to exactly 100% and every distractor
+    // percent stays <= 100. doctor in [52,60], internet in [10,16].
     const totalSurveyed = getRandomInt(800, 1500);
-    const mainSourcePercent = getRandomInt(55, 70);
-    const secondarySourcePercent = getRandomInt(10, 20);
-    const combinedPercent = mainSourcePercent + secondarySourcePercent;
-    const result = Math.round((combinedPercent / 100) * totalSurveyed);
+    const doctorPct = getRandomInt(52, 60);
+    const internetPct = getRandomInt(10, 16);
+    const magazinesPct = 9;
+    const pharmacyPct = 6;
+    const televisionPct = 2;
+    // Balancer row keeps the whole table at 100%.
+    const otherPct = 100 - doctorPct - internetPct - magazinesPct - pharmacyPct - televisionPct;
+
+    const combinedPct = doctorPct + internetPct;
+    const result = Math.round((combinedPct / 100) * totalSurveyed);
 
     const tableCode = `
 <table>
@@ -38,24 +56,31 @@ export const generator_439 = {
     </tr>
   </thead>
   <tbody>
-    <tr><td>Doctor</td><td>${mainSourcePercent}%</td></tr>
-    <tr><td>Internet</td><td>${secondarySourcePercent}%</td></tr>
-    <tr><td>Magazines/brochures</td><td>9%</td></tr>
-    <tr><td>Pharmacy</td><td>6%</td></tr>
-    <tr><td>Television</td><td>2%</td></tr>
-    <tr><td>Other/none of the above</td><td>7%</td></tr>
+    <tr><td>Doctor</td><td>${doctorPct}%</td></tr>
+    <tr><td>Internet</td><td>${internetPct}%</td></tr>
+    <tr><td>Magazines/brochures</td><td>${magazinesPct}%</td></tr>
+    <tr><td>Pharmacy</td><td>${pharmacyPct}%</td></tr>
+    <tr><td>Television</td><td>${televisionPct}%</td></tr>
+    <tr><td>Other/none of the above</td><td>${otherPct}%</td></tr>
   </tbody>
 </table>`;
 
-    const wrongCombo1 = Math.round(((mainSourcePercent + 9) / 100) * totalSurveyed);
-    const wrongCombo2 = Math.round(((combinedPercent - 2) / 100) * totalSurveyed);
-    const wrongCombo3 = Math.round(((combinedPercent + 1) / 100) * totalSurveyed);
+    // Distractor percentages, all provably distinct from each other and from
+    // combinedPct across the declared ranges (internet >= 10 forces every gap
+    // to be at least 1 percentage point).
+    const doctorOnlyPct = doctorPct;                          // forgot to add Internet
+    const doctorMagsPct = doctorPct + magazinesPct;           // wrong pair (doctor OR magazines)
+    const threeSourcePct = doctorPct + internetPct + magazinesPct; // added an extra source
+
+    const doctorOnly = Math.round((doctorOnlyPct / 100) * totalSurveyed);
+    const doctorMags = Math.round((doctorMagsPct / 100) * totalSurveyed);
+    const threeSource = Math.round((threeSourcePct / 100) * totalSurveyed);
 
     const optionsData = [
-      { text: `${wrongCombo1}`, isCorrect: false, reason: "is about ${mainSourcePercent + 9}% (the percent from a doctor or magazines/brochures), not ${combinedPercent}%, of ${totalSurveyed}" },
-      { text: `${wrongCombo2}`, isCorrect: false, reason: "is about ${combinedPercent - 2}%, not ${combinedPercent}%, of ${totalSurveyed}" },
+      { text: `${doctorOnly}`, isCorrect: false, reason: `is ${doctorOnlyPct}% of ${totalSurveyed} (only the doctor group), not ${combinedPct}%` },
+      { text: `${doctorMags}`, isCorrect: false, reason: `is ${doctorMagsPct}% of ${totalSurveyed} (doctor or magazines/brochures), not doctor or the Internet` },
       { text: `${result}`, isCorrect: true },
-      { text: `${wrongCombo3}`, isCorrect: false, reason: "is about ${combinedPercent + 1}%, not ${combinedPercent}%, of ${totalSurveyed}" }
+      { text: `${threeSource}`, isCorrect: false, reason: `is ${threeSourcePct}% of ${totalSurveyed} (doctor, Internet, and magazines/brochures), one source too many` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -71,7 +96,7 @@ export const generator_439 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. According to the table, ${mainSourcePercent}% of survey respondents get most of their medical information from a doctor and ${secondarySourcePercent}% get most of their medical information from the Internet. Therefore, ${combinedPercent}% of the ${totalSurveyed} survey respondents get their information from either a doctor or the Internet, and ${combinedPercent}% of ${totalSurveyed} is ${result}. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. According to the table, ${doctorPct}% of survey respondents get most of their medical information from a doctor and ${internetPct}% get most of their medical information from the Internet. Together that is ${doctorPct}% + ${internetPct}% = ${combinedPct}% of the ${totalSurveyed} respondents, and ${combinedPct}% of ${totalSurveyed} is ${result}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

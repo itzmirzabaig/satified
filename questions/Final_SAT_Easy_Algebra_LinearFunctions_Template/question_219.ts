@@ -53,7 +53,7 @@ export const generator_219 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. The slope is $\\frac{${3 * slope + intercept} - ${slope + intercept}}{3 - 1} = ${slope}$. Using point $(1, ${slope + intercept})$: ${slope + intercept} = ${slope}(1) + b$, so $b = ${intercept}$. Thus $f(x) = ${slope}x + ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The slope is $m = \\frac{${3 * slope + intercept} - ${slope + intercept}}{3 - 1} = ${slope}$. Since $f(1) = ${slope + intercept}$, we have $m(1) + b = ${slope + intercept}$, so $b = ${slope + intercept} - ${slope} = ${intercept}$. Thus $f(x) = ${slope}x + ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -23,16 +23,39 @@ export const generator_473 = {
   },
 
   generate: (): QuestionData => {
-    const gasAndBev = getRandomInt(40, 80);
-    const gasAndNoBev = getRandomInt(15, 40);
-    const noGasAndBev = getRandomInt(25, 50);
-    const noGasAndNoBev = getRandomInt(10, 25);
+    // Draw the four table cells, then keep only draws whose four answer-choice
+    // VALUES are pairwise distinct. Collisions are possible because, e.g.,
+    // A = e/(c+e) equals B = e/(b+e) whenever gasAndNoBev === noGasAndBev, and
+    // a few rarer arithmetic coincidences (e^2 = b*c, etc.). A bounded redraw
+    // converges in a handful of tries and guarantees no duplicate options.
+    let gasAndBev = 0, gasAndNoBev = 0, noGasAndBev = 0, noGasAndNoBev = 0;
+    let totalGas = 0, totalNoGas = 0, totalBev = 0, totalNoBev = 0, totalCustomers = 0;
+    for (let tries = 0; tries < 50; tries++) {
+      gasAndBev = getRandomInt(40, 80);
+      gasAndNoBev = getRandomInt(15, 40);
+      noGasAndBev = getRandomInt(25, 50);
+      noGasAndNoBev = getRandomInt(10, 25);
 
-    const totalGas = gasAndBev + gasAndNoBev;
-    const totalNoGas = noGasAndBev + noGasAndNoBev;
-    const totalBev = gasAndBev + noGasAndBev;
-    const totalNoBev = gasAndNoBev + noGasAndNoBev;
-    const totalCustomers = totalGas + totalNoGas;
+      totalGas = gasAndBev + gasAndNoBev;
+      totalNoGas = noGasAndBev + noGasAndNoBev;
+      totalBev = gasAndBev + noGasAndBev;
+      totalNoBev = gasAndNoBev + noGasAndNoBev;
+      totalCustomers = totalGas + totalNoGas;
+
+      const vals = [
+        noGasAndNoBev / totalNoGas,      // A: P(no beverage | no gas)
+        noGasAndNoBev / totalNoBev,      // B: P(no gas | no beverage)
+        noGasAndBev / totalNoGas,        // C: P(beverage | no gas)
+        totalNoGas / totalCustomers,     // D: correct — P(no gas)
+      ];
+      let distinct = true;
+      for (let i = 0; i < vals.length && distinct; i++) {
+        for (let j = i + 1; j < vals.length; j++) {
+          if (Math.abs(vals[i] - vals[j]) < 1e-9) { distinct = false; break; }
+        }
+      }
+      if (distinct) break;
+    }
 
     const tableCode = `<table><thead><tr><th></th><th>Beverage purchased</th><th>Beverage not purchased</th><th>Total</th></tr></thead><tbody><tr><td>Gasoline purchased</td><td>${gasAndBev}</td><td>${gasAndNoBev}</td><td>${totalGas}</td></tr><tr><td>Gasoline not purchased</td><td>${noGasAndBev}</td><td>${noGasAndNoBev}</td><td>${totalNoGas}</td></tr><tr><td>Total</td><td>${totalBev}</td><td>${totalNoBev}</td><td>${totalCustomers}</td></tr></tbody></table>`;
 

@@ -20,9 +20,22 @@ export const generator_420 = {
 
   generate: (): QuestionData => {
     // 1. Generate Data
-    const val1 = getRandomInt(25, 40);
-    const val2 = getRandomInt(40, 55);
-    const val3 = getRandomInt(50, 65);
+    // The four answer options are val1 (correct), val2, val3, and the misread
+    // val1 + 10. Because the value ranges overlap (and val1 + 10 can land on
+    // val2/val3), draw until all four option values are distinct — bounded so
+    // an unlucky range can never hang the render.
+    let val1 = getRandomInt(25, 40);
+    let val2 = getRandomInt(40, 55);
+    let val3 = getRandomInt(50, 65);
+    let tries = 0;
+    while (
+      new Set([val1, val2, val3, val1 + 10]).size !== 4 &&
+      tries++ < 50
+    ) {
+      val1 = getRandomInt(25, 40);
+      val2 = getRandomInt(40, 55);
+      val3 = getRandomInt(50, 65);
+    }
 
     const data = [
       { label: "Group 1", val: val1 },

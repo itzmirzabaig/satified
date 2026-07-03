@@ -32,10 +32,10 @@ export const generator_450 = {
     const distractorD = roundedBase * 4;
 
     const optionsData = [
-      { text: `${distractorA}`, isCorrect: false, reason: "this is 10%, not 20%, of ${roundedBase}" },
-      { text: `${result}`, isCorrect: true },
-      { text: `${distractorC}`, isCorrect: false, reason: "this is 200%, not 20%, of ${roundedBase}" },
-      { text: `${distractorD}`, isCorrect: false, reason: "this is 400%, not 20%, of ${roundedBase}" }
+      { text: `${distractorA}`, isCorrect: false, reason: `this is 10%, not 20%, of ${roundedBase}` },
+      { text: `${result}`, isCorrect: true, reason: "" },
+      { text: `${distractorC}`, isCorrect: false, reason: `this is 200%, not 20%, of ${roundedBase}` },
+      { text: `${distractorD}`, isCorrect: false, reason: `this is 400%, not 20%, of ${roundedBase}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

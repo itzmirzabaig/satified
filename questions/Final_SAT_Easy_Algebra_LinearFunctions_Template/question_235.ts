@@ -11,6 +11,11 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [None]
  * - Question type: [Interpretation→Multiple Choice Text]
  * - Figure generation: null
+ *
+ * FIXED:
+ * - Removed the personal name; use generic role "a driver" + pronoun "they".
+ * - Distractors are four distinct interpretation sentences (rate / trips /
+ *   distance / time), so no two options can ever collide for any draw.
  */
 
 export const generator_235 = {
@@ -25,15 +30,13 @@ export const generator_235 = {
   generate: (): QuestionData => {
     const speed = getRandomInt(40, 60);
 
-    const time = getRandomInt(2, 4);
-
-    const correctInterpretation = `Marisol drove at an average speed of about ${speed} miles per hour.`;
+    const correctInterpretation = `The driver traveled at an average speed of about ${speed} miles per hour.`;
 
     const optionsData = [
-      { text: `Marisol took ${speed} trips from City A to City B.`, isCorrect: false, reason: "confuses the rate with a count of trips" },
+      { text: `The driver took ${speed} trips from City A to City B.`, isCorrect: false, reason: "confuses the rate with a count of trips" },
       { text: `The distance between City A and City B is ${speed} miles.`, isCorrect: false, reason: "confuses the rate with the total distance" },
       { text: correctInterpretation, isCorrect: true },
-      { text: `It took Marisol ${speed} hours to drive from City A to City B.`, isCorrect: false, reason: "confuses the rate with the time" }
+      { text: `It took the driver ${speed} hours to drive from City A to City B.`, isCorrect: false, reason: "confuses the rate with the time" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -46,7 +49,7 @@ export const generator_235 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `Marisol drove ${time} hours from City A to City B. The equation below estimates the distance $d$, in miles, Marisol traveled after driving for $t$ hours. $d = ${speed}t$. Which of the following does ${speed} represent in the equation?`,
+      questionText: `A driver traveled from City A to City B. The equation below estimates the distance $d$, in miles, they traveled after driving for $t$ hours. $d = ${speed}t$. Which of the following does ${speed} represent in the equation?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctInterpretation,

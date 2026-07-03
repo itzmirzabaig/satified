@@ -23,17 +23,51 @@ export const generator_285 = {
   },
 
   generate: (): QuestionData => {
-    const maxPerimeter = getRandomInt(20, 40);
-    const length = getRandomInt(6, 12);
-    const width = getRandomInt(2, 6);
-    const actualPerimeter = 2 * length + 2 * width;
-    const isValid = actualPerimeter <= maxPerimeter;
+    // Draw dimensions and a perimeter bound. Perimeter is symmetric in
+    // (length, width), so distractors are built from the CONCLUSION and the
+    // quantity being compared, not from swapping the two dimensions.
+    let length = getRandomInt(6, 12);
+    let width = getRandomInt(2, 6);
+    let maxPerimeter = getRandomInt(20, 40);
+    let actualPerimeter = 2 * length + 2 * width;
+
+    // Guard: perimeter must not equal the bound, so the "perimeter equals the
+    // bound" distractor is always false. Bounded retry, then deterministic nudge.
+    let tries = 0;
+    while (actualPerimeter === maxPerimeter && tries++ < 50) {
+      length = getRandomInt(6, 12);
+      width = getRandomInt(2, 6);
+      maxPerimeter = getRandomInt(20, 40);
+      actualPerimeter = 2 * length + 2 * width;
+    }
+    if (actualPerimeter === maxPerimeter) {
+      maxPerimeter = actualPerimeter + 1; // stays within a sensible range
+    }
+
+    const satisfies = actualPerimeter <= maxPerimeter;
+    const satisfiesPhrase = satisfies ? 'satisfies' : 'does not satisfy';
+    const notSatisfiesPhrase = satisfies ? 'does not satisfy' : 'satisfies';
 
     const optionsData = [
-      { text: `If the rectangle has length ${width} and width ${length}, its perimeter is ${isValid ? 'less than or equal to' : 'greater than'} ${maxPerimeter}.`, isCorrect: false },
-      { text: `If the rectangle has length ${length} and width ${width}, its perimeter is ${isValid ? 'less than or equal to' : 'greater than'} ${maxPerimeter}.`, isCorrect: true },
-      { text: `If the rectangle has length ${width} and width ${length}, its perimeter is ${!isValid ? 'less than or equal to' : 'greater than or equal to'} ${maxPerimeter}.`, isCorrect: false },
-      { text: `If the rectangle has length ${length} and width ${width}, its perimeter is ${!isValid ? 'less than or equal to' : 'greater than or equal to'} ${maxPerimeter}.`, isCorrect: false }
+      {
+        text: `A rectangle with length ${length} and width ${width} has a perimeter of ${actualPerimeter}, so the pair ${satisfiesPhrase} the inequality.`,
+        isCorrect: true
+      },
+      {
+        text: `A rectangle with length ${length} and width ${width} has a perimeter of ${actualPerimeter}, so the pair ${notSatisfiesPhrase} the inequality.`,
+        isCorrect: false,
+        reason: "reaches the opposite conclusion about whether the pair satisfies the inequality"
+      },
+      {
+        text: `The ordered pair means the perimeter of the rectangle is exactly ${maxPerimeter}.`,
+        isCorrect: false,
+        reason: `treats ${maxPerimeter} as the exact perimeter rather than an upper bound`
+      },
+      {
+        text: `The ordered pair means the sum of the length and width must be at most ${maxPerimeter}.`,
+        isCorrect: false,
+        reason: "drops the factor of 2, comparing the length plus width to the bound instead of the full perimeter"
+      }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -43,11 +77,12 @@ export const generator_285 = {
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Substituting length = ${length} and width = ${width} into $2\\ell + 2w \\leq ${maxPerimeter}$ gives $2(${length}) + 2(${width}) = ${actualPerimeter} \\leq ${maxPerimeter}$, which is ${isValid ? 'true' : 'false'}.`;
+    const explanation = `Choice ${correctLetter} is correct. Substituting length $\\ell = ${length}$ and width $w = ${width}$ into $2\\ell + 2w$ gives $2(${length}) + 2(${width}) = ${actualPerimeter}$. Since $${actualPerimeter} ${satisfies ? '\\leq' : '>'} ${maxPerimeter}$, the pair ${satisfiesPhrase} the inequality $2\\ell + 2w \\leq ${maxPerimeter}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `A rectangle has length $\\ell$ and width $w$. The inequality $2\\ell+2w \\leq ${maxPerimeter}$ gives the possible values of $\\ell$ and $w$ for which the perimeter of this rectangle is less than or equal to ${maxPerimeter}. Which statement is the best interpretation of $(\\ell, w)=(${length},${width})$ in this context?`,
+      questionText: `A rectangle has length $\\ell$ and width $w$. The inequality $2\\ell + 2w \\leq ${maxPerimeter}$ gives the values of $\\ell$ and $w$ for which the perimeter of the rectangle is at most ${maxPerimeter}. Which statement is the best interpretation of $(\\ell, w) = (${length}, ${width})$ in this context?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,

@@ -44,10 +44,10 @@ export const generator_305 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The teacher orders at least ${minItems} items ($x+y \\ge ${minItems}$) and spends at most $${maxCost} ($${workbookCost}x+${flashcardCost}y \\le ${maxCost}$). Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The teacher orders at least ${minItems} items ($x+y \\ge ${minItems}$) and spends at most \\$${maxCost} ($\\,${workbookCost}x+${flashcardCost}y \\le ${maxCost}$). Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `An elementary school teacher is ordering $x$ workbooks and $y$ sets of flash cards for a math class. The teacher must order at least ${minItems} items, but the total cost of the order must not be over ${maxCost}. If the workbooks cost ${workbookCost} each and the flash cards cost ${flashcardCost} per set, which of the following systems of inequalities models this situation?`,
+      questionText: `An elementary school teacher is ordering $x$ workbooks and $y$ sets of flash cards for a math class. The teacher must order at least ${minItems} items, but the total cost of the order must not be over \\$${maxCost}. If the workbooks cost \\$${workbookCost} each and the flash cards cost \\$${flashcardCost} per set, which of the following systems of inequalities models this situation?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,

@@ -23,9 +23,19 @@ export const generator_326 = {
   },
 
   generate: (): QuestionData => {
-    const sideX = getRandomInt(6, 10);
-    const sideY = getRandomInt(5, 9);
-    const sideZ = getRandomInt(4, 8);
+    // Draw three side lengths, forcing them pairwise-distinct so the
+    // distractors (which repeat x, y, or z) can never collide with the
+    // correct answer or one another. x+y is always >= 11 while every single
+    // side is <= 10, so that fourth option is automatically distinct too.
+    let sideX = getRandomInt(6, 10);
+    let sideY = getRandomInt(5, 9);
+    let sideZ = getRandomInt(4, 8);
+    let tries = 0;
+    while ((sideX === sideY || sideX === sideZ || sideY === sideZ) && tries++ < 50) {
+      sideX = getRandomInt(6, 10);
+      sideY = getRandomInt(5, 9);
+      sideZ = getRandomInt(4, 8);
+    }
     const perimeter = sideX + sideY + sideZ;
 
     // Triangle vertices: origin, base-right, apex.
@@ -45,7 +55,7 @@ export const generator_326 = {
       { text: sideZ.toString(), isCorrect: true },
       { text: sideY.toString(), isCorrect: false, reason: "repeats side y" },
       { text: sideX.toString(), isCorrect: false, reason: "repeats side x" },
-      { text: (sideX + sideY).toString(), isCorrect: false, reason: "adds x and y instead of subtracting from perimeter" }
+      { text: (sideX + sideY).toString(), isCorrect: false, reason: "adds x and y instead of subtracting them from the perimeter" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -57,11 +67,11 @@ export const generator_326 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `The triangle shown has a perimeter of $${perimeter}$ units. If $x = ${sideX}$ units and $y = ${sideY}$ units, what is the value of $z$, in units?`,
+      questionText: `The triangle shown has a perimeter of $P = ${perimeter}$ units. If $x = ${sideX}$ units and $y = ${sideY}$ units, what is the value of $z$, in units?`,
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: sideZ.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The perimeter is the sum of all sides, so $z = ${perimeter} - ${sideX} - ${sideY} = ${sideZ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The perimeter is the sum of all three sides, so $z = ${perimeter} - ${sideX} - ${sideY} = ${sideZ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

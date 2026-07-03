@@ -25,7 +25,13 @@ export const generator_222 = {
   generate: (): QuestionData => {
     const slope = getRandomInt(2, 8);
 
-    const xValue = getRandomInt(3, 10);
+    // xValue must differ from slope so the "slope-as-b" and "input-as-b"
+    // distractors never collide (both lie in the overlapping range 3-8).
+    let xValue = getRandomInt(3, 10);
+    let tries = 0;
+    while (xValue === slope && tries++ < 50) {
+      xValue = getRandomInt(3, 10);
+    }
 
     const targetValue = slope * xValue;
 

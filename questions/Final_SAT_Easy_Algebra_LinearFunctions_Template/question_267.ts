@@ -58,7 +58,7 @@ export const generator_267 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. When $x=0$, $f(x)=${intercept}$, so $b=${intercept}$. When $x=1$, $f(x)=${slope + intercept}$, so the slope is ${slope + intercept} - ${intercept} = ${slope}$. Thus $f(x) = ${slope}x + ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. When $x=0$, $f(x)=${intercept}$, so $b=${intercept}$. When $x=1$, $f(x)=${slope + intercept}$, so the slope is $f(1)-f(0)=${slope + intercept} - ${intercept} = ${slope}$. Thus $f(x) = ${slope}x + ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

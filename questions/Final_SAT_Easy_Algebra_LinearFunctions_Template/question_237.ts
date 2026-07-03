@@ -11,6 +11,11 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [None]
  * - Question type: [Function evaluation→Multiple Choice Text]
  * - Figure generation: [Plot.OfX]
+ *
+ * FIXED:
+ * - Bounded retry guarantees all four option values are distinct. Latent
+ *   collision: distractor1 (slope*x) could equal distractor2 (slope+intercept+x)
+ *   — e.g. slope=10, x=3, intercept=17 gives both = 30. Re-draw until distinct.
  */
 
 export const generator_237 = {
@@ -23,11 +28,26 @@ export const generator_237 = {
   },
 
   generate: (): QuestionData => {
-    const slope = getRandomInt(10, 50);
+    let slope = getRandomInt(10, 50);
+    let intercept = getRandomInt(10, 50);
+    let xValue = getRandomInt(2, 5);
 
-    const intercept = getRandomInt(10, 50);
-
-    const xValue = getRandomInt(2, 5);
+    // Guarantee the four displayed values are all distinct. distractor1 and
+    // distractor2 can collide (slope*x === slope+intercept+x for some draws),
+    // so re-draw until every value differs. Bounded to avoid any hang.
+    let tries = 0;
+    while (tries++ < 50) {
+      const values = [
+        slope * xValue + intercept,       // correct
+        slope * xValue,                   // distractor1
+        slope + intercept + xValue,       // distractor2
+        slope * xValue + intercept * 2,   // distractor3
+      ];
+      if (new Set(values).size === 4) break;
+      slope = getRandomInt(10, 50);
+      intercept = getRandomInt(10, 50);
+      xValue = getRandomInt(2, 5);
+    }
 
     const correctValue = slope * xValue + intercept;
 

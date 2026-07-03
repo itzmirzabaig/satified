@@ -33,7 +33,7 @@ export const generator_214 = {
       figureCode: null,
       options: null,
       correctAnswer: answer.toString(),
-      explanation: `Setting $f(x) = ${result}$ gives ${coefficient}x = ${result}$. Dividing both sides by ${coefficient} yields $x = ${answer}$.`
+      explanation: `Setting $f(x) = ${result}$ gives $${coefficient}x = ${result}$. Dividing both sides by ${coefficient} yields $x = ${answer}$.`
     };
   }
 };

@@ -23,19 +23,25 @@ export const generator_440 = {
   },
 
   generate: (): QuestionData => {
+    // roundedBase is a multiple of 10 in [200, 900], so 10% is a clean integer.
     const base = getRandomInt(200, 900);
     const roundedBase = Math.floor(base / 10) * 10;
-    const result = roundedBase / 10;
+    const result = roundedBase / 10; // 10% of roundedBase, integer in [20, 90]
 
+    // Distractors are all distinct from the answer and from each other for every
+    // draw in this range:
+    //   A = 10% of (roundedBase - 100)  (uses the wrong base)
+    //   C = roundedBase - result        (90% of roundedBase)
+    //   D = roundedBase - 10            (subtracts 10 instead of taking 10%)
     const distractorA = (roundedBase - 100) / 10;
     const distractorC = roundedBase - result;
     const distractorD = roundedBase - 10;
 
     const optionsData = [
-      { text: `${distractorA}`, isCorrect: false, reason: "this is 10% of ${roundedBase - 100}, not 10% of ${roundedBase}" },
+      { text: `${distractorA}`, isCorrect: false, reason: `is 10% of ${roundedBase - 100}, not 10% of ${roundedBase}` },
       { text: `${result}`, isCorrect: true },
-      { text: `${distractorC}`, isCorrect: false, reason: "this is 90% of ${roundedBase}, not 10% of ${roundedBase}" },
-      { text: `${distractorD}`, isCorrect: false, reason: "this is ${roundedBase} - 10, not 10% of ${roundedBase}" }
+      { text: `${distractorC}`, isCorrect: false, reason: `is 90% of ${roundedBase}, not 10% of ${roundedBase}` },
+      { text: `${distractorD}`, isCorrect: false, reason: `is ${roundedBase} minus 10, not 10% of ${roundedBase}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,11 +53,11 @@ export const generator_440 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `What is 10% of ${roundedBase}?`,
+      questionText: `What is 10% of $${roundedBase}$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. 10% of a quantity means $\\frac{10}{100}$ times the quantity. Therefore, 10% of ${roundedBase} can be represented as $\\frac{10}{100}(${roundedBase})$, which is equivalent to 0.10(${roundedBase}), or ${result}. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Taking 10% of a quantity means multiplying it by $\\frac{10}{100}$. Therefore, 10% of ${roundedBase} is $\\frac{10}{100} \\times ${roundedBase} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

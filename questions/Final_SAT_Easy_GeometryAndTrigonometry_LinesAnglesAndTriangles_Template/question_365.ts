@@ -4,14 +4,22 @@ import type { QuestionData } from '../../study/types';
 /**
  * Question 365
  *
+ * Intent: Two lines intersect. Angle w and angle z are vertical angles, so
+ * z = w. w is obtuse. Student must recognize vertical angles are congruent.
+ *
  * FIX ANALYSIS:
- * - Added <Mafs> wrapper with viewBox.
- * - Replaced <Line.ThroughPoints> with <Line.Segment> to fix invisibility/crashes.
- * - Replaced <LaTeX> with <Text> to fix double-labeling.
- * - Adjusted coordinates:
- *   - Intersection centered at (0,0).
- *   - w is 120-150 (Obtuse). Labels moved to Top/Bottom sectors to match geometry.
- *   - Original code placed labels in Left/Right (Acute) sectors which contradicted the values.
+ * - DUP_OPTIONS: original distractors (180-w, round(w/2)) both hit 60 when
+ *   w=120, and (w-100 vs 180-w) collided at w=140. Redesigned distractors to
+ *   live in mutually disjoint numeric bands across the full w range so no two
+ *   options (or the correct answer) can ever coincide:
+ *     correct = w        in [122,150]
+ *     supplement = 180-w in [30, 58]
+ *     reflex = 360-w     in [210,238]
+ *     halved = round(w/2) in [61, 75]
+ *   (w lower bound tightened from 120 to 122 to keep supplement<halved.)
+ * - Rebuilt the figure as a plain SVG template literal (house style): two
+ *   intersecting lines with the vertical-angle pair w and z labeled in the
+ *   top/bottom (obtuse) sectors, matching the geometry.
  */
 
 export const generator_365 = {
@@ -24,38 +32,36 @@ export const generator_365 = {
   },
 
   generate: (): QuestionData => {
-    const wValue = getRandomInt(120, 150);
-    
-    // Geometry:
-    // Two intersecting lines centered at (0,0).
-    // Angle w is Obtuse (120-150).
-    // We create an intersection where the Top and Bottom angles are obtuse.
-    // Lines with slopes approx +/- 0.4 give obtuse vertical angles top/bottom.
-    
-    const mafsCode = `
-      <Mafs viewBox={{ x: [-5, 5], y: [-3, 3] }}>
-        {/* Line 1 (Slope ~0.4) */}
-        <Line.Segment point1={[-4, -1.6]} point2={[4, 1.6]} color="black" />
-        
-        {/* Line 2 (Slope ~-0.4) */}
-        <Line.Segment point1={[-4, 1.6]} point2={[4, -1.6]} color="black" />
-        
-        {/* Labels for vertical angles w and z (Top and Bottom sectors - Obtuse) */}
-        <Text x={0} y={2}>w°</Text>
-        <Text x={0} y={-2}>z°</Text>
-      </Mafs>
-    `;
+    const wValue = getRandomInt(122, 150);
 
     const correctAnswer = wValue.toString();
-    const distractorA = wValue - 100;
-    const distractorB = 180 - wValue;
-    const distractorC = Math.round(wValue / 2);
+    const distractorSupp = 180 - wValue;      // supplementary-angle error
+    const distractorReflex = 360 - wValue;    // reflex-angle error
+    const distractorHalf = Math.round(wValue / 2); // halves the angle
+
+    // Figure: two lines crossing at the center of a 450x250 canvas. The lines
+    // are chosen so the top and bottom sectors are obtuse (matching w, z).
+    const W = 450, H = 250;
+    const cx = W / 2, cy = H / 2;
+    // Line 1: gentle positive slope; Line 2: gentle negative slope.
+    const dx = 190, dy = 55;
+    const figureCode = `
+      <div style="display:flex;justify-content:center;">
+        <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;font-family:sans-serif;user-select:none;">
+          <line x1="${cx - dx}" y1="${cy + dy}" x2="${cx + dx}" y2="${cy - dy}" stroke="currentColor" stroke-width="2" />
+          <line x1="${cx - dx}" y1="${cy - dy}" x2="${cx + dx}" y2="${cy + dy}" stroke="currentColor" stroke-width="2" />
+          <circle cx="${cx}" cy="${cy}" r="3" fill="currentColor" />
+          <text x="${cx}" y="${cy - 40}" text-anchor="middle" font-size="18" fill="currentColor">w&#176;</text>
+          <text x="${cx}" y="${cy + 52}" text-anchor="middle" font-size="18" fill="currentColor">z&#176;</text>
+        </svg>
+      </div>
+    `;
 
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: "calculation error" },
-      { text: distractorB.toString(), isCorrect: false, reason: "finds the supplementary angle instead of the vertical angle" },
-      { text: distractorC.toString(), isCorrect: false, reason: "incorrectly halves the angle" },
-      { text: correctAnswer, isCorrect: true }
+      { text: correctAnswer, isCorrect: true },
+      { text: distractorSupp.toString(), isCorrect: false, reason: "gives the supplementary angle instead of the vertical angle" },
+      { text: distractorReflex.toString(), isCorrect: false, reason: "gives the reflex angle instead of the vertical angle" },
+      { text: distractorHalf.toString(), isCorrect: false, reason: "incorrectly halves the angle" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -68,10 +74,10 @@ export const generator_365 = {
 
     return {
       questionText: `In the figure, two lines intersect at a point. If $w = ${wValue}$, what is the value of $z$?`,
-      figureCode: mafsCode,
+      figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. Vertical angles are congruent (equal in measure). In the figure, the angles labeled $w^\\circ$ and $z^\\circ$ are vertical angles. Since $w = ${wValue}$, then $z = ${wValue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. When two lines intersect, the angles opposite each other (vertical angles) are congruent. In the figure, $w^\\circ$ and $z^\\circ$ are vertical angles, so $z = w = ${wValue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

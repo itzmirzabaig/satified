@@ -27,13 +27,13 @@ export const generator_227 = {
 
     const initial = getRandomInt(90, 120);
 
-    const optionA = `With each monthly deposit, the amount in Hana's bank account increased by $${deposit}.`;
+    const optionA = `With each monthly deposit, the amount in the student's bank account increased by \\$${deposit}.`;
 
     const optionsData = [
       { text: optionA, isCorrect: true },
-      { text: `Before Hana made any monthly deposits, the amount in her bank account was $${deposit}.`, isCorrect: false, reason: "confuses the deposit amount with the initial amount" },
-      { text: `After 1 monthly deposit, the amount in Hana's bank account was $${deposit}.`, isCorrect: false, reason: "confuses the deposit amount with the total after one deposit" },
-      { text: `Hana made a total of $${deposit} monthly deposits.`, isCorrect: false, reason: "confuses the deposit amount with a count of deposits" }
+      { text: `Before the student made any monthly deposits, the amount in the account was \\$${deposit}.`, isCorrect: false, reason: "confuses the deposit amount with the initial amount" },
+      { text: `After 1 monthly deposit, the amount in the student's bank account was \\$${deposit}.`, isCorrect: false, reason: "confuses the deposit amount with the total after one deposit" },
+      { text: `The student made a total of ${deposit} monthly deposits.`, isCorrect: false, reason: "confuses the deposit amount with a count of deposits" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -46,11 +46,11 @@ export const generator_227 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `Hana deposited a fixed amount into her bank account each month. The function $f(t) = ${initial} + ${deposit}t$ gives the amount, in dollars, in Hana's bank account after $t$ monthly deposits. What is the best interpretation of $${deposit}$ in this context?`,
+      questionText: `A student deposited a fixed amount into a bank account each month. The function $f(t) = ${initial} + ${deposit}t$ gives the amount, in dollars, in the account after $t$ monthly deposits. What is the best interpretation of the coefficient ${deposit} of $t$ in this context?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: optionA,
-      explanation: `Choice ${correctOption.letter} is correct. In $f(t) = ${initial} + ${deposit}t$, the coefficient ${deposit} represents the rate of change—the amount added each month. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In $f(t) = ${initial} + ${deposit}t$, the coefficient ${deposit} of $t$ represents the rate of change—the amount added to the account with each monthly deposit. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

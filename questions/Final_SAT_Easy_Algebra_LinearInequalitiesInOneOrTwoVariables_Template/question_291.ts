@@ -7,10 +7,19 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [distance: 24, speed: 4]
  * - Difficulty factors: [Distance-rate-time formula, division]
- * - Distractor patterns: [A=speed value, B=correct time, C=distance-speed, D=distance value]
+ * - Distractor patterns: [A=speed value, B=distance-speed, C=distance value, D=correct time]
  * - Constraints: [Time must be distance/speed]
  * - Question type: [Word Problem→Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * FIXED:
+ * - Removed personal name ("Ty"); now a generic "hiker" with consistent "they".
+ * - Guaranteed distance is an exact multiple of speed, so time = distance/speed
+ *   is always a whole number (no float artifacts).
+ * - Guarded the only possible collision (speed == time) so the four options are
+ *   always distinct -> fixes DUP_OPTIONS and the resulting LETTER_MISMATCH.
+ * - Explanation reads the correct letter from the shuffled array and explains
+ *   each distractor from the same live variables.
  */
 
 export const generator_291 = {
@@ -24,17 +33,26 @@ export const generator_291 = {
 
   generate: (): QuestionData => {
     const speed = getRandomInt(3, 8);
-    const time = getRandomInt(4, 10);
-    const distance = speed * time;
-    const distractor1 = speed;
-    const distractor2 = distance - speed;
-    const distractor3 = distance;
+    // time must differ from speed so the "speed" distractor cannot equal the
+    // correct answer (the only collision possible in these ranges).
+    let time = getRandomInt(4, 10);
+    let guard = 0;
+    while (time === speed && guard++ < 50) {
+      time = getRandomInt(4, 10);
+    }
+    if (time === speed) time = speed === 10 ? 4 : speed + 1; // bounded fallback
+
+    const distance = speed * time; // exact multiple -> integer hours
+
+    const distractorSpeed = speed;            // confuses rate with time
+    const distractorSub = distance - speed;   // subtracts instead of divides
+    const distractorDistance = distance;      // reports the distance itself
 
     const optionsData = [
-      { text: `${distractor1}`, isCorrect: false },
       { text: `${time}`, isCorrect: true },
-      { text: `${distractor2}`, isCorrect: false },
-      { text: `${distractor3}`, isCorrect: false }
+      { text: `${distractorSpeed}`, isCorrect: false },
+      { text: `${distractorSub}`, isCorrect: false },
+      { text: `${distractorDistance}`, isCorrect: false }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -45,10 +63,10 @@ export const generator_291 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
 
-    const explanation = `Choice ${correctLetter} is correct. Using the formula $Time = \\frac{Distance}{Rate}$, Ty needs to walk $\\frac{${distance}}{${speed}} = ${time}$ hours to reach his goal of ${distance} kilometers.`;
+    const explanation = `Choice ${correctLetter} is correct. The time needed is the distance divided by the average speed: $\\text{time} = \\frac{\\text{distance}}{\\text{speed}} = \\frac{${distance}}{${speed}} = ${time}$ hours. The value $${distractorSpeed}$ is the average speed in kilometers per hour, not the time. The value $${distractorSub}$ comes from subtracting the speed from the distance instead of dividing. The value $${distractorDistance}$ is the total distance in kilometers, not a number of hours.`;
 
     return {
-      questionText: `Ty set a goal to walk at least ${distance} kilometers every day to prepare for a multiday hike. On a certain day, Ty plans to walk at an average speed of ${speed} kilometers per hour. What is the minimum number of hours Ty must walk on that day to fulfill the daily goal?`,
+      questionText: `A hiker set a goal to walk at least ${distance} kilometers in one day while preparing for a multiday trek. On that day, the hiker walks at an average speed of ${speed} kilometers per hour. What is the minimum number of hours the hiker must walk that day to meet the goal?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,

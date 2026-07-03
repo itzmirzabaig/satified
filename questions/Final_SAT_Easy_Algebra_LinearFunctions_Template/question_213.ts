@@ -33,7 +33,7 @@ export const generator_213 = {
       figureCode: null,
       options: null,
       correctAnswer: answer.toString(),
-      explanation: `Substituting ${result} for $g(x)$ in the given function yields ${result} = ${coefficient}x$. Dividing both sides of this equation by ${coefficient} yields $x = ${answer}$.`
+      explanation: `Substituting ${result} for $g(x)$ in the given function yields $${result} = ${coefficient}x$. Dividing both sides of this equation by ${coefficient} yields $x = ${answer}$.`
     };
   }
 };

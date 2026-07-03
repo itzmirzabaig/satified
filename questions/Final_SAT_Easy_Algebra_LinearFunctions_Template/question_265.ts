@@ -27,7 +27,12 @@ export const generator_265 = {
 
     const intercept = getRandomInt(5, 10);
 
-    const xValue = getRandomInt(6, 10);
+    // xValue and slope both act as distractors, so keep them distinct to avoid
+    // duplicate options (their ranges overlap on 8-10). Bounded retry.
+    let xValue = getRandomInt(6, 10);
+    for (let tries = 0; xValue === slope && tries < 50; tries++) {
+      xValue = getRandomInt(6, 10);
+    }
 
     const result = slope * xValue + intercept;
 

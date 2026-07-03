@@ -35,12 +35,14 @@ export const generator_184 = {
 
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
 
+    const correctText = shuffledOptions.find(o => o.isCorrect)!.text;
+
     return {
-      questionText: `The equation $x+y=${total}$ relates minutes Maria spends ${activity1} ($x$) and ${activity2} ($y$) daily. What does ${total} represent?`,
+      questionText: `A student tracks their daily exercise. The equation $x+y=${total}$ relates the minutes they spend ${activity1} ($x$) and ${activity2} ($y$) each day. In this context, what does ${total} represent?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: shuffledOptions.find(o => o.isCorrect)!.text,
-      explanation: `Choice ${correctLetter} is correct. ${total} is the sum of both activities.`
+      correctAnswer: correctText,
+      explanation: `Choice ${correctLetter} is correct. In the equation $x+y=${total}$, the variable $x$ is the minutes spent ${activity1} and $y$ is the minutes spent ${activity2}, so their sum ${total} is the total number of minutes spent ${activity1} and ${activity2} each day.`
     };
   }
 };

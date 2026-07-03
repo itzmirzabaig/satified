@@ -31,10 +31,10 @@ export const generator_452 = {
     const distractorA = adjustedPercentage;
 
     const optionsData = [
-      { text: `$${distractorA}h$`, isCorrect: false, reason: "this represents ${adjustedPercentage} times the height, or ${adjustedPercentage * 100}% of the height" },
-      { text: `$${distractorB}h$`, isCorrect: false, reason: "this represents ${(adjustedPercentage/10).toFixed(1)}% of the height; the decimal point is shifted too far" },
-      { text: `$${distractorC}h$`, isCorrect: false, reason: "this represents ${adjustedPercentage * 10}% of the height; the decimal point is shifted incorrectly" },
-      { text: `$${correctDecimal}h$`, isCorrect: true }
+      { text: `$${distractorA}h$`, isCorrect: false, reason: `this represents ${adjustedPercentage} times the height, or ${adjustedPercentage * 100}% of the height` },
+      { text: `$${distractorB}h$`, isCorrect: false, reason: `this represents ${(adjustedPercentage / 10).toFixed(1)}% of the height; the decimal point is shifted too far` },
+      { text: `$${distractorC}h$`, isCorrect: false, reason: `this represents ${adjustedPercentage * 10}% of the height; the decimal point is shifted incorrectly` },
+      { text: `$${correctDecimal}h$`, isCorrect: true, reason: "" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,7 +50,7 @@ export const generator_452 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `$${correctDecimal}h$`,
-      explanation: `Choice ${correctOption.letter} is correct. To find "${adjustedPercentage}% of $h$", convert the percentage to a decimal: ${adjustedPercentage}% = $\\frac{${adjustedPercentage}}{100} = ${correctDecimal}$. Therefore, the expression is $${correctDecimal}h$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The base is ${adjustedPercentage}% of the height $h$. Writing ${adjustedPercentage}% as a decimal gives $\\frac{${adjustedPercentage}}{100} = ${correctDecimal}$, so the base has length $\\frac{${adjustedPercentage}}{100}h$, which is the expression ${correctDecimal}h. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
     };
   }
 };

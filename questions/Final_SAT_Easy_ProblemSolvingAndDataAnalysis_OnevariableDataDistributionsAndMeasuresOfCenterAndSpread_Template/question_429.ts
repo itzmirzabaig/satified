@@ -23,11 +23,20 @@ export const generator_429 = {
   },
 
   generate: (): QuestionData => {
-    // Generate random frequencies
-    const never = getRandomInt(20, 40);
-    const almostNever = getRandomInt(40, 60);
-    const sometimes = getRandomInt(60, 80);
-    const often = getRandomInt(30, 50);
+    // Generate random frequencies, re-rolling until the four answer-choice
+    // values (never, almostNever, targetSum, sometimes+often) are pairwise
+    // distinct so no distractor can collide with another or with the key.
+    let never = 0, almostNever = 0, sometimes = 0, often = 0;
+    let tries = 0;
+    do {
+      never = getRandomInt(20, 40);
+      almostNever = getRandomInt(40, 60);
+      sometimes = getRandomInt(60, 80);
+      often = getRandomInt(30, 50);
+    } while (
+      new Set([never, almostNever, never + almostNever, sometimes + often]).size < 4 &&
+      tries++ < 50
+    );
     const total = never + almostNever + sometimes + often;
     const targetSum = never + almostNever;
 

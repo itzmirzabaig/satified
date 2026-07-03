@@ -23,15 +23,28 @@ export const generator_462 = {
   },
 
   generate(): QuestionData {
-    const youngEast = getRandomInt(12, 25);
-    const youngWest = getRandomInt(8, 20);
-    const oldEast = getRandomInt(15, 30);
-    const oldWest = getRandomInt(70, 100);
+    // The four answer choices are marginal totals over the same grand total, so
+    // the option strings collide (and the correctAnswer match becomes ambiguous)
+    // whenever any two marginal totals are equal. Re-draw until the four
+    // marginals are pairwise distinct. Bounded retry (<=50) per house style.
+    let youngEast = 0, youngWest = 0, oldEast = 0, oldWest = 0;
+    let totalYoung = 0, totalOld = 0, totalEast = 0, totalWest = 0;
+    let tries = 0;
+    do {
+      youngEast = getRandomInt(12, 25);
+      youngWest = getRandomInt(8, 20);
+      oldEast = getRandomInt(15, 30);
+      oldWest = getRandomInt(70, 100);
 
-    const totalYoung = youngEast + youngWest;
-    const totalOld = oldEast + oldWest;
-    const totalEast = youngEast + oldEast;
-    const totalWest = youngWest + oldWest;
+      totalYoung = youngEast + youngWest;
+      totalOld = oldEast + oldWest;
+      totalEast = youngEast + oldEast;
+      totalWest = youngWest + oldWest;
+    } while (
+      new Set([totalYoung, totalOld, totalEast, totalWest]).size !== 4 &&
+      tries++ < 50
+    );
+
     const grandTotal = totalYoung + totalOld;
 
     const tableCode = `<table><thead><tr><th></th><th>Live east of the river</th><th>Live west of the river</th><th>Total</th></tr></thead><tbody><tr><td>Less than 40 years old</td><td>${youngEast}</td><td>${youngWest}</td><td>${totalYoung}</td></tr><tr><td>At least 40 years old</td><td>${oldEast}</td><td>${oldWest}</td><td>${totalOld}</td></tr><tr><td>Total</td><td>${totalEast}</td><td>${totalWest}</td><td>${grandTotal}</td></tr></tbody></table>`;

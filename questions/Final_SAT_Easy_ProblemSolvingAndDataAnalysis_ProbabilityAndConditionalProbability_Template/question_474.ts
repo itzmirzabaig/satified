@@ -23,16 +23,34 @@ export const generator_474 = {
   },
 
   generate(): QuestionData {
-    const young1Visit = getRandomInt(10, 25);
-    const young2Plus = getRandomInt(10, 25);
-    const old1Visit = getRandomInt(15, 30);
-    const old2Plus = getRandomInt(70, 100);
+    // All four options share the denominator grandTotal, so two options collide
+    // exactly when their numerators (the four marginal totals) are equal. That
+    // can happen: totalYoung === total1Visit (⟺ young2Plus === old1Visit) and
+    // total2Plus === totalOld (same condition), among others. Redraw the four
+    // cells until the four marginal totals are pairwise distinct (bounded).
+    let young1Visit = 0, young2Plus = 0, old1Visit = 0, old2Plus = 0;
+    let totalYoung = 0, totalOld = 0, total1Visit = 0, total2Plus = 0, grandTotal = 0;
+    for (let tries = 0; tries < 50; tries++) {
+      young1Visit = getRandomInt(10, 25);
+      young2Plus = getRandomInt(10, 25);
+      old1Visit = getRandomInt(15, 30);
+      old2Plus = getRandomInt(70, 100);
 
-    const totalYoung = young1Visit + young2Plus;
-    const totalOld = old1Visit + old2Plus;
-    const total1Visit = young1Visit + old1Visit;
-    const total2Plus = young2Plus + old2Plus;
-    const grandTotal = totalYoung + totalOld;
+      totalYoung = young1Visit + young2Plus;
+      totalOld = old1Visit + old2Plus;
+      total1Visit = young1Visit + old1Visit;
+      total2Plus = young2Plus + old2Plus;
+      grandTotal = totalYoung + totalOld;
+
+      const nums = [totalYoung, total1Visit, total2Plus, totalOld];
+      let distinct = true;
+      for (let i = 0; i < nums.length && distinct; i++) {
+        for (let j = i + 1; j < nums.length; j++) {
+          if (nums[i] === nums[j]) { distinct = false; break; }
+        }
+      }
+      if (distinct) break;
+    }
 
     const tableCode = `<table><thead><tr><th></th><th>1 visit</th><th>2 or more visits</th><th>Total</th></tr></thead><tbody><tr><td>Less than 40 years old</td><td>${young1Visit}</td><td>${young2Plus}</td><td>${totalYoung}</td></tr><tr><td>At least 40 years old</td><td>${old1Visit}</td><td>${old2Plus}</td><td>${totalOld}</td></tr><tr><td>Total</td><td>${total1Visit}</td><td>${total2Plus}</td><td>${grandTotal}</td></tr></tbody></table>`;
 

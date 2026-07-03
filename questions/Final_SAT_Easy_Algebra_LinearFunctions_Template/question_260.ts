@@ -46,7 +46,7 @@ export const generator_260 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `In science class, Diego conducted an experiment to learn about evaporation. Diego measured the height of fluid in a beaker over a period of time. The function $f(x)=${initialHeight}-${rate}x$ gives the estimated height, in centimeters (cm), of the fluid in the beaker $x$ days after the start of the experiment. Which of the following is the best interpretation of ${initialHeight} in this context?`,
+      questionText: `In science class, a student conducted an experiment to learn about evaporation. The student measured the height of fluid in a beaker over a period of time. The function $f(x)=${initialHeight}-${rate}x$ gives the estimated height, in centimeters (cm), of the fluid in the beaker $x$ days after the start of the experiment. Which of the following is the best interpretation of ${initialHeight} in this context?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: optionA,

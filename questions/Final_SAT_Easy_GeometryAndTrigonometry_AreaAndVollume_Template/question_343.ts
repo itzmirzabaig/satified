@@ -11,6 +11,15 @@ import type { QuestionData } from '../../study/types';
 * - Constraints: [Width = Area/Length, must divide evenly]
 * - Question type: [No figure, Multiple Choice Text]
 * - Figure generation: [None]
+*
+* FIXED:
+* - Original distractors D1 (area−length) and D2 (length²) collide whenever
+*   width === length + 1 (e.g. length 7, width 8 → both 49). Added a bounded
+*   uniqueness retry (≤50) that redraws length/width until all four option
+*   values are distinct, guaranteeing no DUP_OPTIONS for any draw.
+* - Answer is integer by construction (area = length × width), so no float
+*   artifacts. Explanation numbers all come from the same live variables and
+*   the correct letter is taken from the shuffled array.
 */
 
 export const generator_343 = {
@@ -23,9 +32,23 @@ export const generator_343 = {
   },
 
   generate: (): QuestionData => {
-    const width = getRandomInt(6, 9);
-    const length = getRandomInt(7, 12);
-    const area = length * width;
+    let width = getRandomInt(6, 9);
+    let length = getRandomInt(7, 12);
+    let area = length * width;
+
+    // Bounded retry: guarantee the four option values are all distinct.
+    const optionVals = () => [
+      width,                 // correct
+      area - length,         // subtracts length from area instead of dividing
+      length * length,       // squares the length
+      area * length          // multiplies area by length
+    ];
+    let tries = 0;
+    while (new Set(optionVals()).size < 4 && tries++ < 50) {
+      width = getRandomInt(6, 9);
+      length = getRandomInt(7, 12);
+      area = length * width;
+    }
 
     const optionsData = [
       { text: width.toString(), isCorrect: true },

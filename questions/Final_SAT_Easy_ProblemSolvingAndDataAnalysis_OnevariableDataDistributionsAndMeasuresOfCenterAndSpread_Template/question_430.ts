@@ -23,9 +23,25 @@ export const generator_430 = {
   },
 
   generate: (): QuestionData => {
-    const warehouse = getRandomInt(350, 400);
-    const department = getRandomInt(200, 250);
-    const supermarket = getRandomInt(120, 150);
+    // Re-roll the employee counts until the four answer-choice values
+    // (warehouse-department, department-supermarket, warehouse-supermarket,
+    // warehouse+supermarket) are pairwise distinct, so no distractor can
+    // collide with another or with the correct difference.
+    let warehouse = 0, department = 0, supermarket = 0;
+    let tries = 0;
+    do {
+      warehouse = getRandomInt(350, 400);
+      department = getRandomInt(200, 250);
+      supermarket = getRandomInt(120, 150);
+    } while (
+      new Set([
+        warehouse - department,
+        department - supermarket,
+        warehouse - supermarket,
+        warehouse + supermarket,
+      ]).size < 4 &&
+      tries++ < 50
+    );
     const year = getRandomInt(2015, 2022);
 
     const tableCode = `

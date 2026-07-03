@@ -35,7 +35,7 @@ export const generator_453 = {
       { text: `${distractorA}`, isCorrect: false, reason: "likely results from a misinterpretation of the numbers or a random guess" },
       { text: `${distractorB}`, isCorrect: false, reason: "incorrectly assumes the answer is the percentage value itself (50)" },
       { text: `${result}`, isCorrect: true },
-      { text: `${distractorD}`, isCorrect: false, reason: "appears to be the result of subtracting 50 from ${roundedTotal}" }
+      { text: `${distractorD}`, isCorrect: false, reason: `results from subtracting 50 from the total instead of taking half of it: $${roundedTotal} - 50 = ${distractorD}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,7 +47,7 @@ export const generator_453 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `There are a total of $${roundedTotal}$ seats in a school auditorium. During an assembly, students occupied $50% of the seats in the auditorium. How many seats did the students occupy during this assembly?`,
+      questionText: `There are a total of $${roundedTotal}$ seats in a school auditorium. During an assembly, students occupied $50\\%$ of the seats in the auditorium. How many seats did the students occupy during this assembly?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,

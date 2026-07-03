@@ -23,25 +23,40 @@ export const generator_241 = {
   },
 
   generate: (): QuestionData => {
-    const slope = getRandomInt(2, 5);
+    let slope = 0;
+    let intercept = 0;
+    let xValue = 0;
+    let result = 0;
+    let dropSign = 0;
+    let forgetIntercept = 0;
+    let signError = 0;
 
-    const intercept = -getRandomInt(5, 10);
+    // Bounded retry: keep the three intended error types (subtract the intercept
+    // instead of adding, forget the intercept, flip the sign of the result) and
+    // guarantee all four values are distinct. The only colliding draw across the
+    // full range is result === 0 (then -result === result), which the guard skips.
+    let tries = 0;
+    do {
+      slope = getRandomInt(2, 5);
+      intercept = -getRandomInt(5, 10);         // negative intercept: -10..-5
+      xValue = getRandomInt(5, 10);
 
-    const xValue = getRandomInt(5, 10);
+      result = slope * xValue + intercept;      // correct: f(x) = mx + b
 
-    const result = slope * xValue + intercept;
-
-    const distractor1 = slope * xValue - intercept;
-
-    const distractor2 = slope * xValue;
-
-    const distractor3 = -result;
+      dropSign = slope * xValue - intercept;    // subtracts the (negative) intercept -> adds |b|
+      forgetIntercept = slope * xValue;         // ignores the intercept term
+      signError = -result;                      // negates the final result
+      tries++;
+    } while (
+      new Set([result, dropSign, forgetIntercept, signError]).size !== 4 &&
+      tries < 50
+    );
 
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "subtracts the intercept instead of adding" },
+      { text: dropSign.toString(), isCorrect: false, reason: "subtracts the intercept instead of adding it" },
       { text: result.toString(), isCorrect: true },
-      { text: distractor2.toString(), isCorrect: false, reason: "forgets to add the intercept" },
-      { text: distractor3.toString(), isCorrect: false, reason: "has a sign error" }
+      { text: forgetIntercept.toString(), isCorrect: false, reason: "forgets to add the intercept" },
+      { text: signError.toString(), isCorrect: false, reason: "has a sign error in the final result" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

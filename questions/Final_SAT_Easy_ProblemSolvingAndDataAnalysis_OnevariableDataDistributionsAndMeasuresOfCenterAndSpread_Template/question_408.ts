@@ -102,11 +102,18 @@ export const generator_408 = {
     `;
 
     // 6. Options
+    // The five summary values are strictly increasing (min < q1 < median < q3 <
+    // max), each separated by at least 1000, so any of the other four marks is
+    // guaranteed distinct from the median AND from one another — no collisions,
+    // no retry needed. Distractors are the most tempting misreads of the plot:
+    //   q1  -> left edge of the box mistaken for the median line
+    //   q3  -> right edge of the box mistaken for the median line
+    //   min -> left whisker end mistaken for the center
     const optionsData = [
-      { text: min.toLocaleString(), isCorrect: false },
       { text: median.toLocaleString(), isCorrect: true },
-      { text: Math.round((max + min) / 2).toLocaleString(), isCorrect: false }, // Common mistake: Midpoint of range
-      { text: max.toLocaleString(), isCorrect: false }
+      { text: q1.toLocaleString(), isCorrect: false },
+      { text: q3.toLocaleString(), isCorrect: false },
+      { text: min.toLocaleString(), isCorrect: false }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -121,7 +128,7 @@ export const generator_408 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: median.toLocaleString(),
-      explanation: `Choice ${correctOption.letter} is correct. In a box plot, the median is indicated by the vertical line inside the box. Reading the graph, the vertical line inside the shaded box aligns with ${median.toLocaleString()} on the horizontal axis.`
+      explanation: `Choice ${correctOption.letter} is correct. In a box plot, the median is indicated by the vertical line inside the box (not the edges of the box or the ends of the whiskers). Reading the graph, that vertical line aligns with ${median.toLocaleString()} on the horizontal axis. The values ${q1.toLocaleString()} and ${q3.toLocaleString()} are the left and right edges of the box (the first and third quartiles), and ${min.toLocaleString()} is the left end of the whisker (the minimum).`
     };
   }
 };
