@@ -74,7 +74,7 @@ export const generator_1251 = {
       result = {
         questionText: `In the given system of equations, $p$ is a constant. If the system has no solution, what is the value of $p$? $$${eq1}$$ $$${eq2}$$`,
         figureCode: null,
-        options: null,
+        options: [],
         correctAnswer: `${p_answer_num/pg}/${p_answer_den/pg}`,
         explanation: `Clearing fractions, the first equation becomes $-${eq1_x}x + ${2 * eq1_left_y}y = C_1$ and the second becomes $${eq2_x}x - 4py = ${eq2_c2 - eq2_c1}$. For no solution, the ratios of coefficients must be equal: $\\frac{-${eq1_x}}{${eq2_x}} = \\frac{${2 * eq1_left_y}}{-4p}$. This gives $-1 = \\frac{${2 * eq1_left_y}}{-4p}$, so $p = \\frac{${p_answer_num/pg}}{${p_answer_den/pg}}$.`
       };

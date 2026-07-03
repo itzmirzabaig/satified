@@ -63,7 +63,7 @@ export const generator_1304 = {
     return {
       questionText: `The graph of $x^{2}+${bCoeff}x+y^{2}+${cCoeff}y=${DDisplay}$ in the $xy$-plane is a circle. What is the length of the circle's radius?`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: rVal.toString(),
       explanation: `
         The correct answer is ${rVal}.

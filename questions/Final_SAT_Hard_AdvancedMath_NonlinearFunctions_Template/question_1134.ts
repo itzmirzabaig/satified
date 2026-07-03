@@ -38,7 +38,7 @@ export const generator_1134 = {
     return {
       questionText: `$h(x)=${factor1}${factor2}${factor3}=x^3+ax^2+bx+c$. What is $c$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: c.toString(),
       explanation: `Expanding, the constant term $c$ equals $(${-r1})(${-r2})(${-r3})=${c}$.`
     };

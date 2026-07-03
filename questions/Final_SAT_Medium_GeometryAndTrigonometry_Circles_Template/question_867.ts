@@ -39,7 +39,7 @@ export const generator_867 = {
     return {
       questionText: `An angle has a measure of $\\frac{${k}\\pi}{${n}}$ radians. What is the measure of the angle, in degrees?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: degrees.toString(),
       explanation: `To convert an angle from radians to degrees, multiply by $\\frac{180^{\\circ}}{\\pi}$. $$\\frac{${k}\\pi}{${n}} \\times \\frac{180^{\\circ}}{\\pi} = \\frac{${k}}{${n}} \\times 180^{\\circ} = ${k} \\times ${180/n}^{\\circ} = ${degrees}^{\\circ}$$ The measure of the angle in degrees is ${degrees}.`
     };

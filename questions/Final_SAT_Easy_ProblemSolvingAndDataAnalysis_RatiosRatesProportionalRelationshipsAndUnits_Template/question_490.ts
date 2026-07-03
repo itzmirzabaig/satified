@@ -34,7 +34,7 @@ export const generator_490 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctTime.toString(),
       explanation: explanation
     };

@@ -29,7 +29,7 @@ export const generator_127 = {
     return {
       questionText: `In the equation $${coeff}x + ${const1} = ${coeff}x + k$, $k$ is a constant. The equation has infinitely many solutions. What is the value of $k$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: const1.toString(),
       explanation: `For infinitely many solutions, both sides must be identical. Subtracting $${coeff}x$ from both sides yields $k = ${const1}$. Therefore, $k = ${const1}$.`
     };

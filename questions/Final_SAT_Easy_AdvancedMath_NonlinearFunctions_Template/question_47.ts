@@ -36,7 +36,7 @@ export const generator_47 = {
     return {
       questionText: `The graph of the exponential function $f$ is shown, where $y=f(x)$. The y-intercept of the graph is $(0, y)$. What is the value of $y$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: coeff.toString(),
       explanation: `The y-intercept occurs where $x=0$. For an exponential decay $f(x)=a(b)^x$, the intercept is $f(0)=a(1)=a$. Here, $a=${coeff}$.`
     };

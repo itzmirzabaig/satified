@@ -94,7 +94,7 @@ export const generator_1366 = {
     return {
       questionText: `Triangle $ABC$ is similar to triangle $DEF$, where $A$ corresponds to $D$ and $C$ corresponds to $F$. Angles $C$ and $F$ are right angles. If $\\tan(A) = \\frac{${opposite}}{${adjacent}}$, what is the value of $\\sin D$? (Enter your answer as a fraction or decimal.)`,
       figureCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: `${reducedNum}/${reducedDen}`,
       explanation: `Since $\\triangle ABC \\sim \\triangle DEF$, corresponding angles are equal, so $\\angle D = \\angle A$ and $\\tan D = \\tan A = \\frac{${opposite}}{${adjacent}}$. In right triangle $DEF$ (right angle at $F$), the leg opposite $D$ is ${opposite} and the leg adjacent to $D$ is ${adjacent}. The hypotenuse is $DE = \\sqrt{${opposite}^2 + ${adjacent}^2} = \\sqrt{${opposite * opposite + adjacent * adjacent}} = ${hypotenuse}$. Therefore $\\sin D = \\frac{\\text{opposite}}{\\text{hypotenuse}} = \\frac{${opposite}}{${hypotenuse}} = \\frac{${reducedNum}}{${reducedDen}}$.`
     };

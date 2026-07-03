@@ -104,7 +104,7 @@ export const generator_1347 = {
     return {
       questionText: `In the right triangle shown, what is the value of $\\cos x^\\circ$? (Enter your answer as a fraction or decimal.)`,
       figureCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: `${reducedNum}/${reducedDen}`,
       explanation: `The cosine of an acute angle in a right triangle is the ratio of the length of the leg adjacent to the angle to the length of the hypotenuse. In the triangle shown, the leg adjacent to the angle measuring $x^\\circ$ has length ${adjacent} and the hypotenuse has length ${hypotenuse}. Therefore $\\cos x^\\circ = \\frac{${adjacent}}{${hypotenuse}} = \\frac{${reducedNum}}{${reducedDen}}$.`
     };

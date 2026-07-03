@@ -33,7 +33,7 @@ export const generator_723 = {
     return {
       questionText: `The function $f$ is defined by $f(x) = ${m}x ${b >= 0 ? '+' : '-'} ${Math.abs(b)}$. What is the $y$-coordinate of the $y$-intercept of the graph of $y = f(x)$ in the $xy$-plane?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: b.toString(),
       explanation: `The function is in slope-intercept form $y = mx + b$ where $b$ is the y-intercept. Here $b = ${b}$, so the y-coordinate of the y-intercept is ${b}.`
     };

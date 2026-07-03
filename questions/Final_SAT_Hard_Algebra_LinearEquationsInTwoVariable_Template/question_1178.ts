@@ -81,7 +81,7 @@ export const generator_1178 = {
     return {
       questionText: `The table gives the coordinates of two points on a line in the $xy$-plane. The $y$-intercept of the line is $(0, b)$, where $b$ is a constant. What is the value of $b$?`,
       figureCode: tableHTML, // Table ONLY here, not in questionText
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: b.toString(),
       explanation: explanation
     };

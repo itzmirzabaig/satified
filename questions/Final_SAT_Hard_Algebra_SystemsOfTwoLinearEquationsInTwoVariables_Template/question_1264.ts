@@ -49,7 +49,7 @@ export const generator_1264 = {
       result = {
         questionText: `In the given system of equations, $w$ is a constant. In the xy-plane, the graphs of these equations intersect at the point $(q, ${y_val})$, where $q$ is a constant. What is the value of $w$? $$${eq1}$$ $$${eq2}$$`,
         figureCode: null,
-        options: null,
+        options: [],
         correctAnswer: w_answer.toString(),
         explanation: `Substituting the point $(q, ${y_val})$ into both equations gives $-q - ${w_answer}(${y_val}) = ${c1}$ and $2q - ${w_answer}(${y_val}) = ${c2}$. From the first equation, $q = ${q_val}$. Substituting into the second: $2(${q_val}) - ${w_answer}(${y_val}) = ${c2}$, which confirms $w = ${w_answer}$.`
       };

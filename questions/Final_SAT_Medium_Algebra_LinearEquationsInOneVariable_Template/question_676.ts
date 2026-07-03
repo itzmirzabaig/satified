@@ -34,7 +34,7 @@ export const generator_676 = {
     return {
       questionText: `An agricultural scientist studying the growth of corn plants recorded the height of a corn plant at the beginning of a study and the height of the plant each day for the next ${days} days. The scientist found that the height of the plant increased by an average of ${growthRate.toFixed(2)} centimeters per day for the ${days} days. If the height of the plant on the last day of the study was ${finalHeight.toFixed(1)} centimeters, what was the height, in centimeters, of the corn plant at the beginning of the study?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. If the height of the plant increased by an average of ${growthRate.toFixed(2)} centimeters per day for ${days} days, then its total growth over the ${days} days was $(${growthRate.toFixed(2)})(${days}) = ${totalGrowth.toFixed(1)}$ centimeters. The plant was ${finalHeight.toFixed(1)} centimeters tall after ${days} days, so at the beginning of the study its height was $${finalHeight.toFixed(1)} - ${totalGrowth.toFixed(1)} = ${correctAnswer}$ centimeters.`
     };

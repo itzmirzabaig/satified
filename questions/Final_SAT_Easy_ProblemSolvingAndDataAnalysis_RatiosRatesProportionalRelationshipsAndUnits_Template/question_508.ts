@@ -33,7 +33,7 @@ export const generator_508 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: feet.toString(),
       explanation: explanation
     };

@@ -30,7 +30,7 @@ export const generator_140 = {
     return {
       questionText: `The perimeter of an isosceles triangle is ${perimeter} inches. Each of the two congruent sides of the triangle has a length of ${side} inches. What is the length, in inches, of the third side?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: base.toString(),
       explanation: `Perimeter = sum of all sides: $${side} + ${side} + x = ${perimeter}$. So $${2 * side} + x = ${perimeter}$, giving $x = ${base}$. The third side is ${base} inches.`
     };

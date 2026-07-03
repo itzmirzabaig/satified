@@ -39,7 +39,7 @@ export const generator_1334 = {
     return {
       questionText: `In right triangle $ABC$, angle $C$ is the right angle and $BC = ${finalBC}$. Point $D$ on side $AB$ is connected by a line segment with point $E$ on side $AC$ such that line segment $DE$ is parallel to side $BC$ and $CE = ${ratio}AE$. What is the length of line segment $DE$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: Math.round(finalDE).toString(),
       explanation: `It's given that $DE$ is parallel to $BC$. By AA similarity, $\\\\triangle ADE \\\\sim \\\\triangle ABC$. Since $CE = ${ratio}AE$ and $AC = AE + CE$, we have $AC = AE + ${ratio}AE = ${1 + ratio}AE$. Therefore $\\\\frac{AE}{AC} = \\\\frac{1}{${1 + ratio}}$. By similarity, $\\\\frac{DE}{BC} = \\\\frac{AE}{AC} = \\\\frac{1}{${1 + ratio}}$. Substituting $BC = ${finalBC}$: $\\\\frac{DE}{${finalBC}} = \\\\frac{1}{${1 + ratio}}$, so $DE = ${Math.round(finalDE)}$.`
     };

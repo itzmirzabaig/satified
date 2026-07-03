@@ -35,7 +35,7 @@ export const generator_1103 = {
     return {
       questionText: `A seal's depth is modeled by quadratic $g$. Maximum depth is $${k}$ meters at ${h} minutes, and the seal surfaces at ${2*h} minutes. What is the depth at ${evalTime} minutes?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: g_eval.toString(),
       explanation: `The model is $g(t)=${a}(t-${h})^2+${k}$. At $t=${evalTime}$: $g(${evalTime})=${a}(${evalTime-h})^2+${k}=${g_eval}$ meters.`
     };

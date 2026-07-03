@@ -38,7 +38,7 @@ export const generator_968 = {
     return {
       questionText: `How many fluid ounces are equivalent to $${quarts}$ quarts? ($${ozPerCup}$ fluid ounces = 1 cup and $${cupsPerQuart}$ cups = 1 quart)`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: totalOunces.toString(),
       explanation: `The correct answer is ${totalOunces.toLocaleString()}. It's given that $${cupsPerQuart}$ cups = 1 quart. It follows that $${quarts}$ quarts is equivalent to $(${quarts} \\text{ quarts}) (${cupsPerQuart} \\text{ cups} / 1 \\text{ quart})$, or $${totalCups}$ cups. It's also given that $${ozPerCup}$ fluid ounces = 1 cup. It follows that $${totalCups}$ cups is equivalent to $(${totalCups} \\text{ cups}) (${ozPerCup} \\text{ fluid ounces} / 1 \\text{ cup})$, or $${totalOunces.toLocaleString()}$ fluid ounces.`
     };

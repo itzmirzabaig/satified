@@ -42,7 +42,7 @@ export const generator_952 = {
     return {
       questionText: `${part} is p% of ${whole}. What is the value of p?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. It's given that ${part} is \\( p \\% \\) of ${whole}. It follows that \\( \\frac{${part}}{${whole}}=\\frac{p}{100} \\). Multiplying both sides of this equation by 100 gives \\( ${correctAnswer}=p \\). Therefore, the value of \\( p \\) is ${correctAnswer}.`
     };

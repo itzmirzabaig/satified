@@ -56,7 +56,7 @@ export const generator_1231 = {
     return {
       questionText: `A local transit company sells a monthly pass for \\$${monthlyPass} that allows an unlimited number of trips of any length. Tickets for individual trips cost \\$${p1.toFixed(2)}, \\$${p2.toFixed(2)}, or \\$${p3.toFixed(2)}, depending on the length of the trip. What is the minimum number of trips per month for which a monthly pass could cost less than purchasing individual tickets for trips?`,
       figureCode: null,
-      options: null, // Fill-in-the-blank question
+      options: [], // Fill-in-the-blank question
       correctAnswer: minTrips.toString(),
       explanation: `
         The correct answer is ${minTrips}.

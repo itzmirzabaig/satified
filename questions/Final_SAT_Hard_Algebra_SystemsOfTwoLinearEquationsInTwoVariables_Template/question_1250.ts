@@ -64,7 +64,7 @@ export const generator_1250 = {
       result = {
         questionText: `In the given system of equations, $g$ and $k$ are constants. The system has infinitely many solutions. What is the value of $\\frac{g}{k}$? $$\\frac{${A1}}{${den1}}x + \\frac{${B1}}{${den1}}y = \\frac{${C1}}{${c1_den}}$$ $$${A2}x + ${B2}y = \\frac{${C2}}{1}$$`,
         figureCode: null,
-        options: null,
+        options: [],
         correctAnswer: `${g_final}/${k_final}`,
         explanation: `For infinitely many solutions, the equations must represent the same line, meaning all coefficients are proportional. The ratio of x-coefficients is $\\frac{${A1}/${den1}}{${A2}} = \\frac{${g_final}}{${k_final}}$, which equals the ratio of y-coefficients $\\frac{${B1}/${den1}}{${B2}} = \\frac{${B1}}{${den1 * B2}} = \\frac{${g_final}}{${k_final}}$. Therefore, $\\frac{g}{k} = \\frac{${g_final}}{${k_final}}$.`
       };

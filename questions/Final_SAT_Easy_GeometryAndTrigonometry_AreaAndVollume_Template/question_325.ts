@@ -30,7 +30,7 @@ export const generator_325 = {
     return {
       questionText: `A rectangle has a length of ${length} inches and a width of ${width} inches. What is the area, in square inches, of the rectangle?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: area.toString(),
       explanation: `The area of a rectangle is calculated by multiplying length by width. Therefore, the area is ${length} × ${width} = ${area} square inches.`
     };

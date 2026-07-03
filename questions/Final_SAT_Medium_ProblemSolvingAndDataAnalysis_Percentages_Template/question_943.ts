@@ -39,7 +39,7 @@ export const generator_943 = {
     return {
       questionText: `${part} is ${percent}% of what number?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. Let x represent the number that ${part} is ${percent}% of. This can be written as \\( \\frac{${percent}}{100}x = ${part} \\), or \\( ${(percent/100).toFixed(2).replace(/^0\./, '0.')}x = ${part} \\). Dividing both sides of this equation by ${(percent/100).toFixed(2).replace(/^0\./, '0.')} yields \\( x = ${correctAnswer} \\). Therefore, ${part} is ${percent}% of ${correctAnswer}.`
     };

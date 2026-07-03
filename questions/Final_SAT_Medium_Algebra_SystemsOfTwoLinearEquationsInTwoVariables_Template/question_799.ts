@@ -38,7 +38,7 @@ export const generator_799 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: xValue.toString(),
       explanation: `We are given a system of two linear equations: 1.  $y = ${coeff}x$ 2.  $3x + y = ${result}$ We need to find the value of $x$. Since the first equation already expresses $y$ in terms of $x$ ($y = ${coeff}x$), we can substitute this expression into the second equation. Substitute $y = ${coeff}x$ into $3x + y = ${result}$: $$3x + (${coeff}x) = ${result}$$ Simplify the equation: $$3x ${coeff}x = ${result}$$ $$${3 + coeff}x = ${result}$$ $$x = ${xValue}$$ So, the value of $x$ is ${xValue}. To double-check, we can find $y$: $y = ${coeff}(${xValue})$ $y = ${coeff * xValue}$ Let's plug these values back into the second equation: $3(${xValue}) + (${coeff * xValue}) = ${3 * xValue} ${coeff * xValue} = ${result}$. This is correct. The value of $x$ is ${xValue}.`
     };

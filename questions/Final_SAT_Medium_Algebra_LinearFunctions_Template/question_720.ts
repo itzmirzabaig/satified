@@ -31,7 +31,7 @@ export const generator_720 = {
     return {
       questionText: `For the linear function $h$, $b$ is a constant and $h(x) = x + b$. If $h(0)=${h0}$, what is the value of $b$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: h0.toString(),
       explanation: `Since $h(0) = 0 + b = b$, and $h(0) = ${h0}$, we have $b = ${h0}$.`
     };

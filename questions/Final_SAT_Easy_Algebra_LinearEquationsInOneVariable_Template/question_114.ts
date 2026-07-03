@@ -31,7 +31,7 @@ export const generator_114 = {
     return {
       questionText: `If \\( ${addend} + x = ${rightSide} \\), what is the value of \\( ${multiplier * addend} + ${multiplier}x \\)?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `Multiply both sides by ${multiplier}: ${multiplier}(${addend} + x) = ${multiplier}(${rightSide}), giving ${multiplier * addend} + ${multiplier}x = ${result}.`
     };

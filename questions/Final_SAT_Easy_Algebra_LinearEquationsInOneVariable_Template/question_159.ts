@@ -36,7 +36,7 @@ export const generator_159 = {
     return {
       questionText: `If \\( ${leftSide} = ${c} \\), what is the value of \\( ${targetExpr} \\)?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: targetValue.toString(),
       explanation: `The correct answer is ${targetValue}. It's given that \\( ${leftSide} = ${c} \\). Multiplying each side of this equation by ${multiplier} yields \\( ${multiplier}(${leftSide}) = ${multiplier}(${c}) \\), or \\( ${a * multiplier}x + ${multiplier * b} = ${multiplier * c} \\). Subtracting ${subAmount + multiplier * b} from each side of this equation yields \\( ${a * multiplier}x + ${multiplier * b} - (${subAmount + multiplier * b}) = ${multiplier * c} - (${subAmount + multiplier * b}) \\), or \\( ${targetExpr} = ${targetValue} \\). Therefore, the value of \\( ${targetExpr} \\) is ${targetValue}.`
     };

@@ -38,7 +38,7 @@ export const generator_1073 = {
     return {
       questionText: `$x^2 - ${b}x + c = 0$\n\nIn the given equation, $c$ is a constant. The equation has no real solutions if $c > n$. What is the least possible value of $n$?`,
       figureCode: figureCode,
-      options: null,
+      options: [],
       correctAnswer: threshold.toString(),
       explanation: `The correct answer is $${threshold}$. For no real solutions, the discriminant is negative: $(-${b})^2-4c<0$, so $${b*b}<4c$, thus $c>${threshold}$. The least possible value of $n$ is $${threshold}$.`
     };

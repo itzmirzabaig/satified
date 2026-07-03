@@ -31,7 +31,7 @@ export const generator_710 = {
     return {
       questionText: `A chemist combines water and acetic acid to make a mixture with a volume of ${total} milliliters (mL). The volume of acetic acid in the mixture is ${acid} mL. What is the volume of water, in mL, in the mixture? (Assume that the volume of the mixture is the sum of the volumes of water and acetic acid before they were mixed.)`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: water.toString(),
       explanation: `The correct answer is ${water}. It's given that a chemist combines water and acetic acid to make a mixture with a volume of ${total} milliliters (mL) and that the volume of acetic acid in the mixture is ${acid} mL. Let \\( x \\) represent the volume of water, in mL, in the mixture. The equation \\( x + ${acid} = ${total} \\) represents this situation. Subtracting ${acid} from both sides of this equation yields \\( x = ${water} \\). Therefore, the volume of water, in mL, in the mixture is ${water}.`
     };

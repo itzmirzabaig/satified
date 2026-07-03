@@ -40,7 +40,7 @@ export const generator_977 = {
     return {
       questionText: `The ratio $${a}$ to $m$ is equivalent to the ratio $${b}$ to $${c}$. What is the value of $m$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: m.toString(),
       explanation: `The correct answer is ${m}. It's given that the ratio $${a}$ to $m$ is equivalent to the ratio $${b}$ to $${c}$. Therefore, the value of $m$ can be found by solving the equation $\\frac{${a}}{m}=\\frac{${b}}{${c}}$. Multiplying each side of this equation by $m$ yields $${a}=\\frac{${b}m}{${c}}$. Multiplying each side of this equation by $${c}$ yields $${a * c}=${b}m$. Dividing each side of this equation by $${b}$ yields $${m}=m$. Therefore, the value of $m$ is ${m}.`
     };

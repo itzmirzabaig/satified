@@ -36,7 +36,7 @@ export const generator_1135 = {
     return {
       questionText: `Function $f$ is defined by $f(x)=-a^{x}+b$, where $a$ and $b$ are constants. In the xy-plane, the graph of $y=f(x)-${shift}$ has a y-intercept at $(0,-\\frac{${Math.abs(y_int_num)}}{${b_den}})$. The product of $a$ and $b$ is $\\frac{${prod_num}}{${b_den}}$. What is the value of $a$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: a.toString(),
       explanation: `At $x=0$: $-1+b-${shift}=-\\frac{${Math.abs(y_int_num)}}{${b_den}}$, so $b=\\frac{${b_num}}{${b_den}}$. Given $ab=\\frac{${prod_num}}{${b_den}}$, we get $a\\cdot\\frac{${b_num}}{${b_den}}=\\frac{${prod_num}}{${b_den}}$, thus $a=${a}$.`
     };

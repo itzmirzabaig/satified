@@ -50,7 +50,7 @@ export const generator_1359 = {
     return {
       questionText: `In triangle $JKL$, $\\cos(K) = \\frac{${adjacentToK}}{${hypotenuse}}$ and angle $J$ is a right angle. What is the value of $\\cos(L)$?`,
       figureCode: null,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: `${oppositeToK}/${hypotenuse}`,
       explanation: `It is given that angle $J$ is the right angle in triangle $JKL$. Therefore, the angles $K$ and $L$ are the acute angles of the triangle and are complementary ($K + L = 90^{\\circ}$).
       

@@ -39,7 +39,7 @@ export const generator_635 = {
    return {
      questionText: `$$z^2+${bTerm}${c}=0$$\nWhat is the positive solution to the given equation?`,
      figureCode: null,
-     options: null,
+     options: [],
      correctAnswer: `${r1}`,
      explanation: `The left-hand side of the given equation factors as $(z-${r1})(z+${r2})$, since $-${r1} \\cdot ${r2} = ${c}$ and $-${r1} + ${r2} = ${b}$. Setting each factor equal to zero gives the solutions $z=${r1}$ and $z=-${r2}$. The positive solution is $z=${r1}$.`
    };

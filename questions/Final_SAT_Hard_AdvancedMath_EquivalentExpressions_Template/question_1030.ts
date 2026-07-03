@@ -67,7 +67,7 @@ So $c = ${answerTex}$, which is entered as ${correctAnswer}.`;
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: explanation
     };

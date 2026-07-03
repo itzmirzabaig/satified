@@ -38,7 +38,7 @@ export const generator_1279 = {
     return {
       questionText: `A right rectangular prism has a length of $${length}$ centimeters (cm), a width of $${width}$ cm, and a height of $${height}$ cm. What is the surface area, in cm², of the right rectangular prism?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: surfaceArea.toString(),
       explanation: `The surface area is $2(lw + lh + wh) = 2((${length})(${width}) + (${length})(${height}) + (${width})(${height})) = 2(${face1} + ${face2} + ${face3}) = 2(${face1 + face2 + face3}) = ${surfaceArea}$ cm².`
     };

@@ -42,7 +42,7 @@ export const generator_705 = {
     return {
       questionText: `A store sells two different-sized containers of blueberries. The store's sales of these blueberries totaled \\$${total} last month. The equation \\( ${equation} \\) represents this situation, where \\( x \\) is the number of smaller containers sold and \\( y \\) is the number of larger containers sold. According to the equation, what is the price, in dollars, of each smaller container?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: priceSmall,
       explanation: `The correct answer is ${priceSmall}. In the equation \\( ${equation} \\), \\( x \\) is the number of smaller containers sold, \\( y \\) is the number of larger containers sold, and ${total} is the store's total sales in dollars. The term \\( ${priceSmall}x \\) represents the sales from the smaller containers, so the coefficient of \\( x \\) is the price of one smaller container. Therefore, each smaller container costs \\$${priceSmall}.`
     };

@@ -46,7 +46,7 @@ export const generator_988 = {
     return {
       questionText: `One of a planet's moons orbits the planet every $${period1}$ days. A second moon orbits the planet every $${period2}$ days. How many more days does it take the second moon to orbit the planet $${orbits}$ times than it takes the first moon to orbit the planet $${orbits}$ times?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: String(difference),
       explanation: `The correct answer is $${difference}$. It's given that the first moon orbits the planet every $${period1}$ days. Therefore, it takes the first moon $${period1}(${orbits})$, or $${time1}$, days to orbit the planet $${orbits}$ times. It's also given that the second moon orbits the planet every $${period2}$ days. Therefore, it takes the second moon $${period2}(${orbits})$, or $${time2}$, days to orbit the planet $${orbits}$ times. Since it takes the first moon $${time1}$ days and the second moon $${time2}$ days, it takes the second moon $${time2} - ${time1}$, or $${difference}$, more days than it takes the first moon to orbit the planet $${orbits}$ times.`
     };

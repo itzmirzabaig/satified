@@ -28,7 +28,7 @@ export const generator_1155 = {
     // Structure: a(bx - c) = d(fx - e) where ab = df and ac = de
     
     let valid = false;
-    let a: number, b: number, c_pos: number, d: number, f: number, e_pos: number;
+    let a!: number, b!: number, c_pos!: number, d!: number, f!: number, e_pos!: number;
     
     while (!valid) {
       a = getRandomInt(2, 12);

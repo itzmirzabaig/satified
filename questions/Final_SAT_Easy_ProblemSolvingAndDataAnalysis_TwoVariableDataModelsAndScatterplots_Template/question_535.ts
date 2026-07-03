@@ -120,7 +120,7 @@ export const generator_535 = {
     return {
       questionText: `What was the weight, to the nearest pound, of all nectarines that grew on the tree in the ${targetSeason}th season?`,
       figureCode: svgContent,
-      options: null,
+      options: [],
       correctAnswer: correctWeight.toString(),
       explanation: `The scatterplot shows the weight of nectarines over 5 seasons. 
       <br />

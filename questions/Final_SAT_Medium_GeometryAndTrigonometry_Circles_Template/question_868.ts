@@ -44,7 +44,7 @@ export const generator_868 = {
     return {
       questionText: `In the xy-plane, the graph of the equation $(x-${h})^{2}+(y-${k})^{2}=${rSquared}$ is a circle. The point $(${pointX}, c)$, where $c$ is a constant, lies on this circle. What is the value of $c$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: c.toString(),
       explanation: `The correct answer is ${c}. Substitute the point $(${pointX}, c)$ into the equation to get $(${pointX}-${h})^{2}+(c-${k})^{2}=${rSquared}$. Since $(${pointX}-${h})=${xDiff}$, this becomes $(${xDiff})^{2}+(c-${k})^{2}=${rSquared}$, which is $(${rSquared})+(c-${k})^{2}=${rSquared}$. Subtracting ${rSquared} from both sides gives $(c-${k})^{2}=0$, so $(c-${k})=0$ and the value of the constant is $c=${k}$.`
     };

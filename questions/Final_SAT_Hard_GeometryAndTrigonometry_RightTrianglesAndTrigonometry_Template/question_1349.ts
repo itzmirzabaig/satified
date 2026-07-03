@@ -86,7 +86,7 @@ export const generator_1349 = {
     return {
       questionText: `Triangle $ABC$ is similar to triangle $DEF$, where angle $A$ corresponds to angle $D$ and angle $C$ corresponds to angle $F$. Angles $C$ and $F$ are right angles. If $\\tan (A) = \\frac{${numerator}}{${denominator}}$, what is the value of $\\tan (E)$? (Enter your answer as a fraction or decimal.)`,
       figureCode: figureCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: `${ansNum}/${ansDen}`,
       explanation: `Because the triangles are similar, corresponding angles are equal, so $\\tan D = \\tan A = \\frac{${numerator}}{${denominator}}$. In right triangle $DEF$ the right angle is at $F$, so angles $D$ and $E$ are complementary and $\\tan E = \\frac{1}{\\tan D} = \\frac{${denominator}}{${numerator}} = \\frac{${ansNum}}{${ansDen}}$.`
     };

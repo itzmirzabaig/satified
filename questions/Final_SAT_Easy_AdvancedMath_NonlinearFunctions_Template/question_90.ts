@@ -42,7 +42,7 @@ export const generator_90 = {
     return {
       questionText: `What is the y-coordinate of the y-intercept of the graph shown?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: yIntercept.toString(),
       explanation: `The y-intercept occurs where $x=0$. Looking at the graph, when $x=0$, the value of $y$ is ${yIntercept}.`
     };

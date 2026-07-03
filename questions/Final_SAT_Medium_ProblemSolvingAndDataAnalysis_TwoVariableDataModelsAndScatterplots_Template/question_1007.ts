@@ -129,7 +129,7 @@ export const generator_1007 = {
     return {
       questionText: "The scatterplot shows the relationship between two variables, $x$ and $y$. A line of best fit is also shown. For how many of the data points does the line of best fit predict a greater $y$-value than the actual $y$-value?",
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: "6",
       explanation: `The line of best fit predicts a greater $y$-value for points located below it. Counting points below the line, there are 6 such data points.`
     };

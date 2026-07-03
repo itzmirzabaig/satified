@@ -32,7 +32,7 @@ export const generator_1151 = {
     return {
       questionText: `The depth of a submersible $x$ minutes after collecting a sample is $g(x)=-\\frac{1}{${k}}(x+${a})(x-${b})$, where $x>0$. How many minutes after collecting the sample did it reach the surface?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: b.toString(),
       explanation: `The device is at the surface when its depth is $g(x)=0$. Setting $-\\frac{1}{${k}}(x+${a})(x-${b})=0$ makes the product zero, which gives $x=-${a}$ or $x=${b}$. Since the time must satisfy $x>0$, the device reaches the surface after ${b} minutes.`
     };

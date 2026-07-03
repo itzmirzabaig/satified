@@ -45,7 +45,7 @@ export const generator_1260 = {
     return {
       questionText: `A movie theater sells two types of tickets: adult tickets for \\$${adultPrice} and child tickets for \\$${childPrice}. If the theater sold ${totalTickets} tickets in total for a total revenue of \\$${totalRevenue}, how much, in dollars, was spent on adult tickets? (Disregard the \\$ sign when entering your answer.)`,
       figureCode: null, // No graph needed for this word problem
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: answer.toString(),
       explanation: `
         The correct answer is ${answer}.

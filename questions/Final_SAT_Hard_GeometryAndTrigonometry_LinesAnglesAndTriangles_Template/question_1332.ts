@@ -122,7 +122,7 @@ export const generator_1332 = {
     return {
       questionText: `In the figure above, $MQ$ and $NR$ intersect at point $P$, $NP = QP$, and $MP = PR$. What is the measure, in degrees, of $\\\\angle QMR$? (Disregard the degree symbol when gridding your answer.)`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: Math.round(baseAngleMPR).toString(),
       explanation: `Since $\\\\angle QPR = ${angleQPR}^\\\\circ$, then $\\\\angle MPR = ${angleMPR}^\\\\circ$. Given $MP = PR$, triangle $MPR$ is isosceles. The base angles $\\\\angle QMR$ and $\\\\angle NRM$ sum to $180 - ${angleMPR} = ${180 - angleMPR}$. Thus, $\\\\angle QMR = ${Math.round(baseAngleMPR)}^\\\\circ$.`
     };

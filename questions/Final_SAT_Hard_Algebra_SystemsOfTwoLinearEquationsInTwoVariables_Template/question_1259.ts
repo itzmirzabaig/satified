@@ -63,7 +63,7 @@ export const generator_1259 = {
       result = {
         questionText: `If $(x, y)$ satisfies the system of equations below, what is the value of $y$? $$${eq1}$$ $$${eq2}$$`,
         figureCode: null,
-        options: null,
+        options: [],
         correctAnswer: yTarget.toString(),
         explanation: `To solve the system, add the two equations to eliminate $x$: $(-x + y) + (x + 3y) = ${formatNum(c1)} + ${formatNum(c2)}$. This simplifies to $4y = ${formatNum(sumC)}$. Dividing both sides by 4 gives $y = ${yTarget}$.`
       };

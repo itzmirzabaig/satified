@@ -38,7 +38,7 @@ export const generator_1175 = {
     return {
       questionText: `The line with the equation \\( \\frac{${num}}{${den}}x + \\frac{1}{${den + 2}}y = ${rhs} \\) is graphed in the \\( xy \\)-plane. What is the \\( x \\)-coordinate of the \\( x \\)-intercept of the line?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: decimalStr.replace(/\.?0+$/, ''),
       explanation: `Setting $y=0$: $\\frac{${num}}{${den}}x = ${rhs}$, so $x = ${rhs} \\cdot \\frac{${den}}{${num}} = \\frac{${rhs * den}}{${num}}${Number.isInteger(xInt) ? '' : ` \\approx ${decimalStr}`}$.`
     };

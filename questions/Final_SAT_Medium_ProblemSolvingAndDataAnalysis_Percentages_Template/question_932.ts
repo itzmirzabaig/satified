@@ -38,7 +38,7 @@ export const generator_932 = {
     return {
       questionText: `In a sample, ${percent}\\% of the items are faulty. There are ${faultyItems} faulty items in the sample. How many total items are in the sample?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. Let \\( x \\) represent the total number of items in the sample. It's given that ${percent}\\% of the items are faulty and that there are ${faultyItems} faulty items in the sample. Therefore, ${percent}\\% of \\( x \\) is ${faultyItems}. Since ${percent}\\% can be rewritten as \\( \\frac{${percent}}{100} \\), it follows that \\( \\frac{${percent}}{100} x=${faultyItems} \\). Multiplying both sides of this equation by 100 yields \\( ${percent}x=${faultyItems * 100} \\). Dividing both sides of this equation by ${percent} yields \\( x=${correctAnswer} \\). Therefore, there are ${correctAnswer} total items in the sample.`
     };

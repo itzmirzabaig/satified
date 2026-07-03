@@ -38,7 +38,7 @@ export const generator_937 = {
     return {
       questionText: `What number is ${percent}% greater than ${base}?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. For a number to be ${percent}% greater than ${base}, it follows that the number is (100% of ${base}) + (${percent}% of ${base}), which can be written as \\( \\frac{100}{100}(${base})+\\frac{${percent}}{100}(${base}) \\). This expression is equivalent to \\( 1(${base})+${percent/100}(${base}) \\), or \\( ${multiplier}(${base}) \\), which is equal to ${correctAnswer}. Therefore, ${correctAnswer} is ${percent}% greater than ${base}.`
     };

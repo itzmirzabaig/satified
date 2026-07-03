@@ -33,7 +33,7 @@ export const generator_756 = {
     return {
       questionText: `A model predicts that a certain animal weighed ${a} pounds when it was born and that the animal gained ${b} pounds per day in its first year of life. This model is defined by an equation in the form $f(x)=a+b x$, where $f(x)$ is the predicted weight, in pounds, of the animal $x$ days after it was born, and $a$ and $b$ are constants. What is the value of $a$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: a.toString(),
       explanation: `The correct answer is ${a}. In the model $f(x) = a + bx$, the constant $a$ represents the initial value (weight at birth, when $x=0$), and $b$ represents the rate of change (pounds gained per day). Since the animal weighed ${a} pounds at birth, $a = ${a}$.`
     };

@@ -48,7 +48,7 @@ export const generator_1200 = {
     return {
       questionText: `The equation $h = \\frac{9(v-273.15)}{5} + 32$ gives the corresponding temperature $h$, in degrees Fahrenheit, of any substance that has a temperature of $v$ kelvins, where $v>0$. If a substance has a temperature of ${fahrenheitDisplay} degrees Fahrenheit, what is the corresponding temperature, in kelvins, of this substance?`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: kelvinAnswer.toString(),
       explanation: `
         To find the temperature in kelvins ($v$), substitute $h = ${fahrenheitDisplay}$ into the equation and solve for $v$:

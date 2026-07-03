@@ -31,7 +31,7 @@ export const generator_419 = {
     return {
       questionText: `Each value in the data set shown represents the height, in centimeters, of a plant.\n\n${values.join(', ')}\n\nWhat is the mean height, in centimeters, of these plants?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: mean.toString(),
       explanation: `The sum of the heights is ${targetSum}. Dividing by 10 plants gives a mean of ${mean}.`
     };

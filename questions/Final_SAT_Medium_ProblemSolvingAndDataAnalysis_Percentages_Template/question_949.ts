@@ -41,7 +41,7 @@ export const generator_949 = {
     return {
       questionText: `Last year, Cedric had ${baseAmount} plants in his garden. This year, the number of plants in Cedric's garden is ${percentIncrease}% greater than the number of plants in his garden last year. How many plants does Cedric have in his garden this year?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. It's given that Cedric had ${baseAmount} plants in his garden last year and that the number of plants in Cedric's garden this year is ${percentIncrease}% greater than the number of plants in his garden last year. It follows that the number of plants in Cedric's garden this year is ${baseAmount} plus ${percentIncrease}% of ${baseAmount}, which is equal to \\( ${baseAmount}+${baseAmount}\\left(\\frac{${percentIncrease}}{100}\\right) \\), or \\( ${baseAmount}+${baseAmount}(${percentIncrease/100}) \\). This expression is equivalent to \\( ${baseAmount}+${increaseAmount} \\), or ${correctAnswer}.`
     };

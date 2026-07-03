@@ -31,7 +31,7 @@ export const generator_1084 = {
     return {
       questionText: `$f(x)=(x${h >= 0 ? `-${h}` : `+${Math.abs(h)}`})^2+${k}$. For what value of $x$ does $f(x)$ reach its minimum?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: h.toString(),
       explanation: `In vertex form $f(x)=(x-h)^2+k$, the minimum occurs at $x=h$. Here $h=${h}$, so the minimum is at $x=${h}$.`
     };

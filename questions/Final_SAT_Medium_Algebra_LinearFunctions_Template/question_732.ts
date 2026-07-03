@@ -46,7 +46,7 @@ export const generator_732 = {
     return {
       questionText: `A linear model estimates the population of a city from ${startYear} to ${endYear}. The model estimates the population was ${startPop} thousand in ${startYear}, ${midPop} thousand in ${midYear}, and $x$ thousand in ${endYear}. To the nearest whole number, what is the value of $x$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: endPop.toString(),
       explanation: `The rate of change is $\\frac{${midPop} - ${startPop}}{${midYear} - ${startYear}} = \\frac{${popDiff}}{${yearsDiff}} = ${rate.toFixed(2)}$ thousand per year. From ${midYear} to ${endYear} is ${endYear - midYear} years, so the increase is ${rate.toFixed(2)} × ${endYear - midYear} = ${(rate * (endYear - midYear)).toFixed(2)}. Thus $x = ${midPop} + ${Math.round(rate * (endYear - midYear))} = ${endPop}$.`
     };

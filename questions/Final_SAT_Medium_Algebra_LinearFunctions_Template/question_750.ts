@@ -33,7 +33,7 @@ export const generator_750 = {
     return {
       questionText: `For the given function $f(x)=${m}x+${b}$, the graph of $y=f(x)$ in the $xy$-plane is parallel to line $j$. What is the slope of line $j$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: m.toString(),
       explanation: `The given function is in slope-intercept form $y=mx+b$ where $m=${m}$ is the slope. Parallel lines have equal slopes, so line $j$ also has slope ${m}.`
     };

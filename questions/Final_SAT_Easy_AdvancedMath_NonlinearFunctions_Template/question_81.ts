@@ -44,7 +44,7 @@ export const generator_81 = {
     return {
       questionText: `The function $h$ is defined by $h(x)=\\frac{${num}}{${den}x+${constantVal}}$. What is the value of $h(${xInput})$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: `${numSimple}/${denSimple}`,
       explanation: `$h(${xInput}) = \\frac{${num}}{${den}(${xInput}) + ${constantVal}} = \\frac{${num}}{${totalDenom}}$. Simplified, this is $\\frac{${numSimple}}{${denSimple}}$.`
     };

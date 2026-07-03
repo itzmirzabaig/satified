@@ -61,7 +61,7 @@ export const generator_989 = {
     return {
       questionText: `How many tablespoons are equivalent to $${teaspoons}$ teaspoons? ($${tspPerTbsp}$ teaspoons = 1 tablespoon)`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: answerFraction,
       explanation: `The correct answer is $${num}/${den}$. It's given that $${tspPerTbsp}$ teaspoons is equivalent to 1 tablespoon. Therefore, $${teaspoons}$ teaspoons is equivalent to $(${teaspoons}\\text{ teaspoons})\\left(\\dfrac{1\\text{ tablespoon}}{${tspPerTbsp}\\text{ teaspoons}}\\right)$, which equals $${num}/${den}$ tablespoons. This can be entered as the fraction ${num}/${den} or as its approximate decimal ${decimalApprox}.`
     };

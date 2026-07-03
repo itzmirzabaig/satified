@@ -35,7 +35,7 @@ export const generator_250 = {
     return {
       questionText: `The function $f$ is defined by $f(x) = x + \\frac{${numerator}}{${denominator}}$. What is the value of $f\\left(\\frac{${xValue}}{${denominator}}\\right)$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: finalAnswer,
       explanation: `Substituting $\\frac{${xValue}}{${denominator}}$ for $x$ in the function definition: $f\\left(\\frac{${xValue}}{${denominator}}\\right) = \\frac{${xValue}}{${denominator}} + \\frac{${numerator}}{${denominator}}$. Since the denominators are the same, we add the numerators: $\\frac{${xValue} + ${numerator}}{${denominator}} = \\frac{${resultValue}}{${denominator}}$. ${resultValue === denominator ? "Simplifying gives 1." : ""}`
     };

@@ -37,7 +37,7 @@ export const generator_1141 = {
     return {
       questionText: `The functions $f(x)$ and $g(w)$ are defined by the given equations: $f(x)=${a}+${b}x-x^2$ and $g(w)=-w+${c}$. If $f(-${n})=d$, where $d$ is a constant, what is the value of $g(d)$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: g_result.toString(),
       explanation: `$f(-${n})=${a}+${b}(-${n})-(-${n})^2=${a}-${b*n}-${n*n}=${f_neg_n}=d$. Then $g(d)=-(${f_neg_n})+${c}=${g_result}$.`
     };

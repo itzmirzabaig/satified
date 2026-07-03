@@ -45,7 +45,7 @@ export const generator_1267 = {
     return {
       questionText: `Right rectangular prism X is similar to right rectangular prism Y. The surface area of right rectangular prism X is $${baseSurfaceArea}$ square centimeters (cm²), and the surface area of right rectangular prism Y is $${scaledSurfaceArea}$ cm². The volume of right rectangular prism Y is $${scaledVolume}$ cubic centimeters (cm³). What is the sum of the volumes, in cm³, of right rectangular prism X and right rectangular prism Y?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: sumVolumes.toString(),
       explanation: `Since the prisms are similar, the ratio of surface areas equals the square of the linear scale factor. The ratio is $\\frac{${scaledSurfaceArea}}{${baseSurfaceArea}} = ${kSquared} = ${k}^2$, so the linear scale factor is $${k}$. The volume ratio is $${k}^3 = ${k*k*k}$. Since the volume of Y is $${scaledVolume}$, the volume of X is $\\frac{${scaledVolume}}{${k*k*k}} = ${baseVolume}$. The sum is $${baseVolume} + ${scaledVolume} = ${sumVolumes}$.`
     };

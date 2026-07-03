@@ -38,7 +38,7 @@ export const generator_1434 = {
     return {
       questionText: `Jeremy deposited x dollars in his investment account on January 1, 2001. The amount of money in the account doubled each year until Jeremy had $${finalAmount}$ dollars in his investment account on January 1, 2005. What is the value of x?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer.toString(),
       explanation: `The correct answer is ${correctAnswer}. The situation can be represented by the equation $x(2^${years})=${finalAmount}$, where the 2 represents the fact that the amount doubled each year and the ${years} represents the number of years between January 1, 2001, and January 1, 2005. Simplifying gives $${multiplier}x=${finalAmount}$. Therefore, $x=${correctAnswer}$.`
     };

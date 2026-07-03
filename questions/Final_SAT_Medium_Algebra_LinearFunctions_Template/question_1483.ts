@@ -37,7 +37,7 @@ export const generator_1483 = {
     return {
       questionText: `A certain spring has a length of ${b} meters when no weight is attached. The length of the spring increases by ${m} meters for each kilogram of weight attached. If a weight of ${x} kilograms is attached to the spring, what is the total length of the spring, in meters?`,
       figureCode: null,
-      options: null, // Fill in blank
+      options: [], // Fill in blank
       correctAnswer: answer,
       explanation: `The total length $L$ can be modeled by the linear equation $L = ${m}w + ${b}$, where $w$ is the weight in kilograms.
       

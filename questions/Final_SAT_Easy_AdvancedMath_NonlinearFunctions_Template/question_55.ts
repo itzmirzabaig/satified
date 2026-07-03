@@ -34,7 +34,7 @@ export const generator_55 = {
     return {
       questionText: `The function $f$ is defined by $f(x)=${c}+\\sqrt{x}$. What is the value of $f(${x})$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `$f(${x}) = ${c} + \\sqrt{${x}} = ${c} + ${base} = ${result}$.`
     };

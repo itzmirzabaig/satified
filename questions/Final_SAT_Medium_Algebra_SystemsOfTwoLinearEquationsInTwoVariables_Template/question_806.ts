@@ -42,7 +42,7 @@ export const generator_806 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: bValue.toString(),
       explanation: `Subtracting the second equation from the first yields $((${aCoeff})a - (${aCoeff})a) + ((${bCoeff1})b - (${bCoeff2})b) = (${right1}) - (${right2})$, which simplifies to $((${bCoeff1 - bCoeff2}))b = (${right1 - right2})$. Dividing by ${bCoeff1 - bCoeff2} yields $b = ${bValue}$.`
     };

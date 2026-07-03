@@ -104,7 +104,7 @@ export const generator_1172 = {
     return {
       questionText: `The table below shows the coordinates of three points on a line, where $k$ and $n$ are constants. If the slope of the line is ${slope}, what is the value of $k + n$?`,
       figureCode: tableHTML, // Table goes here for proper centering
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: sum.toString(),
       explanation: explanation
     };

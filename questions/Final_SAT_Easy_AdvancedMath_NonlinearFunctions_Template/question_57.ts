@@ -35,7 +35,7 @@ export const generator_57 = {
     return {
       questionText: `What is the $x$-coordinate of the $x$-intercept of the graph shown?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: intercept.toString(),
       explanation: `The x-intercept is where $y=0$. Setting the equation $2^{x-${shift}} - 2 = 0$ leads to $2^{x-${shift}} = 2^1$. Therefore, $x - ${shift} = 1$, which gives $x = ${intercept}$.`
     };

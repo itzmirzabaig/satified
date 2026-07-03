@@ -24,7 +24,7 @@ export const generator_605 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: `${b}`,
       explanation: `To find $b$, evaluate $f(0)$: $f(0) = ${coeff5}(0)^5 + ${coeff1}(0) + ${constant} = 0 + 0 + ${constant} = ${b}$. Since the point is $(0, b)$, we have $b = ${b}$.`
     };

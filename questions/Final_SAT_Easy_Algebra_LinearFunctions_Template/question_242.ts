@@ -33,7 +33,7 @@ export const generator_242 = {
     return {
       questionText: `A student council group is selling school posters for a fundraiser. They use the function $p(x)=${profitPerPoster}x-${fixedCost}$ to determine their profit $p(x)$, in dollars, for selling $x$ school posters. In order to earn a profit of $${targetProfit}$, how many school posters must they sell?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: numPosters.toString(),
       explanation: `Setting $p(x) = ${targetProfit}$ gives ${targetProfit} = ${profitPerPoster}x - ${fixedCost}$. Adding ${fixedCost} to both sides: ${targetProfit + fixedCost} = ${profitPerPoster}x$. Dividing by ${profitPerPoster}: $x = ${numPosters}$.`
     };

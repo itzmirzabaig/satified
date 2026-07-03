@@ -41,7 +41,7 @@ export const generator_1091 = {
     return {
       questionText: `The function $g$ is defined by $g(x)=\\frac{|x|}{a}-14$, where $a<0$. What is the product of $g(${m}a)$ and $g(${n}a)$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: product.toString(),
       explanation: `Since $a<0$, the value $${m}a$ is negative, so $|${m}a|=-${m}a$. Thus $g(${m}a)=\\frac{-${m}a}{a}-14=-${m}-14=${val1}$. Similarly, $g(${n}a)=\\frac{-${n}a}{a}-14=-${n}-14=${val2}$. The product is $(${val1})(${val2})=${product}$.`
     };

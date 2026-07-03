@@ -35,7 +35,7 @@ export const generator_1436 = {
     return {
       questionText: `To study fluctuations in composition, samples of pumice were taken from 29 locations and cut in the shape of a cube. The length of the edge of one of these cubes is ${edgeLength.toFixed(3)} centimeters. This cube has a density of ${density} grams per cubic centimeter. What is the mass of this cube, in grams?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: mass.toFixed(2),
       explanation: `The correct answer is ${mass.toFixed(2)}. The volume is (${edgeLength})³ = ${volume} cubic centimeters. Mass = Density × Volume = ${density} × ${volume} = ${mass.toFixed(2)} grams.`
     };

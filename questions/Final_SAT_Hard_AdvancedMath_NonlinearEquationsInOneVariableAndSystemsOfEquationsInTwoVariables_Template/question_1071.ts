@@ -73,7 +73,7 @@ export const generator_1071 = {
     return {
       questionText: `The solutions to $x^2+${2*p1}x+${finalC1}=0$ are $r$ and $s$, where $r<s$. The solutions to $x^2+${2*p2}x+${finalC2}=0$ are $t$ and $u$, where $t<u$. The solutions to $x^2+${2*(p1+p2)}x+c=0$, where $c$ is a constant, are $r+t$ and $s+u$. What is the value of $c$?`,
       figureCode: figureCode,
-      options: null,
+      options: [],
       correctAnswer: cValue.toString(),
       explanation: `The correct answer is $${cValue}$. Completing the square for the first equation: $(x+${p1})^2=${finalQ1}$, so $r=-${p1}-\\sqrt{${finalQ1}}$ and $s=-${p1}+\\sqrt{${finalQ1}}$. For the second: $(x+${p2})^2=${finalQ2}$, so $t=-${p2}-2\\sqrt{${finalQ1}}$ and $u=-${p2}+2\\sqrt{${finalQ1}}$. Thus $r+t=-${p1+p2}-3\\sqrt{${finalQ1}}$ and $s+u=-${p1+p2}+3\\sqrt{${finalQ1}}$. The product $c=(-${p1+p2})^2-(3\\sqrt{${finalQ1}})^2=${(p1+p2)*(p1+p2)}-${9*finalQ1}=${cValue}$.`
     };

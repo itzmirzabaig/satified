@@ -68,7 +68,7 @@ export const generator_1318 = {
       return {
         questionText: `A circle in the xy-plane has a diameter with endpoints $(${x}, ${finalY1})$ and $(${x}, ${finalY2})$. An equation of this circle is $(x${x >= 0 ? '-' : '+'}${Math.abs(x)})^{2}+(y-${finalCenterY})^{2}=r^{2}$, where $r$ is a positive constant. What is the value of $r$?`,
         figureCode: null,
-        options: null,
+        options: [],
         correctAnswer: finalRadius.toString(),
         explanation: `The center of the circle is the midpoint of the diameter: $\\left(\\\\frac{${x}+${x}}{2}, \\\\frac{${finalY1}+${finalY2}}{2}\\\\right) = (${x}, ${finalCenterY})$. The radius is half the diameter length: $r = \\\\frac{|${finalY2} - ${finalY1}|}{2} = \\\\frac{${finalDiameter}}{2} = ${finalRadius}$.`
       };
@@ -77,7 +77,7 @@ export const generator_1318 = {
     return {
       questionText: `A circle in the xy-plane has a diameter with endpoints $(${x}, ${y1})$ and $(${x}, ${y2})$. An equation of this circle is $(x${x >= 0 ? '-' : '+'}${Math.abs(x)})^{2}+(y-${centerY})^{2}=r^{2}$, where $r$ is a positive constant. What is the value of $r$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: radius.toString(),
       explanation: `The center of the circle is the midpoint of the diameter: $\\left(\\\\frac{${x}+${x}}{2}, \\\\frac{${y1}+${y2}}{2}\\\\right) = (${x}, ${centerY})$. The radius is half the diameter length: $r = \\\\frac{|${y2} - ${y1}|}{2} = \\\\frac{${diameter}}{2} = ${radius}$.`
     };

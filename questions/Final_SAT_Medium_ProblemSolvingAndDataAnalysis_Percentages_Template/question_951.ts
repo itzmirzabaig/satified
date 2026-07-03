@@ -37,7 +37,7 @@ export const generator_951 = {
     return {
       questionText: `There are ${total} tiles in a box. Of these tiles, ${percent}\\% are black. How many black tiles are in the box?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. It's given that ${percent}\\% of the ${total} tiles in a box are black. Therefore, the number of black tiles in the box can be calculated by multiplying the number of tiles in the box by \\( \\frac{${percent}}{100} \\), which is equivalent to \\( ${total} \\times \\frac{${percent}}{100} = ${correctAnswer} \\).`
     };

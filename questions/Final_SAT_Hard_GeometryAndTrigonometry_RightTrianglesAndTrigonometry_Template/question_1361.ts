@@ -65,7 +65,7 @@ export const generator_1361 = {
     return {
       questionText: `The perimeter of an equilateral triangle is ${perimeter} centimeters. The height of this triangle is $k\\sqrt{3}$ centimeters, where $k$ is a constant. What is the value of $k$?`,
       figureCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: k.toString(),
       explanation: `An equilateral triangle has three equal sides, so each side is $s = \\frac{${perimeter}}{3} = ${side}$ centimeters. The height of an equilateral triangle with side $s$ is $\\frac{s}{2}\\sqrt{3}$. Substituting the side length, the height is $\\frac{${side}}{2}\\sqrt{3} = ${k}\\sqrt{3}$ centimeters. Since the height is given as $k\\sqrt{3}$, it follows that $k = ${k}$.`
     };

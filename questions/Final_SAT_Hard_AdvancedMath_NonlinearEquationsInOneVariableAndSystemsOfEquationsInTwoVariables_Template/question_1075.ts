@@ -62,7 +62,7 @@ export const generator_1075 = {
     return {
       questionText: `In the xy-plane, a line with equation $${lineCoeff}y=c$ for some constant $c$ intersects a parabola at exactly one point. If the parabola has equation $y=-${parabolaA}x^2+${parabolaB}x$, what is the value of $c$?`,
       figureCode: figureCode,
-      options: null,
+      options: [],
       correctAnswer: cValue, // Accepts fraction or decimal equivalent
       explanation: `The correct answer is $${cValue}$ (or ${decimalValue}). From the line, $y=\\frac{c}{${lineCoeff}}$. Substituting into the parabola: $\\frac{c}{${lineCoeff}}=-${parabolaA}x^2+${parabolaB}x$, giving $${parabolaA}x^2-${parabolaB}x+\\frac{c}{${lineCoeff}}=0$. For exactly one solution, the discriminant equals 0: $(-${parabolaB})^2-4(${parabolaA})(\\frac{c}{${lineCoeff}})=0$, so $${parabolaB*parabolaB}=\\frac{${4*parabolaA}c}{${lineCoeff}}$, thus $c=\\frac{${parabolaB*parabolaB*lineCoeff}}{${4*parabolaA}}=${cValue}$.`
     };

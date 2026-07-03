@@ -34,7 +34,7 @@ export const generator_300 = {
     return {
       questionText: `A customer plans to rent a boat. The boat rental costs \\$${hourlyRate} per hour, and the customer will also have to pay for a water safety course that costs \\$${fixedCost}. The customer wants to spend no more than \\$${budget} for the rental and the course. If the boat rental is available only for a whole number of hours, what is the maximum number of hours for which the customer can rent the boat?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: maxHoursWhole.toString(),
       explanation: explanation
     };

@@ -32,7 +32,7 @@ export const generator_978 = {
     return {
       questionText: `The population density of Cedar County is $${density}$ people per square mile. The county has a population of $${population.toLocaleString()}$ people. What is the area, in square miles, of Cedar County?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: area.toString(),
       explanation: `The correct answer is ${area}. It's given that the population density of Cedar County is $${density}$ people per square mile and the county has a population of $${population.toLocaleString()}$ people. Based on the population density, it follows that the area of Cedar County is $\\frac{${population.toLocaleString()} \\text{ people}}{${density} \\text{ people per square mile}}$, or ${area} square miles.`
     };

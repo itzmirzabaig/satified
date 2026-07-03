@@ -67,7 +67,7 @@ export const generator_1111 = {
     return {
       questionText: `For exponential $f$, the table shows values where $a>1$. If $f(k)=a^{${target}}$, what is $k$?`,
       figureCode: tableCode,
-      options: null,
+      options: [],
       correctAnswer: k.toString(),
       explanation: `The exponents increase by ${diff} each time $x$ increases by 1, so $f(x)=a^{${start}+${diff}(x-1)}=a^{${diff}x${bTerm}}$. Since $f(k)=a^{${target}}$, equating the powers gives $a^{${diff}k${bTerm}}=a^{${target}}$. The exponents must be equal, so $k=${k}$.`
     };

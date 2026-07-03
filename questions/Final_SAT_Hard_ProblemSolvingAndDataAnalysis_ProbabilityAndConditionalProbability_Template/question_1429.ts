@@ -86,7 +86,7 @@ export const generator_1429 = {
     return {
       questionText: `Human blood can be classified into four common blood types—A, B, AB, and O. It is also characterized by the presence or absence of the rhesus factor. The table shows the distribution of blood type and rhesus factor for a group of people. If one of these people who is rhesus negative is chosen at random, the probability that the person has blood type B is $\\frac{1}{9}$. What is the value of $x$?`,
       figureCode: tableCode,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The total number of rhesus negative people is $${aNegative} + ${bNegative} + ${abNegative} + x = ${aNegative + bNegative + abNegative} + x$. Given the probability of selecting a type B person from this group is $\\frac{1}{9}$, we set up the equation: $\\frac{${bNegative}}{${aNegative + bNegative + abNegative} + x} = \\frac{1}{9}$. Cross-multiplying gives $${bNegative * 9} = ${aNegative + bNegative + abNegative} + x$, so $x = ${correctAnswer}$.`
     };

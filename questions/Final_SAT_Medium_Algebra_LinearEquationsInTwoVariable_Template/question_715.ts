@@ -51,7 +51,7 @@ export const generator_715 = {
     return {
       questionText: `What is the slope of the graph of $y=\\frac{1}{${d}}(${a}x+${b})+${c}x$ in the $xy$-plane? Enter your answer as a fraction or decimal.`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `A linear equation can be written in the form $y=mx+b$, where $m$ is the slope of the graph of the equation in the $xy$-plane and $(0, b)$ is the $y$-intercept. Distributing the $\\frac{1}{${d}}$ in the equation $y=\\frac{1}{${d}}(${a}x+${b})+${c}x$ yields $y=\\frac{${a}}{${d}}x+\\frac{${b}}{${d}}+${c}x$. Combining the like terms in $x$ on the right-hand side gives a slope of $m=\\frac{${a}}{${d}}+${c}=\\frac{${a}+${c}\\cdot${d}}{${d}}=\\frac{${slopeNum}}{${d}}=${answerTex}$. Therefore, the slope of the graph of the given equation in the $xy$-plane is $m=${answerTex}$.`
     };

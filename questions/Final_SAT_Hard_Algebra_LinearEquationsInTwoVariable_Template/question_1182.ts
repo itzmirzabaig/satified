@@ -38,7 +38,7 @@ export const generator_1182 = {
     return {
       questionText: `A certain apprentice has enrolled in ${total} hours of training courses. The equation $${onSiteHours}x+${onlineHours}y=${total}$ represents this situation, where $x$ is the number of on-site training courses and $y$ is the number of online training courses this apprentice has enrolled in. How many more hours does each online training course take than each on-site training course?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: difference.toString(),
       explanation: `In the equation $${onSiteHours}x+${onlineHours}y=${total}$, the coefficient ${onSiteHours} represents hours per on-site course and ${onlineHours} represents hours per online course. The difference is $${onlineHours}-${onSiteHours}=${difference}$ hours.`
     };

@@ -1,5 +1,4 @@
-import { shuffle } from '../../utils/math';
-import { getRandomInt } from '../../utils/math';
+import { shuffle, getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**

@@ -37,7 +37,7 @@ export const generator_1168 = {
     // Form: a(kx + b) = cx + d where ak = c but ab ≠ d
     
     let valid = false;
-    let a: number, c: number, kNum: number, kDenom: number, finalKNum: number, finalKDenom: number, b: number, d: number;
+    let a!: number, c!: number, kNum: number, kDenom: number, finalKNum!: number, finalKDenom!: number, b!: number, d!: number;
     
     while (!valid) {
       a = getRandomInt(2, 5);
@@ -85,7 +85,7 @@ Note that $${finalKNum}/${finalKDenom}$ is the correct answer format. The consta
     return {
       questionText: `In the equation $${a}(kx + ${b}) = ${c}x + ${d}$, $k$ is a constant. The equation has no solution. What is the value of $k$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: finalKDenom === 1 ? correctAnswer : `${finalKNum}/${finalKDenom}`,
       explanation: explanation
     };

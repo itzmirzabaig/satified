@@ -30,7 +30,7 @@ export const generator_1163 = {
     // Form: a(t + b) = c where a is negative, c is positive
     
     let valid = false;
-    let a: number, b: number, c: number, t: number;
+    let a!: number, b!: number, c!: number, t!: number;
     
     while (!valid) {
       a = getRandomInt(-5, -2);
@@ -51,7 +51,7 @@ export const generator_1163 = {
     return {
       questionText: `What value of $t$ is the solution to the equation $${a}(t + ${b}) = ${c}$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: t.toString(),
       explanation: explanation
     };

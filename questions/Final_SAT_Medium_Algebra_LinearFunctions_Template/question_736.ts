@@ -44,7 +44,7 @@ export const generator_736 = {
     return {
       questionText: `A company's total cost, in dollars, to produce $x$ shirts is given by the function $c(x) = mx + ${fixedCost}$, where $m$ is a constant. The total cost to produce ${amount1} shirts is \\$${cost1}. What is the total cost, in dollars, to produce ${amount2} shirts?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: cost2.toString(),
       explanation: `First find $m$: $c(${amount1}) = m(${amount1}) + ${fixedCost} = ${cost1}$, so $m(${amount1}) = ${cost1 - fixedCost}$, giving $m = ${m}$. Then $c(${amount2}) = ${m}(${amount2}) + ${fixedCost} = ${cost2}$.`
     };

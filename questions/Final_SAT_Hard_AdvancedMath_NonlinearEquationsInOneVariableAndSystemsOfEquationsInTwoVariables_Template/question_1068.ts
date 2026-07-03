@@ -46,7 +46,7 @@ export const generator_1068 = {
     return {
       questionText: `If $${a}x^2 - ${2*a*b}x - ${constant} = 0$, what is the value of $x^2 - ${coefficient}x$?`,
       figureCode: figureCode,
-      options: null,
+      options: [],
       correctAnswer: answer.toString(),
       explanation: `The correct answer is $${answer}$. Dividing each side of the given equation by $${a}$ yields $x^2-${coefficient}x-${c}=0$. Adding $${c}$ to each side yields $x^2-${coefficient}x=${c}$.`
     };

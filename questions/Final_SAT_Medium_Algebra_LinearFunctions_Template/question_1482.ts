@@ -80,7 +80,7 @@ export const generator_1482 = {
     return {
       questionText: `The function $f$ is defined by $f(x) = \\frac{${A}}{${B}}x + \\frac{${C_adjusted}}{${B}}$. For what value of $x$ is $f(x) = ${targetVal}$?`,
       figureCode: null,
-      options: null, // Fill in blank
+      options: [], // Fill in blank
       correctAnswer: xTarget.toString(),
       explanation: `Set $f(x) = ${targetVal}$:
       

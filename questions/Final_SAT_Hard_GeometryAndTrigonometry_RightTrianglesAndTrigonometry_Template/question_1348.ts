@@ -82,7 +82,7 @@ export const generator_1348 = {
     return {
       questionText: `A triangle with angle measures $30^{\\circ}$, $60^{\\circ}$, and $90^{\\circ}$ has a perimeter of $${termConst} + ${termRad}\\sqrt{3}$. What is the length of the longest side of the triangle?`,
       figureCode: svgCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: longestSide.toString(),
       explanation: `Choice ${longestSide} is correct. 
       

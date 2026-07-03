@@ -33,7 +33,7 @@ export const generator_264 = {
     return {
       questionText: `If $y=${slope}x+${intercept}$, what is the value of $y$ when $x=${xValue}$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `Substituting ${xValue} for $x$: $y = ${slope}(${xValue}) + ${intercept} = ${slope * xValue} + ${intercept} = ${result}$.`
     };

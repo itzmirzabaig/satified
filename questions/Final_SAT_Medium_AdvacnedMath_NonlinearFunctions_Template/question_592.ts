@@ -35,7 +35,7 @@ export const generator_592 = {
     return {
       questionText,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer,
       explanation
     };

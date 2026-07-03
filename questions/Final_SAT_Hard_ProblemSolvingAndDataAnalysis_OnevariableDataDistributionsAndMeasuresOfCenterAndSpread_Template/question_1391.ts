@@ -121,7 +121,7 @@ export const generator_1391 = {
     return {
       questionText: "The two box plots show the distribution of number of books read over the summer by the students in two different English classes. What is the positive difference between the ranges of number of books read over the summer for the two classes?",
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: difference.toString(),
       explanation: `The correct answer is ${difference}. The range is the difference between maximum and minimum values. Class A range is ${classAMax} - ${classAMin} = ${rangeA}; Class B range is ${classBMax} - ${classBMin} = ${rangeB}. The positive difference is |${rangeB} - ${rangeA}| = ${difference}.`
     };

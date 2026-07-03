@@ -42,7 +42,7 @@ export const generator_1121 = {
     return {
       questionText: `$g(x)=x${factor2}${factor3}^2$. If $g(${shift}-w)=0$, what is the sum of all possible $w$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: sum.toString(),
       explanation: `$g(${shift}-w)=(${shift}-w)(${shift}-w-${r2})(${shift}-w${r3 >= 0 ? `-${r3}` : `+${Math.abs(r3)}`})^2=0$. So ${shift}-w\\in\\{0,${r2},${r3}\\}$, giving $w\\in\\{${w1},${w2},${w3}\\}$. Sum is ${sum}$.`
     };

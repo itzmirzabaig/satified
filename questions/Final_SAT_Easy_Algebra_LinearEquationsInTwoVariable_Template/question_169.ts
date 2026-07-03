@@ -22,7 +22,7 @@ export const generator_169 = {
     return {
       questionText: `Line $k$ is $y = \\frac{1}{4}x + 1$. Line $j$ is parallel. What is the slope of $j$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: "1/4",
       explanation: `Parallel lines have equal slopes. Since $k$ has slope $1/4$, $j$ does too.`
     };

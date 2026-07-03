@@ -30,7 +30,7 @@ export const generator_706 = {
     return {
       questionText: `A line in the xy-plane has a slope of ${slope} and passes through the point \\( (0,${intercept}) \\). The equation \\( y=px+r \\) defines the line, where \\( p \\) and \\( r \\) are constants. What is the value of \\( p \\) ?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: slope.toString(),
       explanation: `The correct answer is ${slope}. It's given that the equation \\( y=px+r \\) defines the line. In this equation, \\( p \\) represents the slope of the line and \\( r \\) represents the y-coordinate of the y-intercept of the line. It's given that the line has a slope of ${slope}. Therefore, the value of \\( p \\) is ${slope}.`
     };

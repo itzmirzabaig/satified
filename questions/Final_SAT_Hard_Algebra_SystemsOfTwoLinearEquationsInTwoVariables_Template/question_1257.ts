@@ -47,7 +47,7 @@ export const generator_1257 = {
       result = {
         questionText: `A piece of wire with a length of ${total} inches is cut into two parts. One part has a length of $x$ inches, and the other part has a length of $y$ inches. The value of $x$ is ${add} more than ${mult} times the value of $y$. What is the value of $x$?`,
         figureCode: null,
-        options: null,
+        options: [],
         correctAnswer: x_val.toString(),
         explanation: `The system is $x + y = ${total}$ and $x = ${mult}y + ${add}$. Substituting gives ${mult}y + ${add} + y = ${total}$, so ${mult + 1}y = ${total - add}$ and $y = ${y_val}$. Therefore, $x = ${mult}(${y_val}) + ${add} = ${x_val}$.`
       };

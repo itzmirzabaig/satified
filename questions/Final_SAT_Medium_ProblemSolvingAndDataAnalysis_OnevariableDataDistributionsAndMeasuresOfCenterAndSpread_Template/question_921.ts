@@ -38,7 +38,7 @@ export const generator_921 = {
     return {
       questionText: `If $a$ is the mean and $b$ is the median of nine consecutive integers starting from ${k}, what is the value of $|a-b|$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: difference.toString(),
       explanation: `The correct answer is ${difference}. The nine consecutive integers are ${integers.join(', ')}. The mean is $\\\\frac{${integers.join('+')}}{9} = \\\\frac{${sum}}{9} = ${mean}$. The median is the 5th value: ${median}. Therefore, $|a-b| = |${mean} - ${median}| = ${difference}$. For any set of consecutive integers (or any symmetric distribution), the mean equals the median, so their absolute difference is always 0.`
     };

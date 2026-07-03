@@ -27,16 +27,16 @@ export const generator_1427 = {
     // STEP 1: Generate table structure with constraints
     // We need: Group A, B, C; Age groups 0-9, 10-19, 20+; Each group sums to same total
     
-    let totalPerGroup: number;
-    let groupA_0_9: number;
-    let groupA_10_19: number;
-    let groupA_20_plus: number;
-    let groupB_0_9: number;
-    let groupB_10_19: number;
-    let groupB_20_plus: number;
-    let groupC_0_9: number;
-    let groupC_10_19: number;
-    let groupC_20_plus: number;
+    let totalPerGroup!: number;
+    let groupA_0_9!: number;
+    let groupA_10_19!: number;
+    let groupA_20_plus!: number;
+    let groupB_0_9!: number;
+    let groupB_10_19!: number;
+    let groupB_20_plus!: number;
+    let groupC_0_9!: number;
+    let groupC_10_19!: number;
+    let groupC_20_plus!: number;
     
     // Use while loop instead of recursion to ensure valid values
     let valid = false;

@@ -33,7 +33,7 @@ export const generator_60 = {
     return {
       questionText: `The parabola shown intersects the y-axis at the point $(x, y)$. What is the value of $y$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: k.toString(),
       explanation: `The y-intercept occurs when $x=0$. Substituting $0$ for $x$ in the equation $y = x^2 + ${k}$ yields $y = 0^2 + ${k} = ${k}$.`
     };

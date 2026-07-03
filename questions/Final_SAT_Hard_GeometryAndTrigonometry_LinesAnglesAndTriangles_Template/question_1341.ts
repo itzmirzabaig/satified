@@ -107,7 +107,7 @@ export const generator_1341 = {
     return {
       questionText: `Intersecting lines r, s, and t are shown. The measure of one angle is $${exteriorAngle}^\\\\circ$ and the measure of another angle is $${smallAngle}^\\\\circ$. What is the value of $x$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: x.toString(),
       explanation: `The exterior angle is $${exteriorAngle}^\\\\circ$, so the adjacent interior angle is $180 - ${exteriorAngle} = ${interiorAngle}^\\\\circ$. The value of $x$, being the exterior angle of the non-adjacent interior angles, is $${smallAngle} + ${interiorAngle} = ${x}$.`
     };

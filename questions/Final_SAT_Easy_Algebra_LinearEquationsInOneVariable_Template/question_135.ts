@@ -31,7 +31,7 @@ export const generator_135 = {
     return {
       questionText: `Nasir bought storage bins that were each the same price. He used a coupon for ${discount} off the entire purchase. The cost for the entire purchase after using the coupon was ${finalPrice}. If Nasir bought ${numBins} storage bins, what was the original price, in dollars, for one storage bin?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: unitPrice.toString(),
       explanation: `The original total before the discount is the final price plus the discount amount: ${finalPrice} + ${discount} = ${originalTotal}. The price for one storage bin is found by dividing the original total by the number of bins: ${originalTotal} / ${numBins} = ${unitPrice}.`
     };

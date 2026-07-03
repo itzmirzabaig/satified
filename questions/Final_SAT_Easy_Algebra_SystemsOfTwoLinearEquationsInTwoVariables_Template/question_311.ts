@@ -38,7 +38,7 @@ export const generator_311 = {
     return {
       questionText: `The graph of a system of linear equations is shown. The solution to the system is $(x,y)$. What is the value of $x$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: xIntersect.toString(),
       explanation: `The solution is the intersection point. The lines intersect where $${m1}x ${b1 >= 0 ? '+' : '-'}${Math.abs(b1)} = ${m2}x + ${b2}$. Solving: $${m1 - m2}x = ${b2 - b1}$, so $x = ${xIntersect}$.`
     };

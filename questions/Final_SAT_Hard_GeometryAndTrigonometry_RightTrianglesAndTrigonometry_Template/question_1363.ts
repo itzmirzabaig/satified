@@ -59,7 +59,7 @@ export const generator_1363 = {
     return {
       questionText: `In triangle RST above, point W (not shown) lies on RT. What is the value of $\\cos (\\angle RSW) - \\sin (\\angle WST)$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: "0",
       explanation: `The correct answer is 0. Note that no matter where point W is on $RT$, the sum of the measures of $\\angle RSW$ and $\\angle WST$ is equal to the measure of $\\angle RST$, which is $90^{\circ}$. Thus, $\\angle RSW$ and $\\angle WST$ are complementary angles. Since the cosine of an angle is equal to the sine of its complement, $\\cos(\\angle RSW) = \\sin(\\angle WST)$, so their difference is 0.`
     };

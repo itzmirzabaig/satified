@@ -53,7 +53,7 @@ export const generator_767 = {
     return {
       questionText: `The table shows four values of $x$ and their corresponding values of $f(x)$. There is a linear relationship between $x$ and $f(x)$ that is defined by the equation $f(x) = mx ${bSign} ${bAbs}$, where $m$ is a constant. What is the value of $m$? ${tableCode}`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: m.toString(),
       explanation: `Substitute a row from the table into $f(x) = mx ${bSign} ${bAbs}$. Using $x = ${x1}$ and $f(x) = ${y1}$ gives $f(${x1}) = m(${x1}) ${bSign} ${bAbs} = ${y1}$. Adding ${bAbs} to both sides gives $m \\cdot ${x1} = ${y1 + bAbs}$, so $m = \\frac{${y1 + bAbs}}{${x1}} = ${m}$.`
     };

@@ -101,7 +101,7 @@ export const generator_1344 = {
     return {
       questionText: `In the triangle shown, what is the value of $\\sin x^{\\circ}$?`,
       figureCode: svgCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: `${opposite}/${hyp}`, // Format: 16/23
       explanation: `In a right triangle, the sine of an acute angle is defined as the ratio of the length of the opposite side to the length of the hypotenuse. 
       

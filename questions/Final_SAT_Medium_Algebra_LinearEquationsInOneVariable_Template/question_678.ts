@@ -37,7 +37,7 @@ export const generator_678 = {
     return {
       questionText: `A museum rents ${product} to visitors. The museum earns revenue of ${pricePerUnit} for each ${product.slice(0, -1)} rented for the day. On Wednesday, the museum earned ${profit} in profit from renting ${product} after paying daily expenses of ${expenses}. How many ${product} did the museum rent on Wednesday? (profit = total revenue – total expenses)`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. If $x$ represents the number of ${product} the museum rented on Wednesday, the total revenue is $${pricePerUnit}x$. Because profit = total revenue - total expenses, the equation $${profit}=${pricePerUnit}x-${expenses}$ represents this situation. Adding ${expenses} to both sides yields $${pricePerUnit}x=${profit + expenses}$. Dividing both sides by ${pricePerUnit} yields $x=${correctAnswer}$.`
     };

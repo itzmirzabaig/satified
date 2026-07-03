@@ -42,7 +42,7 @@ export const generator_1314 = {
     return {
       questionText: `Circle A in the xy-plane has the equation $\\\\( (x${h >= 0 ? '-' : '+'}${Math.abs(h)})^{2}+(y-${k})^{2}=${rA*rA} \\\\)$. Circle B has the same center as circle A. The radius of circle B is ${scale} times the radius of circle A. The equation defining circle B in the xy-plane is $\\\\( (x${h >= 0 ? '-' : '+'}${Math.abs(h)})^{2}+(y-${k})^{2}=k \\\\)$, where $k$ is a constant. What is the value of $k$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: kVal.toString(),
       explanation: `Circle A has center $(${h}, ${k})$ and radius $${rA}$. Circle B has the same center and radius $${scale} \\\\times ${rA} = ${rB}$. The equation of circle B is $(x${h >= 0 ? '-' : '+'}${Math.abs(h)})^{2}+(y-${k})^{2}=${rB}^{2}=${kVal}$. Therefore, $k = ${kVal}$.`
     };

@@ -86,7 +86,7 @@ export const generator_907 = {
     return {
       questionText: `A random sample of ${sampleSize} town voters were asked if they plan to vote for ${candidate.a} or ${candidate.b} for ${candidate.position}. The results were sorted by gender and are shown in the table below.Based on the table, what is the best estimate of the number of voters who plan to vote for ${candidate.a}?`,
       figureCode: tableCode, // Table is embedded in questionText
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: estimatedTotalForA.toString(),
       explanation: `The correct answer is ${estimatedTotalForA.toLocaleString()}. According to the table, of ${sampleSize} voters randomly sampled, the total number of ${gender1.toLowerCase()} and ${gender2.toLowerCase()} voters who plan to vote for ${candidate.a} is ${totalForA}. The best estimate of the total number of voters in the town who plan to vote for ${candidate.a} is the fraction of voters in the sample who plan to vote for ${candidate.a}, ${totalForA}/${sampleSize}, multiplied by the total voter population of ${totalPopulation.toLocaleString()}. Therefore, the answer is (${totalForA}/${sampleSize})(${totalPopulation.toLocaleString()}) = ${estimatedTotalForA.toLocaleString()}.`
     };

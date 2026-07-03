@@ -85,7 +85,7 @@ Comparing with the right side, the coefficients match. From the expansion, the v
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: explanation
     };

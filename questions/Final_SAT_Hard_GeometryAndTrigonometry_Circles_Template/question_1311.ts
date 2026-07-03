@@ -36,7 +36,7 @@ export const generator_1311 = {
     return {
       questionText: `The equation $(x${h >= 0 ? '-' : '+'}${Math.abs(h)})^{2}+(y${k >= 0 ? '-' : '+'}${Math.abs(k)})^{2}=${rSquared}$ defines a circle in the $xy$-plane. What is the radius of the circle?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: r.toString(),
       explanation: `The equation is in standard form $(x-h)^{2}+(y-k)^{2}=r^{2}$. Comparing to the given equation, $r^{2}=${rSquared}$. Taking the square root, $r=${r}$ (radius is positive).`
     };

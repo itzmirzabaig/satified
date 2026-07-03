@@ -40,7 +40,7 @@ export const generator_774 = {
     return {
       questionText: `An event planner is organizing a party. It costs a onetime fee of \\$${venueFee} to rent the venue plus \\$${perAttendee} per attendee. The planner has a budget of \\$${budget}. What is the greatest number of attendees possible without exceeding the budget?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: maxAttendees.toString(),
       explanation: `Let $x$ be the number of attendees. The total cost must satisfy $${venueFee} + ${perAttendee}x \\le ${budget}$. Subtracting ${venueFee} from both sides gives $${perAttendee}x \\le ${remaining}$, and dividing by ${perAttendee} gives $x \\le ${maxAttendeesExact.toFixed(3)}$. Since the number of attendees must be a whole number, the greatest possible value is ${maxAttendees}.`
     };

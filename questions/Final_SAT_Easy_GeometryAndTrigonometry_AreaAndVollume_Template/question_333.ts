@@ -30,7 +30,7 @@ export const generator_333 = {
     return {
       questionText: `What is the area, in square centimeters, of a rectangle with a length of $${length}$ centimeters (cm) and a width of $${width}$ cm?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: area.toString(),
       explanation: `The area of a rectangle is calculated by multiplying length by width. Therefore, the area is $${length} \\times ${width} = ${area}$ square centimeters.`
     };

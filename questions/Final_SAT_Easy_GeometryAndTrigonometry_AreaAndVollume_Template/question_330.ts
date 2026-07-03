@@ -30,7 +30,7 @@ export const generator_330 = {
     return {
       questionText: `The area of a rectangle is $${area}$ square inches. The length of the longest side of the rectangle is $${longSide}$ inches. What is the length, in inches, of the shortest side of this rectangle?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: shortSide.toString(),
       explanation: `The shortest side is found by dividing the area by the longest side: $${area} \\div ${longSide} = ${shortSide}$ inches.`
     };

@@ -33,7 +33,7 @@ export const generator_245 = {
     return {
       questionText: `The function $f(x) = ${slope}x + ${intercept}$ gives the total number of people on a company retreat with $x$ managers. What is the total number of people on a company retreat with ${xValue} managers?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `Substituting ${xValue} for $x$: $f(${xValue}) = ${slope}(${xValue}) + ${intercept} = ${slope * xValue} + ${intercept} = ${result}$.`
     };

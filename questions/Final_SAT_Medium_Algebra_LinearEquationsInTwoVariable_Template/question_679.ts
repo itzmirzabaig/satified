@@ -57,7 +57,7 @@ export const generator_679 = {
     return {
       questionText: `Line $k$ is defined by $y=${slopeKTex} x+${yIntercept}$. Line $j$ is perpendicular to line $k$ in the $xy$-plane. What is the slope of line $j$? Enter your answer as a fraction or decimal.`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The slope of line $j$ is the negative reciprocal of the slope of line $k$. The slope of line $k$ is $${slopeKTex}$. To find the negative reciprocal, flip the fraction and change its sign, which gives $${answerTex}$.`
     };

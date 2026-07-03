@@ -61,7 +61,7 @@ export const generator_1385 = {
     return {
       questionText: `Data set A consists of the heights of ${countA} buildings and has a mean of ${meanA} meters. Data set B consists of the heights of ${countB} buildings and has a mean of ${meanB} meters. Data set C consists of the heights of the ${countA + countB} buildings from data sets A and B. What is the mean, in meters, of data set C?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: Math.round(combinedMean).toString(),
       explanation: `The correct answer is ${Math.round(combinedMean)}. The mean of a data set is computed by dividing the sum of the values by the number of values. The sum of heights in data set A is ${countA} × ${meanA} = ${sumA} meters. The sum of heights in data set B is ${countB} × ${meanB} = ${sumB} meters. Since data set C consists of all ${countA + countB} buildings, the mean of data set C is (${sumA} + ${sumB}) / ${countA + countB} = ${(sumA + sumB)}/${countA + countB} = ${combinedMean.toFixed(2)}, which is ${Math.round(combinedMean)} meters when rounded.`
     };

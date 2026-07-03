@@ -27,7 +27,7 @@ export const generator_187 = {
     return {
       questionText: `The y-intercept of $y = ${m}x ${b < 0 ? b : `+ ${b}`}$ is $(0, y)$. What is $y$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: b.toString(),
       explanation: `Set $x=0$ to find $y=${b}$.`
     };

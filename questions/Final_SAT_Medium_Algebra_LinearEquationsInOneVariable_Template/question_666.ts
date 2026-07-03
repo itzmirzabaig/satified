@@ -38,7 +38,7 @@ export const generator_666 = {
     return {
       questionText: `A line segment that has a length of ${adjustedTotal} centimeters (cm) is divided into three parts. One part is ${part1} cm long. The other two parts have lengths that are equal to each other. What is the length, in cm, of one of the other two parts of equal length?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. If \\(x\\) represents the length, in cm, of each of the two parts of equal length, then \\(${part1}+x+x=${adjustedTotal}\\), or \\(${part1}+2x=${adjustedTotal}\\), represents this situation. Subtracting ${part1} from each side of this equation yields \\(2x=${remaining}\\). Dividing each side of this equation by 2 yields \\(x=${answer}\\). Therefore, the length, in cm, of one of the two parts of equal length is ${correctAnswer}.`
     };

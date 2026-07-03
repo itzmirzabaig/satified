@@ -31,7 +31,7 @@ export const generator_113 = {
     return {
       questionText: `What is the solution to the given equation? $$${coeff}x + ${const1} = ${rightSide}$$`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `Subtract ${const1}: $${coeff}x = ${rightSide - const1}$. Divide by ${coeff}: $x = ${result}$. Check: $${coeff}(${result}) + ${const1} = ${coeff * result} + ${const1} = ${rightSide}$.`
     };

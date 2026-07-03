@@ -39,7 +39,7 @@ export const generator_56 = {
     return {
       questionText: `The y-intercept of the graph shown is $(x, y)$. What is the value of $y$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: yIntVal.toString(),
       explanation: `The y-intercept is at $x=0$. Looking at the graph, the parabola crosses the y-axis at $y=${yIntVal}$.`
     };

@@ -93,7 +93,7 @@ ${eq2_str}
 $$
 The solution to the given system of equations is $(x, y)$. What is the value of $30x$?`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: answer.toString(),
       explanation: `
         The correct answer is ${answer}.

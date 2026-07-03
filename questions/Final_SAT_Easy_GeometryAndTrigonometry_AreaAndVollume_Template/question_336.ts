@@ -29,7 +29,7 @@ export const generator_336 = {
     return {
       questionText: `Each side of a square has a length of ${side} centimeters. What is the perimeter of this square?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: perimeter.toString(),
       explanation: `The perimeter of a square is calculated by multiplying the side length by 4. Therefore, the perimeter is $4 \\times ${side} = ${perimeter}$.`
     };

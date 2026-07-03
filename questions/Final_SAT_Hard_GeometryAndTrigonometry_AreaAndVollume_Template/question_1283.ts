@@ -37,7 +37,7 @@ export const generator_1283 = {
     return {
       questionText: `A cube has a volume of $${volume.toLocaleString()}$ cubic units. What is the surface area, in square units, of the cube?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: surfaceArea.toString(),
       explanation: `The volume of a cube is $s^3$, so $s = \\sqrt[3]{${volume.toLocaleString()}} = ${sideLength}$. Each face has area $${sideLength}^2 = ${faceArea.toLocaleString()}$, and a cube has 6 faces, so the surface area is $6 \\times ${faceArea.toLocaleString()} = ${surfaceArea.toLocaleString()}$.`
     };

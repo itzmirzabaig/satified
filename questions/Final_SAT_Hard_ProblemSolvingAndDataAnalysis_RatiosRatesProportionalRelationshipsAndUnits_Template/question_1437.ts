@@ -52,7 +52,7 @@ export const generator_1437 = {
     return {
       questionText: `To study the moisture content in a group of trees, samples from the trunk of each tree were taken from trees and cut in the shape of a cube. The length of the edge of one of these cubes is ${edgeLength.toFixed(2)} centimeters. If this cube has a mass of ${mass} grams, what is the density of this cube, in grams per cubic centimeter?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. The volume of a cube with edge length ${edgeLength} cm is (${edgeLength})³ = ${volume} cubic centimeters. Density = Mass/Volume = ${mass}/${volume} = ${calculatedDensity} grams per cubic centimeter.`
     };

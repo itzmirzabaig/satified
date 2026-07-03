@@ -37,7 +37,7 @@ export const generator_827 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: xValue.toString(),
       explanation: `The correct answer is ${xValue}. It's given by the second equation in the system that \\( ${yCoeff} y=${right2} \\). Substituting ${right2} for \\( ${yCoeff} y \\) in the first equation in the system, \\( x+${yCoeff} y=${right1} \\), yields \\( x+${right2}=${right1} \\). Subtracting ${right2} from both sides of this equation yields \\( x=${xValue} \\).`
     };

@@ -128,7 +128,7 @@ export const generator_1193 = {
     return {
       questionText: `The graph shown models the possible combinations of cornflowers and wallflowers that can be purchased for exactly \\$${totalDollars.toFixed(2)}. What is the price, in dollars, of 1 cornflower?`,
       figureCode: finalFigure,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: priceCornflower.toFixed(2),
       explanation: `
         The x-axis represents the "Number of Cornflowers".

@@ -33,7 +33,7 @@ export const generator_239 = {
     return {
       questionText: `The function $f$ is defined by the equation $f(x) = ${slope}x + ${intercept}$. What is the value of $f(x)$ when $x = ${xValue}$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `Substituting ${xValue} for $x$ in the equation: $f(${xValue}) = ${slope}(${xValue}) + ${intercept} = ${slope * xValue} + ${intercept} = ${result}$.`
     };

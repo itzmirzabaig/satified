@@ -38,7 +38,7 @@ export const generator_759 = {
     return {
       questionText: `The function $f$ gives the monthly fee $f(x)$, in dollars, a facility charges to keep $x$ crates in storage. The function is defined by $f(x)=${rate}x+${fixedFee}$. What is the monthly fee, in dollars, the facility charges to keep ${crates} crates in storage?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: totalFee.toString(),
       explanation: `Substituting ${crates} for $x$ in $f(x)=${rate}x+${fixedFee}$ yields $f(${crates})=${rate}(${crates})+${fixedFee}=${rate * crates}+${fixedFee}=${totalFee}$.`
     };

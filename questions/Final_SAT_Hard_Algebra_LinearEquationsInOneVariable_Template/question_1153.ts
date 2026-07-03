@@ -26,7 +26,7 @@ export const generator_1153 = {
   generate: (): QuestionData => {
     // STEP 1: Generate random values
     let valid = false;
-    let totalSides: number, length1: number, length2: number, multiplier: number, constantSides: number, nCoeff: number;
+    let totalSides!: number, length1!: number, length2!: number, multiplier!: number, constantSides!: number, nCoeff!: number;
     
     while (!valid) {
       totalSides = getRandomInt(25, 40);

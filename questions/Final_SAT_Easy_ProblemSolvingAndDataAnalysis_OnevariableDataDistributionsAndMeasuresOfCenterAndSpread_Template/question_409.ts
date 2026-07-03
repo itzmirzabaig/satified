@@ -31,7 +31,7 @@ export const generator_409 = {
     return {
       questionText: `A list of 10 data values is shown.\n\n${values.join(', ')}\n\nWhat is the mean of these data?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: mean.toString(),
       explanation: `The mean is the sum of the values divided by the count. The sum is ${targetSum}, and there are 10 values, so the mean is ${targetSum}/10 = ${mean}.`
     };

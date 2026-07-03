@@ -66,7 +66,7 @@ export const generator_1088 = {
     return {
       questionText: `The table shows values where $y=f(x)+4$ and $f$ is quadratic. What is the y-coordinate of the y-intercept of $y=f(x)$?`,
       figureCode: tableCode,
-      options: null,
+      options: [],
       correctAnswer: f0.toString(),
       explanation: `The vertex of $y$ is at $(${h},${k})$, so $f$ has vertex at $(${h},${k-4})$. Using $f(x)=-4(x-${h})^2+${k-4}$, we get $f(0)=-4(${h})^2+${k-4}=${f0}$.`
     };

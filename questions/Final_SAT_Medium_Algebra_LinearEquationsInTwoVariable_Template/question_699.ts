@@ -35,7 +35,7 @@ export const generator_699 = {
     return {
       questionText: `The equation \\( ${coef}g + ${coef}b = ${total} \\) represents the number of blue tiles, \\( b \\), and the number of green tiles, \\( g \\), an artist needs for an ${total}-square-inch tile project. The artist needs ${bVal} blue tiles for the project. How many green tiles does he need?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: gVal.toString(),
       explanation: `The correct answer is ${gVal}. It's given that the equation \\( ${coef}g + ${coef}b = ${total} \\) represents the number of blue tiles, \\( b \\), and the number of green tiles, \\( g \\), an artist needs for an ${total}-square-inch tile project. It's also given that the artist needs ${bVal} blue tiles for the project. Substituting ${bVal} for \\( b \\) in the equation \\( ${coef}g + ${coef}b = ${total} \\) yields \\( ${coef}g + ${coef}(${bVal}) = ${total} \\), or \\( ${coef}g + ${coef * bVal} = ${total} \\). Subtracting ${coef * bVal} from both sides of this equation yields \\( ${coef}g = ${total - coef * bVal} \\). Dividing both sides of this equation by ${coef} yields \\( g = ${gVal} \\). Therefore, the artist needs ${gVal} green tiles for the project.`
     };

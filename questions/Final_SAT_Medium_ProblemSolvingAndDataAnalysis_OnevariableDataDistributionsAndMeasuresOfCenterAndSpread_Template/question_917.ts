@@ -56,7 +56,7 @@ export const generator_917 = {
     return {
       questionText: `The table shows the frequency of values in a data set. What is the minimum value of the data set?`,
       figureCode: tableCode,
-      options: null,
+      options: [],
       correctAnswer: minValue.toString(),
       explanation: `The minimum value is the least value with a frequency greater than zero. In this set, ${minValue} is the lowest value with frequency ${frequencies[0]}. Note that frequency indicates how many times a value appears, and the minimum is determined by the value itself, not by how frequently it appears.`
     };

@@ -43,7 +43,7 @@ export const generator_1338 = {
     return {
       questionText: `A line intersects two parallel lines, forming four acute angles and four obtuse angles. The measure of one of the acute angles is $(${a}x - ${b})^{\\circ}$. The sum of the measures of one of the acute angles and three of the obtuse angles is $(${coeffX}x + w)^{\\circ}$. What is the value of $w$?`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: wVal.toString(),
       explanation: `Let the measure of the acute angle be $A = ${a}x - ${b}$.
 Since the four acute angles are congruent and the four obtuse angles are congruent, and an acute angle and an obtuse angle form a linear pair (sum to $180^{\\circ}$), the measure of an obtuse angle $O$ is:

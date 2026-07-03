@@ -51,7 +51,7 @@ export const generator_979 = {
     return {
       questionText: `A competition consisted of four different events. One participant completed the first event with an average speed of $${speedMph.toFixed(3)}$ miles per hour. What was this average speed, in yards per hour? (1 mile = $${yardsPerMile}$ yards)`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: String(speedYph),
       explanation: `The correct answer is ${speedYphDisplay}. It's given that 1 mile = $${yardsPerMile}$ yards. It follows that an average speed of $${speedMph.toFixed(3)}$ miles per hour is equivalent to $${speedMph.toFixed(3)} \\text{ miles/1 hour} \\times ${yardsPerMile} \\text{ yards/1 mile}$, or ${speedYphDisplay} yards per hour.`
     };

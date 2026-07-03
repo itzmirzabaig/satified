@@ -30,7 +30,7 @@ export const generator_346 = {
     return {
       questionText: `A triangle has a base length of ${base} centimeters and a height of ${height} centimeters. What is the area, in square centimeters, of the triangle?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: area.toString(),
       explanation: `The area of a triangle is calculated using the formula $A = \\frac{1}{2}bh$. Therefore, the area is $\\frac{1}{2}(${base})(${height}) = ${area}$ square centimeters.`
     };

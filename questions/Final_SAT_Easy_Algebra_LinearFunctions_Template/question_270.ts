@@ -33,7 +33,7 @@ export const generator_270 = {
     return {
       questionText: `The function $f$ represents the total cost, in dollars, of attending an arcade when $x$ games are played. The function is $f(x) = ${baseCost} + ${perGame}x$. How many games can be played for a total cost of $${targetCost}$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: numGames.toString(),
       explanation: `Setting $f(x) = ${targetCost}$ gives ${targetCost} = ${baseCost} + ${perGame}x$. Subtracting ${baseCost} from both sides: ${targetCost - baseCost} = ${perGame}x$. Dividing by ${perGame}: $x = ${numGames}$.`
     };

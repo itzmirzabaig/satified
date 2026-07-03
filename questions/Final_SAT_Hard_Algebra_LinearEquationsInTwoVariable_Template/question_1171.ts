@@ -45,7 +45,7 @@ export const generator_1171 = {
     return {
       questionText: `Line \\( \\ell \\) is defined by \\( ${a}y+${b}x=${c} \\). Line \\( n \\) is perpendicular to line \\( \\ell \\) in the xy-plane. What is the slope of line \\( n \\) ?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `First, convert to slope-intercept form: $${a}y=-${b}x+${c}$, so $y=-\\frac{${b}}{${a}}x+\\frac{${c}}{${a}}$. The slope of line $\\ell$ is $-\\frac{${b}}{${a}}$. The perpendicular slope is the negative reciprocal: $\\frac{${b}}{${a}}${simplifiedDen === a ? '' : `=\\frac{${simplifiedNum}}{${simplifiedDen}}`}$.`
     };

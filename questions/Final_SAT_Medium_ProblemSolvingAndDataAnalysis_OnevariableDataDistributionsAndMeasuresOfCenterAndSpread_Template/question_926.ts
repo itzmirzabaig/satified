@@ -64,7 +64,7 @@ export const generator_926 = {
     return {
       questionText: `The frequency table summarizes the data values in a data set. What is the maximum data value in the data set?`,
       figureCode: tableCode,
-      options: null,
+      options: [],
       correctAnswer: maxValue.toString(),
       explanation: `The maximum value is the largest value present in the data set regardless of frequency (as long as frequency > 0). Here, the value ${maxValue} occurs ${frequencies[frequencies.length - 1]} times, making it the maximum. Note that although there is a gap at value ${values[values.length - 2]} with frequency 0, the maximum is still ${maxValue} because it has a positive frequency.`
     };

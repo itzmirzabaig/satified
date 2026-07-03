@@ -30,7 +30,7 @@ export const generator_1297 = {
     return {
       questionText: `Point $O$ is the center of a circle. The measure of arc $RS$ on this circle is $${arcMeasure}^\\circ$. What is the measure, in degrees, of its associated angle $ROS$?`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: arcMeasure.toString(),
       explanation: `
         The correct answer is ${arcMeasure}.

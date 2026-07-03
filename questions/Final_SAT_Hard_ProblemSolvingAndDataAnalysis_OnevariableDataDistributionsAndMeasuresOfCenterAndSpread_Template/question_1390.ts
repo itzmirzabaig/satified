@@ -87,7 +87,7 @@ export const generator_1390 = {
     return {
       questionText: `Two students each collected six rocks, and the mass of each rock is shown in the table. The mean mass of the second student's rocks is ${dec(meanDiff10)} kilograms greater than the mean mass of the first student's rocks. What is the value of x?`,
       figureCode: tableCode,
-      options: null,
+      options: [],
       correctAnswer: mass(x10),
       explanation: `The correct answer is ${mass(x10)}. The first student's six masses sum to ${dec(firstSum10)} kg, so the first student's mean mass is ${dec(firstSum10)} ÷ 6 = ${firstMean} kg. Because both students collected six rocks and the second student's mean is ${dec(meanDiff10)} kg greater, the second student's six masses must sum to ${dec(firstSum10)} + 6 × ${dec(meanDiff10)} = ${dec(secondSum10)} kg. The five known masses of the second student sum to ${dec(otherSum10)} kg, so x = ${dec(secondSum10)} − ${dec(otherSum10)} = ${mass(x10)} kg.`
     };

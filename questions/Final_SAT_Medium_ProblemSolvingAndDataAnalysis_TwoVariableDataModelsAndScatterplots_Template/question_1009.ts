@@ -84,7 +84,7 @@ export const generator_1009 = {
     return {
       questionText: "The scatterplot shows the recorded temperature $y$, in °C, of the air in the chamber $x$ minutes after the start of the study. What was the average rate of change, in °C per minute, of the recorded temperature from $x=5$ to $x=7$?",
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: rate.toString(),
       explanation: `At $x=5, y=${y5}$. At $x=7, y=${y7}$. The average rate of change is $(${y7} - ${y5}) / (7 - 5) = ${y7 - y5} / 2 = ${rate}$.`
     };

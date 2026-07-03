@@ -35,7 +35,7 @@ export const generator_991 = {
     return {
       questionText: `On April 18, 1775, Paul Revere set off on his midnight ride from Charlestown to Lexington. If he had ridden straight to Lexington without stopping, he would have traveled $${distance}$ miles in $${minutes}$ minutes. In such a ride, what would the average speed of his horse have been, to the nearest tenth of a mile per hour?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: mph.toFixed(1),
       explanation: `The correct answer is ${mph.toFixed(1)}. The average speed is the total distance divided by the total time. The total distance is $${distance}$ miles and the total time is $${minutes}$ minutes. Thus, the average speed is $\\frac{${distance}}{${minutes}}$ miles per minute. The question asks for the average speed in miles per hour, and there are 60 minutes in an hour; converting miles per minute to miles per hour gives the following: $\\frac{${distance}}{${minutes}} \\times 60 = \\frac{${distance * 60}}{${minutes}} \\approx ${mph.toFixed(2)}$ miles per hour. Therefore, to the nearest tenth of a mile per hour, the average speed of Paul Revere's ride would have been ${mph.toFixed(1)} miles per hour.`
     };

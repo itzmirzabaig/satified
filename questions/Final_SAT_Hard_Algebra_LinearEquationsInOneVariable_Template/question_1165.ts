@@ -85,7 +85,7 @@ export const generator_1165 = {
     return {
       questionText: `${equation}\nIn the given equation, $s$ and $r$ are constants, and $s > 0$. If the equation has infinitely many solutions, what is the value of $s$?`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: s.toString(),
       explanation: explanation
     };

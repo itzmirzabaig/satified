@@ -88,7 +88,7 @@ export const generator_1464 = {
     return {
       questionText: `Triangle $ABC$ is a right triangle with the right angle at $B$, as shown above. Triangle $DEF$ (not shown) is similar to triangle $ABC$, where vertex $D$ corresponds to vertex $A$, vertex $E$ corresponds to vertex $B$, and vertex $F$ corresponds to vertex $C$. What is the value of $\\sin D$?`,
       figureCode: svgCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: correctVal,
       explanation: `
 1. **Identify Corresponding Angles:**

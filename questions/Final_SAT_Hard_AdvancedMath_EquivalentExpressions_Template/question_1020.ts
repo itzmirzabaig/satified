@@ -77,7 +77,7 @@ Therefore, $\\frac{a}{b} = ${answerDisplay}$.`;
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: explanation
     };

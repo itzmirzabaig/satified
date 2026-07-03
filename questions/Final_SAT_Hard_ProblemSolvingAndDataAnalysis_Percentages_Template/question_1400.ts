@@ -39,7 +39,7 @@ export const generator_1400 = {
     return {
       questionText: `The regular price of a shirt at a store is \\$${regularPrice.toFixed(2)}. The sale price of the shirt is $${discountPct}\\%$ less than the regular price, and the sale price is $${markupPct}\\%$ greater than the store's cost for the shirt. What was the store's cost, in dollars, for the shirt? (Disregard the \\$ sign when entering your answer. For example, if your answer is \\$4.97, enter 4.97)`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: storeCost.toFixed(2),
       explanation: `The sale price is $${discountPct}\\%$ less than \\$${regularPrice.toFixed(2)}, so sale price $= ${regularPrice.toFixed(2)} \\times ${discountDecimal} = ${salePrice.toFixed(2)}$. This sale price is $${markupPct}\\%$ greater than cost, so $${salePrice.toFixed(2)} = ${markupDecimal} \\times \\text{cost}$. Therefore, $\\text{cost} = \\frac{${salePrice.toFixed(2)}}{${markupDecimal}} = ${storeCost.toFixed(2)}$.`
     };

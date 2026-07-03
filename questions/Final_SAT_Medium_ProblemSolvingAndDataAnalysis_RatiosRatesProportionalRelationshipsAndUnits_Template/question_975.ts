@@ -38,7 +38,7 @@ export const generator_975 = {
     return {
       questionText: `A distance of $${furlongs}$ furlongs is equivalent to how many feet? (1 furlong = $${yardsPerFurlong}$ yards and 1 yard = $${feetPerYard}$ feet)`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: String(totalFeet),
       explanation: `The correct answer is ${totalFeetDisplay}. It's given that 1 furlong = $${yardsPerFurlong}$ yards and 1 yard = $${feetPerYard}$ feet. It follows that a distance of $${furlongs}$ furlongs is equivalent to $${furlongs} \\text{ furlongs} \\times \\frac{${yardsPerFurlong} \\text{ yards}}{1 \\text{ furlong}} \\times \\frac{${feetPerYard} \\text{ feet}}{1 \\text{ yard}}$, or ${totalFeetDisplay} feet.`
     };

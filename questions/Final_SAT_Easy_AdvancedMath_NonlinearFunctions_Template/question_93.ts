@@ -43,7 +43,7 @@ export const generator_93 = {
     return {
       questionText: `The graph of $y=f(x)$ is shown in the xy-plane. The value of $f(0)$ is an integer. What is the value of $f(0)$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: f0.toString(),
       explanation: `The value of $f(0)$ is the y-coordinate where the graph intersects the y-axis. From the graph, when $x=0$, $y=${f0}$.`
     };

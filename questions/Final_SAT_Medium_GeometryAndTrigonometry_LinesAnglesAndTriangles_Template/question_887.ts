@@ -31,7 +31,7 @@ export const generator_887 = {
     return {
       questionText: `In triangle $JKL$, the measures of $\\angle K$ and $\\angle L$ are each $${baseAngle}^{\\circ}$. What is the measure of $\\angle J$, in degrees? (Disregard the degree symbol when entering your answer.)`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: angleJ.toString(),
       explanation: `The correct answer is ${angleJ}. The sum of the measures of the interior angles of a triangle is 180°. It's given that in triangle JKL, the measures of ∠K and ∠L are each ${baseAngle}°. Adding the measures, in degrees, of ∠K and ∠L gives ${baseAngle} + ${baseAngle}, or ${2 * baseAngle}. Therefore, the measure of ∠J, in degrees, is 180 - ${2 * baseAngle}, or ${angleJ}.`
     };

@@ -41,7 +41,7 @@ export const generator_819 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: xValue.toString(),
       explanation: `To solve for $x$ in the given system of equations, we can use the elimination method because the coefficients of $y$ in both equations are the same ($${yCoeff}y$). 1. **Set up the system of equations:** $$${xCoeff1}x + ${yCoeff}y = ${right1}$$ (Equation 1) $$${xCoeff2}x + ${yCoeff}y = ${right2}$$ (Equation 2) 2. **Subtract Equation 2 from Equation 1:** $$(${xCoeff1}x + ${yCoeff}y) - (${xCoeff2}x + ${yCoeff}y) = ${right1} - ${right2}$$ $$${xCoeff1}x - ${xCoeff2}x + ${yCoeff}y - ${yCoeff}y = ${right1 - right2}$$ $$${xCoeff1 - xCoeff2}x = ${right1 - right2}$$ 3. **Solve for $x$:** Divide both sides by $${xCoeff1 - xCoeff2}$: $$x = \\frac{${right1 - right2}}{${xCoeff1 - xCoeff2}}$$ $$x = ${xValue}$$ Therefore, the value of $x$ is $${xValue}$.`
     };

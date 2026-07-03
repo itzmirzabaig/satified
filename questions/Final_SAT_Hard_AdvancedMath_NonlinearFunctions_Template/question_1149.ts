@@ -42,7 +42,7 @@ export const generator_1149 = {
     return {
       questionText: `A triangle has area $x^2$ square cm. The base is $(2x+${b})$ cm and the height is $(x-${h})$ cm. What is the value of $x$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: x.toString(),
       explanation: `The area of a triangle is $\\frac{1}{2}(\\text{base})(\\text{height})$, so $\\frac{1}{2}(2x+${b})(x-${h})=x^2$. Multiplying both sides by 2 gives $(2x+${b})(x-${h})=2x^2$. Expanding the left side and cancelling the matching $(2x^2)$ term on both sides leaves $(${b - 2 * h})x=${b * h}$. Therefore $x=\\frac{${b * h}}{${b - 2 * h}}=${x}$.`
     };

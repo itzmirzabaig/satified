@@ -61,7 +61,7 @@ export const generator_364 = {
       </Mafs>
     `;
 
-    // Although the original had options: null, SAT system requires string[] usually. 
+    // Although the original had options: [], SAT system requires string[] usually. 
     // Generating valid options to prevent crashes if switched to Multiple Choice.
     const correctAnswer = givenAngle.toString();
     const optionsData = [

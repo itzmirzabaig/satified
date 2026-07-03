@@ -55,7 +55,7 @@ export const generator_1242 = {
       result = {
         questionText: `The solution to the given system of equations is $(x, y)$. What is the value of $${3 * a}(x - ${c1})$? $$${eq1}$$ $$${eq2}$$`,
         figureCode: null,
-        options: null,
+        options: [],
         correctAnswer: (3 * (val1 + val2) / 2).toString(),
         explanation: `Adding the two equations eliminates the $y$ terms: $2(x - ${c1}) = ${val1} + ${val2} = ${val1 + val2}$. Therefore, $${3 * a}(x - ${c1}) = ${3 * a} \\\\times \\frac{${val1 + val2}}{2} = ${3 * (val1 + val2) / 2}$.`
       };

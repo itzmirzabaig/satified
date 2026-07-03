@@ -32,7 +32,7 @@ export const generator_157 = {
     return {
       questionText: `What value of $x$ is the solution to the given equation? $$${coeff1}x - ${coeff2}x + ${const1} = ${total}$$`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `To find the value of $x$, combine like terms: $$(${coeff1}x - ${coeff2}x) + ${const1} = ${total}$$ $$x + ${const1} = ${total}$$ Subtract ${const1} from both sides: $$x = ${total} - ${const1}$$ $$x = ${result}$$ Therefore, the value is ${result}.`
     };

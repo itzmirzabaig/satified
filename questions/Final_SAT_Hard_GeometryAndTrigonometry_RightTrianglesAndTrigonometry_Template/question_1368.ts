@@ -99,7 +99,7 @@ export const generator_1368 = {
     return {
       questionText: `In the figure, right triangle CAE has a right angle at A. AE is vertical, AC is horizontal, and CE is the hypotenuse. $AE = ${largeA}$, $CB = ${smallB}$, $BD = ${smallA}$ and $BD \\\\parallel AE$. What is the length of CE?`,
       figureCode: mafsCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: largeHypotenuse.toString(),
       explanation: `$\\\\triangle CBD \\\\sim \\\\triangle CAE$. In $\\\\triangle CBD$, $CD = \\\\sqrt{${smallA}^2 + ${smallB}^2} = ${smallHypotenuse}$. Ratio $AE/BD = ${largeA}/${smallA} = ${scaleFactor}$. Thus $CE = ${scaleFactor} \\\\times CD = ${largeHypotenuse}$.`
     };

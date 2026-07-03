@@ -62,7 +62,7 @@ Therefore, the smallest possible value of $b$ is ${a}.`;
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: explanation
     };

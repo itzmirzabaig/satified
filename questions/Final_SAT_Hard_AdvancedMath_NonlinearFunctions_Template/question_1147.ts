@@ -32,7 +32,7 @@ export const generator_1147 = {
     return {
       questionText: `The given equation relates the variables $x$ and $y$: $y=x^2${b}x+${c}$. For what value of $x$ does the value of $y$ reach its minimum?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: vertexX.toString(),
       explanation: `The minimum occurs at $x=-\\frac{b}{2a}=-\\frac{${b}}{2}=${vertexX}$.`
     };

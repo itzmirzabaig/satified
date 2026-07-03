@@ -66,7 +66,7 @@ export const generator_1293 = {
     return {
       questionText: `Circle A shown is defined by the equation $x^{2}+(y-${centerY})^{2}=${rSquared}$. Circle B (not shown) has the same radius but is translated ${shift} units to the right. If the equation of circle B is $(x-h)^{2}+(y-k)^{2}=a$, where $h, k$, and $a$ are constants, what is the value of $4a$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: answer.toString(),
       explanation: `Circle A has radius $\\\\sqrt{${rSquared}}$. Since Circle B has the same radius, $a = ${rSquared}$. Therefore, $4a = 4(${rSquared}) = ${answer}$. Note that the translation affects the center coordinates $(h, k)$ but not the value of $a$.`
     };

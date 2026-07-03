@@ -30,7 +30,7 @@ export const generator_125 = {
     return {
       questionText: `What value of $x$ is the solution to the given equation $${addend} + x = ${rightSide}$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `Subtract ${addend}: x = ${rightSide} - ${addend} = ${result}.`
     };

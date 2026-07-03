@@ -49,7 +49,7 @@ export const generator_1076 = {
     return {
       questionText: `$\\frac{1}{x^2+${2 * p}x+${p * p}}=${kValue}$\n\nWhat is the ${which} solution to the given equation? (Enter your answer as a fraction or decimal.)`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is $-\\frac{${-num}}{${s}}$ (equivalently, $${num / s}$). Since $x^2+${2 * p}x+${p * p}=(x+${p})^2$, the equation can be written as $\\frac{1}{(x+${p})^2}=${kValue}$. Taking the reciprocal of both sides gives $(x+${p})^2=\\frac{1}{${kValue}}$. Taking square roots of both sides, $x+${p}=\\pm\\frac{1}{${s}}$, so $x=-${p}\\pm\\frac{1}{${s}}$. The two solutions are $-\\frac{${-numGreater}}{${s}}$ and $-\\frac{${-numLesser}}{${s}}$; neither value makes the denominator $(x+${p})^2$ equal zero, so neither is extraneous. The ${which} of the two solutions is $-\\frac{${-num}}{${s}}=${num / s}$.`
     };

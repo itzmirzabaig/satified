@@ -33,7 +33,7 @@ export const generator_1090 = {
     return {
       questionText: `Function $f$ is a quadratic where $f(${r1})=0$ and $f(${r2})=0$. The graph has a vertex at $(r, ${vertexY})$. What is the value of $r$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: vertexX.toString(),
       explanation: `The x-coordinate of the vertex is the average of the roots: $r=\\frac{${r1}+(${r2})}{2}=\\frac{${r1 + r2}}{2}=${vertexX}$.`
     };

@@ -33,7 +33,7 @@ export const generator_485 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: totalCost.toString(),
       explanation: explanation
     };

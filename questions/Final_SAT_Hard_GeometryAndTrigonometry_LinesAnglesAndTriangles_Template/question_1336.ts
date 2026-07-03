@@ -158,7 +158,7 @@ export const generator_1336 = {
         return {
           questionText: `In the figure shown, points $Q, R, S$, and $T$ lie on line segment $PV$, and line segment $RU$ intersects line segment $SX$ at point $W$. The measure of $\\\\angle SQX$ is $${angleSQX}^\\\\circ$, the measure of $\\\\angle SXQ$ is $${angleSXQ}^\\\\circ$, the measure of $\\\\angle SWU$ is $${angleSWU}^\\\\circ$, and the measure of $\\\\angle VTU$ is $${angleVTU}^\\\\circ$. What is the measure, in degrees, of $\\\\angle TUR$?`,
           figureCode: mafsCode,
-          options: null,
+          options: [],
           correctAnswer: Math.round(angleTUR).toString(),
           explanation: `In $\\\\triangle QSX$, $\\\\angle QSX = 180 - ${angleSQX} - ${angleSXQ} = ${angleQSX}^\\\\circ$. Since $\\\\angle SWU = ${angleSWU}^\\\\circ$, its supplement $\\\\angle SWR = ${angleSWR}^\\\\circ$. In $\\\\triangle RSW$, $\\\\angle WRS = 180 - ${angleQSX} - ${angleSWR} = ${angleWRS}^\\\\circ$. Given $\\\\angle VTU = ${angleVTU}^\\\\circ$, its supplement $\\\\angle STU = ${angleSTU}^\\\\circ$. In $\\\\triangle RTU$, $\\\\angle TUR = 180 - ${angleWRS} - ${angleSTU} = ${Math.round(angleTUR)}^\\\\circ$.`
         };
@@ -278,7 +278,7 @@ export const generator_1336 = {
     return {
       questionText: `In the figure shown, points $Q, R, S$, and $T$ lie on line segment $PV$, and line segment $RU$ intersects line segment $SX$ at point $W$. The measure of $\\\\angle SQX$ is $${angleSQX}^\\\\circ$, the measure of $\\\\angle SXQ$ is $${angleSXQ}^\\\\circ$, the measure of $\\\\angle SWU$ is $${angleSWU}^\\\\circ$, and the measure of $\\\\angle VTU$ is $${angleVTU}^\\\\circ$. What is the measure, in degrees, of $\\\\angle TUR$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: angleTUR.toString(),
       explanation: `In $\\\\triangle QSX$, $\\\\angle QSX = 180 - ${angleSQX} - ${angleSXQ} = ${angleQSX}^\\\\circ$. Since $\\\\angle SWU = ${angleSWU}^\\\\circ$, its supplement $\\\\angle SWR = ${angleSWR}^\\\\circ$. In $\\\\triangle RSW$, $\\\\angle WRS = 180 - ${angleQSX} - ${angleSWR} = ${angleWRS}^\\\\circ$. Given $\\\\angle VTU = ${angleVTU}^\\\\circ$, its supplement $\\\\angle STU = ${angleSTU}^\\\\circ$. In $\\\\triangle RTU$, $\\\\angle TUR = 180 - ${angleWRS} - ${angleSTU} = ${angleTUR}^\\\\circ$.`
     };

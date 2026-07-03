@@ -52,7 +52,7 @@ export const generator_1047 = {
     return {
       questionText: `$${coeff1}|${insideValue}-x| + ${coeff2}|${insideValue}-x| = ${d}$\n\nWhat is the positive solution to the given equation?`,
       figureCode: figureCode,
-      options: null,
+      options: [],
       correctAnswer: positiveSolution.toString(),
       explanation: `The correct answer is $${positiveSolution}$. Combining like terms: $${totalCoeff}|${insideValue}-x| = ${d}$, so $|${insideValue}-x| = ${multiplier}$. This gives two cases: ${insideValue}-x = ${multiplier}$ (so $x = ${x1}$) or ${insideValue}-x = -${multiplier}$ (so $x = ${x2}$). The positive solution is $${positiveSolution}$.`
     };

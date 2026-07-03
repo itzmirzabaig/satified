@@ -46,7 +46,7 @@ export const generator_931 = {
     return {
       questionText: `An insurance company offers a series of three information sessions. ${initialAttendees.toLocaleString()} people attended the first information session. ${percent1}% of the people who attended the first information session attended the second information session, and ${percent2}% of the people who attended the first and second information sessions attended the third information session. How many people attended all three information sessions?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. It's given that ${initialAttendees.toLocaleString()} people attended the first information session, and that ${percent1}% of the people who attended the first information session attended the second information session. Therefore, the number of people who attended the first and second information sessions can be found by calculating ${percent1}% of ${initialAttendees.toLocaleString()}, which is equal to ${initialAttendees.toLocaleString()}(${percent1}/100), or ${afterFirstFilter.toLocaleString()}. It's also given that ${percent2}% of the people who attended the first and second information sessions attended the third information session. Since ${afterFirstFilter.toLocaleString()} people attended the first and second information sessions, the number of people who attended the first, second, and third information sessions can be found by calculating ${percent2}% of ${afterFirstFilter.toLocaleString()}, which is equal to ${afterFirstFilter.toLocaleString()}(${percent2}/100), or ${correctAnswer}. Therefore, ${correctAnswer} people attended all three information sessions.`
     };

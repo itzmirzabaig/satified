@@ -36,7 +36,7 @@ export const generator_501 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctMph.toString(),
       explanation: explanation
     };

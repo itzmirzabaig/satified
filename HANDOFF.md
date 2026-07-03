@@ -104,6 +104,31 @@ currency as `\$`, names → role+pronoun, figures rebuilt to house style when
 broken) → smoke until PASS. Only touch assigned files. Structured return:
 {file, status: fixed|rebuilt|already_clean, defects_fixed[], note}.
 
+## Update (2026-07-02 latest): Phase C COMPLETE — 0 real hard flags
+
+All 3 partitions fixed on Opus 4.8 (Easy 55 + Medium 80 + Hard 81 batches),
+all committed. Final full audit: **1483 files, 0 real hard flags.** The single
+TIMEOUT flag (question_12.ts) is a confirmed false positive — passes smoke solo
+in 9.5s (0.2s CPU), loop is bounded `tries++<50`; it only tripped the 15s
+kill-window under 8-worker audit load on this 2-core box. Remaining flags are
+all soft and non-blocking: DOLLAR_RISK (heuristic false positives — legitimate
+all-math `$10x^2$` fields, no currency), SIGN_GLITCH (cosmetic `1x`/spacing,
+math correct + renders fine), CORRECT_FUZZY (grader resolves at runtime).
+Next: Phase E deterministic gates (tsc/build), then PAUSE for user's Phase D
+verification go-ahead.
+
+## Update (2026-07-02 later): Fable 5 limit hit → now on Opus 4.8
+
+Phase C round 2 was relaunched (Easy 62 / Medium 84 / Hard 86 batches).
+The Fable 5 usage limit was reached ~16 batches in; the rest failed at spawn
+(limit error before touching files — nothing half-edited). ~34 more files
+fixed+committed. User switched the session to Opus 4.8 (`/model
+claude-opus-4-8`) per the recorded fallback permission, so all remaining agent
+work continues on Opus. Resume procedure unchanged (re-audit → rebuild batches
+→ relaunch). On resume, if the main session is Opus the workflow agents
+inherit Opus automatically; otherwise pass `model: 'opus'` on the agent()
+calls.
+
 ## Current status at handoff (2026-07-02, session stopped cleanly)
 
 - Phase C stopped mid-run by user request. Batch completion at stop:

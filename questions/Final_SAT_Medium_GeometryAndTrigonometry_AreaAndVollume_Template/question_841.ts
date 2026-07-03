@@ -38,7 +38,7 @@ export const generator_841 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: totalSurfaceArea.toString(),
       explanation: `The exterior surface area of a figure is the sum of the areas of all its faces. Since the box does not have a lid and each side is a square, the box consists of 5 congruent square faces. The area of each square face is ${edgeLength}² = ${faceArea} square inches. Therefore, the total exterior surface area is 5 × ${faceArea} = ${totalSurfaceArea} square inches.`
     };

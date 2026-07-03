@@ -92,7 +92,7 @@ export const generator_1322 = {
       return {
         questionText: `In the figure, parallel lines $g$ and $t$ are intersected by lines $r$ and $s$. If $a=${a}$ and $b=${b}$, what is the value of $w$?`,
         figureCode: mafsCode,
-        options: null,
+        options: [],
         correctAnswer: Number.isInteger(w) ? w.toString() : w.toFixed(1),
         explanation: `Angles in the triangle formed by intersections are $${a}$, $${180 - b}$, and $${thirdAngle}$. Angle $${thirdAngle}$ is supplementary to two angles of measure $w$ on the parallel line: $${thirdAngle} + 2w = 180$, which gives $w = ${Number.isInteger(w) ? w : w.toFixed(1)}$.`
       };
@@ -157,7 +157,7 @@ export const generator_1322 = {
     return {
       questionText: `In the figure, parallel lines $g$ and $t$ are intersected by lines $r$ and $s$. If $a=${fallbackA}$ and $b=${fallbackB}$, what is the value of $w$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: fallbackW.toString(),
       explanation: `Angles in the triangle formed by intersections are $${fallbackA}$, $${180 - fallbackB}$, and $${fallbackThirdAngle}$. Angle $${fallbackThirdAngle}$ is supplementary to two angles of measure $w$ on the parallel line: $${fallbackThirdAngle} + 2w = 180$, which gives $w = ${fallbackW}$.`
     };

@@ -57,7 +57,7 @@ export const generator_1425 = {
     return {
       questionText: `On May 10, 2015, there were $${initialSubscribers}$ million Internet subscribers in Nigeria. The major Internet providers were MTN, Globacom, Airtel, Etisalat, and Visafone. By September 30, 2015, the number of Internet subscribers in Nigeria had increased to $${finalSubscribers}$ million. If an Internet subscriber in Nigeria on September 30, 2015, is selected at random, the probability that the person selected was an MTN subscriber is $${probability}$. There were $p$ million MTN subscribers in Nigeria on September 30, 2015. To the nearest integer, what is the value of $p$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The probability of selecting an MTN subscriber is equal to the number of MTN subscribers divided by the total number of subscribers. This gives the equation $\\frac{p}{${finalSubscribers}} = ${probability}$. Multiplying both sides by $${finalSubscribers}$ yields $p = (${probability})(${finalSubscribers}) = ${pExact.toFixed(2)}$, which to the nearest integer is $${correctAnswer}$.`
     };

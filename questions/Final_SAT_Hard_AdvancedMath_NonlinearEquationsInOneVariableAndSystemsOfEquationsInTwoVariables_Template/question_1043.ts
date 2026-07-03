@@ -64,7 +64,7 @@ export const generator_1043 = {
     return {
       questionText: `$y + k = x + ${c1}$\n$y - k = x^2 ${c2 >= 0 ? '+' : ''}${c2}x$\n\nIn the given system of equations, $k$ is a constant. The system has exactly one distinct real solution. What is the value of $k$?`,
       figureCode: figureCode,
-      options: null,
+      options: [],
       correctAnswer: kDisplay,
       explanation: `The correct answer is $${kDisplay}$. Subtracting the second equation from the first: $2k=-x^2+${1-c2}x+${c1}$, or $x^2+${-(1-c2)}x+(2k-${c1})=0$. For exactly one solution, the discriminant equals 0: $(${-(1-c2)})^2-4(2k-${c1})=0$, so $${linearCoeff*linearCoeff}=8k-${4*c1}$, thus $k=${kDisplay}$.`
     };

@@ -46,7 +46,7 @@ export const generator_765 = {
     return {
       questionText: `A worker saves $\\frac{${num}}{${denom}}$ of the \\$${weeklyEarnings} they earn each week from their job. If the worker continues to save at this rate, how much money, in dollars, will they save in ${weeks} weeks?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: totalSavings.toString(),
       explanation: `Each week the worker saves $\\frac{${num}}{${denom}}$ of \\$${weeklyEarnings}, which is $\\frac{${num}}{${denom}} \\times ${weeklyEarnings} = ${weeklySavings}$ dollars per week. Over ${weeks} weeks, the total saved is $\\frac{${num}}{${denom}} \\times ${weeklyEarnings} \\times ${weeks} = ${totalSavings}$ dollars. Therefore, the worker saves \\$${totalSavings}.`
     };

@@ -75,7 +75,7 @@ export const generator_939 = {
     return {
       questionText: `The table summarizes the number of objects in each group. The number of objects in group C is \\( p \\% \\) of the number of objects in group A. What is the value of \\( p \\)?`,
       figureCode: tableCode,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. It's given in the table that there are ${groupA} objects in group A and ${groupC} objects in group C. It's also given that the number of objects in group C is \\( p \\% \\) of the number of objects in group A. Therefore, ${groupC} is \\( p \\% \\) of ${groupA}, which can be represented by \\( ${groupC}=\\left(\\frac{p}{100}\\right)(${groupA}) \\), or \\( ${groupC}=${(groupA/100).toFixed(2).replace(/\.?0+$/, '')}p \\). Dividing both sides of this equation by ${(groupA/100).toFixed(2).replace(/\.?0+$/, '')} yields \\( ${correctAnswer}=p \\).`
     };

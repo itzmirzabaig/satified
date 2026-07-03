@@ -36,7 +36,7 @@ export const generator_507 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: massGrams.toString(),
       explanation: explanation
     };

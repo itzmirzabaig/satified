@@ -38,7 +38,7 @@ export const generator_628 = {
    return {
      questionText: `$$${coeff}x^2 = ${coeff}(${perfectSquare})$$ What is the negative solution to the given equation?`,
      figureCode: null,
-     options: null,
+     options: [],
      correctAnswer: negativeSolution.toString(),
      explanation: `To solve the given equation for $x$, start with $${coeff}x^2 = ${coeff}(${perfectSquare})$. Divide both sides by $${coeff}$ to get $x^2 = ${perfectSquare}$. Take the square root of both sides: $x = \\pm ${base}$. The question asks for the negative solution, so the answer is $${negativeSolution}$. The other solution, $${base}$, is not negative.`
    };

@@ -81,7 +81,7 @@ export const generator_1468 = {
     return {
       questionText: `The graph above shows the distance an object travels over time. What is the average rate of change, in meters per second, between $t=${x1}$ and $t=${x2}$?`,
       figureCode: svgCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: rate.toString(),
       explanation: `
 1.  **Identify Points:**

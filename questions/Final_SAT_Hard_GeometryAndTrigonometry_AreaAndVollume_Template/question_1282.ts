@@ -82,7 +82,7 @@ export const generator_1282 = {
     return {
       questionText: `The three points shown define a circle. The circumference of this circle is $k\\pi$, where $k$ is a constant. What is the value of $k$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: k.toString(),
       explanation: `The center of the circle must be equidistant from all three points. The point $(${centerX}, ${centerY})$ is equidistant (distance ${radius}) from $(${p1x}, ${p1y})$, $(${p2x}, ${p2y})$, and $(${p3x}, ${p3y})$, making it the center with radius $${radius}$. The circumference is $2\\pi r = 2\\pi(${radius}) = ${k}\\pi$. Thus, $k = ${k}$.`
     };

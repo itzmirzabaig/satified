@@ -45,7 +45,7 @@ export const generator_1110 = {
     return {
       questionText: `In the $xy$-plane, when the graph of the function $f$, where $y=f(x)$, is shifted up ${shift} units, the resulting graph is defined by the function $g$. If the graph of $y=g(x)$ crosses through the point $(${evalPoint}, b)$, where $b$ is a constant, what is the value of $b$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: g_eval.toString(),
       explanation: `Since $g(x)=f(x)+${shift}$, we have $g(${evalPoint})=f(${evalPoint})+${shift}$. Given $f(x)=${factor1}${factor2}${factor3}$, we get $f(${evalPoint})=(${evalPoint}-${r1})(${evalPoint}-${r2})(${evalPoint}-${r3})=${f_eval}$. Thus $b=${f_eval}+${shift}=${g_eval}$.`
     };

@@ -89,7 +89,7 @@ export const generator_1210 = {
     return {
       questionText: `The functions $f$ and $g$ are defined as $f(x)=${f_slope}x ${c1 < 0 ? '-' : '+'} ${Math.abs(c1)}$ and $g(x)=${g_slope}x + ${c2}$. If the function $h$ is defined as $h(x)=f(x)+g(x)$, what is the x-coordinate of the x-intercept of the graph of $y=h(x)$ in the $xy$-plane? (Enter your answer as a fraction or a decimal.)`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: correctAnswer,
       explanation: `
         First, find the expression for $h(x)$ by adding $f(x)$ and $g(x)$:

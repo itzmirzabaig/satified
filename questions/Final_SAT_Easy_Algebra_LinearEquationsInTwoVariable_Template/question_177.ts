@@ -30,7 +30,7 @@ export const generator_177 = {
     return {
       questionText: `$${perimeter} = 2x + 2y$ gives the perimeter for length $x$ and width $y$. If the width is ${w}, what is the length?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: l.toString(),
       explanation: `Substitute $y=${w}$ into the equation: $${perimeter} = 2x + 2(${w}) = 2x + ${2*w}$. Solving: $2x = ${perimeter - 2*w}$, so $x = ${l}$.`
     };

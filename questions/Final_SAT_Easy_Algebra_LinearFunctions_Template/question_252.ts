@@ -35,7 +35,7 @@ export const generator_252 = {
     return {
       questionText: `The function $f$ is defined by $f(x) = \\frac{${numerator}}{${denominator}}x + ${intercept}$. What is the value of $f(${xValue})$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `The value of $f(${xValue})$ can be found by substituting ${xValue} for $x$ in the function: $f(${xValue}) = \\frac{${numerator}}{${denominator}}(${xValue}) + ${intercept} = ${numerator * xValue / denominator} + ${intercept} = ${result}$.`
     };

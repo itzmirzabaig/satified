@@ -28,7 +28,7 @@ export const generator_1159 = {
     // Form: ax - b = c(x - d) + e
     
     let valid = false;
-    let a: number, b: number, c: number, d: number, e: number, solution: number, solutionRounded: string;
+    let a!: number, b!: number, c!: number, d!: number, e!: number, solution: number, solutionRounded!: string;
     
     while (!valid) {
       a = parseFloat((Math.random() * 1.5 + 0.3).toFixed(1)); // 0.3 to 1.8
@@ -59,7 +59,7 @@ export const generator_1159 = {
     return {
       questionText: `What value of $t$ is the solution to the equation $${a}t - ${b} = ${c}(t - ${d}) + ${e}$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: parseFloat(solutionRounded) < 0 ? solutionRounded : parseFloat(solutionRounded).toFixed(3),
       explanation: explanation
     };

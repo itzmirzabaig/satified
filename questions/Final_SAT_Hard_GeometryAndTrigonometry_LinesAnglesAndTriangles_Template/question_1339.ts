@@ -37,7 +37,7 @@ export const generator_1339 = {
       return {
         questionText: `In convex pentagon $ABCDE$, segment $AB$ is parallel to segment $DE$. The measure of angle $B$ is ${angleB} degrees, and the measure of angle $D$ is ${angleD} degrees. What is the measure, in degrees, of angle $C$?`,
         figureCode: null,
-        options: null,
+        options: [],
         correctAnswer: angleC.toString(),
         explanation: `The exterior angle at $B$ is $180 - ${angleB} = ${exteriorB}$ degrees. The exterior angle at $D$ is $180 - ${angleD} = ${exteriorD}$ degrees. Since $AB \\\\parallel DE$, these are alternate interior angles with respect to transversal $BC$ extended and $CD$ extended. By the exterior angle theorem, angle $C = ${exteriorB} + ${exteriorD} = ${angleC}$ degrees.`
       };
@@ -53,7 +53,7 @@ export const generator_1339 = {
     return {
       questionText: `In convex pentagon $ABCDE$, segment $AB$ is parallel to segment $DE$. The measure of angle $B$ is ${fallbackAngleB} degrees, and the measure of angle $D$ is ${fallbackAngleD} degrees. What is the measure, in degrees, of angle $C$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: fallbackAngleC.toString(),
       explanation: `The exterior angle at $B$ is $180 - ${fallbackAngleB} = ${fallbackExteriorB}$ degrees. The exterior angle at $D$ is $180 - ${fallbackAngleD} = ${fallbackExteriorD}$ degrees. Since $AB \\\\parallel DE$, these are alternate interior angles with respect to transversal $BC$ extended and $CD$ extended. By the exterior angle theorem, angle $C = ${fallbackExteriorB} + ${fallbackExteriorD} = ${fallbackAngleC}$ degrees.`
     };

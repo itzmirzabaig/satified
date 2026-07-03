@@ -65,7 +65,7 @@ export const generator_1320 = {
     return {
       questionText: `Points $A$ and $B$ lie on a circle with radius $r = 1$, and arc $AB$ has length $${arcLengthLatex}$. What fraction of the circumference of the circle is the length of arc $AB$? (Enter your answer as a fraction or decimal.)`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: answer,
       explanation: `
         The correct answer is $${answerLatex}$.

@@ -62,7 +62,7 @@ export const generator_1265 = {
       result = {
         questionText: `In the given system of equations, $p$ is a constant. If the system has no solution, what is the value of $p$? $$${eq1_text}$$ $$${eq2_text}$$`,
         figureCode: null,
-        options: null,
+        options: [],
         correctAnswer: p_value.toString(),
         explanation: `For no solution, the lines must be parallel (same slope) but distinct. Converting to standard form, the first equation becomes $${finalA1}x + ${finalB1}y = ${finalC1}$ and the second becomes $${finalA2}x ${finalB2 >= 0 ? '+' : ''}${finalB2}y = ${finalC2}$. The ratio of x-coefficients is $\\frac{${finalA2}}{${finalA1}} = ${ratio}$, so the y-coefficients must also have ratio ${ratio}. This gives $\\frac{p}{${finalB1}} = ${ratio}$, so $p = ${p_value}$.`
       };

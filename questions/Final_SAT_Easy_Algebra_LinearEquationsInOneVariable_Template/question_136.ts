@@ -31,7 +31,7 @@ export const generator_136 = {
     return {
       questionText: `If $${coeff}n = ${rightSide}$, what is the value of $n + ${addend}$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: (result + addend).toString(),
       explanation: `n = ${rightSide}/${coeff} = ${result}, so n + ${addend} = ${result} + ${addend} = ${result + addend}.`
     };

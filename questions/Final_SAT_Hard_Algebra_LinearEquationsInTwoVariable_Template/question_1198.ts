@@ -24,12 +24,12 @@ export const generator_1198 = {
   
   generate: (): QuestionData => {
     // STEP 1: Generate random values
-    let yIntercept: number;
-    let xPoint: number;
-    let yPoint: number;
-    let targetX: number;
-    let finalSlope: number;
-    let w: number;
+    let yIntercept!: number;
+    let xPoint!: number;
+    let yPoint!: number;
+    let targetX!: number;
+    let finalSlope!: number;
+    let w!: number;
     
     // Use while loop to ensure we get valid integer slope
     let valid = false;
@@ -67,7 +67,7 @@ export const generator_1198 = {
     return {
       questionText: `In the xy-plane, line $k$ intersects the $y$-axis at the point $(0,${yIntercept})$ and passes through the point $(${xPoint},${yPoint})$. If the point $(${targetX}, w)$ lies on line $k$, what is the value of $w$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: w.toString(),
       explanation: `The slope is $\\frac{${yPoint}-(${yIntercept})}{${xPoint}-0} = \\frac{${yPoint - yIntercept}}{${xPoint}} = ${finalSlope}$. The equation is $y = ${finalSlope}x ${yIntercept >= 0 ? '+' : ''}${yIntercept}$. When $x=${targetX}$, $w = ${finalSlope}(${targetX}) ${yIntercept >= 0 ? '+' : ''}${yIntercept} = ${w}$.`
     };

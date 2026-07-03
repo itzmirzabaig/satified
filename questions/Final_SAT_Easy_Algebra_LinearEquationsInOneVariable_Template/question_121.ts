@@ -32,7 +32,7 @@ export const generator_121 = {
     return {
       questionText: `If ${coeff}x + ${const1} = ${rightSide}, what is the value of ${multiplier * coeff}x + ${multiplier * const1}?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `Multiply by ${multiplier}: ${multiplier}(${coeff}x + ${const1}) = ${multiplier}(${rightSide}), giving ${multiplier * coeff}x + ${multiplier * const1} = ${result}.`
     };

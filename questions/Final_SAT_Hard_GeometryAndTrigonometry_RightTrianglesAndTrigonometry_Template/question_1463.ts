@@ -84,7 +84,7 @@ export const generator_1463 = {
     return {
       questionText: `In the right triangle shown above, what is the value of $\\cos x^{\\circ}$?`,
       figureCode: svgCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: `${adj}/${hyp}`,
       explanation: `In a right triangle, the cosine of an acute angle is defined as the ratio of the length of the adjacent side to the length of the hypotenuse.
       

@@ -34,7 +34,7 @@ export const generator_499 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: poundsPurchased.toString(),
       explanation: explanation
     };

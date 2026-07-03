@@ -35,7 +35,7 @@ export const generator_859 = {
     return {
       questionText: `What is the volume, in cubic centimeters, of a right rectangular prism that has a length of ${length} centimeters, a width of ${width} centimeters, and a height of ${height} centimeters?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: volume.toString(),
       explanation: `The volume of a right rectangular prism is calculated by multiplying its three dimensions: length × width × height. Multiplying ${length} × ${width} × ${height} gives a volume of ${volume} cubic centimeters.`
     };

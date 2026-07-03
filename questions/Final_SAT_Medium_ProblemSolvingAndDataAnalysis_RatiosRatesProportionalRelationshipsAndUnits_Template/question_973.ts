@@ -32,7 +32,7 @@ export const generator_973 = {
     return {
       questionText: `For the values $j$ and $k$, the ratio of $j$ to $k$ is $${ratio1}$ to $${ratio2}$. If $j$ is multiplied by $${multiplier}$, what is $k$ multiplied by in order to maintain the same ratio?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: multiplier.toString(),
       explanation: `The correct answer is ${multiplier}. If one value is multiplied by a number, then the other value must be multiplied by the same number in order to maintain the same ratio. It's given that $j$ is multiplied by ${multiplier}. Therefore, in order to maintain the same ratio, $k$ must also be multiplied by ${multiplier}.`
     };

@@ -114,7 +114,7 @@ export const generator_1399 = {
     return {
       questionText: `The line graph shows the total amount of snow, in inches, recorded each year in Washington, DC, from 2003 to 2012. If $p$ is the percent decrease in the annual snowfall from 2003 to 2007, what is the value of $p$ (rounded to the nearest whole number)?`,
       figureCode: svgCode,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: p.toString(),
       explanation: `
 1. **Identify Data Points:**

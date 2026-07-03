@@ -33,7 +33,7 @@ export const generator_838 = {
     return {
       questionText: `A circle has a circumference of ${circumferenceCoeff}π centimeters. What is the diameter, in centimeters, of the circle?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: diameter.toString(),
       explanation: `The circumference of a circle is $C = 2\\\\pi r = \\\\pi d$, where $d$ is the diameter. Given $C = ${circumferenceCoeff}\\\\pi$, we have $\\\\pi d = ${circumferenceCoeff}\\\\pi$, so $d = ${diameter}$ centimeters.`
     };

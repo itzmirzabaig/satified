@@ -31,7 +31,7 @@ export const generator_872 = {
     return {
       questionText: `Triangle ABC and triangle DEF are shown. The relationship between the side lengths of AB, BC, and AC to DE, EF, and DF is such that each ratio equals ${scaleFactor}. If the measure of angle BAC is ${angleBAC}°, what is the measure, in degrees, of angle EDF? (Disregard the degree symbol when gridding your answer.)`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: angleBAC.toString(),
       explanation: `The correct answer is ${angleBAC}. By the equality given, the three pairs of corresponding sides of the two triangles are in the same proportion. By the side-side-side (SSS) similarity theorem, triangle ABC is similar to triangle DEF. In similar triangles, the measures of corresponding angles are congruent. Since angle BAC corresponds to angle EDF, these two angles are congruent and their measures are equal. It's given that the measure of angle BAC is ${angleBAC}°, so the measure of angle EDF is also ${angleBAC}°.`
     };

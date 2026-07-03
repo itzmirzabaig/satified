@@ -66,7 +66,7 @@ export const generator_913 = {
     return {
       questionText: `The table above shows the number of international tourist arrivals, rounded to the nearest tenth of a million, to the top nine tourist destinations in both 2012 and 2013. Based on the information given in the table, how much greater, in millions, was the median number of international tourist arrivals to the top nine tourist destinations in 2013 than the median number in 2012, to the nearest tenth of a million?`,
       figureCode: tableCode,
-      options: null,
+      options: [],
       correctAnswer: difference.toFixed(1),
       explanation: `To find the median, order the values from least to greatest. For 2012: ${sorted2012.map(v => v.toFixed(1)).join(', ')}. The median (5th value) is ${median2012.toFixed(1)}. For 2013: ${sorted2013.map(v => v.toFixed(1)).join(', ')}. The median is ${median2013.toFixed(1)}. The difference is $${median2013.toFixed(1)} - ${median2012.toFixed(1)} = ${difference.toFixed(1)}$.`
     };

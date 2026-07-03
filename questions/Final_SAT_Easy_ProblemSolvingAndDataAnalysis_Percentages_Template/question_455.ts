@@ -32,7 +32,7 @@ export const generator_455 = {
     return {
       questionText: `Out of ${total} seeds that were planted, ${percentage}% sprouted. How many of these seeds sprouted?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: `${result}`,
       explanation: `The correct answer is ${result}. It's given that ${percentage}% of the ${total} seeds sprouted. Calculate the number by multiplying: ${total} $\\times \\frac{${percentage}}{100} = ${result}$.`
     };

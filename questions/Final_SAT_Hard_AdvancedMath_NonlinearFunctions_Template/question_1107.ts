@@ -40,7 +40,7 @@ export const generator_1107 = {
     return {
       questionText: `The product of two positive integers is ${product}. If the first integer is 5 greater than twice the second integer, what is the smaller of the two integers?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `Let the second integer be $x$ and the first integer be $2x + 5$. The product is $x(2x + 5) = ${product}$, which gives $2x^2 + 5x - ${product} = 0$. Factoring yields $(2x + ${firstInteger})(x - ${n}) = 0$ (or equivalent), giving $x = ${n}$ or $x = -${firstInteger}/2$. Since $x$ must be positive, the smaller integer is ${n}.`
     };

@@ -42,7 +42,7 @@ export const generator_930 = {
     return {
       questionText: `What is the range of the 7 scores shown?\n\n**Scores:** ${scores.join(', ')}`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: range.toString(),
       explanation: `Range is the difference between the largest (${maxScore}) and smallest (${minScore}) values: $${maxScore} - ${minScore} = ${range}$. The range measures the spread of the data from minimum to maximum.`
     };

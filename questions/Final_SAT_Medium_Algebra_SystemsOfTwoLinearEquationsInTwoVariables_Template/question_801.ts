@@ -81,7 +81,7 @@ export const generator_801 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: xValue.toString(),
       explanation: `Set the expressions for $y$ equal: $\\frac{1}{3}x ${signStr1}${b1} = -x + ${b2}$. Multiplying by 3: $x ${signStr1}${3 * b1} = -3x + ${3 * b2} \\implies 4x = ${3 * b2 - 3 * b1} \\implies x = ${xValue}$.`
     };

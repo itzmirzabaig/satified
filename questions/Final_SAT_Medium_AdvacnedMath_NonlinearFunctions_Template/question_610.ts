@@ -38,7 +38,7 @@ export const generator_610 = {
     return {
       questionText,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer,
       explanation
     };

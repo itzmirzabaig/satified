@@ -31,7 +31,7 @@ export const generator_213 = {
     return {
       questionText: `The function $g$ is defined by $g(x) = ${coefficient}x$. For what value of $x$ is $g(x) = ${result}$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: answer.toString(),
       explanation: `Substituting ${result} for $g(x)$ in the given function yields $${result} = ${coefficient}x$. Dividing both sides of this equation by ${coefficient} yields $x = ${answer}$.`
     };

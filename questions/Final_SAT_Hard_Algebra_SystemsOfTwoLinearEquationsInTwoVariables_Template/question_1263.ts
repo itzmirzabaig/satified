@@ -43,7 +43,7 @@ export const generator_1263 = {
     return {
       questionText: `In the given system of equations, $t$ is a constant. If the system has no solution, what is the value of $t$? $$${eq1}$$ $$${eq2}$$`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: t_answer.toString(),
       explanation: `Rearranging the first equation yields ${a1}x - ${b1_total}y = ${c1}. Rearranging and multiplying the second equation by -2 yields $-${2 * a2}x + ty = ${-c2}$. Adding these equations eliminates $x$, giving $-${b1_total}y + ty = ${c1 - c2}$. For no solution, the coefficient of $y$ must be zero (with non-zero constant), so $-${b1_total} + t = 0$, meaning $t = ${t_answer}$.`
     };

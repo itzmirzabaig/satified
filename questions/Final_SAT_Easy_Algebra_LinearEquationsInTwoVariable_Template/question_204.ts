@@ -25,7 +25,7 @@ export const generator_204 = {
     return {
       questionText: `The y-intercept of $${a}x + ${b}y = ${c}$ is $(0, y)$. What is $y$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: yVal.toString(),
       explanation: `Set $x=0$ to find $${b}y = ${c}$, so $y = ${yVal}$.`
     };

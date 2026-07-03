@@ -33,7 +33,7 @@ export const generator_91 = {
     return {
       questionText: `The x-intercept of the graph shown is $(x, 0)$. What is the value of $x$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: root.toString(),
       explanation: `The x-intercept is the point where the graph touches the x-axis ($y=0$). From the graph, the vertex of the parabola sits on the x-axis at $x=${root}$.`
     };

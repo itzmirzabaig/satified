@@ -62,7 +62,7 @@ export const generator_1070 = {
     return {
       questionText: `$\\sqrt{${calculatedA}x+${calculatedB}} = x - ${c}$\n\nWhat is the smallest solution to the given equation?`,
       figureCode: figureCode,
-      options: null,
+      options: [],
       correctAnswer: smallestSolution.toString(),
       explanation: `The correct answer is $${smallestSolution}$. Squaring both sides: $${calculatedA}x+${calculatedB}=(x-${c})^2=x^2-${2*c}x+${c*c}$. Rearranging: $x^2-${2*c+calculatedA}x+${c*c-calculatedB}=0$, which factors as $(x-${validSolution})(x-${extraneousSolution})=0$. The solutions are $${validSolution}$ and $${extraneousSolution}$. Checking: when $x=${extraneousSolution}$, the right side is ${extraneousSolution-c} < 0$, but the square root is non-negative, so this is extraneous. When $x=${validSolution}$, both sides equal ${validSolution-c}$. The smallest solution is $${smallestSolution}$.`
     };

@@ -44,7 +44,7 @@ export const generator_231 = {
     return {
       questionText: `To the nearest whole dollar, what is the amount of the initial deposit estimated by the graph?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: intercept.toString(),
       explanation: `The initial deposit is the y-intercept, which is the y-coordinate when $x=0$. From the graph, when $x=0$, $y=${intercept}$. Therefore, the initial deposit is $${intercept}$.`
     };

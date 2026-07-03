@@ -35,7 +35,7 @@ export const generator_1120 = {
     return {
       questionText: `The function $f$ is defined by $f(x)=${a}x^2${b}x+${c}$. For what value of $x$ does $f(x)$ reach its minimum?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: isInteger ? vertexX.toString() : `${(-b).toString()}/${(2*a).toString()}`,
       explanation: `The minimum occurs at $x=-\\frac{b}{2a}=-\\frac{${b}}{${2*a}}=${isInteger ? vertexX : `\\frac{${-b}}{${2*a}}`}$.`
     };

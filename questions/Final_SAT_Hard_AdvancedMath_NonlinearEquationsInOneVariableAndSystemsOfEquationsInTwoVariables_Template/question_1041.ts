@@ -51,7 +51,7 @@ export const generator_1041 = {
     return {
       questionText: `$\\sqrt{k-x}=${a}-x$\n\nIn the given equation, $k$ is a constant. The equation has exactly one real solution. What is the minimum possible value of $4k$?`,
       figureCode: figureCode,
-      options: null,
+      options: [],
       correctAnswer: min4k.toString(),
       explanation: `The correct answer is $${min4k}$. Squaring both sides: $k-x=(${a}-x)^2$, which gives $x^2-(2\\cdot${a}-1)x+(${a}^2-k)=0$. For this quadratic, the discriminant is $(2\\cdot${a}-1)^2-4(${a}^2-k)=${4*a-1}+4k-4k$... wait, let me recalculate: $(2a-1)^2-4(a^2-k) = 4a^2-4a+1-4a^2+4k = 4k-4a+1$. For exactly one real solution, either the discriminant is 0 (giving $4k=4a-1=${min4k}$) with valid solution $x=a-0.5$, or discriminant > 0 with one extraneous root. The minimum occurs when $4k=${min4k}$.`
     };

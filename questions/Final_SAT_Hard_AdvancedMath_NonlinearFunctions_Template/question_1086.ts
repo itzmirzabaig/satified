@@ -124,7 +124,7 @@ export const generator_1086 = {
     return {
       questionText: `The graph of $y=${a}x^{2}+bx+c$ is shown, where $b$ and $c$ are constants. What is the value of $bc$?`,
       figureCode: svgContent,
-      options: null,
+      options: [],
       correctAnswer: bc.toString(),
       explanation: `From the graph, we can identify the vertex at $(${h}, ${k})$.
       <br/>

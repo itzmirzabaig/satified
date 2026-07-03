@@ -32,7 +32,7 @@ export const generator_832 = {
     return {
       questionText: `A triangular prism has a height of ${height} centimeters (cm) and a volume of ${volume} cm³. What is the area, in cm², of the base of the prism? (The volume of a triangular prism is equal to $Bh$, where $B$ is the area of the base and $h$ is the height of the prism.)`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: baseArea.toString(),
       explanation: `The volume of a triangular prism is $V = Bh$, where $B$ is the base area and $h$ is the height. Substituting $V = ${volume}$ and $h = ${height}$ gives $V = B \\cdot ${height}$. Dividing both sides by ${height} yields $B = \\dfrac{${volume}}{${height}} = ${baseArea}$, so the area of the base is ${baseArea} cm².`
     };

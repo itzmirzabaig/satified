@@ -99,7 +99,7 @@ export const generator_1244 = {
     return {
       questionText: `In the given system of equations, $r$ is a constant. If the system has no solution, what is the value of $r$? $$\\begin{aligned} ${eq1} \\\\ ${eq2} \\end{aligned}$$`,
       figureCode,
-      options: null,
+      options: [],
       correctAnswer: r_answer.toString(),
       explanation: `A linear system has no solution when the two lines are parallel but distinct: the slopes are equal while the $y$-intercepts differ. Solving the first equation for $y$ gives $y = \\frac{${num}}{${den}}x - \\frac{${b1}}{${den}}$, so its slope is $\\frac{${num}}{${den}}$. Solving the second equation for $y$ gives $y = \\frac{${a2}}{r}x + \\frac{${c2}}{r}$, so its slope is $\\frac{${a2}}{r}$. Setting the slopes equal gives $\\frac{${num}}{${den}} = \\frac{${a2}}{r}$, and cross-multiplying gives $r \\cdot ${num} = ${a2} \\cdot ${den}$, so $r = \\frac{${a2} \\cdot ${den}}{${num}} = ${r_answer}$. With $r = ${r_answer}$ the two $y$-intercepts are $-\\frac{${b1}}{${den}}$ and $\\frac{${c2}}{${r_answer}}$, which are unequal, so the lines are parallel and distinct and the system has no solution.`
     };

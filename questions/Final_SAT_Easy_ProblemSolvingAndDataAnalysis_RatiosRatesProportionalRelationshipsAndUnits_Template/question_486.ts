@@ -34,7 +34,7 @@ export const generator_486 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: ratePerHour.toString(),
       explanation: explanation
     };

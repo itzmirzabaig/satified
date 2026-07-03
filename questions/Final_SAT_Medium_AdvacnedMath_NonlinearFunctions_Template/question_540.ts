@@ -42,7 +42,7 @@ export const generator_540 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: `${heightAfter3Bounces}`,
       explanation: `After hitting the ground once, the ball bounces to ${initial}/${fraction} = ${initial/fraction} feet. After hitting the ground a second time, it bounces to ${initial/fraction}/${fraction} = ${initial/(fraction*fraction)} feet. After hitting the ground for the third time, it bounces to ${initial/(fraction*fraction)}/${fraction} = ${heightAfter3Bounces} feet. Note that ${heightAfter3Bounces} and ${initial}/${Math.pow(fraction, bounceNum)} are equivalent ways to enter the answer.`
     };

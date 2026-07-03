@@ -38,7 +38,7 @@ export const generator_649 = {
    return {
      questionText: `If $|${a}x - ${a}| = ${result}$, what is the positive value of $x - 1$?`,
      figureCode: null,
-     options: null, // Fill-in-the-blank
+     options: [], // Fill-in-the-blank
      correctAnswer: absValue.toString(),
      explanation: `The given equation is $|${a}x - ${a}| = ${result}$. Factoring out $${a}$ from the term inside the absolute value brackets yields $|${a}(x - 1)| = ${result}$. Using the property $|ab| = |a| \\cdot |b|$, we can separate the constants: $|${a}| \\cdot |x - 1| = ${result}$, so $${a} \\cdot |x - 1| = ${result}$. Divide both sides by $${a}$: $|x - 1| = ${absValue}$. This means that $x - 1$ is either $${absValue}$ or $-${absValue}$. The question asks for the positive value of $x - 1$. Therefore, the positive value of $x - 1$ is $${absValue}$.`
    };

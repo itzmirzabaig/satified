@@ -35,7 +35,7 @@ export const generator_1124 = {
     return {
       questionText: `A rectangle has an area of ${area} square inches. The length, in inches, is ${diff} less than ${mult} times the width. What is the width, in inches?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: w.toString(),
       explanation: `Let the width be $w$ inches. The length is $${mult}w-${diff}$, so the area equation is $w(${mult}w-${diff})=${area}$, which expands to $${mult}w^2-${diff}w-${area}=0$. Factoring the positive root gives $w=${w}$ (the width), and then the length is $${mult}(${w})-${diff}=${length}$ inches. The width is $${w}$ inches.`
     };

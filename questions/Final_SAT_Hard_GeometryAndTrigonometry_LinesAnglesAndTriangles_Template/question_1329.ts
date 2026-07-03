@@ -133,7 +133,7 @@ export const generator_1329 = {
         return {
           questionText: `In the figure, $AC = CD$. The measure of angle $EBC$ is $${angleEBC}^\\\\circ$, and the measure of angle $ACD$ is $${angleACD}^\\\\circ$. What is the value of $x$?`,
           figureCode: mafsCode,
-          options: null,
+          options: [],
           correctAnswer: Math.round(x).toString(),
           explanation: `Since $AC = CD$, triangle $ACD$ is isosceles with $\\\\angle CAD = \\\\angle CDA$. The sum of angles in $\\\\triangle ACD$ is $180^\\\\circ$, so $${angleACD} + 2(\\\\angle CDA) = 180$, yielding $\\\\angle CDA = ${baseAngleACD}^\\\\circ$. In $\\\\triangle BDE$, $\\\\angle EBC = ${angleEBC}^\\\\circ$ and $\\\\angle BDE = ${baseAngleACD}^\\\\circ$. Thus, $\\\\angle DEB = 180 - ${angleEBC} - ${baseAngleACD} = ${angleDEB}^\\\\circ$. Since $\\\\angle DEB$ and $x$ are supplementary, $x = 180 - ${angleDEB} = ${Math.round(x)}$.`
         };
@@ -221,7 +221,7 @@ export const generator_1329 = {
     return {
       questionText: `In the figure, $AC = CD$. The measure of angle $EBC$ is $${angleEBC}^\\\\circ$, and the measure of angle $ACD$ is $${angleACD}^\\\\circ$. What is the value of $x$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: x.toString(),
       explanation: `Since $AC = CD$, triangle $ACD$ is isosceles with $\\\\angle CAD = \\\\angle CDA$. The sum of angles in $\\\\triangle ACD$ is $180^\\\\circ$, so $${angleACD} + 2(\\\\angle CDA) = 180$, yielding $\\\\angle CDA = ${baseAngleACD}^\\\\circ$. In $\\\\triangle BDE$, $\\\\angle EBC = ${angleEBC}^\\\\circ$ and $\\\\angle BDE = ${baseAngleACD}^\\\\circ$. Thus, $\\\\angle DEB = 180 - ${angleEBC} - ${baseAngleACD} = ${angleDEB}^\\\\circ$. Since $\\\\angle DEB$ and $x$ are supplementary, $x = 180 - ${angleDEB} = ${x}.`
     };

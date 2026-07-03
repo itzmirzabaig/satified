@@ -75,7 +75,7 @@ export const generator_1356 = {
     return {
       questionText: `In triangle RST above, point W (not shown) lies on RT. What is the value of $\\\\cos (\\\\angle RSW) - \\\\sin (\\\\angle WST)$?`,
       figureCode: mafsCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: "0",
       explanation: `Angle $RSW$ and $WST$ sum to $90^{\\\\circ}$ (angle $RST$). Complementary angles have $\\\\cos A = \\\\sin B$ when $A + B = 90^{\\\\circ}$. Thus, $\\\\cos(RSW) - \\\\sin(WST) = 0$ because $\\\\sin(WST) = \\\\sin(90^{\\\\circ} - RSW) = \\\\cos(RSW)$.`
     };

@@ -57,7 +57,7 @@ export const generator_660 = {
     return {
       questionText: `\\( ${a}(p+${b})+${c}(p${d})=${e}p \\)\n\nWhat value of \\( p \\) is the solution of the equation above?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${answer}. Distributing gives \\( ${a}p+${a * b}+${c}p${c * d}=${e}p \\). Combining like terms on the left gives \\( ${combined}=${e}p \\). ${finalSentence}`
     };

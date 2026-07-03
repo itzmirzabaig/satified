@@ -33,7 +33,7 @@ export const generator_292 = {
     return {
       questionText: `For a party, dinner rolls are needed. Dinner rolls are sold in packages of ${packageSize}. What is the minimum number of packages that should be bought for the party if ${needed} dinner rolls are needed?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: minPackages.toString(),
       explanation: explanation
     };

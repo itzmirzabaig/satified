@@ -45,7 +45,7 @@ export const generator_1079 = {
     return {
       questionText: `In the $xy$-plane, the line with equation $\\,${lineC}y=${lineD}$ intersects the parabola with equation $y=-${a}x^2+bx$, where $b$ is a positive constant, at exactly one point. What is the value of $b$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: b.toString(),
       explanation: `The correct answer is $\\,${b}$. Dividing both sides of the line's equation by $\\,${lineC}$ shows that the line is horizontal: $y=${kTex}$. Substituting $\\,${kTex}$ for $y$ in the parabola's equation gives $\\,${kTex}=-${a}x^2+bx$, which can be rewritten as $\\,${a}x^2-bx+${kTex}=0$. The line and the parabola intersect at exactly one point precisely when this quadratic equation has exactly one solution, which happens when its discriminant is zero: $b^2-4(${a})\\left(${kTex}\\right)=b^2-${b * b}=0$. Therefore $b^2=${b * b}$, and since $b$ is positive, $b=${b}$.`
     };

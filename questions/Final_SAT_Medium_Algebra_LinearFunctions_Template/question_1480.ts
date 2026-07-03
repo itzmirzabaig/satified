@@ -40,7 +40,7 @@ export const generator_1480 = {
     return {
       questionText: `For the linear function $c$, $c(x) = mx + ${intercept}$, where $m$ is a constant. If $c(${x1}) = ${y1}$, what is the value of $c(${x2})$?`,
       figureCode: null,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: y2.toString(),
       explanation: `To find the value of $m$, substitute $x = ${x1}$ and $c(x) = ${y1}$ into the equation:
       

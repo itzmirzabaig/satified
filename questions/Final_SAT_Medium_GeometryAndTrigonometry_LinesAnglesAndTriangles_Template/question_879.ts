@@ -31,7 +31,7 @@ export const generator_879 = {
     return {
       questionText: `Triangles $ABC$ and $DEF$ are congruent, where $A$ corresponds to $D$, and $B$ and $E$ are right angles. The measure of angle $A$ is $${angleA}^{\\circ}$. What is the measure, in degrees, of angle $F$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: angleF.toString(),
       explanation: `The correct answer is ${angleF}. It's given that triangles $ABC$ and $DEF$ are congruent with angle $A$ corresponding to angle $D$. Corresponding angles of congruent triangles are congruent and, therefore, have equal measure. It's given that the measure of angle $A$ is ${angleA}°. It follows that the measure of angle $D$ is also ${angleA}°. It's given that angle $E$ is a right angle. Therefore, the measure of angle $E$ is $90^{\\\\circ}$. Let $x$ represent the measure, in degrees, of angle $F$. Since the measures of the angles in a triangle sum to $180^{\\\\circ}$, it follows that ${angleA}+90+x=180$, or ${angleA + 90}+x=180$. Subtracting ${angleA + 90} from both sides of this equation yields $x=${angleF}$. Therefore, the measure, in degrees, of angle $F$ is ${angleF}.`
     };

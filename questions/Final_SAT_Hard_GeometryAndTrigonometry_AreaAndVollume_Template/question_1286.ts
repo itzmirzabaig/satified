@@ -98,7 +98,7 @@ export const generator_1286 = {
     return {
       questionText: `In the $xy$-plane, a triangle has vertices at $(${x1}, ${y1})$, $(${x2}, ${y2})$, and $(${x3}, ${y3})$, as shown. What is the area, in square units, of the triangle? (If your answer is not a whole number, enter it as a decimal.)`,
       figureCode,
-      options: null,
+      options: [],
       correctAnswer: areaStr,
       explanation: `The area of a triangle with vertices $(x_1, y_1)$, $(x_2, y_2)$, and $(x_3, y_3)$ is $\\frac{1}{2}\\left|x_1(y_2 - y_3) + x_2(y_3 - y_1) + x_3(y_1 - y_2)\\right|$. Substituting the coordinates gives $\\frac{1}{2}\\left|${x1}\\,(${num(y2)} - ${num(y3)}) + ${x2}\\,(${num(y3)} - ${num(y1)}) + ${x3}\\,(${num(y1)} - ${num(y2)})\\right| = \\frac{1}{2}\\left|${sumInside}\\right| = \\frac{1}{2}(${twiceArea}) = ${areaStr}$ square units.`
     };

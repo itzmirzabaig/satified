@@ -39,7 +39,7 @@ export const generator_764 = {
     return {
       questionText: `According to a model, the head width, in millimeters, of a worker bumblebee can be estimated by adding ${constant} to ${coef} times the body weight of the bee, in grams. According to the model, what would be the head width, in millimeters, of a worker bumblebee that has a body weight of ${weight} grams?`,
       figureCode: null,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. The model is $y = ${constant} + ${coef}x$ where $x$ is body weight in grams. Substituting ${weight} for $x$: $y = ${constant} + ${coef}(${weight}) = ${constant} + ${Math.round(coef * weight * 10) / 10} = ${correctAnswer}$.`
     };

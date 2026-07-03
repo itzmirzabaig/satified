@@ -34,7 +34,7 @@ export const generator_834 = {
     return {
       questionText: `$${m}x + ${n} = a(x + ${p})$\n\nIn the given equation, $a$ is a constant. If the equation has infinitely many solutions, what is the value of $a$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The given equation is $${m}x + ${n} = a(x + ${p})$. To have infinitely many solutions, the equation must be an identity, meaning the left-hand side must be identical to the right-hand side for all values of $x$. First, distribute the constant $a$ on the right side: $${m}x + ${n} = ax + ${p}a$. Comparing the coefficients of $x$ on both sides: $${m} = a$. Comparing the constant terms on both sides: $${n} = ${p}a$. Solving for $a$ in the second equation gives $a = \\frac{${n}}{${p}} = ${m}$. Since both conditions result in $a = ${m}$, the value of $a$ must be ${m}.`
     };

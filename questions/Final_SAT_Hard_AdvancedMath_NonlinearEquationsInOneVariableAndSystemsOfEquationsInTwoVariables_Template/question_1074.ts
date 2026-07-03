@@ -41,7 +41,7 @@ export const generator_1074 = {
     return {
       questionText: `During a $${time}$-second time interval, the average acceleration $a$, in meters per second squared, of an object with an initial velocity of $${initialVelocity}$ meters per second is defined by the equation $a=\\frac{v_f-${initialVelocity}}{${time}}$, where $v_f$ is the final velocity of the object in meters per second. If the equation is rewritten in the form $v_f=xa+y$, where $x$ and $y$ are constants, what is the value of $x$?`,
       figureCode: figureCode,
-      options: null,
+      options: [],
       correctAnswer: xValue.toString(),
       explanation: `The correct answer is $${xValue}$. Multiplying both sides by $${time}$: $${time}a=v_f-${initialVelocity}$. Adding $${initialVelocity}$ to both sides: $v_f=${time}a+${initialVelocity}$. Comparing to $v_f=xa+y$, we see $x=${time}$.`
     };

@@ -31,7 +31,7 @@ export const generator_407 = {
     return {
       questionText: `What is the median of the data shown?\n\n${values.join(', ')}`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: median.toString(),
       explanation: `The median of an ordered data set with 9 values is the 5th value. In the list ${values.join(', ')}, the 5th value is ${median}.`
     };

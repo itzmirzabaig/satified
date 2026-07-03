@@ -52,7 +52,7 @@ Therefore, $a+b = ${resultA} + ${resultB} = ${correctAnswer}$.`;
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer.toString(),
       explanation: explanation
     };

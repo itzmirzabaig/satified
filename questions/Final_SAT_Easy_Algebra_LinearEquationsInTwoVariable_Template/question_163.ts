@@ -30,7 +30,7 @@ export const generator_163 = {
     return {
       questionText: `$${perimeter} = 2a + 2b$ relates sides $a, b$ of a parallelogram. If $a=${a}$, what is $b$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: b.toString(),
       explanation: `Substitute $a=${a}$ into the equation: $${perimeter} = 2(${a}) + 2b = ${2*a} + 2b$. Solving: $${perimeter - 2*a} = 2b$, so $b = ${b}$.`
     };

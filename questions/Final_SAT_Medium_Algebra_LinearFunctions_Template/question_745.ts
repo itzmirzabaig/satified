@@ -36,7 +36,7 @@ export const generator_745 = {
     return {
       questionText: `The function $f$ is defined by $f(x)=mx+b$, where $m$ and $b$ are constants. If $f(0)=${f0}$ and $f(1)=${f1}$, what is the value of $m$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: m.toString(),
       explanation: `The slope $m = \\frac{f(1) - f(0)}{1 - 0} = \\frac{${f1} - ${f0}}{1} = ${m}$.`
     };

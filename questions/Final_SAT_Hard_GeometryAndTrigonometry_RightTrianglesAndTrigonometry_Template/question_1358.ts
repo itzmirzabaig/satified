@@ -60,7 +60,7 @@ export const generator_1358 = {
     return {
       questionText: `The length of a rectangle's diagonal is $${diagonalCoef}\\\\sqrt{${k}}$, and the length of the rectangle's shorter side is ${shorterSide}. What is the length of the rectangle's longer side?`,
       figureCode: mafsCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: longerSide.toString(),
       explanation: `By Pythagoras: $${shorterSide}^2 + x^2 = (${diagonalCoef}\\\\sqrt{${k}})^2 \\\\implies ${shorterSide * shorterSide} + x^2 = ${diagonalCoef * diagonalCoef * k} \\\\implies x^2 = ${diagonalCoef * diagonalCoef * k - shorterSide * shorterSide} \\\\implies x = ${longerSide}$.`
     };

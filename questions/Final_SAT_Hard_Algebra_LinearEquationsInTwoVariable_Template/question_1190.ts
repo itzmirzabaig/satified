@@ -43,7 +43,7 @@ export const generator_1190 = {
     return {
       questionText: `How many liters of a ${strongPct}% saline solution must be added to ${weakLiters} liters of a ${weakPct}% saline solution to obtain a ${targetPct}% saline solution?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `Let $x$ be liters of ${strongPct}% solution. Total salt: $0.${strongPct}x + 0.${weakPct}(${weakLiters}) = 0.${targetPct}(x + ${weakLiters})$. Solving: ${strongPct}x + ${weakPct * weakLiters} = ${targetPct}x + ${targetPct * weakLiters}, so $${strongPct - targetPct}x = ${targetPct * weakLiters - weakPct * weakLiters}$, giving $x = ${result}$.`
     };

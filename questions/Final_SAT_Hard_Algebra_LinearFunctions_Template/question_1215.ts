@@ -169,7 +169,7 @@ export const generator_1215 = {
     return {
       questionText: `The table shows two values of $x$ and their corresponding values of $y$. The graph of the linear equation representing this relationship passes through the point $(${inputFracDisplay}, a)$. What is the value of $a$? (Enter your answer as a fraction or decimal.)`,
       figureCode: tableHTML + svgContent,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: correctAnswer,
       explanation: explanation
     };

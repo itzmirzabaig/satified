@@ -66,7 +66,7 @@ export const generator_1461 = {
     return {
       questionText: `The height of the equilateral triangle shown is ${k}\\sqrt{3}. What is the perimeter of the triangle?`,
       figureCode: svgCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: perimeter.toString(),
       explanation: `
 1. **Recall Formula:**

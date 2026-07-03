@@ -81,7 +81,7 @@ export const generator_1353 = {
     return {
       questionText: `In the figure above, $\\tan B = \\frac{3}{4}$. If $BC = ${hypotenuseBC}$ and $DA = ${da}$, what is the length of $\\overline{DE}$?`,
       figureCode: figureCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: de.toString(),
       explanation: `Since $\\tan B = \\frac{3}{4}$, $\\triangle ABC$ and $\\triangle DBE$ are similar to 3-4-5 right triangles. For $\\triangle ABC$, the hypotenuse $BC = ${hypotenuseBC}$ gives scale factor ${baseScale}, so the adjacent side $AB = 4 \\times ${baseScale} = ${adjacentAB}$. Since $DA = ${da}$, $DB = AB - DA = ${adjacentAB} - ${da} = ${db}$. Triangle $DBE$ has scale factor $DB \\div 4 = ${smallScale}$, so the side opposite $B$ is $DE = 3 \\times ${smallScale} = ${de}$.`
     };

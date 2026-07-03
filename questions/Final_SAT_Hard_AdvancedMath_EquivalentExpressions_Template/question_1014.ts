@@ -85,7 +85,7 @@ So $x = ${answerTex}$; enter ${correctAnswer}.`;
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: explanation
     };

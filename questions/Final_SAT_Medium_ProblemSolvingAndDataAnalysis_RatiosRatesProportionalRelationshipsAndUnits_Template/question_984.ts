@@ -37,7 +37,7 @@ export const generator_984 = {
     return {
       questionText: `The ratio x to y is equivalent to the ratio $${a}$ to $${b}$. If the value of x is $${x}$, what is the value of y?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: y.toString(),
       explanation: `The correct answer is ${y}. It's given that the ratio of $x$ to $y$ is equivalent to the ratio $${a}$ to $${b}$. It follows that $\\frac{x}{y}=\\frac{${a}}{${b}}$. Multiplying each side of this equation by $${b}y$ yields $\\frac{(${b}y) x}{y}=\\frac{${a}(${b}y)}{${b}}$, or $${b}x=${a}y$. Dividing each side of this equation by $${a}$ yields $\\frac{${b} x}{${a}}=y$. Substituting $${x}$ for $x$ in this equation yields $\\frac{${b}(${x})}{${a}}=y$, which is equivalent to $\\frac{${b * x}}{${a}}=y$, or $${y}=y$. Therefore, if the value of $x$ is $${x}$, the value of $y$ is ${y}.`
     };

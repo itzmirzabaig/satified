@@ -42,7 +42,7 @@ export const generator_603 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: `${result}`,
       explanation: `To find $f(${x})$, substitute $x = ${x}$ into the function: $f(${x}) = ${coeff}(${x})^3 + ${constant} = ${coeff}(${x*x*x}) + ${constant} = ${coeff * x*x*x} + ${constant} = ${result}$.`
     };

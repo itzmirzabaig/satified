@@ -42,7 +42,7 @@ export const generator_1303 = {
     return {
       questionText: `A circle in the xy-plane has its center at $(${h}, ${k})$ and has a radius of ${r}. An equation of this circle is $x^{2}+y^{2}+${a >= 0 ? '' : '-'}${Math.abs(a)}x${b >= 0 ? '+' : '-'}${Math.abs(b)}y+c=0$, where $c$ is a constant. What is the value of $c$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: c.toString(),
       explanation: `Expanding $(x${h >= 0 ? '-' : '+'}${Math.abs(h)})^{2}+(y-${k})^{2}=${r*r}$ gives $x^{2}${h >= 0 ? '-' : '+'}${Math.abs(2*h)}x+${h*h}+y^{2}-${2*k}y+${k*k}=${r*r}$. Combining and rearranging: $x^{2}+y^{2}${a >= 0 ? '+' : '-'}${Math.abs(a)}x${b >= 0 ? '+' : '-'}${Math.abs(b)}y+${h*h + k*k - r*r}=0$. Thus $c = ${h*h} + ${k*k} - ${r*r} = ${c}$.`
     };

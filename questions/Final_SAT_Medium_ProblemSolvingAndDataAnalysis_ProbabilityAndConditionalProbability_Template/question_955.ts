@@ -37,7 +37,7 @@ export const generator_955 = {
     return {
       questionText: `At a conference, there are a total of ${totalAttendees} attendees. Each attendee is assigned to either group A, group B, or group C. If one of these attendees is selected at random, the probability of selecting an attendee who is assigned to group A is ${probA} and the probability of selecting an attendee who is assigned to group B is ${probB}. How many attendees are assigned to group C?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: countC.toString(),
       explanation: `The correct answer is ${countC}. The probability of selecting an attendee in group C is 1 - ${probA} - ${probB} = ${probC}. Therefore, the number of attendees in group C is ${probC} × ${totalAttendees} = ${countC}.`
     };

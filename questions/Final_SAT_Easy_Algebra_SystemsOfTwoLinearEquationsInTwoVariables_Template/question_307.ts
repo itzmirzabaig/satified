@@ -30,7 +30,7 @@ export const generator_307 = {
     return {
       questionText: `If $(x,y)$ is the solution to the given system of equations, what is the value of $y$?$$\\begin{aligned} ${coef}x + y &= ${total} \\\\ x &= ${x} \\end{aligned}$$`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: y.toString(),
       explanation: `Substitute $x = ${x}$ into the first equation: $${coef}(${x}) + y = ${total}$. This gives $${coef * x} + y = ${total}$, so $y = ${total} - ${coef * x} = ${y}$.`
     };

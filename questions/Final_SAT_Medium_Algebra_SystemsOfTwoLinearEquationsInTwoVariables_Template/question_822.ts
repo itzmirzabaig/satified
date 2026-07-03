@@ -40,7 +40,7 @@ export const generator_822 = {
     return {
       questionText: questionText,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correct.toString(),
       explanation: `The correct answer is ${correct}. Let x represent the number of correct answers from the player and y represent the number of incorrect answers from the player. Since the player answered ${totalQuestions} questions in total, the equation x + y = ${totalQuestions} represents this situation. Also, since the score is found by subtracting the number of incorrect answers from ${correctPoints} times the number of correct answers and the player received a score of ${score}, the equation ${correctPoints}x - y = ${score} represents this situation. Adding the equations in the system of two equations together yields (x + y) + (${correctPoints}x - y) = ${totalQuestions} + ${score}. This can be rewritten as ${correctPoints + 1}x = ${totalQuestions + score}. Finally, solving for x by dividing both sides of the equation by ${correctPoints + 1} yields x = ${correct}.`
     };

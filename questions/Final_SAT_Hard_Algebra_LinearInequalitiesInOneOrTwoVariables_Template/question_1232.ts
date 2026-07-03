@@ -71,7 +71,7 @@ export const generator_1232 = {
     return {
       questionText: `A small business owner budgets \\$${budget.toLocaleString()} to purchase candles. The owner must purchase a minimum of ${minCandles} candles to maintain the discounted pricing. If the owner pays \\$${smallPrice.toFixed(2)} per candle to purchase small candles and \\$${largePrice.toFixed(2)} per candle to purchase large candles, what is the maximum number of large candles the owner can purchase to stay within the budget and maintain the discounted pricing?`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: maxLarge.toString(),
       explanation: `
         The correct answer is ${maxLarge}.

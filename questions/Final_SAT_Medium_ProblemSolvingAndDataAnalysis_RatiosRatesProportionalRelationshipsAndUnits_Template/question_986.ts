@@ -48,7 +48,7 @@ export const generator_986 = {
     return {
       questionText: `A triathlon is a multisport race consisting of three different legs. A triathlon participant completed the cycling leg with an average speed of $${speedStr}$ miles per hour. What was the average speed, in yards per hour, of the participant during the cycling leg? (1 mile = $${yardsPerMile}$ yards)`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: String(speedYardsPerHour),
       explanation: `The correct answer is $${speedYardsPerHour}$. It's given that 1 mile = $${yardsPerMile}$ yards. It follows that an average speed of $${speedStr}$ miles per hour is equivalent to $(${speedStr}\\text{ miles/hour})(${yardsPerMile}\\text{ yards/mile})$, or $${speedYardsPerHour}$ yards per hour.`
     };

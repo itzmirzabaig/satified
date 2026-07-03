@@ -44,7 +44,7 @@ export const generator_1458 = {
     return {
       questionText: `In triangle $ABC$, point $D$ lies on $\\overline{AB}$ and point $E$ lies on $\\overline{AC}$ such that $\\overline{DE}$ is parallel to $\\overline{BC}$. If $BC = ${BC}$ and $CE = ${k}AE$, what is the length of $\\overline{DE}$?`,
       figureCode: null,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: DE.toString(),
       explanation: `Since $\\overline{DE} \\parallel \\overline{BC}$, $\\angle ADE \\cong \\angle ABC$ and $\\angle AED \\cong \\angle ACB$ (corresponding angles). Thus, $\\triangle ADE$ is similar to $\\triangle ABC$ by Angle-Angle similarity.
 

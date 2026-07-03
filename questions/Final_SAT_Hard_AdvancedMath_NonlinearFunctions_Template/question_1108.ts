@@ -37,7 +37,7 @@ export const generator_1108 = {
     return {
       questionText: `The function is defined by $f(x) = x^2 - ${2 * b}x + ${c}$. What is the minimum value of the given function?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: minValue.toString(),
       explanation: `Completing the square: $f(x) = x^2 - ${2 * b}x + ${c} = (x-${b})^2 - ${b * b} + ${c} = (x-${b})^2 + ${minValue}$. Since $(x-${b})^2 \\geq 0$, the smallest possible value of $f(x)$ is ${minValue}, which occurs when $x = ${b}$. So the minimum value is ${minValue}.`
     };

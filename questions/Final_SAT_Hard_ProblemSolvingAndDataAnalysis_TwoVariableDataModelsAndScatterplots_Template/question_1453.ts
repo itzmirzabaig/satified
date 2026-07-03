@@ -116,7 +116,7 @@ export const generator_1453 = {
     return {
       questionText: `Each dot in the scatterplot above represents the temperature and the number of people who visited a beach in Lagos, Nigeria, on one of ${numPoints} different days. The line of best fit for the data is also shown. The line of best fit for the data has a slope of approximately ${slope}. According to this estimate, how many additional people per day are predicted to visit the beach for each $${tempIncrease}^{\\circ}\\text{C}$ increase in average temperature?`,
       figureCode: svgCode,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: answer.toString(),
       explanation: `The slope of the line of best fit represents the predicted change in the number of visitors for each $1^{\\circ}\\text{C}$ increase in temperature.
       

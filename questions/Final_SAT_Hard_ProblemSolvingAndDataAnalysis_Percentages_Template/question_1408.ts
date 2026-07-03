@@ -37,7 +37,7 @@ export const generator_1408 = {
     return {
       questionText: `A gift shop buys souvenirs at a wholesale price of ${wholesalePrice.toFixed(2)} dollars each and resells them each at a retail price that is ${markupPct}% of the wholesale price. At the end of the season, any remaining souvenirs are marked at a discounted price that is ${discountOff}% off the retail price. What is the discounted price of each remaining souvenir, in dollars?`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: discountedPrice.toString(),
       explanation: `The retail price is ${markupPct}% of $${wholesalePrice.toFixed(2)}, which is $${wholesalePrice.toFixed(2)} × ${markupPct/100} = $${retailPrice.toFixed(2)}$. The discounted price is ${discountOff}% off, meaning $(100 - ${discountOff})\\% = ${100 - discountOff}% of retail: $${retailPrice.toFixed(2)} × ${(100 - discountOff)/100} = $${discountedPrice.toFixed(2)}$.`
     };

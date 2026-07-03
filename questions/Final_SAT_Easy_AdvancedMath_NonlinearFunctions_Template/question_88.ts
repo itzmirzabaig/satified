@@ -32,7 +32,7 @@ export const generator_88 = {
     return {
       questionText: `The function $f$ is defined by $f(x) = x^2 + x + ${c}$. What is the value of $f(${x})$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `Substitute $x=${x}$ into the function: $f(${x}) = (${x})^2 + ${x} + ${c} = 4 + 2 + ${c} = ${result}$.`
     };

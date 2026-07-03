@@ -28,7 +28,7 @@ export const generator_52 = {
     return {
       questionText: `The $y$-intercept of the graph of $y=x^2+${k}$ in the xy-plane is $(0, y)$. What is the value of $y$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: k.toString(),
       explanation: `The y-intercept is the point on the graph where $x=0$. Substituting 0 for $x$ in $y = x^2 + ${k}$ gives $y = 0^2 + ${k} = ${k}$.`
     };

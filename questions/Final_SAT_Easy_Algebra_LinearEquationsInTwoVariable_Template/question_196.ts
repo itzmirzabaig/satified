@@ -31,7 +31,7 @@ export const generator_196 = {
     return {
       questionText: `Line $j$ is shown. Line $k$ is parallel to $j$. What is the slope of $k$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: m.toString(),
       explanation: `Parallel lines have equal slopes. Line $j$ has slope ${m}, so $k$ also has slope ${m}.`
     };

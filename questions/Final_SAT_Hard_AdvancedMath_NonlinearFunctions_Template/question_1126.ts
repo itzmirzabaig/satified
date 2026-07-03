@@ -36,7 +36,7 @@ export const generator_1126 = {
     return {
       questionText: `The function $g$ is defined by $g(x)=(x${signA})(t-x)$, where $t$ is a constant. In the xy-plane, the graph of $y=g(x)$ passes through the point $(${p},0)$. What is the value of $g(0)$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: g0.toString(),
       explanation: `Since $g(${p})=0$ and $g(x)=0$ when $x=-${a}$ or $x=t$, we have $t=${p}$. Then $g(0)=(${a})(${t})=${g0}$.`
     };

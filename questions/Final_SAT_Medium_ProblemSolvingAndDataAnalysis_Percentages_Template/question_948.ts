@@ -40,7 +40,7 @@ export const generator_948 = {
     return {
       questionText: `The amount of a customer's bill for a food order was \\$${bill}. The customer gave a tip of ${tipPercent}% of the amount of the bill. What is the amount, in dollars, of the tip the customer gave?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: correctAnswer,
       explanation: `The correct answer is ${correctAnswer}. The bill was \\$${bill} and the customer left a tip of ${tipPercent}% of the bill. Computing ${tipPercent}% of ${bill} gives $\\frac{${tipPercent}}{100} \\times ${bill} = ${correctAnswer}$. Therefore, the amount of the tip, in dollars, is ${correctAnswer}.`
     };

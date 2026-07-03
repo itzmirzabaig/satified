@@ -88,7 +88,7 @@ export const generator_1369 = {
     return {
       questionText: `A right triangle has legs with lengths of ${leg1} centimeters and ${leg2} centimeters. If the length of this triangle's hypotenuse, in centimeters, can be written in the form $${m}\\sqrt{d}$, where $d$ is an integer, what is the value of $d$?`,
       figureCode: svgCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: d.toString(),
       explanation: `
 1. **Use Pythagorean Theorem:**

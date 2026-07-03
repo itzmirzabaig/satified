@@ -39,7 +39,7 @@ export const generator_1219 = {
     return {
       questionText: `A number $x$ is at most ${subtractValue} less than ${coefficient} times the value of $y$. If the value of $y$ is $${yValue}$, what is the greatest possible value of $x$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: maxX.toString(),
       explanation: `The correct answer is $${maxX}$. It's given that a number $x$ is at most ${subtractValue} less than ${coefficient} times the value of $y$. Therefore, $x$ is less than or equal to ${subtractValue} less than ${coefficient} times the value of $y$. The expression $${coefficient}y$ represents ${coefficient} times the value of $y$. The expression $${coefficient}y - ${subtractValue}$ represents ${subtractValue} less than ${coefficient} times the value of $y$. Therefore, $x$ is less than or equal to $${coefficient}y - ${subtractValue}$. This can be shown by the inequality $x \\\\leq ${coefficient}y - ${subtractValue}$. Substituting $${yValue}$ for $y$ in this inequality yields $x \\\\leq ${coefficient}(${yValue}) - ${subtractValue}$ or, $x \\\\leq ${maxX}$. Therefore, if the value of $y$ is $${yValue}$, the greatest possible value of $x$ is $${maxX}$.`
     };

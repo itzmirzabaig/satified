@@ -42,7 +42,7 @@ export const generator_1039 = {
     return {
       questionText: `$-x^2 + bx - ${c} = 0$\n\nIn the given equation, $b$ is a positive integer. The equation has no real solution. What is the greatest possible value of $b$?`,
       figureCode: figureCode,
-      options: null,
+      options: [],
       correctAnswer: maxB.toString(),
       explanation: `The correct answer is $${maxB}$. For no real solutions, the discriminant must be negative: $b^2-4(-1)(-${c})=b^2-${4*c}<0$. Thus $b^2<${4*c}$, so $|b|<${2*root}$. Since $b$ is a positive integer, the greatest possible value is $${maxB}$.`
     };

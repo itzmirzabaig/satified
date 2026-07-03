@@ -35,7 +35,7 @@ export const generator_66 = {
     return {
       questionText: `The graph of the polynomial function $f$, where $y=f(x)$, is shown. The y-intercept of the graph is $(0, y)$. What is the value of $y$?`,
       figureCode: mafsCode,
-      options: null,
+      options: [],
       correctAnswer: cVal.toString(),
       explanation: `The y-intercept of the graph is the point where it crosses the y-axis ($x=0$). From the figure, the graph crosses at $(0, ${cVal})$.`
     };

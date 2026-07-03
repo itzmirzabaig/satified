@@ -31,7 +31,7 @@ export const generator_149 = {
     return {
       questionText: `What value of $x$ is the solution to the given equation? $$${coeff1}x = ${rightSide} - ${coeff2}x$$`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: result.toString(),
       explanation: `Add ${coeff2}x: ${coeff1 + coeff2}x = ${rightSide}. Divide: x = ${rightSide}/${coeff1 + coeff2} = ${result}.`
     };

@@ -28,7 +28,7 @@ export const generator_1164 = {
     // Form: 2(kx - n) = ax + b where 2k = a, and -2n ≠ b, and n > 1
     
     let valid = false;
-    let a: number, rightXNum: number, c: number, kNum: number, kDenom: number, finalKNum: number, finalKDenom: number, n: number, rightConstNum: number, rightConstDenom: number;
+    let a!: number, rightXNum!: number, c!: number, kNum: number, kDenom: number, finalKNum!: number, finalKDenom!: number, n!: number, rightConstNum!: number, rightConstDenom!: number;
     
     while (!valid) {
       a = getRandomInt(2, 4);
@@ -77,7 +77,7 @@ Note that ${finalKNum}/${finalKDenom} and ${(finalKNum/finalKDenom).toFixed(3)} 
       // Fixed: Use \\frac instead of \\\\frac
       questionText: `In the equation $${a}(kx - n) = \\frac{${rightXNum}}{${c}}x + \\frac{${rightConstNum}}{${rightConstDenom}}$, $k$ and $n$ are constants and $n > 1$. The equation has no solution. What is the value of $k$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: `${finalKNum}/${finalKDenom}`,
       explanation: explanation
     };

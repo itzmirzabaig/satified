@@ -43,7 +43,7 @@ export const generator_1142 = {
     return {
       questionText: `The function $f$ is defined by $f(x)=${factor1}${factor2}${factor3}$. In the xy-plane, the graph of $y=g(x)$ is the result of translating the graph of $y=f(x)$ up ${shift} units. What is the value of $g(0)$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: g0.toString(),
       explanation: `Since $g(x)=f(x)+${shift}$, we have $g(0)=f(0)+${shift}$. Computing $f(0)=(-${r1})(-${r2})(${r3})=${f0}$. Thus $g(0)=${f0}+${shift}=${g0}$.`
     };

@@ -111,7 +111,7 @@ export const generator_1392 = {
     return {
       questionText: "The table shows the frequency distribution of scores for group A and group B. The median of group B is how much greater than the median of group A?",
       figureCode: tableCode,
-      options: null,
+      options: [],
       correctAnswer: difference.toString(),
       explanation: `The correct answer is ${difference}. Group A has ${totalA} values, so the median is the ${Math.ceil(totalA/2)}th value, which is ${medianA}. Group B has ${totalB} values, so the median is the ${Math.ceil(totalB/2)}th value, which is ${medianB}. The difference is ${medianB} - ${medianA} = ${difference}.`
     };

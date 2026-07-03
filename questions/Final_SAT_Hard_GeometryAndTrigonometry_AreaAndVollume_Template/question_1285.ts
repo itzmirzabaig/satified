@@ -35,7 +35,7 @@ export const generator_1285 = {
     return {
       questionText: `Square A has side lengths that are ${multiplier} times the side lengths of square B. The area of square A is $k$ times the area of square B. What is the value of $k$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: k.toString(),
       explanation: `The area of a square is $s^2$, where $s$ is the side length. If square B has side length $s$, then square A has side length ${multiplier}s. The area of square B is $s^2$, and the area of square A is $(${multiplier}s)^2 = ${multiplier}^2 s^2 = ${k}s^2$. Therefore, $k = ${k}$.`
     };

@@ -56,7 +56,7 @@ export const generator_980 = {
     return {
       questionText: `Pure beeswax has a density of $${density}$ ounce per cubic inch. An online company sells pure beeswax at a price of \\$${pricePerOz}.00 per ounce. What is the selling price, in dollars per cubic inch, for pure beeswax purchased from this company?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: answerStr,
       explanation: `The correct answer is \\$${answerStr}. The selling price, in dollars per cubic inch, is found by multiplying the density, in ounces per cubic inch, by the unit price, in dollars per ounce: $\\left(\\frac{${density} \\text{ ounce}}{1 \\text{ cubic inch}}\\right)\\left(\\frac{\\$${pricePerOz}.00}{1 \\text{ ounce}}\\right)$ yields $\\frac{\\$${answerStr}}{1 \\text{ cubic inch}}$.`
     };

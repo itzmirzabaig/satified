@@ -74,7 +74,7 @@ export const generator_1077 = {
     return {
       questionText: `One solution to the given equation can be written as $\\frac{${-b}-\\sqrt{k}}{${2*a}}$, where $k$ is a constant. What is the value of $k$?\n\n$${a}x^2 ${b >= 0 ? '+' : ''}${b}x ${finalC >= 0 ? '+' : ''}${finalC} = 0$`,
       figureCode: figureCode,
-      options: null,
+      options: [],
       correctAnswer: kValue.toString(),
       explanation: `The correct answer is $${kValue}$. Using the quadratic formula: $x=\\frac{${-b}\\pm\\sqrt{${b*b}-4(${a})(${finalC})}}{2(${a})}=\\frac{${-b}\\pm\\sqrt{${discriminant}}}{${2*a}}$. Comparing $\\frac{${-b}-\\sqrt{${discriminant}}}{${2*a}}$ to $\\frac{${-b}-\\sqrt{k}}{${2*a}}$, we get $k=${kValue}$.`
     };
