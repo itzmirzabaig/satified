@@ -39,30 +39,30 @@ export const generator_1030 = {
     
     const finalNum = num / g;
     const finalDen = den / g;
-    
-    // STEP 2: Format answer
-    let correctAnswer: string;
-    if (finalDen === 1) {
-      correctAnswer = finalNum.toString();
-    } else {
-      correctAnswer = `\\frac{${finalNum}}{${finalDen}}`;
-    }
-    
-    // STEP 3: Question text
-    const questionText = `If $${base}^{${n}c} = \\sqrt[${root}]{${base}^{${m}}}$, what is the value of $c$?`;
-    
+
+    // STEP 2: Format answer (students type it: plain a/b fraction, never LaTeX).
+    // Note: num = m <= 9 < 12 <= den = n*root, so the answer is always a proper
+    // fraction (finalDen >= 2); the integer branch is defensive only.
+    const correctAnswer = finalDen === 1 ? `${finalNum}` : `${finalNum}/${finalDen}`;
+    const answerTex = finalDen === 1 ? `${finalNum}` : `\\frac{${finalNum}}{${finalDen}}`;
+
+    // STEP 3: Question text ("\\," keeps a digit from directly following "$")
+    const questionText = `If $\\,${base}^{${n}c} = \\sqrt[${root}]{${base}^{${m}}}$, what is the value of $c$? Enter your answer as a fraction.`;
+
     // STEP 4: Explanation
     const explanation = `Rewrite the radical using a rational exponent:
 $$\\sqrt[${root}]{${base}^{${m}}} = ${base}^{\\frac{${m}}{${root}}}$$
 
-Set up the equation:
-$$${base}^{${n}c} = ${base}^{\\frac{${m}}{${root}}}$$
+So the equation becomes:
+$$\\,${base}^{${n}c} = ${base}^{\\frac{${m}}{${root}}}$$
 
-Since the bases are equal, set the exponents equal:
-$$${n}c = \\frac{${m}}{${root}}$$
+Since the bases are equal, the exponents must be equal:
+$$\\,${n}c = \\frac{${m}}{${root}}$$
 
-Solve for $c$:
-$$c = \\frac{${m}}{${root} \\cdot ${n}} = \\frac{${num}}{${den}} = ${correctAnswer}$$`;
+Solve for $c$ by dividing both sides by ${n}:
+$$c = \\frac{${m}}{${root} \\cdot ${n}} = \\frac{${num}}{${den}}${g > 1 ? ` = ${answerTex}` : ''}$$
+
+So $c = ${answerTex}$, which is entered as ${correctAnswer}.`;
     
     return {
       questionText: questionText,

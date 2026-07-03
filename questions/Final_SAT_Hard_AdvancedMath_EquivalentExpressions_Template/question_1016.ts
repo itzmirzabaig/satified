@@ -32,14 +32,22 @@ export const generator_1016 = {
     
     const gConst = -a * b;
     const gLinear = b - a;
-    
+
+    // Format g(x) = x^2 + (b-a)x - ab cleanly for every draw (b-a may be 0, ±1)
+    const linTerm = gLinear === 0 ? ''
+      : gLinear === 1 ? ' + x'
+      : gLinear === -1 ? ' - x'
+      : gLinear > 0 ? ` + ${gLinear}x`
+      : ` - ${Math.abs(gLinear)}x`;
+    const gPoly = `x^{2}${linTerm} - ${a * b}`;
+
     // STEP 2: Create options
     const correctAnswer = `$\\frac{x(x+${a})}{x+${b}}$`;
-    
+
     const optionsData = [
-      { text: `$\\frac{1}{x+${b}}$`, isCorrect: false, reason: "results from canceling too many factors, including the x term" },
-      { text: `$\\frac{x+${a}}{x+${b}}$`, isCorrect: false, reason: "results from forgetting the x factor in the numerator" },
-      { text: `$\\frac{x(x-${a})}{x+${b}}$`, isCorrect: false, reason: "results from canceling the wrong factor; $(x-${a})$ is the factor that should cancel, not remain" },
+      { text: `$\\frac{1}{x+${b}}$`, isCorrect: false, reason: `results from canceling too many factors, including the $x$ factor in the numerator` },
+      { text: `$\\frac{x+${a}}{x+${b}}$`, isCorrect: false, reason: `results from forgetting the $x$ factor in the numerator` },
+      { text: `$\\frac{x(x-${a})}{x+${b}}$`, isCorrect: false, reason: `results from canceling the wrong factor; $(x-${a})$ is the factor that should cancel, not remain` },
       { text: correctAnswer, isCorrect: true }
     ];
     
@@ -54,14 +62,14 @@ export const generator_1016 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
     // STEP 4: Question text
-    const questionText = `$f(x) = x^{3} - ${a*a}x$ and $g(x) = x^{2} ${gLinear >= 0 ? '+' : ''}${gLinear}x ${gConst}$. Which of the following expressions is equivalent to $\\frac{f(x)}{g(x)}$, for $x > ${a}$?`;
-    
+    const questionText = `$f(x) = x^{3} - ${a*a}x$ and $g(x) = ${gPoly}$. Which of the following expressions is equivalent to $\\frac{f(x)}{g(x)}$, for $x > ${a}$?`;
+
     // STEP 5: Explanation
     const explanation = `Choice ${correctLetter} is correct. Factor both polynomials:
 
 $f(x) = x^{3} - ${a*a}x = x(x^{2} - ${a*a}) = x(x-${a})(x+${a})$ (difference of squares)
 
-$g(x) = x^{2} ${gLinear >= 0 ? '+' : ''}${gLinear}x ${gConst} = (x-${a})(x+${b})$ (find two numbers that multiply to ${gConst} and add to ${gLinear})
+$g(x) = ${gPoly} = (x-${a})(x+${b})$ (find two numbers that multiply to ${gConst} and add to ${gLinear})
 
 Therefore:
 $$\\frac{f(x)}{g(x)} = \\frac{x(x-${a})(x+${a})}{(x-${a})(x+${b})}$$

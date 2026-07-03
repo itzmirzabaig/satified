@@ -21,7 +21,11 @@ export const generator_40 = {
   generate: (): QuestionData => {
     const base = getRandomInt(4, 10);
     const xValue = base * base;
-    const constant = getRandomInt(5, 15);
+    // Guard: the distractor (xValue - constant) would equal the correct answer
+    // (base + constant) exactly when 2*constant = base*(base - 1); shifting the
+    // constant by 1 breaks that single collision without creating new ones.
+    let constant = getRandomInt(5, 15);
+    if (xValue - constant === base + constant) constant += 1;
     const yValue = base + constant;
 
     const optionsData = [

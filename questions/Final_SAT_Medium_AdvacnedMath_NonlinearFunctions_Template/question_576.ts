@@ -1,16 +1,17 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 
 
 /**
  * Question 576
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [K = 0.5mv², m=4, K=18, v=3]
  * - Difficulty factors: [Kinetic energy formula, solving for velocity]
- * - Distractor patterns: [B: forgot 0.5 factor, C: v² instead of v, D: extreme value]
- * - Constraints: [v = sqrt(2K/m)]
+ * - Distractor patterns: [K/m (forgot the 2 and the root), v² (forgot the root), 2K = mv²]
+ * - Constraints: [v = sqrt(2K/m); v and m drawn EVEN so K, m/2, v²/2 and 2K/m
+ *   are all exact integers — no float artifacts, no floor() corrections]
  * - Question type: [No Figure→Multiple Choice Text]
  * - Figure generation: [None - formula application]
  */
@@ -23,45 +24,43 @@ export const generator_576 = {
     skill: "Nonlinear Functions",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values (MATCH ORIGINAL RANGES)
-    // Original: m=4, K=18, v=3
-    // Randomize: mass (2-8), find velocity such that 2K/m is perfect square
-    const v = getRandomInt(2, 6); // velocity
-    const m = getRandomInt(2, 8); // mass
-    const K = Math.floor(0.5 * m * v * v); // kinetic energy
-    
-    // STEP 2: Calculate derived values
-    const wrongB_v = Math.floor(Math.sqrt(K/m)); // Forgot 0.5
-    const wrongC_v = v * v; // v² instead of v
-    
-    // STEP 3: Build question text
-    const questionText = `An object's kinetic energy, in joules, is equal to the product of one-half the object's mass, in kilograms, and the square of the object's speed, in meters per second. What is the speed, in meters per second, of an object with a mass of ${m} kilograms and kinetic energy of ${K} joules?`;
-    
-    // STEP 4: Create options with tracking
+    // STEP 1: Generate random values.
+    // v even (4, 6, or 8) keeps v²/2 an integer; m even (2, 4, 6, or 8) keeps
+    // K = m·v²/2 an integer, so 2K/m === v² exactly for every draw.
+    const v = 2 * getRandomInt(2, 4); // speed: 4, 6, or 8 m/s
+    const m = 2 * getRandomInt(1, 4); // mass: 2, 4, 6, or 8 kg
+    const K = (m * v * v) / 2;        // kinetic energy, exact integer
+
+    // STEP 2: Build question text
+    const questionText = `An object's kinetic energy, in joules, is equal to the product of one-half the object's mass, in kilograms, and the square of the object's speed, in meters per second. What is the speed, in meters per second, of an object with a mass of ${m} kilograms and a kinetic energy of ${K} joules?`;
+
+    // STEP 3: Create options with tracking.
+    // Collision-free by construction for v >= 4 and m >= 2:
+    //   v < v²/2 < v² < m·v² = 2K, so all four values are always distinct.
     const optionsData = [
-      { text: `${v}`, isCorrect: true },
-      { text: `${2 * v}`, isCorrect: false, reason: "results from forgetting the one-half factor in the formula" },
-      { text: `${v * v}`, isCorrect: false, reason: "results from finding $v^2$ but forgetting to take the square root" },
-      { text: `${K * 2}`, isCorrect: false, reason: "results from incorrectly manipulating the equation" }
+      { text: `${v}`, isCorrect: true, reason: "" },
+      { text: `${(v * v) / 2}`, isCorrect: false, reason: `this is $\\frac{K}{m} = ${(v * v) / 2}$, the result of dividing by the mass without first multiplying by 2 and without taking the square root` },
+      { text: `${v * v}`, isCorrect: false, reason: `this is $v^2 = ${v * v}$; the square root was not taken` },
+      { text: `${2 * K}`, isCorrect: false, reason: `this is $mv^2 = ${2 * K}$, which is twice the kinetic energy, not the speed` }
     ];
-    
-    // STEP 5: Shuffle and assign letters
+
+    // STEP 4: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect);
     const correctLetter = correctOption!.letter;
     const correctAnswer = `${v}`;
-    
-    // STEP 6: Build explanation with dynamic letters
+
+    // STEP 5: Build explanation with dynamic letters and live values
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. The kinetic energy formula is $K = \\\\frac{1}{2}mv^2$. Substituting $K = ${K}$ and $m = ${m}$: $${K} = \\\\frac{1}{2}(${m})v^2 = ${Math.floor(m/2)}v^2$ (or ${m/2}v^2$). Multiplying both sides by 2: $${2*K} = ${m}v^2$. Dividing by ${m}: $v^2 = ${(2*K)/m}$. Taking the square root: $v = ${v}$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
-    
-    // STEP 7: Return question data
+    const explanation = `Choice ${correctLetter} is correct. Kinetic energy is given by $K = \\frac{1}{2}mv^2$, where $m$ is the mass in kilograms and $v$ is the speed in meters per second. Substituting $K = ${K}$ and $m = ${m}$ gives $\\frac{1}{2}(${m})v^2 = ${K}$. Multiplying both sides by 2 and dividing by ${m} gives $v^2 = \\frac{2(${K})}{${m}} = ${v * v}$. Taking the positive square root gives $v = ${v}$ meters per second. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
+
+    // STEP 6: Return question data
     return {
       questionText: questionText,
       figureCode: null,

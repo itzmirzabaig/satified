@@ -1,13 +1,14 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 32
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [coefficients: 2-5, constant: -5 to -2]
+ * - Number ranges: [a: 2-5, b: 2-5, d: -5 to -2]
  * - Difficulty factors: [Polynomial multiplication, FOIL method]
- * - Distractor patterns: [A: wrong sign on middle term, B: wrong sign on last term, C: adds instead of multiplies, D: correct]
+ * - Distractor patterns: [wrong sign on middle term, wrong sign on last term, adds a+d instead of multiplying]
+ * - Constraints: [middle coefficient a*d+b != 0; sum distractor a+b+d != 0 and != +/-(a*d+b) so all options stay distinct]
  */
 
 export const generator_32 = {
@@ -20,36 +21,62 @@ export const generator_32 = {
   },
 
   generate: (): QuestionData => {
-    const a = getRandomInt(2, 5);
-    const b = getRandomInt(2, 5);
-    const d = getRandomInt(-5, -2);
+    let a = getRandomInt(2, 5);
+    let b = getRandomInt(2, 5);
+    let d = getRandomInt(-5, -2);
 
-    const coeff6 = a;
-    const coeff4 = (a * d) + b;
-    const coeff2 = b * d;
-    const dSign = d >= 0 ? "+" : "-";
+    // Guards: keep the x^4 coefficient nonzero (so a "wrong middle sign"
+    // distractor exists), and keep the add-instead-of-multiply distractor
+    // coefficient nonzero and different from +/-(a*d+b) so no option collides.
+    const isBad = (): boolean => {
+      const c4 = a * d + b;
+      const s = a + b + d;
+      return c4 === 0 || s === 0 || s === c4 || s === -c4;
+    };
+    let tries = 0;
+    while (isBad() && tries++ < 50) {
+      a = getRandomInt(2, 5);
+      b = getRandomInt(2, 5);
+      d = getRandomInt(-5, -2);
+    }
+    if (isBad()) { a = 3; b = 2; d = -4; } // deterministic safe fallback
+
+    const coeff6 = a;            // >= 2
+    const coeff4 = a * d + b;    // nonzero (guarded), may be +/-1
+    const coeff2 = b * d;        // always negative
+    const sumCoeff = a + b + d;  // nonzero (guarded)
     const dAbs = Math.abs(d);
-    const c4Sign = coeff4 >= 0 ? "+" : "-";
-    const c4Abs = Math.abs(coeff4);
-    const c2Sign = coeff2 >= 0 ? "+" : "-";
-    const c2Abs = Math.abs(coeff2);
 
-    const correctAnswer = `${coeff6}x^6 ${c4Sign} ${c4Abs}x^4 ${c2Sign} ${c2Abs}x^2`.replace(/\+ /g, '').replace(/\- /g, '-');
+    // Renders one term of the polynomial with correct sign and no "1x".
+    const term = (coef: number, variable: string, leading: boolean): string => {
+      const mag = Math.abs(coef);
+      const magStr = mag === 1 ? '' : String(mag);
+      if (leading) return `${coef < 0 ? '-' : ''}${magStr}${variable}`;
+      return ` ${coef < 0 ? '-' : '+'} ${magStr}${variable}`;
+    };
+    const poly = (c6: number, c4: number, c2: number): string =>
+      term(c6, 'x^6', true) + term(c4, 'x^4', false) + term(c2, 'x^2', false);
 
-    // Distractor: wrong sign on middle term
-    const wrongMiddleSign = `${coeff6}x^6 ${coeff4 >= 0 ? "-" : "+"} ${c4Abs}x^4 ${c2Sign} ${c2Abs}x^2`.replace(/\+ /g, '').replace(/\- /g, '-');
-    
-    // Distractor: wrong sign on last term
-    const wrongLastSign = `${coeff6}x^6 ${c4Sign} ${c4Abs}x^4 ${coeff2 >= 0 ? "-" : "+"} ${c2Abs}x^2`.replace(/\+ /g, '').replace(/\- /g, '-');
-    
-    // Distractor: adds instead of multiplies for outer/inner
-    const wrongAdd = `${coeff6}x^6 ${(a + d + b) >= 0 ? "+" : "-"} ${Math.abs(a + d + b)}x^4 ${c2Sign} ${c2Abs}x^2`.replace(/\+ /g, '').replace(/\- /g, '-');
+    const correctPoly = poly(coeff6, coeff4, coeff2);
+    const coeff4Disp = coeff4 === 1 ? '' : coeff4 === -1 ? '-' : String(coeff4);
 
     const optionsData = [
-      { text: `$${wrongMiddleSign}$`, isCorrect: false },
-      { text: `$${wrongLastSign}$`, isCorrect: false },
-      { text: `$${wrongAdd}$`, isCorrect: false },
-      { text: `$${correctAnswer}$`, isCorrect: true }
+      {
+        text: `$${poly(coeff6, -coeff4, coeff2)}$`,
+        isCorrect: false,
+        reason: `the sign of the $x^{4}$-term is reversed`
+      },
+      {
+        text: `$${poly(coeff6, coeff4, -coeff2)}$`,
+        isCorrect: false,
+        reason: `the sign of the $x^{2}$-term is reversed`
+      },
+      {
+        text: `$${poly(coeff6, sumCoeff, coeff2)}$`,
+        isCorrect: false,
+        reason: `its $x^{4}$ coefficient comes from adding ${a} and ${d} instead of multiplying them in the Outer step`
+      },
+      { text: `$${correctPoly}$`, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -59,23 +86,26 @@ export const generator_32 = {
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
 
+    const distractorNotes = shuffledOptions
+      .filter(opt => !opt.isCorrect)
+      .map(opt => `Choice ${opt.letter} is incorrect because ${opt.reason}.`)
+      .join(' ');
+
     return {
-      questionText: `$$(${a}x^{3} + ${b}x)(x^{3} ${dSign} ${dAbs}x)$$
+      questionText: `$$(${a}x^{3} + ${b}x)(x^{3} - ${dAbs}x)$$
 
 Which of the following is equivalent to the expression above?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: `$${correctAnswer}$`,
-      explanation: `Choice ${correctOption.letter} is correct. To multiply the polynomials, distribute each term of the first polynomial to every term of the second (FOIL):
+      correctAnswer: `$${correctPoly}$`,
+      explanation: `Choice ${correctOption.letter} is correct. Multiply each term of the first polynomial by each term of the second polynomial (FOIL):
 
-1. **First:** $${a}x^3 \\cdot x^3 = ${coeff6}x^6$
-2. **Outer:** $${a}x^3 \\cdot (${dSign}${dAbs}x) = ${a * d}x^4$
-3. **Inner:** $${b}x \\cdot x^3 = ${b}x^4$
-4. **Last:** $${b}x \\cdot (${dSign}${dAbs}x) = ${coeff2}x^2$
+1. **First:** $(${a}x^{3})(x^{3}) = ${a}x^{6}$
+2. **Outer:** $(${a}x^{3})(-${dAbs}x) = ${a * d}x^{4}$
+3. **Inner:** $(${b}x)(x^{3}) = ${b}x^{4}$
+4. **Last:** $(${b}x)(-${dAbs}x) = ${coeff2}x^{2}$
 
-Combine the $x^4$ terms: $(${a * d} + ${b})x^4 = ${coeff4}x^4$.
-
-The resulting expression is $${coeff6}x^6 ${c4Sign} ${c4Abs}x^4 ${c2Sign} ${c2Abs}x^2$.`
+Combine the $x^{4}$ terms: $(${a * d}+${b})x^{4} = ${coeff4Disp}x^{4}$, so $(${a}x^{3}+${b}x)(x^{3}-${dAbs}x) = ${correctPoly}$. ${distractorNotes}`
     };
   }
 };

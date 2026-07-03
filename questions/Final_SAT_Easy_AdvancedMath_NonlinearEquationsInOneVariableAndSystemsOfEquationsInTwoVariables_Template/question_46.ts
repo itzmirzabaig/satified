@@ -27,8 +27,8 @@ export const generator_46 = {
     const optionsData = [
       { text: `${posSol}`, isCorrect: true, reason: "" },
       { text: `${b}`, isCorrect: false, reason: "is the value on the right side of the equation, not the solution for $x$" },
-      { text: `${Math.abs(negSol)}`, isCorrect: false, reason: "is the absolute value of the negative solution" },
-      { text: `${a + b}`, isCorrect: false, reason: "incorrectly added the values without considering the subtraction needed" }
+      { text: `${Math.abs(negSol)}`, isCorrect: false, reason: "is the absolute value of the negative solution, not the positive solution itself" },
+      { text: `${a}`, isCorrect: false, reason: "is the constant added to $x$ inside the absolute value, not the solution" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,7 +50,7 @@ export const generator_46 = {
 
 2. $x + ${a} = -${b} \\rightarrow x = -${b} - ${a} = ${negSol}$
 
-The question asks for the positive solution, which is $${posSol}$.
+The question asks for the positive solution, which is $x = ${posSol}$.
 
 Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };

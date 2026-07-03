@@ -25,33 +25,48 @@ export const generator_1018 = {
   generate: (): QuestionData => {
     // STEP 1: Generate the equation parameters
     // Pattern: num1/(x-a) + num2/(x+b) = (rx+t)/((x-a)(x+b))
-    
-    const a = getRandomInt(2, 5);
-    const b = getRandomInt(3, 7);
-    const num1 = getRandomInt(2, 4);
-    const num2 = getRandomInt(2, 5);
-    
-    // Calculate r and t
-    // num1(x+b) + num2(x-a) = num1*x + num1*b + num2*x - num2*a = (num1+num2)x + (num1*b - num2*a)
+    // num1(x+b) + num2(x-a) = (num1+num2)x + (num1*b - num2*a), so
+    // r = num1 + num2 and t = num1*b - num2*a.
+    // The stem states r and t are POSITIVE, so redraw (bounded) until t >= 1.
+    let a = 2, b = 7, num1 = 4, num2 = 2;
+    let t = num1 * b - num2 * a;
+    let tries = 0;
+    do {
+      a = getRandomInt(2, 5);
+      b = getRandomInt(3, 7);
+      num1 = getRandomInt(2, 4);
+      num2 = getRandomInt(2, 5);
+      t = num1 * b - num2 * a;
+      tries++;
+    } while (t < 1 && tries < 50);
+    if (t < 1) {
+      // Deterministic known-good fallback (t = 4*7 - 2*2 = 24)
+      a = 2; b = 7; num1 = 4; num2 = 2;
+      t = num1 * b - num2 * a;
+    }
+
     const r = num1 + num2;
-    const t = num1 * b - num2 * a;
-    
+
     // STEP 2: Calculate correct answer
     const rt = r * t;
     const correctText = rt.toString();
-    
-    // STEP 3: Create distractors based on SAT patterns
+
+    // STEP 3: Distractors — pairwise distinct from the answer and each other
+    // for EVERY valid draw (with t >= 1, r in [4,9]):
+    //   wrongRt = r*(num1*b + num2*a) >= 40 while rt <= r*t and r+t <= 33,
+    //     and wrongRt - rt = 2*r*num2*a > 0;
+    //   r + t = r*t would need t = r/(r-1), impossible for integers r >= 4;
+    //   -rt < 0 < all others.
+    const wrongT = num1 * b + num2 * a;
     const distractors = [
-      { text: (num1 * b + num2 * a).toString(), isCorrect: false, reason: "results from adding instead of subtracting when finding t" },
-      { text: ((-r) * t).toString(), isCorrect: false, reason: "results from using negative r" },
-      { text: (r * (-t)).toString(), isCorrect: false, reason: "results from using negative t" },
-      { text: (r * t + 10).toString(), isCorrect: false, reason: "results from a calculation error" }
+      { text: (r * wrongT).toString(), isCorrect: false, reason: `results from adding instead of subtracting when finding $t$, which gives $t = ${wrongT}$ rather than $t = ${t}$` },
+      { text: (r + t).toString(), isCorrect: false, reason: `results from computing the sum $r + t$ instead of the product $rt$` },
+      { text: (-rt).toString(), isCorrect: false, reason: `results from a sign error in the second numerator, which gives $t = -${t}$ and a negative product` }
     ];
-    
-    // Select 3 distractors and add correct answer
+
     const optionsData = [
       { text: correctText, isCorrect: true },
-      ...distractors.slice(0, 3)
+      ...distractors
     ];
     
     // STEP 4: Shuffle and assign letters

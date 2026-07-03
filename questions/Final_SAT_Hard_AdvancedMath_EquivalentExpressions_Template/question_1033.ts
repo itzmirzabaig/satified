@@ -23,29 +23,25 @@ export const generator_1033 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Choose which option is correct (D was correct in original)
+    // STEP 1: Choose the positive integer b-value the correct option works for.
+    // Every option has the form 3x^2 + Lx + 14b. By the Factor Theorem,
+    // x + 2b is a factor exactly when p(-2b) = 12b^2 - (2L - 14)b = 0,
+    // i.e. (for b > 0) when b = (L - 7)/6. So the correct option uses
+    // L = 6*correctB + 7, which gives b = correctB (a positive integer).
     const correctB = getRandomInt(5, 10);
-    const correctFactor = 2 * correctB;
-    
-    // Coefficients for option D: 3x² + (7*correctB)x + 14*correctB
-    const dLinear = 7 * correctB;
-    const dConstant = 14 * correctB;
-    
-    // Generate other options that don't work for integer b
+    const dLinear = 6 * correctB + 7; // 37..67, never equal to 7, 28, or 42
+
+    // Distractor linear coefficients: L = 7 gives b = 0 (not positive),
+    // L = 28 gives b = 7/2, L = 42 gives b = 35/6 (not integers).
     const aLinear = 7;
-    const aConstant = 14;
-    
     const bLinear = 28;
-    const bConstant = 14;
-    
     const cLinear = 42;
-    const cConstant = 14;
-    
+
     const optionsData = [
-      { text: `$3x^{2} + ${aLinear}x + ${aConstant}b$`, isCorrect: false, reason: "this expression has a factor of $x+2b$ only when $b=0$, which isn't positive" },
-      { text: `$3x^{2} + ${bLinear}x + ${bConstant}b$`, isCorrect: false, reason: "this expression has a factor of $x+2b$ only when $b=\\frac{7}{2}$, which isn't an integer" },
-      { text: `$3x^{2} + ${cLinear}x + ${cConstant}b$`, isCorrect: false, reason: "this expression has a factor of $x+2b$ only when $b=\\frac{35}{6}$, which isn't an integer" },
-      { text: `$3x^{2} + ${dLinear}x + ${dConstant}b$`, isCorrect: true }
+      { text: `$3x^{2} + ${aLinear}x + 14b$`, isCorrect: false, reason: `this expression has a factor of $x + 2b$ only when $b = \\frac{${aLinear} - 7}{6} = 0$, which is not positive` },
+      { text: `$3x^{2} + ${bLinear}x + 14b$`, isCorrect: false, reason: `this expression has a factor of $x + 2b$ only when $b = \\frac{${bLinear} - 7}{6} = \\frac{7}{2}$, which is not an integer` },
+      { text: `$3x^{2} + ${cLinear}x + 14b$`, isCorrect: false, reason: `this expression has a factor of $x + 2b$ only when $b = \\frac{${cLinear} - 7}{6} = \\frac{35}{6}$, which is not an integer` },
+      { text: `$3x^{2} + ${dLinear}x + 14b$`, isCorrect: true }
     ];
     
     // STEP 2: Shuffle
@@ -62,19 +58,14 @@ export const generator_1033 = {
     const questionText = `Which of the following expressions has a factor of $x + 2b$, where $b$ is a positive integer constant?`;
     
     // STEP 4: Explanation using Factor Theorem
-    const explanation = `Choice ${correctLetter} is correct. By the Factor Theorem, if $x + 2b$ is a factor, then substituting $x = -2b$ should yield 0.
+    const explanation = `Choice ${correctLetter} is correct. By the Factor Theorem, $x + 2b$ is a factor of a polynomial in $x$ exactly when the polynomial equals zero at $x = -2b$.
 
-For choice ${correctLetter} ($3x^{2} + ${dLinear}x + ${dConstant}b$):
-$$3(-2b)^{2} + ${dLinear}(-2b) + ${dConstant}b$$
-$$= 3(4b^{2}) - ${2 * dLinear}b + ${dConstant}b$$
-$$= 12b^{2} - ${2 * dLinear - dConstant}b$$
-$$= 12b^{2} - ${24 * correctB - 14 * correctB}b = 12b^{2} - ${10 * correctB}b = 2b(6b - ${5 * correctB})$$
+Substituting $x = -2b$ into $\\,3x^{2} + ${dLinear}x + 14b$:
+$$\\,3(-2b)^{2} + ${dLinear}(-2b) + 14b = 12b^{2} - ${2 * dLinear}b + 14b = 12b^{2} - ${2 * dLinear - 14}b = 12b(b - ${correctB})$$
 
-Wait, let me recalculate: $${2 * dLinear} - ${dConstant} = ${2 * dLinear - dConstant}$$
+This equals zero when $b = ${correctB}$, which is a positive integer. So $x + 2b$ is a factor of the expression in choice ${correctLetter} when $b = ${correctB}$.
 
-Actually: $3(-2b)^{2} + ${dLinear}(-2b) + ${dConstant}b = 12b^{2} - ${dLinear * 2}b + ${dConstant}b = 12b^{2} - ${dLinear * 2 - dConstant}b = 12b^{2} - ${12 * correctB}b = 12b(b - ${correctB})$
-
-This equals 0 when $b = ${correctB}$, which is a positive integer.
+In general, substituting $x = -2b$ into $\\,3x^{2} + px + 14b$ gives $\\,12b^{2} - (2p - 14)b$, which equals zero for a positive constant $b$ only when $b = \\frac{p - 7}{6}$ is a positive integer.
 
 Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
 Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.

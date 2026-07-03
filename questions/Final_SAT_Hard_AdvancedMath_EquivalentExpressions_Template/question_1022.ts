@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -23,58 +23,57 @@ export const generator_1022 = {
   },
   
   generate: (): QuestionData => {
+    // Format coeff·x + konst as a clean linear expression string
+    const formatLinear = (coeff: number, konst: number): string => {
+      if (coeff === 0) return konst.toString();
+      const xPart = coeff === 1 ? 'x' : coeff === -1 ? '-x' : `${coeff}x`;
+      if (konst === 0) return xPart;
+      return `${xPart}${konst >= 0 ? '+' : '-'}${Math.abs(konst)}`;
+    };
+
     // STEP 1: Generate parameters
-    const a = getRandomInt(3, 6);
-    const b = getRandomInt(2, 5);
-    const c = getRandomInt(2, 6);
-    const d = getRandomInt(1, 4);
-    
-    // Calculate result
-    // a/(bx-c) - 1/(x+d) = [a(x+d) - (bx-c)] / [(bx-c)(x+d)]
-    // = [ax + ad - bx + c] / [(bx-c)(x+d)]
-    // = [(a-b)x + (ad+c)] / [(bx-c)(x+d)]
-    
+    // a/(bx-c) - 1/(x+d) = [a(x+d) - (bx-c)] / [(x+d)(bx-c)]
+    //                    = [(a-b)x + (ad+c)] / [(x+d)(bx-c)]
+    // Guards (bounded retry, then safe fallback):
+    //  - a*d - c !== 0, so the sign-error distractor is never the zero fraction
+    //  - !(a === b && a*d - c === a - 1), so the sign-error distractor never
+    //    collides with the "subtract numerators only" distractor
+    let a = 5, b = 2, c = 3, d = 2; // safe fallback satisfying both guards
+    for (let tries = 0; tries < 50; tries++) {
+      const aT = getRandomInt(3, 6);
+      const bT = getRandomInt(2, 5);
+      const cT = getRandomInt(2, 6);
+      const dT = getRandomInt(1, 4);
+      const signErrConst = aT * dT - cT;
+      if (signErrConst !== 0 && !(aT === bT && signErrConst === aT - 1)) {
+        a = aT; b = bT; c = cT; d = dT;
+        break;
+      }
+    }
+
     const numCoeff = a - b;
     const numConst = a * d + c;
-    
+    const denom = `(x+${d})(${b}x-${c})`;
+
     // STEP 2: Build the correct answer expression
-    let numerator: string;
-    if (numCoeff === 0) {
-      numerator = numConst.toString();
-    } else if (numCoeff === 1) {
-      numerator = numConst >= 0 ? `x+${numConst}` : `x-${Math.abs(numConst)}`;
-    } else if (numCoeff === -1) {
-      numerator = numConst >= 0 ? `-x+${numConst}` : `-x-${Math.abs(numConst)}`;
-    } else {
-      const sign = numConst >= 0 ? '+' : '-';
-      numerator = `${numCoeff}x${sign}${Math.abs(numConst)}`;
-    }
-    
-    const correctAnswerText = `\\frac{${numerator}}{(x+${d})(${b}x-${c})}`;
-    
+    const numerator = formatLinear(numCoeff, numConst);
+    const correctAnswerText = `\\frac{${numerator}}{${denom}}`;
+
     // STEP 3: Create distractors
-    const distractorA = `\\frac{1}{(x+${d})(${b}x-${c})}`;
-    
-    const distractorB = `\\frac{${a-1}}{${b-1}x-${c+d}}`;
-    
-    const wrongNumConst = a * d - c;
-    let wrongNumerator: string;
-    if (numCoeff === 0) {
-      wrongNumerator = wrongNumConst.toString();
-    } else if (numCoeff === 1) {
-      wrongNumerator = wrongNumConst >= 0 ? `x+${wrongNumConst}` : `x-${Math.abs(wrongNumConst)}`;
-    } else {
-      const sign = wrongNumConst >= 0 ? '+' : '-';
-      wrongNumerator = `${numCoeff}x${sign}${Math.abs(wrongNumConst)}`;
-    }
-    const distractorC = `\\frac{${wrongNumerator}}{(x+${d})(${b}x-${c})}`;
-    
-    const distractorD = `\\frac{${a + 1}x+${Math.abs(a - c)}}{(x+${d})(${b}x-${c})}`;
-    
+    // Subtracting numerators without rewriting over the common denominator
+    const distractorA = `\\frac{${a - 1}}{${denom}}`;
+
+    // Subtracting numerators and denominators separately
+    const distractorB = `\\frac{${a - 1}}{${formatLinear(b - 1, -(c + d))}}`;
+
+    // Sign error: negative not distributed across (bx - c)
+    const wrongNumerator = formatLinear(numCoeff, a * d - c);
+    const distractorC = `\\frac{${wrongNumerator}}{${denom}}`;
+
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "results from using only the common denominator without proper numerator" },
-      { text: distractorB, isCorrect: false, reason: "results from incorrectly subtracting numerators and denominators separately" },
-      { text: distractorC, isCorrect: false, reason: "results from a sign error when distributing the negative" },
+      { text: distractorA, isCorrect: false, reason: "results from subtracting the numerators directly without first rewriting each fraction over the common denominator" },
+      { text: distractorB, isCorrect: false, reason: "results from incorrectly subtracting the numerators and the denominators separately" },
+      { text: distractorC, isCorrect: false, reason: `results from not distributing the negative sign across $(${b}x-${c})$, which changes the constant term of the numerator from ${numConst} to ${a * d - c}` },
       { text: correctAnswerText, isCorrect: true }
     ];
     
@@ -94,18 +93,18 @@ export const generator_1022 = {
     // STEP 6: Explanation
     const explanation = `Choice ${correctLetter} is correct. To subtract these fractions, rewrite them with a common denominator of $(x+${d})(${b}x-${c})$.
 
-The first term: $\\frac{${a}}{${b}x-${c}} \\cdot \\frac{x+${d}}{x+${d}} = \\frac{${a}(x+${d})}{(x+${d})(${b}x-${c})} = \\frac{${a}x+${a*d}}{(x+${d})(${b}x-${c})}$
+The first term: $\\frac{${a}}{${b}x-${c}} \\cdot \\frac{x+${d}}{x+${d}} = \\frac{${a}(x+${d})}{(x+${d})(${b}x-${c})} = \\frac{${a}x+${a * d}}{(x+${d})(${b}x-${c})}$
 
 The second term: $\\frac{1}{x+${d}} \\cdot \\frac{${b}x-${c}}{${b}x-${c}} = \\frac{${b}x-${c}}{(x+${d})(${b}x-${c})}$
 
-Subtracting: $\\frac{${a}x+${a*d}}{(x+${d})(${b}x-${c})} - \\frac{${b}x-${c}}{(x+${d})(${b}x-${c})} = \\frac{(${a}x+${a*d}) - (${b}x-${c})}{(x+${d})(${b}x-${c})}$
+Subtracting: $\\frac{${a}x+${a * d}}{(x+${d})(${b}x-${c})} - \\frac{${b}x-${c}}{(x+${d})(${b}x-${c})} = \\frac{(${a}x+${a * d}) - (${b}x-${c})}{(x+${d})(${b}x-${c})}$
 
-Simplifying the numerator: $${a}x+${a*d}-${b}x+${c} = ${numCoeff !== 0 ? numCoeff + 'x' : ''}${numCoeff !== 0 ? (numConst >= 0 ? '+' : '-') : ''}${Math.abs(numConst)}$
+Simplifying the numerator: $(${a}x+${a * d}) - (${b}x-${c}) = ${a}x+${a * d}-${b}x+${c} = ${numerator}$
 
 This gives $\\frac{${numerator}}{(x+${d})(${b}x-${c})}$.
 
 Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. 
+Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
 Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
     
     return {

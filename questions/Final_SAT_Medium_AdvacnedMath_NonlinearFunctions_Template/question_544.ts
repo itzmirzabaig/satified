@@ -21,11 +21,12 @@ export const generator_544 = {
     
     const questionText = `The product of two positive integers is ${product}. If the first integer is ${d} greater than ${k} times the second integer, what is the smaller of the two integers?`;
     
+    const half = Math.floor(y / 2);
     const optionsData = [
-      { text: `$${Math.floor(y/2)}$`, isCorrect: false, reason: `if the smaller number were ${Math.floor(y/2)}, the product would not equal ${product}` },
+      { text: `$${half}$`, isCorrect: false, reason: `if the smaller integer were ${half}, the larger integer would be ${k * half + d} and the product would be ${(k * half + d) * half}, not ${product}` },
       { text: `$${y}$`, isCorrect: true },
-      { text: `$${x}$`, isCorrect: false, reason: "this is the larger integer, not the smaller one" },
-      { text: `$${2 * x}$`, isCorrect: false, reason: "this value is too large to satisfy the given conditions" }
+      { text: `$${x}$`, isCorrect: false, reason: "this is the larger of the two integers, not the smaller one" },
+      { text: `$${2 * x}$`, isCorrect: false, reason: `this is twice the larger integer; neither of the two integers equals ${2 * x}` }
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -35,10 +36,10 @@ export const generator_544 = {
     
     const correctOption = shuffledOptions.find(opt => opt.isCorrect);
     const correctLetter = correctOption!.letter;
-    const correctAnswer = `${y}`;
-    
+    const correctAnswer = `$${y}$`;
+
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. Let the two integers be $x$ and $y$, where $x > y$. We have $xy = ${product}$ and $x = ${k}y + ${d}$. Substituting: $(${k}y + ${d})y = ${product}$, which gives $${k}y^2 + ${d}y - ${product} = 0$. Using the quadratic formula or factoring, we find $y = ${y}$ (discarding the negative solution). Then $x = ${k}(${y}) + ${d} = ${x}$. The smaller integer is ${y}$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Let the smaller integer be $y$ and the larger integer be $x$. Then $xy = ${product}$ and $x = ${k}y + ${d}$. Substituting the second equation into the first gives $(${k}y + ${d})y = ${product}$, which rearranges to $(${k}y + ${d})y - ${product} = 0$ and factors as $(y - ${y})(${k}y + ${x}) = 0$. So $y = ${y}$ or $y = -\\frac{${x}}{${k}}$, and since both integers are positive, $y = ${y}$. The larger integer is then $x = ${k}(${y}) + ${d} = ${x}$, so the smaller of the two integers is $y = ${y}$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: questionText,

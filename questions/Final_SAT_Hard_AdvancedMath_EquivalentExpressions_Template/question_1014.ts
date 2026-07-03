@@ -51,16 +51,17 @@ export const generator_1014 = {
     const simplifiedNum = finalNum / g;
     const simplifiedDen = finalDen / g;
     
-    // STEP 2: Format answer
-    let correctAnswer: string;
-    if (simplifiedDen === 1) {
-      correctAnswer = simplifiedNum.toString();
-    } else {
-      correctAnswer = `\\frac{${simplifiedNum}}{${simplifiedDen}}`;
-    }
-    
+    // STEP 2: Format answer (fill-in: plain "a/b" fraction, never LaTeX)
+    const correctAnswer = simplifiedDen === 1
+      ? simplifiedNum.toString()
+      : `${simplifiedNum}/${simplifiedDen}`;
+    // LaTeX version for use inside math in the explanation only
+    const answerTex = simplifiedDen === 1
+      ? `${simplifiedNum}`
+      : `\\frac{${simplifiedNum}}{${simplifiedDen}}`;
+
     // STEP 3: Build question
-    const questionText = `$ \\sqrt[${root1}]{70n}(\\sqrt[${root2}]{70n})^{2} $ For what value of $x$ is the given expression equivalent to $(70n)^{30x}$, where $n > 1$?`;
+    const questionText = `$ \\sqrt[${root1}]{70n}(\\sqrt[${root2}]{70n})^{2} $ For what value of $x$ is the given expression equivalent to $(70n)^{30x}$, where $n > 1$? (Enter your answer as a fraction.)`;
     
     // STEP 4: Explanation
     const explanation = `Rewrite the radicals using rational exponents:
@@ -70,14 +71,16 @@ export const generator_1014 = {
 Multiply the expressions by adding exponents:
 $$ (70n)^{\\frac{1}{${root1}}} \\cdot (70n)^{\\frac{2}{${root2}}} = (70n)^{\\frac{1}{${root1}} + \\frac{2}{${root2}}} $$
 
-Find common denominator (${root1 * root2}):
+Write both fractions with the common denominator ${root1 * root2}:
 $$ \\frac{1}{${root1}} + \\frac{2}{${root2}} = \\frac{${root2}}{${root1 * root2}} + \\frac{${2 * root1}}{${root1 * root2}} = \\frac{${root2} + ${2 * root1}}{${root1 * root2}} = \\frac{${sumNum}}{${sumDen}} $$
 
-Set equal to $30x$:
+The given expression equals $(70n)^{30x}$ exactly when the exponents are equal (since $n > 1$, the base is greater than 1):
 $$ \\frac{${sumNum}}{${sumDen}} = 30x $$
 
 Solve for $x$:
-$$ x = \\frac{${sumNum}}{${sumDen} \\cdot 30} = \\frac{${finalNum}}{${finalDen}} = ${correctAnswer} $$`;
+$$ x = \\frac{${sumNum}}{30 \\cdot ${sumDen}} = \\frac{${finalNum}}{${finalDen}}${g > 1 ? ` = ${answerTex}` : ''} $$
+
+So $x = ${answerTex}$; enter ${correctAnswer}.`;
     
     return {
       questionText: questionText,

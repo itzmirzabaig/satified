@@ -23,8 +23,12 @@ export const generator_550 = {
   
   generate: (): QuestionData => {
     const gravityCoeff = 4.9;
-    const velocityCoeff = getRandomInt(5, 12);
     const initialHeight = getRandomInt(5, 15);
+    let velocityCoeff = getRandomInt(5, 12);
+    if (velocityCoeff === initialHeight) {
+      // Guard: the velocity and height distractor/answer must never collide.
+      velocityCoeff = velocityCoeff === 12 ? 11 : velocityCoeff + 1;
+    }
     
     const questionText = `An object is kicked from a platform. The equation $h = -${gravityCoeff}t^2 + ${velocityCoeff}t + ${initialHeight}$ represents this situation, where $h$ is the height of the object above the ground, in meters, $t$ seconds after it is kicked. Which number represents the height, in meters, from which the object was kicked?`;
     
