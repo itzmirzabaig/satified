@@ -5,10 +5,12 @@ import type { QuestionData } from '../../study/types';
 * Question 130
 *
 * ORIGINAL ANALYSIS:
-* - Number ranges: [numer/denom: 2-6, multiplier: 2-6]
+* - Number ranges: [numer/denom: 2-6 (distinct, coprime), multiplier: 2-6]
 * - Difficulty factors: [Fractional coefficient, two-step solving]
-* - Distractor patterns: [B: added, C: wrong order of ops, D: subtracted]
-* - Constraints: [Clean integer result]
+* - Distractor patterns: [divided by numerator only, multiplied by denominator
+*   without dividing, assumed x equals the right-hand side]
+* - Constraints: [Clean integer result; numer !== denom and gcd(numer,denom)=1
+*   so the fraction is in lowest terms and no option can ever collide]
 * - Question type: [Multiple Choice]
 * - Figure generation: [None]
 */
@@ -23,17 +25,30 @@ export const generator_130 = {
   },
 
   generate: (): QuestionData => {
-    const numer = getRandomInt(2, 6);
-    const denom = getRandomInt(2, 6);
-    const multiplier = getRandomInt(2, 6);
-    const result = denom * multiplier;
-    const rightSide = numer * multiplier;
+    const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+    let numer = getRandomInt(2, 6);
+    let denom = getRandomInt(2, 6);
+    let tries = 0;
+    // Bounded retry: keep the fraction in lowest terms (also forces numer !== denom,
+    // which guarantees the "x equals the right-hand side" distractor never equals
+    // the correct answer).
+    while (gcd(numer, denom) !== 1 && tries++ < 50) {
+      numer = getRandomInt(2, 6);
+      denom = getRandomInt(2, 6);
+    }
+    if (gcd(numer, denom) !== 1) { numer = 2; denom = 3; }
 
+    const multiplier = getRandomInt(2, 6);
+    const rightSide = numer * multiplier;
+    const result = denom * multiplier; // x = rightSide * denom / numer = multiplier * denom
+
+    // Collision-proof by construction (numer >= 2, denom >= 2, numer !== denom):
+    //   result = denom*multiplier, dA = multiplier, dB = numer*multiplier*denom, dC = numer*multiplier
     const optionsData = [
       { text: result.toString(), isCorrect: true },
-      { text: (rightSide + numer).toString(), isCorrect: false, reason: "may result from adding the right side and the numerator" },
-      { text: (Math.floor(rightSide / denom) * numer).toString(), isCorrect: false, reason: "may result from dividing by the denominator then multiplying by the numerator" },
-      { text: (rightSide - denom).toString(), isCorrect: false, reason: "may result from subtracting the denominator from the right side" }
+      { text: multiplier.toString(), isCorrect: false, reason: `it results from dividing ${rightSide} by ${numer} but not multiplying by ${denom}` },
+      { text: (rightSide * denom).toString(), isCorrect: false, reason: `it results from multiplying ${rightSide} by ${denom} without dividing by ${numer}` },
+      { text: rightSide.toString(), isCorrect: false, reason: `it assumes $x$ is equal to the right-hand side of the equation` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -49,7 +64,7 @@ export const generator_130 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Multiply by ${denom}: $${numer}x = ${rightSide * denom}$. Divide by ${numer}: $x = ${result}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `To solve $\\frac{${numer}x}{${denom}} = ${rightSide}$ for $x$, multiply both sides of the equation by $\\frac{${denom}}{${numer}}$, the reciprocal of the coefficient of $x$. This gives $x = ${rightSide} \\cdot \\frac{${denom}}{${numer}} = \\frac{${rightSide * denom}}{${numer}} = ${result}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
     };
   }
 };

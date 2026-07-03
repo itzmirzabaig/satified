@@ -1,14 +1,14 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1060
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [system 8x+y=-11, 2x²=y+341, find x²]
+ * - Number ranges: [system 8x+y=-11, 2x²=y+341, find greatest x²]
  * - Difficulty factors: [System with linear and quadratic, substitution, solve quadratic]
- * - Distractor patterns: [A: -15, B: -11, C: 121, D: 225/correct]
- * - Constraints: [Substitute linear into quadratic, get two possible x² values]
+ * - Distractor patterns: [the two x-solutions themselves, the smaller x² value]
+ * - Constraints: [Substitute linear into quadratic, two possible x² values, ask for greatest]
  * - Question type: [Multiple choice text]
  * - Figure generation: [None]
  */
@@ -21,75 +21,57 @@ export const generator_1060 = {
     skill: "Nonlinear Equations In One Variable And Systems Of Equations In Two Variables",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values preserving difficulty
-    // Pattern: ax + by = c1, dx² = y + c2, find x²
-    
-    const a = getRandomInt(5, 12);
-    const d = getRandomInt(1, 4);
-    
-    // From linear: y = (c1 - ax)/b, substitute into quadratic
-    // dx² = (c1 - ax)/b + c2
-    
-    // Let's use b = 1 for simplicity, so y = c1 - ax
-    // dx² = c1 - ax + c2 = (c1+c2) - ax
-    // dx² + ax - (c1+c2) = 0
-    
-    // We want this to factor nicely
-    // Let's pick roots for x, say p and q, then x² values are p² and q²
-    
-    const p = getRandomInt(-15, -8);
-    const q = p + getRandomInt(1, 4); // q > p, so -p > -q (greatest is -p)
-    
-    // Sum: p + q = -a/d, product: pq = -(c1+c2)/d
-    
-    // Choose d, then a = -d(p+q)
-    const finalD = 2;
-    const finalA = -finalD * (p + q);
-    
-    // c1 + c2 = -d*pq
-    const sumConstants = -finalD * p * q;
-    
-    // Split into c1 and c2
-    const c1 = getRandomInt(10, 50);
-    const c2 = sumConstants - c1;
-    
-    // x² values are p² and q²
-    const xSquared1 = p * p;
-    const xSquared2 = q * q;
-    
-    // STEP 2: Create options (D is larger x²)
-    const distractorA = -15;
-    const distractorB = Math.floor(-finalA / 2); // Related to coefficient
-    const distractorC = xSquared1; // Smaller x²
-    
+    // Answer-first construction (mirrors the original 8x+y=-11, 2x²=y+341).
+    // The combined quadratic has roots x = -m (negative) and x = n (positive)
+    // with m >= n + 2, so the two possible values of x² are m² and n², and the
+    // greatest is ALWAYS m².
+    const m = getRandomInt(11, 16);     // magnitude of the negative root
+    const n = getRandomInt(7, m - 2);   // positive root, strictly smaller magnitude
+
+    const d = 2;                        // leading coefficient of the quadratic
+    const a = d * (m - n);              // d(x + m)(x - n) = d·x² + a·x - d·m·n
+    const sum = d * m * n;              // c1 + c2
+    const c1 = -getRandomInt(5, 20);    // negative constant in the linear equation
+    const c2 = sum - c1;                // positive constant in the quadratic equation
+
+    // System: y + a·x = c1  and  y = d·x² - c2.
+    // Substituting y = c1 - a·x:  c1 - a·x = d·x² - c2
+    //   →  d·x² + a·x - (c1 + c2) = 0
+    //   →  x² + (m - n)·x - m·n = 0
+    //   →  (x + m)(x - n) = 0,  so x = -m or x = n.
+    const xSqBig = m * m;               // greatest possible x² (from x = -m)
+    const xSqSmall = n * n;             // the other possible x² (from x = n)
+
+    // Options are distinct for every draw by construction:
+    // -m < 0 < n < n² < m²  (n >= 7 → n² > n;  n <= m - 2 → n² < m²).
     const optionsData = [
-      { text: `$${distractorA}$`, isCorrect: false, reason: "is not a valid solution for $x^2$ (would require imaginary x)" },
-      { text: `$${distractorB}$`, isCorrect: false, reason: "confuses the coefficient with the solution" },
-      { text: `$${distractorC}$`, isCorrect: false, reason: "is one possible value, but not the one asked for (or there's an error in identifying which)" },
-      { text: `$${xSquared2}$`, isCorrect: true }
+      { text: `$${-m}$`, isCorrect: false, reason: `is one of the two solutions for $x$, not the value of $x^2$` },
+      { text: `$${n}$`, isCorrect: false, reason: `is the other solution for $x$, not the value of $x^2$` },
+      { text: `$${xSqSmall}$`, isCorrect: false, reason: `is the other possible value of $x^2$ (from $x = ${n}$), but it is not the greatest possible value` },
+      { text: `$${xSqBig}$`, isCorrect: true }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    const explanation = `Choice ${correctLetter} is correct. From the first equation, $y=-${finalA}x+${c1}$. Substituting into the second: $${finalD}x^2=-${finalA}x+${c1}+${c2}=-${finalA}x+${sumConstants}$. This gives $${finalD}x^2+${finalA}x-${sumConstants}=0$, which factors as $(x-${p})(x-${q})=0$. Thus $x=${p}$ or $x=${q}$, and $x^2=${xSquared1}$ or $x^2=${xSquared2}$. The answer is $${xSquared2}$.
+
+    const explanation = `Choice ${correctLetter} is correct. Solving the first equation for $y$ gives $y = ${c1} - ${a}x$, and the second equation gives $y = ${d}x^2 - ${c2}$. Setting these equal: $${c1} - ${a}x = ${d}x^2 - ${c2}$. Moving every term to one side and dividing by ${d} yields $x^2 + ${m - n}x - ${m * n} = 0$, which factors as $(x + ${m})(x - ${n}) = 0$. So $x = ${-m}$ or $x = ${n}$, giving $x^2 = ${xSqBig}$ or $x^2 = ${xSqSmall}$. The greatest possible value is $x^2 = ${xSqBig}$.
 Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
 Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
 Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
-    
+
     return {
-      questionText: `$${finalA}x + y = ${c1}$\n$${finalD}x^2 = y + ${c2}$\n\nIf $(x, y)$ is a solution to the given system of equations, what is the value of $x^2$?`,
+      questionText: `$y + ${a}x = ${c1}$\n$y = ${d}x^2 - ${c2}$\n\nIf $(x, y)$ is a solution to the given system of equations, what is the greatest possible value of $x^2$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
+      correctAnswer: correctOption.text,
       explanation: explanation
     };
   }

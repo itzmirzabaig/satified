@@ -104,7 +104,25 @@ currency as `\$`, names → role+pronoun, figures rebuilt to house style when
 broken) → smoke until PASS. Only touch assigned files. Structured return:
 {file, status: fixed|rebuilt|already_clean, defects_fixed[], note}.
 
-## Current status at handoff
+## Current status at handoff (2026-07-02, session stopped cleanly)
 
-(Filled in at handoff time — see the section below appended by the stopping
-session.)
+- Phase C stopped mid-run by user request. Batch completion at stop:
+  Easy 16/77, Medium 15/99, Hard 10/98 (41/274 batches).
+- ~122 question files fixed, smoke-gated and committed on `qbank-repair`
+  (checkpoint commits: "Phase C checkpoint: ..."). Every modified file passed
+  `npx tsx scripts/smoke.mjs` at stop time — nothing is half-edited.
+- Remaining work: roughly 540 of the original 664 hard-flagged files. DO NOT
+  trust this count — re-derive it on resume:
+  `node scripts/audit-questions.mjs` then `node scripts/build-fix-batches.mjs`
+  and `node scripts/split-batches.mjs`. The rebuilt batches automatically
+  exclude everything already fixed.
+- The 10 syntax-corrupted ex-backup rebuild files (tsc/vite still fail on
+  them; see reports/audit-summary.md IMPORT_FAIL rows) are among the remaining
+  Hard/Medium batches — they are batch-size-1 entries with IMPORT_FAIL codes.
+- Machine note: original device was a 2-core laptop → workflow agent
+  concurrency capped at 2 per workflow (ran 3 difficulty workflows
+  concurrently to get ~6). On a machine with more cores, concurrency scales
+  as min(16, cores-2) per workflow — launch the same 3 workflows concurrently.
+- Reminder of gates still ahead: Phase D (multi-verifier, AWAIT USER GO),
+  Phase E (audit 0 hard flags + tsc 0 errors + vite build + UI spot-check),
+  Phase F (merge to main = production deploy, ASK USER FIRST).

@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -37,8 +37,13 @@ export const generator_1062 = {
     const b = p + q + 1; // So that b-1 = p+q
     const cDiff = p * q; // c2 - c1 = pq
     
-    // c1 and c2: c2 = c1 + pq, let's pick c1
-    const c1 = getRandomInt(5, 12);
+    // c1 and c2: c2 = c1 + pq, let's pick c1.
+    // Guard: c1 is used as a distractor and q (range 5..13) overlaps its range,
+    // so bump c1 deterministically if it collides with q. All other option
+    // pairs are distinct by construction: -p < 0 < q, c1; c2 = c1 + pq >= 25
+    // exceeds both q (<= 13) and c1 (<= 12).
+    let c1 = getRandomInt(5, 12);
+    if (c1 === q) c1 = c1 < 12 ? c1 + 1 : 11;
     const c2 = c1 + cDiff;
     
     // Solutions: x = -p and x = -q, greatest is -p
@@ -51,7 +56,7 @@ export const generator_1062 = {
     // STEP 2: Create options
     const optionsData = [
       { text: `$${greatestX}$`, isCorrect: true },
-      { text: `$${distractorB}$`, isCorrect: false, reason: "is the positive version of one solution, not the greatest x-value" },
+      { text: `$${distractorB}$`, isCorrect: false, reason: `is the opposite of the other solution, $x=-${q}$, not the greatest value of $x$` },
       { text: `$${distractorC}$`, isCorrect: false, reason: "is the y-intercept of the line, not a solution" },
       { text: `$${distractorD}$`, isCorrect: false, reason: "is the constant term in the parabola, not a solution" }
     ];
@@ -74,7 +79,7 @@ Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reas
       questionText: `$y = x + ${c1}$\n$y = x^2 + ${b}x + ${c2}$\n\nA solution to the given system of equations is $(x,y)$. What is the greatest possible value of $x$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
+      correctAnswer: correctOption.text,
       explanation: explanation
     };
   }

@@ -10,10 +10,13 @@ import type { QuestionData } from '../../study/types';
  * - Visual: Parabola f(x) shown. g(x) described but NOT shown.
  * - Math: f(x) = -0.5(x-4)^2 + k, g(x) = -x + k.
  * - Intersection: -0.5(x-4)^2 + k = -x + k => (x-4)^2 = 2x => x^2 - 10x + 16 = 0 => x=2, 8.
+ * - The question asks for the greatest (8) or least (2) such value, randomized,
+ *   so the fill-in answer is a single unambiguous number.
  */
 
 export const generator_1064 = {
   metadata: {
+    id: "1064",
     assessment: "SAT",
     domain: "Advanced Math",
     skill: "Nonlinear Equations In One Variable And Systems Of Equations In Two Variables",
@@ -24,9 +27,15 @@ export const generator_1064 = {
     // 1. Math Configuration
     // We randomize 'k' (vertical shift) to add variety.
     // The intersection x-values remain constant (2 and 8) because k cancels out.
-    const k = getRandomInt(8, 14); 
+    const k = getRandomInt(8, 14);
     const h = 4;
     const a = 0.5;
+
+    // Intersections of f and g are always x = 2 and x = 8 (k cancels out).
+    // Ask for the greatest or least so the fill-in answer is a single number.
+    const askGreatest = getRandomInt(0, 1) === 1;
+    const answer = askGreatest ? 8 : 2;
+    const superlative = askGreatest ? 'greatest' : 'least';
 
     // 2. SVG Configuration
     const width = 400;
@@ -81,7 +90,7 @@ export const generator_1064 = {
     const step = 0.1;
     for (let x = xMin; x <= xMax; x += step) {
         const y = -a * Math.pow(x - h, 2) + k;
-        if (y >= yMin - 5) { // Only plot if within reasonable view
+        if (y >= yMin) { // Only plot points inside the visible plot area
              points.push(`${scaleX(x)},${scaleY(y)}`);
         }
     }
@@ -108,24 +117,25 @@ export const generator_1064 = {
 
     // 4. Question Text & Explanation
     return {
-      questionText: `The graph of the function $f$, defined by $f(x)=-\\frac{1}{2}(x-4)^{2}+${k}$, is shown in the xy-plane above. If the function $g$ (not shown) is defined by $g(x)=-x+${k}$, what is one possible value of $a$ such that $f(a)=g(a)$?`,
+      questionText: `The graph of the function $f$, defined by $f(x)=-\\frac{1}{2}(x-4)^{2}+${k}$, is shown in the $xy$-plane above. The function $g$ (not shown) is defined by $g(x)=-x+${k}$. If $f(a)=g(a)$, what is the ${superlative} possible value of $a$?`,
       figureCode: svgContent,
-      options: null, // Fill in the blank
-      correctAnswer: "2, 8",
+      options: [], // Fill in the blank
+      correctAnswer: String(answer),
       explanation: `
-      To find the values where $f(a) = g(a)$, we set the equations equal to each other:
+      To find the values where $f(a) = g(a)$, set the two expressions equal to each other:
       $$-\\frac{1}{2}(a-4)^{2}+${k} = -a+${k}$$
       Subtract ${k} from both sides:
       $$-\\frac{1}{2}(a-4)^{2} = -a$$
-      Multiply both sides by -2:
+      Multiply both sides by $-2$:
       $$(a-4)^{2} = 2a$$
       Expand the squared term:
       $$a^2 - 8a + 16 = 2a$$
-      Rearrange into standard quadratic form ($ax^2+bx+c=0$):
+      Rearrange so that one side equals zero:
       $$a^2 - 10a + 16 = 0$$
       Factor the quadratic:
       $$(a-2)(a-8) = 0$$
       $$a=2 \\text{ or } a=8$$
+      Since the question asks for the ${superlative} possible value of $a$, the answer is $a=${answer}$.
       `
     };
   }
