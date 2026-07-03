@@ -1,15 +1,22 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
-import type { QuestionData } from '../../types';
+import { getRandomInt } from '../../utils/math';
+import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1353
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [tan B = 3/4, BC = 15, DA = 4]
+ * - Number ranges: [tan B = 3/4, BC = 5k, DA = 4·f]
  * - Difficulty factors: [Similar triangles, 3-4-5 triangle ratios, segment subtraction]
- * - Constraints: [Similar triangles with scale factor relationship]
+ * - Constraints: [Nested similar right triangles with scale factor relationship]
  * - Question type: [Figure→Fill in the blank]
  * - Figure generation: [Nested similar right triangles]
+ *
+ * FIXED:
+ * - Rebuilt corrupted figure IIFE as a plain SVG template literal (house style).
+ * - Fixed import path to '../../study/types'; dropped unused getRandomElement.
+ * - Fixed LaTeX: \\\\frac / \\\\times runs collapsed to \\frac / \\times.
+ * - Removed the stray trailing comment block describing a different question.
+ * - Verified DE is an integer for every draw; DB stays positive.
  */
 
 export const generator_1353 = {
@@ -20,115 +27,63 @@ export const generator_1353 = {
     skill: "Right Triangles And Trigonometry",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // Original: tan B = 3/4, so triangles are 3-4-5
-    // BC = 15 = 3×5, so AB = 4×5 = 20 (adjacent side)
-    // DA = 4, so DB = AB - DA = 20 - 4 = 16... wait, this doesn't match original logic
-    // Original says: BC=15, tan B = 3/4 means AC/BC = 3/4 → AC = 45/4 = 11.25? No...
-    
-    // Re-analyzing: tan B = 3/4 means opposite/adjacent = 3/4
-    // In triangle ABC with right angle at C (from figure context):
-    // tan B = AC/BC = 3/4, so if BC = 15, AC = 45/4 = 11.25... not integer
-    
-    // Actually looking at solution: Both triangles are similar to 3-4-5
-    // For triangle ABC: BC = 15 (hypotenuse), so scale factor is 3
-    // AB = 12 (adjacent to B), AC = 9 (opposite to B)
-    // tan B = 9/12 = 3/4 ✓
-    // DA = 4, so DB = AB - DA = 12 - 4 = 8
-    // Triangle DBE is similar with DB = 8 (scale factor 2 from 4)
-    // DE = 3 × 2 = 6
-    
-    // Generate 3-4-5 triangle family
-    const baseScale = getRandomInt(3, 6);
-    const hypotenuseBC = 5 * baseScale; // Hypotenuse of larger triangle
-    const adjacentAB = 4 * baseScale;   // Adjacent leg to angle B
-    const oppositeAC = 3 * baseScale;   // Opposite leg to angle B
-    
-    // DA is subtracted from AB to get DB
-    const daFactor = getRandomInt(1, baseScale - 1);
-    const da = 4 * daFactor;
-    const db = adjacentAB - da;
-    
-    // Scale factor for smaller triangle
-    const smallScale = db / 4;
-    const de = 3 * smallScale; // Opposite side in smaller triangle (what we're solving for)
-    
-    const heightAC = oppositeAC;
-    const heightDE = de;
-    
-    const _svg_0 = Math.max(heightAC;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;; const _svg_1 = adjacentAB + 5;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-2,xmax=_svg_1;
-      const ymin=-2,ymax=_svg_})()}${(() => {
-      const xmin=-2,xmax=(adjacentAB + 5);
-      const ymin=-2,ymax=(Math.max(heightAC;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(db)+'" y1="'+my(0)+'" x2="'+mx(db)+'" y2="'+my((heightDE))+'" stroke="currentColor" stroke-width="2"/>';
-    ))()}((() => {
-      const xmin=-2,xmax=(adjacentAB + 5);
-      const ymin=-2,ymax=(Math.max(heightAC;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(0)+'" y="'+my(-1)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">B</text>';
-    ))()}((() => {
-      const xmin=-2,xmax=(adjacentAB + 5);
-      const ymin=-2,ymax=(Math.max(heightAC;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((adjacentAB - 1))+'" y="'+my(-1)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">A</text>';
-    ))()}((() => {
-      const xmin=-2,xmax=(adjacentAB + 5);
-      const ymin=-2,ymax=(Math.max(heightAC;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((adjacentAB))+'" y="'+my((heightAC + 1))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">C</text>';
-    ))()}((() => {
-      const xmin=-2,xmax=(adjacentAB + 5);
-      const ymin=-2,ymax=(Math.max(heightAC;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((db / 2))+'" y="'+my(-1)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">D</text>';
-    ))()}((() => {
-      const xmin=-2,xmax=(adjacentAB + 5);
-      const ymin=-2,ymax=(Math.max(heightAC;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((db))+'" y="'+my((heightDE + 1))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">E</text>';
-    ))()})))))}</svg></div>`;
+    // Triangle ABC: right angle at A, B at origin, A on the x-axis, C directly above A.
+    // tan B = opposite/adjacent = AC/AB = 3/4  ->  3-4-5 family with scale k.
+    //   AB = 4k (adjacent to B), AC = 3k (opposite to B), BC = 5k (hypotenuse).
+    const baseScale = getRandomInt(3, 6);        // k in [3, 6]
+    const hypotenuseBC = 5 * baseScale;          // BC
+    const adjacentAB = 4 * baseScale;            // AB
+    const oppositeAC = 3 * baseScale;            // AC
+
+    // D lies on segment BA (between B and A); E is directly above D so that
+    // triangle DBE (right angle at D) is similar to triangle ABC.
+    // DA is subtracted from AB to obtain DB:  DB = AB - DA.
+    // DA = 4·f keeps DB a multiple of 4, so the small scale factor is an integer.
+    const daFactor = getRandomInt(1, baseScale - 1); // f in [1, k-1]  =>  1 <= DB/4 <= k-1
+    const da = 4 * daFactor;                         // DA
+    const db = adjacentAB - da;                      // DB = 4(k - f) > 0
+
+    const smallScale = db / 4;                       // integer scale of triangle DBE
+    const de = 3 * smallScale;                        // DE = side opposite B in DBE (integer)
+
+    // ----- Figure: nested similar right triangles, values match the numbers above -----
+    const W = 450, H = 300, P = 40;
+    const xmin = 0, xmax = adjacentAB + 2;
+    const ymin = 0, ymax = oppositeAC + 2;
+    const mx = (x: number) => P + ((x - xmin) / (xmax - xmin)) * (W - 2 * P);
+    const my = (y: number) => H - P - ((y - ymin) / (ymax - ymin)) * (H - 2 * P);
+
+    const Bx = mx(0), By = my(0);
+    const Ax = mx(adjacentAB), Ay = my(0);
+    const Cx = mx(adjacentAB), Cy = my(oppositeAC);
+    const Dx = mx(db), Dy = my(0);
+    const Ex = mx(db), Ey = my(de);
+
+    const figureCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;font-family:sans-serif;user-select:none;" xmlns="http://www.w3.org/2000/svg">
+      <!-- Large triangle ABC -->
+      <polygon points="${Bx},${By} ${Ax},${Ay} ${Cx},${Cy}" fill="#3b82f6" fill-opacity="0.08" stroke="currentColor" stroke-width="2"/>
+      <!-- Segment DE of the smaller similar triangle DBE -->
+      <line x1="${Dx}" y1="${Dy}" x2="${Ex}" y2="${Ey}" stroke="#3b82f6" stroke-width="2.5"/>
+      <line x1="${Bx}" y1="${By}" x2="${Ex}" y2="${Ey}" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <!-- Right-angle marks at A and D -->
+      <polyline points="${Ax - 10},${Ay} ${Ax - 10},${Ay - 10} ${Ax},${Ay - 10}" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <polyline points="${Dx - 9},${Dy} ${Dx - 9},${Dy - 9} ${Dx},${Dy - 9}" fill="none" stroke="#3b82f6" stroke-width="1.2"/>
+      <!-- Vertex labels -->
+      <text x="${Bx - 6}" y="${By + 16}" text-anchor="middle" font-size="14" font-style="italic" fill="currentColor">B</text>
+      <text x="${Ax + 12}" y="${Ay + 16}" text-anchor="middle" font-size="14" font-style="italic" fill="currentColor">A</text>
+      <text x="${Cx + 12}" y="${Cy + 4}" text-anchor="middle" font-size="14" font-style="italic" fill="currentColor">C</text>
+      <text x="${Dx}" y="${Dy + 18}" text-anchor="middle" font-size="14" font-style="italic" fill="#3b82f6">D</text>
+      <text x="${Ex + 12}" y="${Ey + 4}" text-anchor="middle" font-size="14" font-style="italic" fill="#3b82f6">E</text>
+    </svg></div>`;
 
     return {
-      questionText: `In the figure above, $\\tan B = \\\\frac{3}{4}$. If $BC = ${hypotenuseBC}$ and $DA = ${da}$, what is the length of $\\overline{DE}$?`,
-      figureCode: mafsCode,
+      questionText: `In the figure above, $\\tan B = \\frac{3}{4}$. If $BC = ${hypotenuseBC}$ and $DA = ${da}$, what is the length of $\\overline{DE}$?`,
+      figureCode: figureCode,
       options: null, // Fill in the blank
       correctAnswer: de.toString(),
-      explanation: `Since $\\tan B = 3/4$, $\\triangle ABC$ and $\\triangle DBE$ are similar to 3-4-5 triangles. For $\\triangle ABC$, hypotenuse $BC = ${hypotenuseBC}$ (scale factor ${baseScale}), so $AB = ${adjacentAB}$. Given $DA = ${da}$, $DB = AB - DA = ${adjacentAB} - ${da} = ${db}$. For $\\triangle DBE$ (scale factor ${smallScale}), the side opposite $B$ is $DE = 3 \\\\times ${smallScale} = ${de}$.`
+      explanation: `Since $\\tan B = \\frac{3}{4}$, $\\triangle ABC$ and $\\triangle DBE$ are similar to 3-4-5 right triangles. For $\\triangle ABC$, the hypotenuse $BC = ${hypotenuseBC}$ gives scale factor ${baseScale}, so the adjacent side $AB = 4 \\times ${baseScale} = ${adjacentAB}$. Since $DA = ${da}$, $DB = AB - DA = ${adjacentAB} - ${da} = ${db}$. Triangle $DBE$ has scale factor $DB \\div 4 = ${smallScale}$, so the side opposite $B$ is $DE = 3 \\times ${smallScale} = ${de}$.`
     };
   }
 };
-
-/**
- * Question 1353
- * 
- * ORIGINAL ANALYSIS:
- * - Number ranges: [hypotenuse: 58, isosceles right triangle]
- * - Difficulty factors: [Isosceles right triangle properties, perimeter calculation with radicals]
- * - Constraints: [Leg = hypotenuse/√2 = hypotenuse×√2/2]
- * - Question type: [Figure→Multiple Choice Text]
- * - Figure generation: [Isosceles right triangle with hypotenuse labeled]
- */

@@ -1,16 +1,21 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1426
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: State counts (39, 6, 4, 1), percentages with tenths place
- * - Difficulty factors: Conditional probability with "given" condition (states WITH sales tax), percentage conversion, rounding to tenths
- * - Distractor patterns: A: Uses total states incorrectly, B: Wrong base/percentage calculation, D: Different rounding error
- * - Constraints: Must result in percentage with distinct tenths digit, conditional population must be clear
- * - Question type: Table → Multiple choice text
- * - Figure generation: HTML table with tax distribution
+ * - Number ranges: State counts in a 2x2 table (income tax x sales tax)
+ * - Difficulty factors: Conditional probability with a "given" condition
+ *   (restrict to states WITH sales tax), percentage conversion, round to tenths
+ * - Distractor patterns:
+ *     A: wrong denominator — divides by ALL states instead of only states with sales tax
+ *     B: reversed/wrong base — divides by the "no income tax" row total
+ *     C: uses only the "both taxes" cell as the denominator
+ * - Constraints: the four displayed percentages must be pairwise distinct at the
+ *   tenth-of-a-percent precision shown to the student (bounded retry redraws if not)
+ * - Question type: HTML table -> multiple choice text (percent to nearest tenth)
+ * - Figure generation: HTML table with the tax distribution; cell values match the math
  */
 
 export const generator_1426 = {
@@ -22,29 +27,56 @@ export const generator_1426 = {
     skill: "Probability And Conditional Probability",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate table values
-    // Structure: rows = Income Tax Yes/No, cols = Sales Tax Yes/No
-    
-    // We want P(No Income | Sales) = salesNoIncome / (salesIncome + salesNoIncome)
-    // This should give a percentage with tenths place that's distinct
-    
-    // Generate values that create an interesting percentage
-    const salesIncome = getRandomInt(35, 45);  // States with both (39 in original)
-    const salesNoIncome = getRandomInt(4, 9);  // States with sales but no income (6 in original)
-    const noSalesIncome = getRandomInt(2, 6);  // States with income but no sales (4 in original)
-    const noSalesNoIncome = getRandomInt(1, 3); // States with neither (1 in original)
-    
-    // STEP 2: Calculate conditional probability
-    const totalWithSales = salesIncome + salesNoIncome;
-    const percentage = (salesNoIncome / totalWithSales) * 100;
-    const percentageRounded = Math.round(percentage * 10) / 10;
-    
-    // Ensure rounding is clean
-    const percentageString = percentageRounded.toFixed(1);
-    
-    // STEP 3: Build table
+    // Percentages are displayed to the nearest tenth of a percent.
+    const fmt = (pct: number): string => `${(Math.round(pct * 10) / 10).toFixed(1)}%`;
+    const roundTenth = (pct: number): number => Math.round(pct * 10) / 10;
+
+    // 2x2 table: rows = income tax Yes/No, cols = sales tax Yes/No.
+    //   salesIncome    = has sales tax AND income tax
+    //   noSalesIncome  = no sales tax  AND income tax
+    //   salesNoIncome  = has sales tax AND no income tax
+    //   noSalesNoIncome= no sales tax  AND no income tax
+    let salesIncome = 0, salesNoIncome = 0, noSalesIncome = 0, noSalesNoIncome = 0;
+    let totalWithSales = 0, totalStates = 0;
+    let correctPct = 0, dA = 0, dB = 0, dC = 0;
+
+    // Bounded retry: redraw until the four displayed percentages are pairwise
+    // distinct at tenth precision (so no two options can collide for this draw).
+    let tries = 0;
+    do {
+      salesIncome = getRandomInt(35, 45);   // states with both (39 in original)
+      salesNoIncome = getRandomInt(4, 9);   // sales tax, no income tax (6 in original)
+      noSalesIncome = getRandomInt(2, 6);   // income tax, no sales tax (4 in original)
+      noSalesNoIncome = getRandomInt(1, 3); // neither (1 in original)
+
+      totalWithSales = salesIncome + salesNoIncome;
+      totalStates = salesIncome + salesNoIncome + noSalesIncome + noSalesNoIncome;
+
+      // Correct: P(no income tax | has sales tax).
+      correctPct = (salesNoIncome / totalWithSales) * 100;
+      // A: divides by ALL states (wrong, larger denominator -> too small).
+      dA = (salesNoIncome / totalStates) * 100;
+      // B: divides by the "no income tax" row total (reversed conditioning).
+      dB = (salesNoIncome / (salesNoIncome + noSalesNoIncome)) * 100;
+      // C: uses only the "both taxes" cell as the denominator.
+      dC = (salesNoIncome / salesIncome) * 100;
+
+      tries++;
+    } while (
+      tries < 50 &&
+      new Set([
+        roundTenth(correctPct),
+        roundTenth(dA),
+        roundTenth(dB),
+        roundTenth(dC),
+      ]).size !== 4
+    );
+
+    const correctAnswerText = fmt(correctPct);
+
+    // STEP: Build the data table (values match the math for every draw).
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto; text-align: center; font-family: serif;">
   <thead>
     <tr style="border-bottom: 2px solid #000;">
@@ -66,42 +98,44 @@ export const generator_1426 = {
     </tr>
   </tbody>
 </table>`;
-    
-    // STEP 4: Generate options
-    const correctAnswerText = `${percentageString}%`;
-    
-    // Distractor A: salesNoIncome / (total states) * 100 (wrong denominator)
-    const distractorAPct = (salesNoIncome / (salesIncome + salesNoIncome + noSalesIncome + noSalesNoIncome)) * 100;
-    const distractorA = `${Math.round(distractorAPct * 10) / 10}%`;
-    
-    // Distractor B: Wrong calculation (around 12%)
-    const distractorBVal = getRandomElement(["12.0%", "11.5%", "12.5%"]);
-    
-    // Distractor D: Slightly different rounding or miscalculation (14.0%)
-    const distractorDVal = "14.0%";
-    
+
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "results from using the total number of states as the denominator instead of only states with sales tax" },
-      { text: distractorBVal, isCorrect: false, reason: "is an incorrect percentage calculation that doesn't match the data" },
-      { text: correctAnswerText, isCorrect: true },
-      { text: distractorDVal, isCorrect: false, reason: "results from an incorrect rounding or calculation method" }
+      {
+        text: correctAnswerText,
+        isCorrect: true,
+      },
+      {
+        text: fmt(dA),
+        isCorrect: false,
+        reason: `results from dividing by all ${totalStates} states instead of only the ${totalWithSales} states that have a sales tax`,
+      },
+      {
+        text: fmt(dB),
+        isCorrect: false,
+        reason: `divides by the ${salesNoIncome + noSalesNoIncome} states with no income tax, which is the wrong condition`,
+      },
+      {
+        text: fmt(dC),
+        isCorrect: false,
+        reason: `uses only the ${salesIncome} states with both taxes as the denominator instead of all ${totalWithSales} states with a sales tax`,
+      },
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
-      letter: String.fromCharCode(65 + index)
+      letter: String.fromCharCode(65 + index),
     }));
-    
-    const correctOption = shuffledOptions.find(opt => opt.isCorrect);
-    const correctLetter = correctOption!.letter;
+
+    const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
     return {
-      questionText: `To the nearest tenth of a percent, what percent of states with a state-level sales tax do not have a state-level income tax?`,
+      questionText: `The table shows the number of U.S. states cross-classified by whether they levy a state income tax and a state sales tax. To the nearest tenth of a percent, what percent of the states that have a state sales tax do not have a state income tax?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctAnswerText,
-      explanation: `Choice ${correctLetter} is correct. The total number of states with a sales tax is $${salesIncome} + ${salesNoIncome} = ${totalWithSales}$. Of these, $${salesNoIncome}$ have no income tax. The percentage is $\\frac{${salesNoIncome}}{${totalWithSales}} \\times 100 \\approx ${percentage.toFixed(2)}%, which to the nearest tenth is $${correctAnswerText}$.\n\nChoice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.\nChoice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.\nChoice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Restrict to the states that have a sales tax: there are ${salesIncome} with an income tax and ${salesNoIncome} without, for a total of ${totalWithSales}. Of those, ${salesNoIncome} have no income tax, so the requested percent is $\\frac{${salesNoIncome}}{${totalWithSales}} \\times 100 \\approx ${roundTenth(correctPct).toFixed(1)}$ percent, which rounds to ${correctAnswerText}.\n\nChoice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.\nChoice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.\nChoice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`,
     };
   }
 };

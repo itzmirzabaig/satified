@@ -92,19 +92,21 @@ export const generator_1459 = {
     
     const makeOption = (val: number) => `${val}\\sqrt{3}`;
     
-    const optCorrect = makeOption(correctAreaCoeff);
-    const optOneTri = makeOption(correctAreaCoeff / 2);
-    const optThreeTri = makeOption(correctAreaCoeff * 1.5);
-    
-    // Distractor 4: Assume s = P/4 (Square perimeter logic) -> s_wrong = 5s/4 = 1.25s
-    // Area ~ (1.25s)^2 ... just make a random integer distractor
-    const optRandom = makeOption(correctAreaCoeff + 2 * side);
+    const optCorrect = makeOption(correctAreaCoeff);          // 2 triangles: s^2/2
+    const optOneTri = makeOption(correctAreaCoeff / 2);       // forgot to double: s^2/4
+    const optThreeTri = makeOption(correctAreaCoeff * 1.5);   // used all 3 triangles: 3s^2/4
+
+    // Distractor 4: dropped the 4 in the triangle-area denominator
+    // (used A = s^2*sqrt(3)/2 per triangle, then doubled) -> coefficient s^2.
+    // Since correct = s^2/2, one = s^2/4, three = 3s^2/4, the value s^2 is
+    // strictly greater than all three for every s in [8,24], so no collision.
+    const optForgotDenom = makeOption(sSquared);
 
     const optionsData = [
       { text: optCorrect, isCorrect: true },
       { text: optOneTri, isCorrect: false },
       { text: optThreeTri, isCorrect: false },
-      { text: optRandom, isCorrect: false }
+      { text: optForgotDenom, isCorrect: false }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

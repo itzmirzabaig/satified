@@ -25,7 +25,16 @@ export const generator_1184 = {
   
   generate: (): QuestionData => {
     // 1. Generate Random Values
-    const s = getRandomInt(2, 6);        // Constant s
+    // s must not equal 3: the correct equation has coefficients (3, s) and the
+    // swapped-coefficient distractor has (s, 3). If s === 3 those two options
+    // (and the two "wrong constant" options) become identical, so we exclude 3.
+    let s = getRandomInt(2, 6);          // Constant s
+    let sGuard = 0;
+    while (s === 3 && sGuard++ < 50) {
+      s = getRandomInt(2, 6);
+    }
+    if (s === 3) s = 4;                  // deterministic fallback (never loops forever)
+
     const yInt = getRandomInt(12, 24);   // Y-intercept value
     
     // 2. Define Table Points

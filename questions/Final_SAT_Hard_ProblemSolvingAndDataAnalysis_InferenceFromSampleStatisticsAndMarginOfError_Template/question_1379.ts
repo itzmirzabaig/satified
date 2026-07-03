@@ -73,10 +73,10 @@ export const generator_1379 = {
         isCorrect: false,
         reason: "values within the margin of error interval are possible, not impossible"
       },
-      { 
-        text: `The percent of all US teens who are heavy texters is ${upperBound}%.`, 
+      {
+        text: `The percent of all US teens who are heavy texters is ${upperBound}%.`,
         isCorrect: false,
-        reason: "while ${upperBound}% is within the confidence interval, any value in the interval is equally likely"
+        reason: `while ${upperBound}% is within the confidence interval, any value in the interval is plausible and the exact population value is not determined`
       },
       { 
         text: `It is doubtful that the percent of all US teens who are heavy texters is ${outsideValue}%.`, 

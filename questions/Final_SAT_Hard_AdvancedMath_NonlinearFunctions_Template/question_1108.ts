@@ -1,18 +1,23 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 
 
 /**
  * Question 1108
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [coefficients: 1, -48, 2304 (large numbers suggest completing square)]
+ * - Number ranges: [f(x) = x^2 - 2b x + c, large numbers suggest completing the square]
  * - Difficulty factors: [Completing the square, vertex form, minimum value]
  * - Distractor patterns: [Not applicable - fill-in-the-blank]
- * - Constraints: [Must complete square cleanly to get integer/whole number minimum]
+ * - Constraints: [Must complete square cleanly to get integer minimum]
  * - Question type: [Fill-in-the-blank quadratic minimum]
  * - Figure generation: [None]
+ *
+ * MATH (re-derived):
+ *   f(x) = x^2 - 2b x + c = (x - b)^2 - b^2 + c = (x - b)^2 + (c - b^2).
+ *   Since (x - b)^2 >= 0, the minimum value is c - b^2, attained at x = b.
+ *   Construct answer-first: pick minValue, set c = b^2 + minValue, so minimum = minValue (integer).
  */
 
 export const generator_1108 = {
@@ -23,22 +28,18 @@ export const generator_1108 = {
     skill: "Nonlinear Functions",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // f(x) = x² - 2bx + c where c = b² + k and k is the minimum
-    // f(x) = (x - b)² - b² + c = (x-b)² + (c - b²)
-    // Minimum is c - b²
-    
     const b = getRandomInt(15, 30);
     const minValue = getRandomInt(1000, 2500);
     const c = b * b + minValue;
-    
+
     return {
-      questionText: `The function $f(x) = x^2 - ${2*b}x + ${c}$. What is the minimum value of the given function?`,
+      questionText: `The function is defined by $f(x) = x^2 - ${2 * b}x + ${c}$. What is the minimum value of the given function?`,
       figureCode: null,
       options: null,
       correctAnswer: minValue.toString(),
-      explanation: `Completing the square: $f(x) = x^2 - ${2*b}x + ${b}^2 - ${b}^2 + ${c} = (x-${b})^2 + ${minValue}$. Since $(x-${b})^2 \\geq 0$, the minimum value is ${minValue}$ when $x=${b}$.`
+      explanation: `Completing the square: $f(x) = x^2 - ${2 * b}x + ${c} = (x-${b})^2 - ${b * b} + ${c} = (x-${b})^2 + ${minValue}$. Since $(x-${b})^2 \\geq 0$, the smallest possible value of $f(x)$ is ${minValue}, which occurs when $x = ${b}$. So the minimum value is ${minValue}.`
     };
   }
 };

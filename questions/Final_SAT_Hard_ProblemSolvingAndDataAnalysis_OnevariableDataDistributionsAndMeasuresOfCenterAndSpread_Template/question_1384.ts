@@ -1,15 +1,16 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1384
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [weights 13-20 lbs, frequencies 5-13, adding outlier at 39]
- * - Difficulty factors: [Effect of outlier on mean vs median, calculating new median position]
- * - Distractor patterns: [Student may think both change, or median changes but mean doesn't]
- * - Constraints: [39 is much higher than all original values (13-20), mean increases, median may or may not change depending on position]
- * - Question type: [Table→Multiple Choice Text]
+ * - Number ranges: [weights baseWeight..baseWeight+7 with baseWeight 10-25, frequencies 5-15, outlier = maxWeight + 15..25]
+ * - Difficulty factors: [Effect of a high outlier on mean vs median]
+ * - Distractor patterns: [Student may think both change, that mean stays equal, or that the median also increases]
+ * - Constraints: [The outlier is far above every original value, so the mean always increases; the data
+ *                 are constructed (odd total count, median-stable retry) so the median is unchanged]
+ * - Question type: [Table -> Multiple Choice Text]
  */
 
 export const generator_1384 = {
@@ -20,79 +21,80 @@ export const generator_1384 = {
     skill: "Onevariable Data Distributions And Measures Of Center And Spread",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate original data (weights and frequencies)
-    // Create distribution where median is stable when adding one high value
-    let valid = false;
+    // STEP 1: Build an original distribution whose median is unchanged when one
+    // high outlier is appended. We require an ODD total count so the original
+    // median is a single, well-defined data value, and we retry (bounded) until
+    // appending the outlier leaves the median unchanged.
     let weights: number[] = [];
     let frequencies: number[] = [];
     let totalCount = 0;
     let originalMedian = 0;
+    let newMedian = 0;
+    let originalMean = 0;
+    let newMean = 0;
     let outlier = 0;
-    let newMedian: number = 0;
-    let meanIncreases = false;
-    let mediansEqual = false;
+
+    let valid = false;
     let attempts = 0;
-    
     while (!valid && attempts < 100) {
+      attempts++;
+
       const baseWeight = getRandomInt(10, 25);
-      weights = Array.from({length: 8}, (_, i) => baseWeight + i);
-      
-      // Frequencies that make total count odd, so median is clear
+      weights = Array.from({ length: 8 }, (_, i) => baseWeight + i);
       frequencies = weights.map(() => getRandomInt(5, 15));
       totalCount = frequencies.reduce((a, b) => a + b, 0);
-      
-      // Calculate original median
+
+      // Require an odd count so the median is a single value.
+      if (totalCount % 2 === 0) continue;
+
+      // Expand into the sorted list of individual values.
       const sortedValues: number[] = [];
       weights.forEach((w, i) => {
-        for (let j = 0; j < frequencies[i]; j++) {
-          sortedValues.push(w);
-        }
+        for (let j = 0; j < frequencies[i]; j++) sortedValues.push(w);
       });
-      originalMedian = sortedValues[Math.floor(totalCount / 2)];
-      
-      // Add outlier (much higher value)
+
+      // Original median (odd count): the middle value.
+      originalMedian = sortedValues[(totalCount - 1) / 2];
+
+      // Outlier is well above every original weight, so the mean always rises.
       outlier = weights[weights.length - 1] + getRandomInt(15, 25);
-      
-      // Calculate new statistics
+
+      // New median (even count = totalCount + 1): mean of the two middle values.
+      const newSorted = [...sortedValues, outlier].sort((a, b) => a - b);
+      const midHi = (totalCount + 1) / 2;          // 1-based upper middle position
+      newMedian = (newSorted[midHi - 1] + newSorted[midHi]) / 2;
+
       const originalSum = sortedValues.reduce((a, b) => a + b, 0);
-      const newSum = originalSum + outlier;
-      const newMean = newSum / (totalCount + 1);
-      const originalMean = originalSum / totalCount;
-      
-      // New median
-      const newSortedValues = [...sortedValues, outlier].sort((a, b) => a - b);
-      const newMedianIndex = Math.floor((totalCount + 1) / 2);
-      if ((totalCount + 1) % 2 === 0) {
-        newMedian = (newSortedValues[newMedianIndex - 1] + newSortedValues[newMedianIndex]) / 2;
-      } else {
-        newMedian = newSortedValues[newMedianIndex];
-      }
-      
-      meanIncreases = newMean > originalMean;
-      mediansEqual = originalMedian === newMedian || Math.abs(originalMedian - newMedian) < 0.1;
-      
-      // Ensure we have a valid configuration
-      if (meanIncreases) {
-        valid = true;
-      }
-      attempts++;
+      originalMean = originalSum / totalCount;
+      newMean = (originalSum + outlier) / (totalCount + 1);
+
+      // Accept only when the median is unchanged (and, by construction, an integer).
+      if (Math.abs(newMedian - originalMedian) < 1e-9) valid = true;
     }
-    
-    // Fallback
+
+    // Deterministic fallback with the same guaranteed properties: odd total count
+    // (71), median 16 both before and after, outlier far above every value.
     if (!valid) {
       weights = [13, 14, 15, 16, 17, 18, 19, 20];
-      frequencies = [5, 7, 9, 11, 13, 10, 8, 6];
-      totalCount = 69;
-      originalMedian = 16;
-      outlier = 39;
-      meanIncreases = true;
-      mediansEqual = true;
-      newMedian = 16;
+      frequencies = [5, 7, 9, 11, 13, 10, 8, 8]; // sums to 71 (odd)
+      const sv: number[] = [];
+      weights.forEach((w, i) => {
+        for (let j = 0; j < frequencies[i]; j++) sv.push(w);
+      });
+      totalCount = sv.length; // 71
+      originalMedian = sv[(totalCount - 1) / 2];
+      outlier = weights[weights.length - 1] + 20; // 40
+      const newSorted = [...sv, outlier].sort((a, b) => a - b);
+      const midHi = (totalCount + 1) / 2;
+      newMedian = (newSorted[midHi - 1] + newSorted[midHi]) / 2;
+      const originalSum = sv.reduce((a, b) => a + b, 0);
+      originalMean = originalSum / totalCount;
+      newMean = (originalSum + outlier) / (totalCount + 1);
     }
-    
-    // STEP 5: Build table HTML
+
+    // STEP 2: Build the frequency table.
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto;">
   <thead>
     <tr>
@@ -108,42 +110,34 @@ export const generator_1384 = {
     </tr>`).join('')}
   </tbody>
 </table>`;
-    
-    // STEP 6: Create options based on calculation
-    let correctText: string;
-    if (meanIncreases && mediansEqual) {
-      correctText = "The mean increases, and the medians are equal.";
-    } else if (meanIncreases && !mediansEqual) {
-      correctText = "The mean increases, and the median increases.";
-    } else if (!meanIncreases && mediansEqual) {
-      correctText = "The mean decreases, and the medians are equal.";
-    } else {
-      correctText = "The mean decreases, and the median decreases.";
-    }
-    
+
+    // STEP 3: Options. By construction the mean increases and the medians are equal.
+    const correctText = "The mean increases, and the medians are equal.";
     const optionsData = [
+      { text: correctText, isCorrect: true },
       { text: "The mean and median both increase.", isCorrect: false },
-      { text: "The mean increases, and the medians are equal.", isCorrect: correctText === "The mean increases, and the medians are equal." },
-      { text: "The mean decreases, and the median decreases.", isCorrect: false },
-      { text: "The mean decreases, and the medians are equal.", isCorrect: correctText === "The mean decreases, and the medians are equal." }
+      { text: "The mean stays the same, and the medians are equal.", isCorrect: false },
+      { text: "The median increases, and the means are equal.", isCorrect: false }
     ];
-    
-    // STEP 7: Shuffle and assign letters
+
+    // STEP 4: Shuffle and assign letters AFTER shuffling.
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
-    
-    // STEP 8: Return question data
+
+    // STEP 5: Return question data. All figures computed from the live variables.
+    const medianPosition = (totalCount + 1) / 2; // 1-based position of the odd-count median
+
     return {
-      questionText: `The frequency table summarizes a data set of the weights, rounded to the nearest pound, of tortoises. A weight of ${outlier} pounds is added to the original data set, creating a new data set. Which statement best compares the mean and median?`,
+      questionText: `The frequency table summarizes a data set of the weights, rounded to the nearest pound, of a group of tortoises. A tortoise with a weight of ${outlier} pounds is then added to the original data set, creating a new data set. Which statement best compares the mean and the median of the new data set with those of the original data set?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. Adding ${outlier} (higher than any original value) increases the mean. The original median (the ${Math.floor(totalCount/2) + 1}th value out of ${totalCount}) is ${originalMedian}; after adding one value, the new median is ${newMedian}, so the medians are ${mediansEqual ? 'equal' : 'different'}. Therefore, ${correctText.toLowerCase()}.`
+      explanation: `Choice ${correctLetter} is correct. The original data set has ${totalCount} values, so its median is the ${medianPosition}th value, which is ${originalMedian} pounds. The added weight of ${outlier} pounds is greater than every original value (the largest is ${weights[weights.length - 1]} pounds), so it lies above the middle of the ordered data: the new median is still ${newMedian} pounds, unchanged. However, because ${outlier} is far above the original mean of about ${originalMean.toFixed(1)} pounds, it pulls the mean upward to about ${newMean.toFixed(1)} pounds. Therefore, the mean increases while the medians are equal. The other choices are incorrect because the median does not change (it is not an increase), and the mean cannot stay the same when a value larger than every existing value is added.`
     };
   }
 };

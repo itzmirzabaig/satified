@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 
@@ -34,11 +34,11 @@ export const generator_1409 = {
     const percentGreater = (multiplier - 1) * 100;
     
     return {
-      questionText: `${result} is $p% greater than ${baseValue}. What is the value of $p$?`,
+      questionText: `${result} is $p$% greater than ${baseValue}. What is the value of $p$?`,
       figureCode: null,
-      options: null, // Fill-in-the-blank
+      options: [], // Fill-in-the-blank
       correctAnswer: percentGreater.toString(),
-      explanation: `It's given that ${result} is $p% greater than ${baseValue}. This means $${result} = (1 + \\frac{p}{100})(${baseValue})$. Dividing both sides by ${baseValue}: $${multiplier} = 1 + \\frac{p}{100}$. Subtracting 1: $${multiplier - 1} = \\frac{p}{100}$. Multiplying by 100: $p = ${percentGreater}$.`
+      explanation: `It's given that ${result} is $p$% greater than ${baseValue}. This means $\\left(1 + \\frac{p}{100}\\right)(${baseValue}) = ${result}$. Dividing both sides by ${baseValue} gives $\\frac{p}{100} + 1 = \\frac{${result}}{${baseValue}}$, which is $\\frac{p}{100} + 1 = ${multiplier}$. Subtracting 1 from both sides gives $\\frac{p}{100} = ${multiplier - 1}$. Multiplying both sides by 100 gives $p = ${percentGreater}$.`
     };
   }
 };

@@ -24,30 +24,31 @@ export const generator_1162 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate equation with exactly one solution
-    // Form: a(x - b) = -c(x + d) where a ≠ c (coefficients differ after distribution)
-    
-    let valid = false;
-    let a: number, c: number, b: number, d: number, solution: number;
-    
-    while (!valid) {
+    // Form: a(x - b) = -c(x + d).  Distributing and collecting x gives
+    //   (a + c)x = ab - cd   =>   x = (ab - cd)/(a + c).
+    // Since a >= 5 and c >= 3, (a + c) is always positive, so the equation
+    // ALWAYS has exactly one solution — the correct answer never changes.
+    //
+    // We build the coefficients ANSWER-FIRST so the solution x is a clean
+    // integer (no float artifact in the worked explanation), with a guarantee
+    // rather than a probabilistic retry:
+    //   pick integer solution x, coefficient a, and coefficient c;
+    //   choose d so that (x + d) is a multiple of a  =>  a | c(x + d),
+    //   which makes b = ((a + c)x + c*d) / a an integer for ANY c.
+    // A small range-only retry keeps b in a natural, positive range.
+    let a = 0, b = 0, c = 0, d = 0, solution = 0;
+    let tries = 0;
+    do {
+      solution = getRandomInt(-6, 6);           // the single solution x
       a = getRandomInt(5, 15);
       c = getRandomInt(3, 10);
-      b = getRandomInt(3, 12);
-      d = getRandomInt(8, 15);
-      
-      // Ensure coefficients don't match: a ≠ c
-      if (a !== c) {
-        // Calculate solution for verification
-        // a(x - b) = -c(x + d)
-        // ax - ab = -cx - cd
-        // ax + cx = ab - cd
-        // x(a + c) = ab - cd
-        // x = (ab - cd)/(a + c)
-        solution = (a * b - c * d) / (a + c);
-        valid = true;
-      }
-    }
+      // smallest d >= 8 with d ≡ -x (mod a); window [8, 8+a-1] ⊆ [8, 22]
+      const base = ((-solution - 8) % a + a) % a;
+      d = 8 + base;
+      // b forced by the target solution; guaranteed integer by the d choice
+      b = ((a + c) * solution + c * d) / a;
+      tries++;
+    } while ((b < 2 || b > 40 || !Number.isInteger(b)) && tries < 50);
     
     const optionsData = [
       { text: "Zero", isCorrect: false, reason: "this would occur when the equation simplifies to a contradiction like $0 = 5$" },

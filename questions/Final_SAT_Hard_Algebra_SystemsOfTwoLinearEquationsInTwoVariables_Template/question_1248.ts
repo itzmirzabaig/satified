@@ -25,39 +25,53 @@ export const generator_1248 = {
   },
   
   generate: (): QuestionData => {
+    // Given equation: a*x + b*y = c, with b = a*m so the slope is -a/b = -1/m
+    // and dividing through by a yields clean integer coefficients.
     const a = getRandomInt(2, 5);
-    const b = a * getRandomInt(3, 5);
-    const c = getRandomInt(10, 30);
-    
-    const slope = -a / b;
-    
-    const optA = `x + ${b/a}y = ${c/a}`;
-    const optB = `x + ${b/a}y = ${-getRandomInt(15, 30)}`;
-    const optC = `${b}x - ${a}y = 0`;
-    const optD = `${b}x + ${getRandomInt(1, 3) * a}y = ${c}`;
-    
+    const m = getRandomInt(3, 5);       // y/x coefficient ratio after reducing
+    const b = a * m;
+    const q = getRandomInt(4, 10);      // c/a, chosen integer so c is divisible by a
+    const c = a * q;
+
+    // Correct answer: same slope (x + m*y = ...) but a DIFFERENT constant, so the
+    // lines are parallel and the system has no solution. Use a negative constant
+    // (always distinct from the positive q of the equivalent line).
+    const kB = getRandomInt(2, 12);
+    const optCorrect = `x + ${m}y = ${-kB}`;
+
+    // Distractor 1: the equivalent equation (divide given eq by a) -> same line,
+    // infinitely many solutions, NOT no solution.
+    const optEquiv = `x + ${m}y = ${q}`;
+
+    // Distractor 2: different slope (m instead of -1/m) -> exactly one solution.
+    const optSlope1 = `${b}x - ${a}y = 0`;
+
+    // Distractor 3: different slope (-m/k) -> exactly one solution.
+    const k = getRandomInt(1, 3);
+    const optSlope2 = `${b}x + ${k * a}y = ${c}`;
+
     const optionsData = [
-      { text: optA, isCorrect: false, reason: "is equivalent to the given equation, giving infinitely many solutions" },
-      { text: optB, isCorrect: true },
-      { text: optC, isCorrect: false, reason: "has a different slope, giving exactly one solution" },
-      { text: optD, isCorrect: false, reason: "has a different slope, giving exactly one solution" }
+      { text: optEquiv, isCorrect: false, reason: "is equivalent to the given equation, so the system has infinitely many solutions" },
+      { text: optCorrect, isCorrect: true },
+      { text: optSlope1, isCorrect: false, reason: "has a different slope, so the system has exactly one solution" },
+      { text: optSlope2, isCorrect: false, reason: "has a different slope, so the system has exactly one solution" }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
     return {
       questionText: `One of the two equations in a linear system is $${a}x + ${b}y = ${c}$. The system has no solution. Which of the following could be the other equation in the system?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: optB,
-      explanation: `Choice ${correctLetter} is correct. The given equation has slope $${slope.toFixed(2)}$. For no solution, the second equation must have the same slope but different y-intercept. Choice ${correctLetter} satisfies this condition. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      correctAnswer: optCorrect,
+      explanation: `Choice ${correctLetter} is correct. The given equation has slope $-\\frac{${a}}{${b}}$, which reduces to $-\\frac{1}{${m}}$. A system has no solution when the two lines are parallel: they must have the same slope but different y-intercepts. Choice ${correctLetter}, $${optCorrect}$, has slope $-\\frac{1}{${m}}$ and a different constant, so the lines never meet. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -23,10 +23,15 @@ export const generator_1230 = {
     // ----------------------------------------------------------------------
     // 1. GENERATE VALUES
     // ----------------------------------------------------------------------
-    const resistance = getRandomInt(4, 6) * 100; // 400 - 600
+    // Work in integer units to avoid floating-point artifacts:
+    //   resistance = resistanceHundreds * 100  (400 - 600 ohms)
+    //   maxCurrent = maxCurrentHundredths / 100 (0.20 - 0.30 A)
+    const resistanceHundreds = getRandomInt(4, 6);   // 4 - 6
+    const maxCurrentHundredths = getRandomInt(20, 30); // 20 - 30
+    const resistance = resistanceHundreds * 100; // 400 - 600
     const batteryVoltage = getRandomInt(4, 9);   // 4V - 9V
-    const maxCurrent = getRandomInt(20, 30) / 100; // 0.20A - 0.30A
-    
+    const maxCurrent = maxCurrentHundredths / 100; // 0.20A - 0.30A
+
     // ----------------------------------------------------------------------
     // 2. MATHEMATICAL LOGIC
     // ----------------------------------------------------------------------
@@ -35,8 +40,11 @@ export const generator_1230 = {
     // Constraint: I <= maxCurrent
     // (n * batteryVoltage) / resistance <= maxCurrent
     // n <= (maxCurrent * resistance) / batteryVoltage
-    
-    const limit = (maxCurrent * resistance) / batteryVoltage;
+    //
+    // maxCurrent * resistance = (maxCurrentHundredths/100) * (resistanceHundreds*100)
+    //                         = maxCurrentHundredths * resistanceHundreds  (exact integer)
+    const currentTimesResistance = maxCurrentHundredths * resistanceHundreds; // exact integer
+    const limit = currentTimesResistance / batteryVoltage;
     const maxN = Math.floor(limit);
 
     // ----------------------------------------------------------------------
@@ -63,10 +71,10 @@ export const generator_1230 = {
         3. <b>Solve for $n$:</b>
         Multiply both sides by $${resistance}$:
         $$ ${batteryVoltage}n \\le ${maxCurrent} \\times ${resistance} $$
-        $$ ${batteryVoltage}n \\le ${maxCurrent * resistance} $$
+        $$ ${batteryVoltage}n \\le ${currentTimesResistance} $$
         <br/>
         Divide by $${batteryVoltage}$:
-        $$ n \\le \\frac{${maxCurrent * resistance}}{${batteryVoltage}} $$
+        $$ n \\le \\frac{${currentTimesResistance}}{${batteryVoltage}} $$
         $$ n \\le ${limit.toFixed(2)} $$
         <br/>
         Since $n$ must be a whole number of batteries, the greatest possible value is ${maxN}.

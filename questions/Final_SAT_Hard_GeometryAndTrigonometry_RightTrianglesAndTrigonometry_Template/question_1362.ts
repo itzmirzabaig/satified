@@ -53,56 +53,29 @@ export const generator_1362 = {
     const xy = hypotenuse * scaleFactor; // Hypotenuse
     
     const perimeter = yz + xz + xy;
-    
-    // Mafs code for right triangle
-    const _svg_0 = yz + 10; const _svg_1 = xz + 10;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-5,xmax=_svg_1;
-      const ymin=-5,ymax=_svg_0;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;
-    })()}${(() => {
-      const xmin=-5,xmax=(xz + 10);
-      const ymin=-5,ymax=(yz + 10);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(0)+'" y="'+my(-2)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">X</text>';
-    })()}${(() => {
-      const xmin=-5,xmax=(xz + 10);
-      const ymin=-5,ymax=(yz + 10);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((xz))+'" y="'+my(-2)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">Z</text>';
-    })()}${(() => {
-      const xmin=-5,xmax=(xz + 10);
-      const ymin=-5,ymax=(yz + 10);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((xz))+'" y="'+my((yz + 1))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">Y</text>';
-    })()}${(() => {
-      const xmin=-5,xmax=(xz + 10);
-      const ymin=-5,ymax=(yz + 10);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((xz + 1))+'" y="'+my((yz / 2))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">${yz</text>';
-    })()}${(() => {
-      const xmin=-5,xmax=(xz + 10);
-      const ymin=-5,ymax=(yz + 10);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((xz / 2))+'" y="'+my(-2)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">XZ</text>';
-    })()}</svg></div>`;
+
+    // Right triangle XYZ: right angle at Z. Z at bottom-left, X at bottom-right
+    // (along the horizontal adjacent side XZ), Y directly above Z (vertical side YZ).
+    // Plain SVG in pixel space; values match the question every draw.
+    const W = 450, H = 300;
+    const ox = 70, oy = 240;           // pixel position of vertex Z (right-angle corner)
+    const maxLeg = Math.max(xz, yz);
+    const sc = 150 / maxLeg;           // scale so the longer leg spans ~150px
+    const zx = ox,            zy = oy;             // Z (right angle)
+    const xx = ox + xz * sc,  xy_ = oy;            // X (end of adjacent leg XZ)
+    const yx = ox,            yy = oy - yz * sc;   // Y (end of opposite leg YZ)
+    const rm = 14;                     // right-angle marker size (px)
+    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">`
+      + `<polygon points="${zx},${zy} ${xx},${xy_} ${yx},${yy}" fill="#3b82f6" fill-opacity="0.08" stroke="#3b82f6" stroke-width="2" stroke-linejoin="round"/>`
+      + `<path d="M ${zx + rm},${zy} L ${zx + rm},${zy - rm} L ${zx},${zy - rm}" fill="none" stroke="currentColor" stroke-width="1.2"/>`
+      + `<circle cx="${zx}" cy="${zy}" r="3" fill="currentColor"/>`
+      + `<circle cx="${xx}" cy="${xy_}" r="3" fill="currentColor"/>`
+      + `<circle cx="${yx}" cy="${yy}" r="3" fill="currentColor"/>`
+      + `<text x="${zx - 12}" y="${zy + 16}" text-anchor="middle" font-size="15" font-style="italic" fill="currentColor">Z</text>`
+      + `<text x="${xx + 12}" y="${xy_ + 16}" text-anchor="middle" font-size="15" font-style="italic" fill="currentColor">X</text>`
+      + `<text x="${yx - 14}" y="${yy - 4}" text-anchor="middle" font-size="15" font-style="italic" fill="currentColor">Y</text>`
+      + `<text x="${zx - 20}" y="${(zy + yy) / 2 + 4}" text-anchor="middle" font-size="14" fill="currentColor">${yz}</text>`
+      + `</svg></div>`;
 
     const correctText = perimeter.toString();
     

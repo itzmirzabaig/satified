@@ -1,20 +1,28 @@
-import { getRandomInt, getRandomElement, shuffle, getRandomNonZeroInt } from '../../utils/math';
+import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
-
-
 
 /**
  * Question 1299
- * 
+ * Skill: Circles (tangent line perpendicular to radius)
+ * Difficulty: Hard
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [center: (-4, -6), tangency: (-7, -7), slope: -3]
- * - Difficulty factors: [Perpendicular slopes, negative reciprocals]
- * - Distractor patterns: [Sign errors, using radius slope directly]
- * - Constraints: [Tangent perpendicular to radius]
- * - Question type: [Conceptual→Multiple Choice Text]
- * - Figure generation: [None]
+ * - Difficulty factors: perpendicular slopes, negative reciprocals
+ * - Distractor patterns: sign errors, using the radius slope directly,
+ *   reciprocal without the negative sign
+ * - Constraints: tangent perpendicular to radius
+ * - Question type: conceptual, multiple choice
+ * - Figure generation: none
+ *
+ * REBUILD NOTES:
+ * The prior version produced duplicate options (radius slope, its reciprocal
+ * and the correct slope collided whenever dx == dy) and a letter mismatch in a
+ * dead fallback branch. Rebuilt with an answer-first construction: the offset
+ * from the center to the point of tangency is (sx*a, sy*1) with a in {2,3,4}.
+ * That forces the radius slope to be s/a and the tangent slope (negative
+ * reciprocal) to be the integer -s*a, and makes all four options provably
+ * distinct for every draw, so no retry guard is needed.
  */
-
 export const generator_1299 = {
   metadata: {
     id: "1299",
@@ -23,127 +31,71 @@ export const generator_1299 = {
     skill: "Circles",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate center
+    // STEP 1: center
     const h = getRandomInt(-8, -2);
     const k = getRandomInt(-8, -2);
-    
-    // STEP 2: Generate point of tangency (ensure nice slope)
-    // Want slope of radius to be simple fraction like 1/3
-    const dx = getRandomElement([2, 3, 4]);
-    const dy = getRandomElement([1, 2, 3]);
-    
-    const x1 = h - dx; // Left of center for variety
-    const y1 = k - dy; // Below center
-    
-    // STEP 3: Calculate slopes
-    const mRadius = dy / dx; // Simplified
-    const mTangent = -dx / dy; // Negative reciprocal
-    
-    // Should be integer or simple fraction
-    let tangentSlope: number;
-    let tangentDisplay: string;
-    
-    if (dy === 1) {
-      tangentSlope = -dx;
-      tangentDisplay = (-dx).toString();
-    } else {
-      tangentSlope = -dx / dy;
-      tangentDisplay = `-${dx}/${dy}`;
-    }
-    
-    // STEP 4: Generate distractors
-    // Distractor B: -1/3 (negative of radius slope, not reciprocal)
-    const distractorB = -(dy / dx);
-    
-    // Distractor C: 1/3 (radius slope itself)
-    const distractorC = dy / dx;
-    
-    // Distractor D: 3 (reciprocal without negative)
-    const distractorD = dx / dy;
-    
-    const correctText = tangentSlope.toString();
-    
-    // Ensure we have a clean integer answer
-    if (!Number.isInteger(tangentSlope)) {
-      // Use while loop to regenerate instead of recursion
-      let attempts = 0;
-      let newH = h;
-      let newK = k;
-      let newX1 = x1;
-      let newY1 = y1;
-      let newDx = dx;
-      let newDy = dy;
-      let newTangentSlope = tangentSlope;
-      
-      while (!Number.isInteger(newTangentSlope) && attempts < 20) {
-        newH = getRandomInt(-8, -2);
-        newK = getRandomInt(-8, -2);
-        newDx = getRandomElement([2, 3, 4]);
-        newDy = 1; // Force dy=1 for integer slope
-        newX1 = newH - newDx;
-        newY1 = newK - newDy;
-        newTangentSlope = -newDx / newDy;
-        attempts++;
-      }
-      
-      // Use the valid values
-      const finalH = newH;
-      const finalK = newK;
-      const finalX1 = newX1;
-      const finalY1 = newY1;
-      const finalDx = newDx;
-      const finalDy = newDy;
-      const finalTangentSlope = newTangentSlope;
-      const finalMRadiusNum = finalY1 - finalK;
-      const finalMRadiusDen = finalX1 - finalH;
-      
-      const finalOptionsData = [
-        { text: finalTangentSlope.toString(), isCorrect: true },
-        { text: (-(finalDy / finalDx)).toFixed(2).replace(/\.00$/, ''), isCorrect: false },
-        { text: (finalDy / finalDx).toFixed(2).replace(/\.00$/, ''), isCorrect: false },
-        { text: (finalDx / finalDy).toFixed(2).replace(/\.00$/, ''), isCorrect: false }
-      ];
-      
-      const finalShuffledOptions = shuffle(finalOptionsData).map((opt, index) => ({
-        ...opt,
-        letter: String.fromCharCode(65 + index)
-      }));
-      
-      const finalCorrectLetter = finalShuffledOptions.find(o => o.isCorrect)!.letter;
-      const finalIncorrectOptions = finalShuffledOptions.filter(o => !o.isCorrect);
-      
-      return {
-        questionText: `A circle in the $xy$-plane has its center at $(${finalH}, ${finalK})$. Line $k$ is tangent to this circle at the point $(${finalX1}, ${finalY1})$. What is the slope of line $k$?`,
-        figureCode: null,
-        options: finalShuffledOptions.map(o => ({ text: o.text })),
-        correctAnswer: finalTangentSlope.toString(),
-        explanation: `Choice ${finalCorrectLetter} is correct. The slope of the radius to the point of tangency is $\\\\frac{${finalY1}-(${finalK})}{${finalX1}-(${finalH})}=\\\\frac{-${finalDy}}{-${finalDx}}=\\\\frac{${finalDy}}{${finalDx}}$. Since the tangent is perpendicular to the radius, its slope is the negative reciprocal: $-${finalDx}/${finalDy}=${finalTangentSlope}$. Choice ${finalIncorrectOptions[0].letter} is incorrect; this is the negative of the radius slope. Choice ${finalIncorrectOptions[1].letter} is incorrect; this is the slope of the radius itself. Choice ${finalIncorrectOptions[2].letter} is incorrect; this is the reciprocal without the negative sign.`
-      };
-    }
-    
+
+    // STEP 2: offset from center to the point of tangency.
+    // Magnitude a in {2,3,4} along x, magnitude 1 along y, with random signs.
+    const a = getRandomElement([2, 3, 4]);
+    const sx = getRandomElement([1, -1]);
+    const sy = getRandomElement([1, -1]);
+    const ox = sx * a;   // = x1 - h
+    const oy = sy * 1;   // = y1 - k
+    const s = sx * sy;   // sign of the radius slope (s/a)
+
+    const x1 = h + ox;
+    const y1 = k + oy;
+
+    // STEP 3: slopes.
+    // Radius slope = oy/ox = s/a. Tangent slope = -ox/oy = -s*a (an integer).
+    const tangentSlope = -s * a;
+
+    // ----- display helpers -----
+    const intTex = (v: number) => `$${v}$`;                       // e.g. $-3$
+    const fracTex = (sign: number, num: number, den: number) =>   // e.g. $-\frac{1}{3}$
+      `$${sign < 0 ? '-' : ''}\\frac{${num}}{${den}}$`;
+
+    const correctText = intTex(tangentSlope);        // -s*a   (correct)
+    const radiusSlopeOpt = fracTex(s, 1, a);         // s/a    (used radius slope)
+    const reciprocalOpt = intTex(s * a);             // +s*a   (forgot the negative)
+    const negRadiusOpt = fracTex(-s, 1, a);          // -s/a   (negated radius slope)
+
+    // STEP 4: options (all four values are distinct for every a, s).
     const optionsData = [
-      { text: correctText, isCorrect: true },
-      { text: distractorB.toFixed(2).replace(/\.00$/, ''), isCorrect: false },
-      { text: distractorC.toFixed(2).replace(/\.00$/, ''), isCorrect: false },
-      { text: distractorD.toFixed(2).replace(/\.00$/, ''), isCorrect: false }
+      { text: correctText, isCorrect: true, role: 'correct' as const },
+      { text: radiusSlopeOpt, isCorrect: false, role: 'radius' as const },
+      { text: reciprocalOpt, isCorrect: false, role: 'reciprocal' as const },
+      { text: negRadiusOpt, isCorrect: false, role: 'negRadius' as const }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
-    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+
+    const letterOf = (role: string) => shuffledOptions.find(o => o.role === role)!.letter;
+    const correctLetter = letterOf('correct');
+    const radiusLetter = letterOf('radius');
+    const reciprocalLetter = letterOf('reciprocal');
+    const negRadiusLetter = letterOf('negRadius');
+
+    // ----- explanation math (computed from the same live values) -----
+    // Radius slope from the difference quotient, keeping signs explicit.
+    const kTex = k < 0 ? `(${k})` : `${k}`;
+    const hTex = h < 0 ? `(${h})` : `${h}`;
+    const diffQuotient = `\\frac{${y1} - ${kTex}}{${x1} - ${hTex}}`;
+    const rawFrac = `\\frac{${oy}}{${ox}}`;
+    const radiusFracSimplified = `${s < 0 ? '-' : ''}\\frac{1}{${a}}`;
+
     return {
       questionText: `A circle in the $xy$-plane has its center at $(${h}, ${k})$. Line $k$ is tangent to this circle at the point $(${x1}, ${y1})$. What is the slope of line $k$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The slope of the radius to the point of tangency is $\\\\frac{${y1}-(${k})}{${x1}-(${h})}=\\\\frac{-${dy}}{-${dx}}=\\\\frac{${dy}}{${dx}}$. Since the tangent is perpendicular to the radius, its slope is the negative reciprocal: $-${dx}/${dy}=${correctText}$. Choice ${incorrectOptions[0].letter} is incorrect; this is the negative of the radius slope. Choice ${incorrectOptions[1].letter} is incorrect; this is the slope of the radius itself. Choice ${incorrectOptions[2].letter} is incorrect; this is the reciprocal without the negative sign.`
+      explanation: `Choice ${correctLetter} is correct. The radius drawn to the point of tangency has slope $m_r = ${diffQuotient} = ${rawFrac} = ${radiusFracSimplified}$. A tangent line is perpendicular to the radius at the point of tangency, so line $k$ has the negative reciprocal slope, $m_k = ${tangentSlope}$. Choice ${radiusLetter} is incorrect; it is the slope of the radius itself, not its negative reciprocal. Choice ${reciprocalLetter} is incorrect; it is the reciprocal of the radius slope but keeps the wrong sign. Choice ${negRadiusLetter} is incorrect; it only negates the radius slope instead of taking the negative reciprocal.`
     };
   }
 };

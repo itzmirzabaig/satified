@@ -38,19 +38,30 @@ export const generator_1180 = {
     // Find 'a' when x = targetXNum / targetXDen
     const targetXNum = 1;
     const targetXDen = getRandomInt(3, 9);
-    
-    // Calculate correct answer (fraction arithmetic)
-    // a = m(num/den) + b = (m*num + b*den) / den
+
+    // Calculate correct answer (fraction arithmetic).
+    // a = m(1/den) + b = (m + b*den) / den   [answer-first, exact integers]
     const numerator = slope * targetXNum + b * targetXDen;
     const denominator = targetXDen;
-    
+
     const correctFraction = `\\frac{${numerator}}{${denominator}}`;
 
-    // 4. Generate Distractors
-    const distA = `-\\frac{${slope}}{${targetXDen + slope}}`;
-    const distB = `-\\frac{${slope}}{${Math.abs(y1)}}`;
-    const distC = `\\frac{${slope}}{${targetXDen}}`;
-    
+    // 4. Distractors — all fractions over the SAME denominator `den`, one per
+    //    common student error. With a shared positive denominator, numeric
+    //    equality reduces to numerator equality, and the four numerators below
+    //    are pairwise distinct for every draw in the declared ranges
+    //    (slope 3-6, b 20-40, den 3-9): each pair differs by at least 6.
+    //    D1 dropped the intercept b (used a = m/den).
+    //    D2 added b without scaling ((m + b)/den).
+    //    D3 flipped the sign of the slope term ((b*den - m)/den).
+    const numD1 = slope;                        // forgot to add b
+    const numD2 = slope + b;                     // added b un-scaled
+    const numD3 = b * targetXDen - slope;        // sign error on slope term
+
+    const distA = `\\frac{${numD1}}{${denominator}}`;
+    const distB = `\\frac{${numD2}}{${denominator}}`;
+    const distC = `\\frac{${numD3}}{${denominator}}`;
+
     const optionsData = [
       { text: `$${distA}$`, isCorrect: false },
       { text: `$${distB}$`, isCorrect: false },
@@ -64,6 +75,12 @@ export const generator_1180 = {
     }));
     
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+
+    // Letters for each distractor (only known after the shuffle).
+    const letterOf = (t: string) => shuffledOptions.find(o => o.text === t)!.letter;
+    const letterD1 = letterOf(`$${distA}$`);
+    const letterD2 = letterOf(`$${distB}$`);
+    const letterD3 = letterOf(`$${distC}$`);
 
     // 5. Build Table HTML (Figure Code Only)
     // Borders only, no fill, centered via margin: 0 auto
@@ -100,11 +117,15 @@ export const generator_1180 = {
       $$ y = ${slope}x - ${slope * x2} + ${y2} $$
       $$ y = ${slope}x + ${b} $$
       <br/>
-      The question asks for the value of $a$ when the line passes through $(\\frac{${targetXNum}}{${targetXDen}}, a)$. Substitute $x = \\frac{${targetXNum}}{${targetXDen}}$ into the equation:
+      The question asks for the value of $a$ when the line passes through $\\left( \\frac{${targetXNum}}{${targetXDen}}, a \\right)$. Substitute $x = \\frac{${targetXNum}}{${targetXDen}}$ into the equation:
       $$ a = ${slope} \\left( \\frac{${targetXNum}}{${targetXDen}} \\right) + ${b} $$
-      $$ a = \\frac{${slope * targetXNum}}{${targetXDen}} + \\frac{${b * targetXDen}}{${targetXDen}} $$
-      $$ a = \\frac{${slope * targetXNum} + ${b * targetXDen}}{${denominator}} $$
-      $$ a = \\frac{${numerator}}{${denominator}} $$
+      $$ a = \\frac{${slope * targetXNum}}{${targetXDen}} + \\frac{${b * targetXDen}}{${targetXDen}} = \\frac{${slope * targetXNum} + ${b * targetXDen}}{${denominator}} = \\frac{${numerator}}{${denominator}} $$
+      <br/>
+      So Choice ${correctOption.letter} is correct.
+      <br/><br/>
+      Choice ${letterD1} ($\\frac{${numD1}}{${denominator}}$) drops the constant $${b}$ and keeps only $\\frac{${slope}}{${denominator}}$.
+      Choice ${letterD2} ($\\frac{${numD2}}{${denominator}}$) adds $${b}$ to the numerator without first writing it over $${denominator}$.
+      Choice ${letterD3} ($\\frac{${numD3}}{${denominator}}$) uses the wrong sign for the slope term, computing $-\\frac{${slope}}{${denominator}} + ${b}$.
     `;
     
     return {

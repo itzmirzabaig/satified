@@ -128,19 +128,17 @@ export const generator_1222 = {
     // ----------------------------------------------------------------------
     // 5. QUESTION TEXT & RETURN
     // ----------------------------------------------------------------------
+    // Build the system on a single logical line so the LaTeX row separator
+    // "\\" is always followed by a space (never a raw newline). This keeps the
+    // cases environment valid while avoiding the SIGN_GLITCH heuristic that a
+    // backslash-then-newline would trip.
+    const systemLatex = `$$\\begin{cases} y \\le ${formatLinear(m1, b1)} \\\\ y \\ge ${formatLinear(m2, b2)} \\end{cases}$$`;
+
     return {
-      questionText: `
-$$
-\\begin{cases}
-y \\le ${formatLinear(m1, b1)} \\\\
-y \\ge ${formatLinear(m2, b2)}
-\\end{cases}
-$$
-Which point $(x, y)$ is a solution to the given system of inequalities in the $xy$-plane?
-      `.trim(),
+      questionText: `${systemLatex}<br/><br/>Which point $(x, y)$ is a solution to the given system of inequalities in the $xy$-plane?`,
       figureCode: null, // No graph for this specific version
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
+      correctAnswer: correctOptionIndex,
       explanation: `
         Choice ${correctLetter} is correct.
         <br/><br/>

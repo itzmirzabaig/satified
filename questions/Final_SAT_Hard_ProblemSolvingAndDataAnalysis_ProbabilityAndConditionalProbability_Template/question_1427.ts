@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -106,56 +106,54 @@ export const generator_1427 = {
     const simplifiedDen = total_atLeast10 / commonDivisor;
     
     // STEP 4: Build table
-    const tableCode = `<table style="border-collapse: collapse; margin: 20px auto; text-align: center; font-family: serif;">
+    const tableCode = `<table style="border-collapse: collapse; margin: 0 auto; text-align: center; background: transparent; width: 100%; max-width: 560px;">
   <thead>
-    <tr style="border-bottom: 2px solid #000;">
-      <th style="padding: 8px; border-right: 1px solid #ccc;">Group</th>
-      <th style="padding: 8px; border-right: 1px solid #ccc;">0–9 years</th>
-      <th style="padding: 8px; border-right: 1px solid #ccc;">10–19 years</th>
-      <th style="padding: 8px; border-right: 1px solid #ccc;">20+ years</th>
-      <th style="padding: 8px;">Total</th>
+    <tr>
+      <th style="border: 1px solid currentColor; padding: 8px;">Group</th>
+      <th style="border: 1px solid currentColor; padding: 8px;">0-9 years</th>
+      <th style="border: 1px solid currentColor; padding: 8px;">10-19 years</th>
+      <th style="border: 1px solid currentColor; padding: 8px;">20+ years</th>
+      <th style="border: 1px solid currentColor; padding: 8px;">Total</th>
     </tr>
   </thead>
   <tbody>
-    <tr style="border-bottom: 1px solid #ccc;">
-      <td style="padding: 8px; border-right: 1px solid #ccc; font-weight: bold;">Group A</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${groupA_0_9}</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${groupA_10_19}</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${groupA_20_plus}</td>
-      <td style="padding: 8px; font-weight: bold;">${totalPerGroup}</td>
+    <tr>
+      <td style="border: 1px solid currentColor; padding: 8px;">Group A</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${groupA_0_9}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${groupA_10_19}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${groupA_20_plus}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${totalPerGroup}</td>
     </tr>
-    <tr style="border-bottom: 1px solid #ccc;">
-      <td style="padding: 8px; border-right: 1px solid #ccc; font-weight: bold;">Group B</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${groupB_0_9}</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${groupB_10_19}</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${groupB_20_plus}</td>
-      <td style="padding: 8px; font-weight: bold;">${totalPerGroup}</td>
+    <tr>
+      <td style="border: 1px solid currentColor; padding: 8px;">Group B</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${groupB_0_9}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${groupB_10_19}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${groupB_20_plus}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${totalPerGroup}</td>
     </tr>
-    <tr style="border-bottom: 1px solid #ccc;">
-      <td style="padding: 8px; border-right: 1px solid #ccc; font-weight: bold;">Group C</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${groupC_0_9}</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${groupC_10_19}</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${groupC_20_plus}</td>
-      <td style="padding: 8px; font-weight: bold;">${totalPerGroup}</td>
+    <tr>
+      <td style="border: 1px solid currentColor; padding: 8px;">Group C</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${groupC_0_9}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${groupC_10_19}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${groupC_20_plus}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${totalPerGroup}</td>
     </tr>
-    <tr style="border-top: 2px solid #000; font-weight: bold;">
-      <td style="padding: 8px; border-right: 1px solid #ccc;">Total</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${totalPerGroup}</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${totalPerGroup}</td>
-      <td style="padding: 8px; border-right: 1px solid #ccc;">${totalPerGroup}</td>
-      <td style="padding: 8px;">${3 * totalPerGroup}</td>
+    <tr>
+      <td style="border: 1px solid currentColor; padding: 8px;">Total</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${totalPerGroup}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${totalPerGroup}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${totalPerGroup}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${3 * totalPerGroup}</td>
     </tr>
   </tbody>
 </table>`;
-    
-    const correctAnswer = `\\frac{${simplifiedNum}}{${simplifiedDen}}`;
-    
+
     return {
-      questionText: `One of these participants will be selected at random. What is the probability of selecting a participant from group A, given that the participant is at least 10 years of age?`,
+      questionText: `The table shows the distribution of participants across three groups by age. One of these participants will be selected at random. What is the probability of selecting a participant from Group A, given that the participant is at least 10 years of age? (Express your answer as a fraction or decimal, not as a percent.)`,
       figureCode: tableCode,
-      options: null,
-      correctAnswer: correctAnswer,
-      explanation: `The condition "at least 10 years of age" includes the 10–19 and 20+ columns. The total number of participants at least 10 years old is $${totalPerGroup} + ${totalPerGroup} = ${total_atLeast10}$. In Group A, the number of participants at least 10 years old is $${groupA_10_19} + ${groupA_20_plus} = ${groupA_atLeast10}$. Thus, the probability is $\\frac{${groupA_atLeast10}}{${total_atLeast10}} = \\frac{${simplifiedNum}}{${simplifiedDen}}$.`
+      options: [],
+      correctAnswer: `${simplifiedNum}/${simplifiedDen}`,
+      explanation: `The condition "at least 10 years of age" restricts the sample space to the 10-19 and 20+ columns. Each of those columns totals ${totalPerGroup} participants, so the number of participants at least 10 years old is ${totalPerGroup} + ${totalPerGroup} = ${total_atLeast10}. Within Group A, the number at least 10 years old is ${groupA_10_19} + ${groupA_20_plus} = ${groupA_atLeast10}. The probability is $\\frac{${groupA_atLeast10}}{${total_atLeast10}} = \\frac{${simplifiedNum}}{${simplifiedDen}}$.`
     };
   }
 };

@@ -3,14 +3,16 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1187
- * 
+ *
  * ANALYSIS:
  * - Domain: Algebra
  * - Skill: Linear Equations In Two Variables
  * - Format: Table -> Translation -> X-intercept.
  * - Logic: Find line h from table. Translate h down to get k. Find x-intercept of k.
- * - Fixes: Removed graph. Styled table (borders only, centered). 
+ * - Fixes: Removed graph. Styled table (borders only, centered).
  *          Improved fraction formatting for options.
+ *          Sign-aware equation formatting (no "+ -49").
+ *          Bounded retry guarantees all four options are distinct for every draw.
  */
 
 export const generator_1187 = {
@@ -20,68 +22,62 @@ export const generator_1187 = {
     skill: "Linear Equations In Two Variable",
     difficulty: "Hard"
   },
-  
-  generate: (): QuestionData => {
-    // 1. Generate Line h
-    const slope = getRandomInt(3, 8); // Slope m
-    
-    // Pick a point (x1, y1)
-    const x1 = getRandomInt(10, 20);
-    const y1 = getRandomInt(50, 100);
-    
-    // Calculate y-intercept of line h: b_h = y1 - m*x1
-    const b_h = y1 - (slope * x1);
-    
-    // Generate Table Points for h
-    // (x1, y1)
-    const x2 = x1 + getRandomInt(2, 5);
-    const y2 = slope * x2 + b_h;
-    
-    const x3 = x2 + getRandomInt(2, 5);
-    const y3 = slope * x3 + b_h;
 
-    // 2. Transformation (Line k)
-    // Translate down by 'trans' units
-    const trans = getRandomInt(5, 15);
-    // New y-intercept: b_k = b_h - trans
-    const b_k = b_h - trans;
-    
-    // 3. Calculate x-intercept of Line k
-    // Equation: y = mx + b_k
-    // Set y = 0: 0 = mx + b_k  =>  mx = -b_k  =>  x = -b_k / m
-    const num = -b_k;
-    const den = slope;
-    
-    // Helper to format fraction (val/den)
-    const formatFrac = (n: number, d: number) => {
-        const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
-        const common = Math.abs(gcd(n, d));
-        const simpleN = n / common;
-        const simpleD = d / common;
-        
-        if (simpleD === 1) return `${simpleN}`;
-        if (simpleD === -1) return `${-simpleN}`;
-        
-        // Handle signs
-        const sign = (simpleN < 0 !== simpleD < 0) ? "-" : "";
-        return `${sign}\\frac{${Math.abs(simpleN)}}{${Math.abs(simpleD)}}`;
+  generate: (): QuestionData => {
+    const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
+
+    // Format a fraction n/d in lowest terms as a LaTeX string (or a bare integer).
+    const formatFrac = (n: number, d: number): string => {
+      const common = Math.abs(gcd(n, d)) || 1;
+      let sn = n / common;
+      let sd = d / common;
+      if (sd < 0) { sn = -sn; sd = -sd; } // keep denominator positive
+      if (sd === 1) return `${sn}`;
+      const sign = sn < 0 ? "-" : "";
+      return `${sign}\\frac{${Math.abs(sn)}}{${sd}}`;
     };
 
-    const xIntVal = formatFrac(num, den);
-    const correctOption = `(${xIntVal}, 0)`;
+    // Sign-aware "+ b" / "- |b|" for slope-intercept display.
+    const addTerm = (b: number): string => (b < 0 ? `- ${Math.abs(b)}` : `+ ${b}`);
 
-    // 4. Distractors
-    // A: X-intercept of original line h (forgot translation)
-    const xIntH = formatFrac(-b_h, slope);
-    const distA = `(${xIntH}, 0)`;
-    
-    // B: Y-intercept of line k (confusing x and y intercepts)
-    const distB = `(0, ${b_k})`;
-    
-    // C: Wrong slope calculation or sign error (e.g. positive intercept instead of calculated)
-    // Let's use a value close to correct but with sign flipped
-    const xIntWrongSign = formatFrac(b_k, slope); 
-    const distC = `(${xIntWrongSign}, 0)`;
+    // --- Draw parameters with a bounded retry so all four options are distinct ---
+    let slope = 0, x1 = 0, y1 = 0, b_h = 0, x2 = 0, y2 = 0, x3 = 0, y3 = 0;
+    let trans = 0, b_k = 0;
+    let correctOption = '', distA = '', distB = '', distC = '';
+    let tries = 0;
+    do {
+      // 1. Generate Line h
+      slope = getRandomInt(3, 8);              // Slope m
+      x1 = getRandomInt(10, 20);
+      y1 = getRandomInt(50, 100);
+      b_h = y1 - slope * x1;                    // y-intercept of h
+
+      // Table points for h (all satisfy y = slope*x + b_h)
+      x2 = x1 + getRandomInt(2, 5);
+      y2 = slope * x2 + b_h;
+      x3 = x2 + getRandomInt(2, 5);
+      y3 = slope * x3 + b_h;
+
+      // 2. Line k = line h translated down `trans` units
+      trans = getRandomInt(5, 15);
+      b_k = b_h - trans;
+
+      // 3. Options
+      // Correct: x-intercept of k -> x = -b_k / slope
+      correctOption = `(${formatFrac(-b_k, slope)}, 0)`;
+      // A: x-intercept of h (forgot the translation)
+      distA = `(${formatFrac(-b_h, slope)}, 0)`;
+      // B: y-intercept of k (confused x- and y-intercepts)
+      distB = `(0, ${b_k})`;
+      // C: sign error on the intercept -> x = b_k / slope
+      distC = `(${formatFrac(b_k, slope)}, 0)`;
+
+      tries++;
+    } while (
+      tries < 50 &&
+      (b_k === 0 ||
+        new Set([correctOption, distA, distB, distC]).size !== 4)
+    );
 
     const optionsData = [
       { text: correctOption, isCorrect: true },
@@ -94,7 +90,7 @@ export const generator_1187 = {
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const finalCorrect = shuffledOptions.find(o => o.isCorrect)!;
 
     // 5. Build Table HTML (Figure Code Only)
@@ -122,8 +118,9 @@ export const generator_1187 = {
         </tbody>
       </table>
     `;
-    
+
     // 6. Explanation
+    const xIntVal = formatFrac(-b_k, slope);
     const explanation = `
       Choice ${finalCorrect.letter} is correct.
       <br/><br/>
@@ -134,22 +131,22 @@ export const generator_1187 = {
       Find the $y$-intercept ($b_h$) using $y = mx + b$:
       $$ ${y1} = ${slope}(${x1}) + b_h $$
       $$ b_h = ${y1} - ${slope * x1} = ${b_h} $$
-      Equation of line $h$: $y = ${slope}x + ${b_h}$.
+      Equation of line $h$: $y = ${slope}x ${addTerm(b_h)}$.
       <br/><br/>
       <strong>2. Find the equation of line $k$:</strong>
-      Line $k$ is line $h$ translated down by ${trans} units.
+      Line $k$ is line $h$ translated down ${trans} units.
       $$ b_k = b_h - ${trans} = ${b_h} - ${trans} = ${b_k} $$
-      Equation of line $k$: $y = ${slope}x + ${b_k}$.
+      Equation of line $k$: $y = ${slope}x ${addTerm(b_k)}$.
       <br/><br/>
       <strong>3. Find the x-intercept of line $k$:</strong>
       Set $y = 0$ and solve for $x$:
-      $$ 0 = ${slope}x + ${b_k} $$
-      $$ ${-b_k} = ${slope}x $$
+      $$ 0 = ${slope}x ${addTerm(b_k)} $$
+      $$ ${slope}x = ${-b_k} $$
       $$ x = \\frac{${-b_k}}{${slope}} = ${xIntVal} $$
       <br/>
       The $x$-intercept is $(${xIntVal}, 0)$.
     `;
-    
+
     return {
       questionText: `For line $h$, the table shows three values of $x$ and their corresponding values of $y$. Line $k$ is the result of translating line $h$ down ${trans} units in the $xy$-plane. What is the $x$-intercept of line $k$?`,
       figureCode: tableHTML,

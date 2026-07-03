@@ -57,12 +57,17 @@ export const generator_1215 = {
     const simpleDen = denominator / common;
     
     // Format Result
+    // LaTeX display form for the explanation/question text
     const formatFrac = (n: number, d: number) => {
         if (d === 1) return `${n}`;
         return `\\frac{${n}}{${d}}`;
     };
-    
-    const correctAnswer = formatFrac(simpleNum, simpleDen);
+
+    // Plain typed form for the fill-in answer (student types into a text box):
+    // a bare integer when the fraction reduces to a whole number, else "a/b".
+    const correctAnswer = simpleDen === 1 ? `${simpleNum}` : `${simpleNum}/${simpleDen}`;
+
+    const answerDisplay = formatFrac(simpleNum, simpleDen);
     const inputFracDisplay = formatFrac(frac.n, frac.d);
 
     // 4. Build Table HTML
@@ -158,11 +163,11 @@ export const generator_1215 = {
       $$ a = \\frac{${m * frac.n}}{${frac.d}} + \\frac{${b * frac.d}}{${frac.d}} $$
       $$ a = \\frac{${m * frac.n} + ${b * frac.d}}{${frac.d}} = \\frac{${numerator}}{${denominator}} $$
       Simplify the fraction:
-      $$ a = ${correctAnswer} $$
+      $$ a = ${answerDisplay} $$
     `;
 
     return {
-      questionText: `The table shows two values of $x$ and their corresponding values of $y$. The graph of the linear equation representing this relationship passes through the point $(${inputFracDisplay}, a)$. What is the value of $a$?`,
+      questionText: `The table shows two values of $x$ and their corresponding values of $y$. The graph of the linear equation representing this relationship passes through the point $(${inputFracDisplay}, a)$. What is the value of $a$? (Enter your answer as a fraction or decimal.)`,
       figureCode: tableHTML + svgContent,
       options: null, // Fill-in-the-blank
       correctAnswer: correctAnswer,

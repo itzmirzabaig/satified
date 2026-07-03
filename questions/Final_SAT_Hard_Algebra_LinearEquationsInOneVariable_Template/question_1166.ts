@@ -27,74 +27,65 @@ export const generator_1166 = {
     // STEP 1: Generate equation of form (x+a)/b = (x+a)/c where b ≠ c
     // This forces x+a = 0, so x = -a
     
-    let valid = false;
-    let a: number, b: number, c: number;
-    
-    while (!valid) {
-      a = getRandomInt(3, 10);
-      b = getRandomInt(2, 5);
-      c = getRandomInt(6, 15);
-      
-      // Ensure b ≠ c
-      if (b !== c) {
-        valid = true;
-      }
-    }
-    
-    // Value of x+a is 0, which is in range (-2, 2) i.e., option B
-    // Generate ranges for options
-    const range1Low = -a - 3;
-    const range1High = -a - 1;
-    const range3Low = 2;
-    const range3High = 7;
-    const range4Low = 8;
-    const range4High = 13;
-    
+    // b in [2,5] and c in [6,15] are disjoint, so b !== c always holds and the
+    // denominators genuinely differ — no retry needed. With different, nonzero
+    // denominators, (x+a)/b = (x+a)/c forces x + a = 0.
+    const a = getRandomInt(3, 10);
+    const b = getRandomInt(2, 5);
+    const c = getRandomInt(6, 15);
+
+    // The value of x + a is 0. Exactly one pair of bounds brackets 0; the
+    // three distractor pairs deliberately exclude 0. Each option carries its
+    // numeric bounds so the explanation can be built from the SHUFFLED order
+    // (its letters are only known after the shuffle).
+    // Distractor pairs (all exclude 0):
+    //   below zero:   [-a-3, -a-1]  (a >= 3  =>  high <= -4, both negative)
+    //   above zero A: [2, 7]
+    //   above zero B: [8, 13]
     const optionsData = [
-      { text: `$${range1Low}$ and $${range1High}$`, isCorrect: false },
-      { text: `$-2$ and $2$`, isCorrect: true },
-      { text: `$${range3Low}$ and $${range3High}$`, isCorrect: false },
-      { text: `$${range4Low}$ and $${range4High}$`, isCorrect: false }
-    ];
-    
+      { low: -a - 3, high: -a - 1, isCorrect: false },
+      { low: -2, high: 2, isCorrect: true },
+      { low: 2, high: 7, isCorrect: false },
+      { low: 8, high: 13, isCorrect: false }
+    ].map(o => ({ ...o, text: `$${o.low}$ and $${o.high}$` }));
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const correctLetter = correctOption.letter;
-    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    // Fixed: Changed \\\\frac to \\frac for proper LaTeX rendering
+
+    // Build the interval-check list in the exact shuffled order / letters.
+    const intervalChecks = shuffledOptions.map(opt => {
+      const inRange = opt.low < 0 && opt.high > 0;
+      return `Choice ${opt.letter} ($${opt.low}$ and $${opt.high}$): $0$ ${inRange ? `is between $${opt.low}$ and $${opt.high}$` : 'is not in this range'}.`;
+    }).join('\n');
+
     const explanation = `To solve the given equation $\\frac{x+${a}}{${b}} = \\frac{x+${a}}{${c}}$, let's consider the term $x+${a}$ as a single entity, say $y$. So, the equation becomes $\\frac{y}{${b}} = \\frac{y}{${c}}$.
 
-Multiply both sides by the least common multiple of the denominators, which is ${b * c}:
+Multiply both sides by the least common multiple of the denominators, which is $${b * c}$:
 $${c}y = ${b}y$
 
 Subtract $${b}y$ from both sides:
 $${c - b}y = 0$
 
-Divide by ${c - b}:
+Divide by $${c - b}$:
 $y = 0$
 
 Substituting back $x+${a}$ for $y$, we find that the value of $x+${a}$ is $0$.
 
-Now we check which interval $0$ falls into:
-A. $${range1Low}$ and $${range1High}$: $0$ is not in this range.
-B. $-2$ and $2$: $0$ is between $-2$ and $2$.
-C. $${range3Low}$ and $${range3High}$: $0$ is not in this range.
-D. $${range4Low}$ and $${range4High}$: $0$ is not in this range.
+Now we check which pair of values brackets $0$:
+${intervalChecks}
 
-Therefore, the correct option is ${correctLetter}.`;
-    
+Therefore, the correct option is Choice ${correctLetter}.`;
+
     return {
-      // Fixed: Changed \\\\frac to \\frac
       questionText: `If $\\frac{x+${a}}{${b}} = \\frac{x+${a}}{${c}}$, the value of $x+${a}$ is between which of the following pairs of values?`,
       figureCode: null,
-      // Fixed: Return string array instead of object array
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: "-2 and 2",
+      correctAnswer: correctOption.text,
       explanation: explanation
     };
   }

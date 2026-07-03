@@ -5,7 +5,7 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1308
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [radius: single digit (9), perimeter: double digit (31)]
  * - Difficulty factors: [Isosceles triangle properties, basic algebra]
@@ -23,53 +23,73 @@ export const generator_1308 = {
     skill: "Circles",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
     // STEP 1: Generate radius (single digit to match original difficulty)
     const radius = getRandomInt(5, 12);
-    
-    // STEP 2: Calculate two radii sum
     const twoRadii = 2 * radius;
-    
-    // STEP 3: Generate perimeter that gives clean answer
-    // QR = Perimeter - 2*radius
-    // Make QR different from radius (not equilateral) and reasonable
-    const qrLength = getRandomInt(radius + 2, radius + 8); // QR > radius to avoid equilateral
-    const perimeter = twoRadii + qrLength;
-    
-    // STEP 4: Generate distractors
-    // Distractor 1: If student thought it was right triangle (radius * sqrt(2))
-    const distractor1 = Math.round(radius * Math.sqrt(2) * 10) / 10;
-    
-    // Distractor 2: Simple error - just the radius
-    const distractor2 = radius;
-    
-    // Distractor 3: If student added wrong (used diameter instead)
-    const distractor3 = perimeter - radius; // Wrong - used one radius instead of two
-    
+
+    // Distractor built from the radius (does not depend on QR):
+    // the hypotenuse a student gets if they wrongly treat PQR as an
+    // isosceles RIGHT triangle with legs = radius.
+    const distractorHyp = Math.round(radius * Math.sqrt(2) * 10) / 10;
+    const distractorHypText = distractorHyp.toString().replace(/\.0$/, '');
+
+    // STEP 2: Pick QR so that PQ + PR + QR forms a valid, non-equilateral
+    // triangle AND all four option strings end up distinct.
+    // Triangle inequality: QR < PQ + PR = 2*radius (and QR > 0).
+    // QR != radius keeps it non-equilateral.
+    let qrLength = 0;
+    let perimeter = 0;
+    let distractorOneRadius = 0; // used only one radius: perimeter - radius = radius + QR
+    let tries = 0;
+    do {
+      // QR strictly between radius+2 and 2*radius-1 => valid triangle, not equilateral.
+      qrLength = getRandomInt(radius + 2, twoRadii - 1);
+      perimeter = twoRadii + qrLength;
+      distractorOneRadius = perimeter - radius; // = radius + qrLength
+      tries++;
+    } while (
+      tries < 50 &&
+      new Set([
+        qrLength.toString(),
+        distractorHypText,
+        radius.toString(),
+        distractorOneRadius.toString()
+      ]).size !== 4
+    );
+
     const correctText = qrLength.toString();
-    
+
     const optionsData = [
-      { text: distractor1.toString().replace(/\.0$/, ''), isCorrect: false },
+      { text: distractorHypText, isCorrect: false },
       { text: correctText, isCorrect: true },
-      { text: distractor2.toString(), isCorrect: false },
-      { text: distractor3.toString(), isCorrect: false }
+      { text: radius.toString(), isCorrect: false },
+      { text: distractorOneRadius.toString(), isCorrect: false }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+
+    // Explain each distractor by matching its string back to its cause, so the
+    // letters follow the shuffled order.
+    const reasonFor = (text: string): string => {
+      if (text === distractorHypText) return `this would be the hypotenuse if $\\triangle PQR$ were an isosceles right triangle with legs equal to the radius`;
+      if (text === radius.toString()) return `this is just the radius, which assumes an equilateral triangle`;
+      return `this results from subtracting only one radius, computing $QR = ${perimeter} - ${radius}$ instead of subtracting both radii`;
+    };
+
     return {
       questionText: `Points $Q$ and $R$ lie on a circle with center $P$. The radius of this circle is ${radius} inches. Triangle $PQR$ has a perimeter of ${perimeter} inches. What is the length, in inches, of $\\overline{QR}$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. Since $P$ is the center and $Q$ and $R$ are on the circle, segments $\\overline{PQ}$ and $\\overline{PR}$ are both radii of length ${radius} inches. The perimeter of triangle $PQR$ is $PQ + PR + QR = ${radius} + ${radius} + QR = ${perimeter}$. Solving for $QR$: $QR = ${perimeter} - ${twoRadii} = ${qrLength}$ inches. Choice ${incorrectOptions[0].letter} is incorrect; this would be the hypotenuse if $\\triangle PQR$ were an isosceles right triangle. Choice ${incorrectOptions[1].letter} is incorrect; this assumes the triangle is equilateral. Choice ${incorrectOptions[2].letter} is incorrect; this results from using only one radius in the perimeter calculation.`
+      explanation: `Choice ${correctLetter} is correct. Because $P$ is the center and $Q$ and $R$ lie on the circle, $\\overline{PQ}$ and $\\overline{PR}$ are both radii of length ${radius} inches. The perimeter is $PQ + PR + QR = ${radius} + ${radius} + QR = ${perimeter}$, so $QR = ${perimeter} - ${twoRadii} = ${qrLength}$ inches. Choice ${incorrectOptions[0].letter} is incorrect because ${reasonFor(incorrectOptions[0].text)}. Choice ${incorrectOptions[1].letter} is incorrect because ${reasonFor(incorrectOptions[1].text)}. Choice ${incorrectOptions[2].letter} is incorrect because ${reasonFor(incorrectOptions[2].text)}.`
     };
   }
 };

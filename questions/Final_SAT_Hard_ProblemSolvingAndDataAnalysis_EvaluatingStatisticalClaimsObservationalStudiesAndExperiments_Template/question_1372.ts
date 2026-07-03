@@ -33,10 +33,7 @@ export const generator_1372 = {
     // Randomize context elements
     const locations = ["playground", "children's museum", "pediatrician's office waiting room", "school pickup area", "family restaurant"];
     const location = getRandomElement(locations);
-    
-    const researchers = ["Tabitha", "Maria", "James", "Dr. Chen", "Sarah"];
-    const researcher = getRandomElement(researchers);
-    
+
     const topics = [
       "mean number of children per household",
       "average number of pets per family",
@@ -44,15 +41,7 @@ export const generator_1372 = {
       "mean monthly spending on children's activities"
     ];
     const topic = getRandomElement(topics);
-    
-    const units: Record<string, string> = {
-      "mean number of children per household": "children",
-      "average number of pets per family": "pets",
-      "average weekly hours spent on outdoor activities": "hours",
-      "mean monthly spending on children's activities": "dollars"
-    };
-    const unit = units[topic];
-    
+
     // STEP 2: Create options with tracking
     const optionsData = [
       { 
@@ -89,11 +78,11 @@ export const generator_1372 = {
     
     // STEP 4: Return question data
     return {
-      questionText: `To determine the ${topic} in a community, ${researcher} surveyed ${sampleSize} families at a ${location}. For the ${sampleSize} families surveyed, the ${topic} was ${meanChildren}. Which of the following statements must be true?`,
+      questionText: `To determine the ${topic} in a community, a researcher surveyed ${sampleSize} families at a ${location}. For the ${sampleSize} families surveyed, the ${topic} was ${meanChildren}. Which of the following statements must be true?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. ${correctOption.reason}. In order to use a sample statistic to estimate a population parameter, the sample must be representative of the population. The ${location} location is more likely to attract families with ${unit === "children" ? "children" : "families"} than other locations in the community, so the sample is not representative. Choice ${incorrectOptions[0].letter} is incorrect because ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. ${correctOption.reason}. In order to use a sample statistic to estimate a population parameter, the sample must be representative of the population. The ${location} is more likely to attract families with children than a typical location in the community, so the sample is not representative. Choice ${incorrectOptions[0].letter} is incorrect because ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because ${incorrectOptions[2].reason}.`
     };
   }
 };

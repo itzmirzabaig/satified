@@ -1,11 +1,11 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 
 
 /**
  * Question 1128
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [initial: 10, max: 1034, time to max: 8, find h(10)]
  * - Difficulty factors: [Projectile height model, vertex form evaluation]
@@ -23,36 +23,59 @@ export const generator_1128 = {
     skill: "Nonlinear Functions",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    const initial = getRandomInt(5, 20);
-    const maxH = getRandomInt(500, 1200);
-    const timeToMax = getRandomInt(5, 12);
-    const evalTime = timeToMax + getRandomInt(2, 5);
-    
-    const a = Math.round((initial - maxH) / (timeToMax * timeToMax));
-    const h_eval = a * Math.pow(evalTime - timeToMax, 2) + maxH;
-    
+    // Build an integer-consistent downward parabola in vertex form:
+    //   h(t) = a(t - timeToMax)^2 + maxH,  a < 0 (so maxH is the true maximum).
+    // Pick a, timeToMax, initial first, then DERIVE maxH so that h(0) = initial
+    // exactly. This keeps every displayed number an integer and self-consistent.
+    let a: number, timeToMax: number, initial: number, maxH: number;
+    let dt: number, evalTime: number, h_eval: number;
+    let d1: number, d2: number, d3: number;
+    let tries = 0;
+    do {
+      a = -getRandomInt(4, 16);              // downward opening, |a| in [4,16]
+      timeToMax = getRandomInt(5, 12);        // seconds to reach the maximum
+      initial = getRandomInt(5, 40);          // height at t = 0
+      maxH = initial - a * timeToMax * timeToMax; // = initial + |a|*timeToMax^2 (> initial)
+      dt = getRandomInt(2, 5);                // seconds past the maximum
+      evalTime = timeToMax + dt;
+      h_eval = a * dt * dt + maxH;            // integer; < maxH since a < 0
+
+      // Distractors (all integers, each a plausible mistake):
+      d1 = maxH;                              // stops at the maximum, forgets to evaluate
+      d2 = maxH - a * dt * dt;                // sign error: adds |a|*dt^2 instead of subtracting
+      d3 = initial;                           // reports the initial height
+      tries++;
+    } while (
+      tries < 50 && (
+        h_eval <= 0 ||                        // keep heights positive
+        // all four displayed values must be pairwise distinct
+        new Set([h_eval, d1, d2, d3]).size !== 4
+      )
+    );
+
     const optionsData = [
-      { text: `$${Math.abs(h_eval - 200)}$`, isCorrect: false },
-      { text: `$${Math.floor(h_eval * 0.8)}$`, isCorrect: false },
       { text: `$${h_eval}$`, isCorrect: true },
-      { text: `$${maxH - 20}$`, isCorrect: false }
+      { text: `$${d1}$`, isCorrect: false },
+      { text: `$${d2}$`, isCorrect: false },
+      { text: `$${d3}$`, isCorrect: false }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
-    
+
+    const correct = shuffledOptions.find(o => o.isCorrect)!;
+    const correctLetter = correct.letter;
+
     return {
-      questionText: `A quadratic models height above ground. Initial height is $${initial}$ feet, maximum is $${maxH}$ feet at ${timeToMax} seconds. What is the height at ${evalTime} seconds?`,
+      questionText: `The height above the ground, in feet, of a launched object is modeled by a quadratic function of the time $t$, in seconds, after it is launched. The object's initial height is $${initial}$ feet, and it reaches its maximum height of $${maxH}$ feet at $t=${timeToMax}$ seconds. What is the object's height, in feet, at $t=${evalTime}$ seconds?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: h_eval.toString(),
-      explanation: `Choice ${correctLetter} is correct. The model is $h(t)=${a}(t-${timeToMax})^2+${maxH}$. At $t=${evalTime}$: $h(${evalTime})=${a}(${evalTime-timeToMax})^2+${maxH}=${h_eval}$.`
+      correctAnswer: correct.text,
+      explanation: `Choice ${correctLetter} is correct. In vertex form the model is $h(t)=${a}(t-${timeToMax})^2+${maxH}$, whose vertex $(${timeToMax},\\,${maxH})$ gives the maximum height and which satisfies $h(0)=${initial}$. At $t=${evalTime}$ seconds, $t-${timeToMax}=${dt}$, so $h(${evalTime})=${a}(${dt})^2+${maxH}=${h_eval}$ feet. The choice $${d1}$ is the maximum height itself (not evaluated at $t=${evalTime}$), $${d2}$ comes from adding instead of subtracting $${Math.abs(a * dt * dt)}$, and $${d3}$ is the initial height at $t=0$.`
     };
   }
 };

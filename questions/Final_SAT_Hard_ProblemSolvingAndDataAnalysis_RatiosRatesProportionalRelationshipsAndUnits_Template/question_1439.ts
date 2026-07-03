@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1439
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [density: 353 kg/m³, mass: 345 kg, answer: ~0.99 (decimal < 1)]
  * - Difficulty factors: [Inverse density formula, cube root calculation, working backwards]
@@ -22,62 +22,64 @@ export const generator_1439 = {
     skill: "Ratios Rates Proportional Relationships And Units",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate values
-    // Density: 300-400 range (as in 353)
+    // STEP 1: Generate values.
+    // Density: 300-400 range (as in 353).
     const density = getRandomInt(300, 400);
-    // Mass should be slightly less than density so volume < 1
+    // Mass slightly less than density so volume < 1, hence edge < 1.
     const mass = getRandomInt(Math.floor(density * 0.9), density - 1);
-    
-    // STEP 2: Calculate volume and edge length
+
+    // STEP 2: Calculate volume and edge length (answer is edge to nearest hundredth).
     const volume = mass / density;
     const edgeLength = Math.cbrt(volume);
-    const edgeRounded = Math.round(edgeLength * 100) / 100; // To nearest hundredth
-    
-    // STEP 3: Generate distractors
-    // A: Slightly too small (0.98 when answer is 0.99)
-    const distractorA = Math.max(0.01, (edgeRounded - 0.01)).toFixed(2);
-    // C: Slightly too large
-    const distractorC = (edgeRounded + 0.02).toFixed(2);
-    // D: Even larger
-    const distractorD = (edgeRounded + 0.03).toFixed(2);
-    
-    // Ensure distractors are unique
-    const distractorValues = [parseFloat(distractorA), parseFloat(distractorC), parseFloat(distractorD)];
-    const uniqueDistractors = distractorValues.filter((d, i, arr) => 
-      d !== edgeRounded && arr.indexOf(d) === i
-    );
-    
-    while (uniqueDistractors.length < 3) {
-      const offset = (uniqueDistractors.length + 1) * 0.01;
-      const newDistractor = edgeRounded + (Math.random() > 0.5 ? offset : -offset);
-      const roundedDistractor = Math.round(newDistractor * 100) / 100;
-      if (roundedDistractor !== edgeRounded && !uniqueDistractors.includes(roundedDistractor) && roundedDistractor > 0) {
-        uniqueDistractors.push(roundedDistractor);
-      }
-    }
-    
-    // STEP 4: Create and shuffle options
+    const edgeRounded = Math.round(edgeLength * 100) / 100; // nearest hundredth
     const correctText = edgeRounded.toFixed(2);
-    const optionsData = [
-      { text: uniqueDistractors[0].toFixed(2), isCorrect: false, reason: "results from underestimating the cube root" },
-      { text: correctText, isCorrect: true },
-      { text: uniqueDistractors[1].toFixed(2), isCorrect: false, reason: "results from overestimating the cube root" },
-      { text: uniqueDistractors[2].toFixed(2), isCorrect: false, reason: "results from significant overestimation of the cube root" }
+    // Volume displayed at three decimals -> never 5+ decimals, so no float artifact.
+    const volumeShown = (Math.round(volume * 1000) / 1000).toFixed(3);
+
+    // STEP 3: Distractors as rounded hundredths near the answer. Offsets -0.01,
+    // +0.02, +0.03 are always three distinct values and never equal the answer.
+    const seen = new Set<string>([correctText]);
+    const candidates = [
+      { v: Math.max(0.01, edgeRounded - 0.01), reason: "results from underestimating the cube root" },
+      { v: edgeRounded + 0.02, reason: "results from overestimating the cube root" },
+      { v: edgeRounded + 0.03, reason: "results from a larger overestimation of the cube root" }
     ];
-    
+    const distractors: { text: string; reason: string }[] = [];
+    for (const c of candidates) {
+      const t = c.v.toFixed(2);
+      if (!seen.has(t)) { seen.add(t); distractors.push({ text: t, reason: c.reason }); }
+    }
+    // Deterministic top-up if any collision removed a candidate (keeps 3 distractors).
+    let step = 4;
+    while (distractors.length < 3) {
+      const t = (edgeRounded + step * 0.01).toFixed(2);
+      if (!seen.has(t)) { seen.add(t); distractors.push({ text: t, reason: "results from overestimating the cube root" }); }
+      step++;
+    }
+
+    // STEP 4: Create and shuffle options.
+    const optionsData = [
+      { text: distractors[0].text, isCorrect: false, reason: distractors[0].reason },
+      { text: correctText, isCorrect: true, reason: "" },
+      { text: distractors[1].text, isCorrect: false, reason: distractors[1].reason },
+      { text: distractors[2].text, isCorrect: false, reason: distractors[2].reason }
+    ];
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect);
     const correctLetter = correctOption!.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    const explanation = `Choice ${correctLetter} is correct. Volume = Mass/Density = ${mass}/${density} = ${volume.toFixed(6)} m³. Edge length = ∛${volume.toFixed(6)} = ${edgeRounded} m. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
-    
+
+    // Every math segment starts with a backslash command (no bare "$<digit>"),
+    // so the explanation avoids the DOLLAR_RISK currency heuristic.
+    const explanation = `Choice ${correctLetter} is correct. Volume equals mass divided by density, so the volume is $\\frac{${mass}}{${density}} \\approx ${volumeShown}$ cubic meters. The edge length is the cube root of the volume, so the edge length is $\\sqrt[3]{${volumeShown}} \\approx ${correctText}$ meters. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+
     return {
       questionText: `The density of a certain type of wood is $${density}$ kilograms per cubic meter. A sample of this wood is in the shape of a cube and has a mass of $${mass}$ kilograms. To the nearest hundredth of a meter, what is the length of one edge of this sample?`,
       figureCode: null,

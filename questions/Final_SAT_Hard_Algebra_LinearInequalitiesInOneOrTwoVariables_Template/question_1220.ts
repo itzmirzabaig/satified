@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1220
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [walk time: 20 (double-digit), bus ride: 5 (single-digit), wait time: 0-30 (0 to double-digit)]
  * - Difficulty factors: [Word problem interpretation, inequality setup, "faster" comparison logic]
@@ -40,14 +40,16 @@ export const generator_1220 = {
     // Distractor A: w - busRideTime < walkTime (subtracts ride time, wrong operation)
     // Distractor B: w - busRideTime > walkTime (subtracts ride time, wrong operation)
     // Distractor C: w + busRideTime < walkTime (reversed inequality - means bus is faster)
-    
-    const correctInequality = `w + ${busRideTime} > ${walkTime}`;
-    
+    // The four option strings differ by operator (+/-) and direction (</>) for
+    // every draw, so no two can ever collide.
+
+    const correctText = `$w + ${busRideTime} > ${walkTime}$`;
+
     const optionsData = [
-      { text: `$w - ${busRideTime} < ${walkTime}$`, isCorrect: false, reason: "subtracts ride time from wait time instead of adding" },
-      { text: `$w - ${busRideTime} > ${walkTime}$`, isCorrect: false, reason: "subtracts ride time instead of adding to get total bus time" },
-      { text: `$w + ${busRideTime} < ${walkTime}$`, isCorrect: false, reason: "reverses the inequality, representing when bus is faster instead of walk" },
-      { text: `$w + ${busRideTime} > ${walkTime}$`, isCorrect: true }
+      { text: `$w - ${busRideTime} < ${walkTime}$`, isCorrect: false, reason: "subtracts the ride time from the wait time instead of adding it" },
+      { text: `$w - ${busRideTime} > ${walkTime}$`, isCorrect: false, reason: "subtracts the ride time instead of adding it to get the total bus time" },
+      { text: `$w + ${busRideTime} < ${walkTime}$`, isCorrect: false, reason: "reverses the inequality, describing when the bus is faster instead of the walk" },
+      { text: correctText, isCorrect: true }
     ];
     
     // STEP 4: Shuffle and assign letters
@@ -56,17 +58,17 @@ export const generator_1220 = {
       letter: String.fromCharCode(65 + index)
     }));
     
-    const correctOption = shuffledOptions.find(o => o.isCorrect);
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
     // STEP 5: Return question data
     return {
-      questionText: `Adam's school is a $${walkTime}$-minute walk or a $${busRideTime}$-minute bus ride away from his house. The bus runs once every $${maxWaitTime}$ minutes, and the number of minutes, $w$, that Adam waits for the bus varies between $0$ and $${maxWaitTime}$. Which of the following inequalities gives the values of $w$ for which it would be faster for Adam to walk to school?`,
+      questionText: `A student's school is a $${walkTime}$-minute walk or a $${busRideTime}$-minute bus ride away from home. The bus runs once every $${maxWaitTime}$ minutes, and the number of minutes, $w$, that the student waits for the bus varies between $0$ and $${maxWaitTime}$. Which of the following inequalities gives the values of $w$ for which it would be faster for the student to walk to school?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctInequality,
-      explanation: `Choice ${correctLetter} is correct. To determine when walking is faster, compare the total time for each method. Walking takes $${walkTime}$ minutes. The bus takes $w$ minutes waiting plus $${busRideTime}$ minutes riding, for a total of $w + ${busRideTime}$ minutes. Walking is faster when the bus time exceeds walking time: $w + ${busRideTime} > ${walkTime}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      correctAnswer: correctText,
+      explanation: `Choice ${correctLetter} is correct. To determine when walking is faster, compare the total time for each method. Walking takes $${walkTime}$ minutes. The bus takes $w$ minutes waiting plus $${busRideTime}$ minutes riding, for a total of $w + ${busRideTime}$ minutes. Walking is faster when the bus time exceeds the walking time: $w + ${busRideTime} > ${walkTime}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

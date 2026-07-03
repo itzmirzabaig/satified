@@ -46,52 +46,31 @@ export const generator_1365 = {
     const numerator = triple[0];
     const denominator = triple[2];
     
-    const _svg_0 = longerLeg + 5; const _svg_1 = hypotenuse + 5;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-2,xmax=_svg_1;
-      const ymin=-2,ymax=_svg_0;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;
-    })()}${(() => {
-      const xmin=-2,xmax=(hypotenuse + 5);
-      const ymin=-2,ymax=(longerLeg + 5);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(0)+'" y="'+my(-1)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">B</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=(hypotenuse + 5);
-      const ymin=-2,ymax=(longerLeg + 5);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((longerLeg))+'" y="'+my(-1)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">C</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=(hypotenuse + 5);
-      const ymin=-2,ymax=(longerLeg + 5);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((longerLeg))+'" y="'+my((shorterLeg + 1))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">A</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=(hypotenuse + 5);
-      const ymin=-2,ymax=(longerLeg + 5);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((longerLeg / 2))+'" y="'+my((shorterLeg + 1))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">${hypotenuse</text>';
-    })()}</svg></div>`;
+    // Right triangle ABC: right angle at C. B at bottom-left, C at bottom-right
+    // (end of the longer horizontal leg BC), A directly above C (shorter vertical
+    // leg CA). Hypotenuse AB is labeled with its length. Plain SVG, pixel space.
+    const W = 450, H = 300;
+    const bx = 70,  by = 240;                 // B (bottom-left)
+    const sc = 300 / hypotenuse;              // scale so hypotenuse spans ~300px horizontally worth of legs
+    const cx = bx + longerLeg * sc, cy = by;  // C (right angle, end of BC)
+    const ax = cx,                  ay = by - shorterLeg * sc; // A (top)
+    const rm = 14;                            // right-angle marker (px)
+    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">`
+      + `<polygon points="${bx},${by} ${cx},${cy} ${ax},${ay}" fill="#3b82f6" fill-opacity="0.08" stroke="#3b82f6" stroke-width="2" stroke-linejoin="round"/>`
+      + `<path d="M ${cx - rm},${cy} L ${cx - rm},${cy - rm} L ${cx},${cy - rm}" fill="none" stroke="currentColor" stroke-width="1.2"/>`
+      + `<circle cx="${bx}" cy="${by}" r="3" fill="currentColor"/>`
+      + `<circle cx="${cx}" cy="${cy}" r="3" fill="currentColor"/>`
+      + `<circle cx="${ax}" cy="${ay}" r="3" fill="currentColor"/>`
+      + `<text x="${bx - 12}" y="${by + 16}" text-anchor="middle" font-size="15" font-style="italic" fill="currentColor">B</text>`
+      + `<text x="${cx + 12}" y="${cy + 16}" text-anchor="middle" font-size="15" font-style="italic" fill="currentColor">C</text>`
+      + `<text x="${ax + 12}" y="${ay - 4}" text-anchor="middle" font-size="15" font-style="italic" fill="currentColor">A</text>`
+      + `<text x="${(bx + ax) / 2 - 6}" y="${(by + ay) / 2 - 8}" text-anchor="end" font-size="14" fill="currentColor">${hypotenuse}</text>`
+      + `</svg></div>`;
 
     return {
-      questionText: `Triangle $ABC$ above is a right triangle, and $\\sin(B) = \\frac{${numerator}}{${denominator}}$. What is the length of side $\\overline{BC}$?`,
+      questionText: `In the right triangle $ABC$ shown, the right angle is at $C$ and $\\sin(B) = \\frac{${numerator}}{${denominator}}$. What is the length of side $\\overline{BC}$?`,
       figureCode: mafsCode,
-      options: null, // Fill in the blank
+      options: [], // Fill in the blank
       correctAnswer: longerLeg.toString(),
       explanation: `The sine of angle $B$ is the ratio of the opposite side ($AC$) to the hypotenuse ($AB$). Given $\\sin(B) = \\frac{${numerator}}{${denominator}}$ and $AB = ${hypotenuse}$, then $\\frac{AC}{${hypotenuse}} = \\frac{${numerator}}{${denominator}} \\implies AC = ${shorterLeg}$. By the Pythagorean theorem, $BC = \\sqrt{${hypotenuse}^2 - ${shorterLeg}^2} = \\sqrt{${hypotenuse * hypotenuse} - ${shorterLeg * shorterLeg}} = \\sqrt{${longerLeg * longerLeg}} = ${longerLeg}$.`
     };

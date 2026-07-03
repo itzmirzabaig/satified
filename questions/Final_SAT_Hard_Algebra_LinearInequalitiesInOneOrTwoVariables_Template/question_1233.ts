@@ -73,7 +73,7 @@ export const generator_1233 = {
       questionText: `In a set of four consecutive odd integers, where the integers are ordered from least to greatest, the first integer is represented by $x$. The product of $${coefficient}$ and the fourth odd integer is at most $${subtractValue}$ less than the sum of the first and third odd integers. Which inequality represents this situation?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctLetter,
+      correctAnswer: correctOption.text,
       explanation: `
         Choice ${correctLetter} is correct.
         <br/><br/>

@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 
@@ -58,13 +58,18 @@ export const generator_1111 = {
     </table>`;
     
     const k = (target - start) / diff + 1;
-    
+
+    // Expanded exponent is diff*x + b, where b = start - diff.
+    // Format the constant term with a proper leading sign (or omit when 0).
+    const b = start - diff;
+    const bTerm = b > 0 ? ` + ${b}` : b < 0 ? ` - ${Math.abs(b)}` : ``;
+
     return {
       questionText: `For exponential $f$, the table shows values where $a>1$. If $f(k)=a^{${target}}$, what is $k$?`,
       figureCode: tableCode,
       options: null,
       correctAnswer: k.toString(),
-      explanation: `The pattern shows $f(x)=a^{${start}+${diff}(x-1)}=a^{${diff}x+${start-diff}}$. Setting ${diff}k+${start-diff}=${target}$ gives $k=${k}$.`
+      explanation: `The exponents increase by ${diff} each time $x$ increases by 1, so $f(x)=a^{${start}+${diff}(x-1)}=a^{${diff}x${bTerm}}$. Since $f(k)=a^{${target}}$, equating the powers gives $a^{${diff}k${bTerm}}=a^{${target}}$. The exponents must be equal, so $k=${k}$.`
     };
   }
 };

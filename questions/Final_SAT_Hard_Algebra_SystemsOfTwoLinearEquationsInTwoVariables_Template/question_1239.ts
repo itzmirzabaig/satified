@@ -5,14 +5,22 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1239
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [mass: 50g, percentages: 30%, 80%, 50%, final answer: 16g]
+ * - Number ranges: [masses in grams, integer silicon percentages, integer answer]
  * - Difficulty factors: [Word problem, mixture problem, system of equations]
- * - Distractor patterns: [Wrong piece mass, total silicon instead of piece silicon]
- * - Constraints: [System must have clean integer solution]
- * - Question type: [Figure+Table→Multiple Choice Text]
- * - Figure generation: [Graph showing the two lines intersecting]
+ * - Distractor patterns: [Piece mass, silicon of the other piece, total silicon]
+ * - Constraints: [System must have a clean integer solution and answer]
+ * - Question type: [Multiple choice text]
+ *
+ * REBUILD NOTES:
+ * The original produced float artifacts (e.g. 45.080000000000005) from
+ * `pTotal/100 * totalMass` and rounded silicon values, and its four distractors
+ * collided constantly (DUP_OPTIONS). Rebuilt with an all-integer construction:
+ * piece masses are multiples of 10 and percentages are multiples of 10, so every
+ * silicon quantity is an exact integer. A bounded retry (<=50) keeps only draws
+ * where the blended percentage pT is an integer and the four answer choices are
+ * pairwise distinct. The correct answer is the silicon MASS in the second piece.
  */
 
 export const generator_1239 = {
@@ -23,68 +31,81 @@ export const generator_1239 = {
     skill: "Systems Of Two Linear Equations In Two Variables",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
     let attempts = 0;
-    const maxAttempts = 100;
+    const maxAttempts = 50;
     let result: QuestionData | null = null;
-    
+
     while (attempts < maxAttempts && !result) {
       attempts++;
-      
-      const totalMass = getRandomInt(40, 60) * 2;
-      const p1 = getRandomInt(20, 40);
-      const p2 = getRandomInt(60, 90);
-      const pTotal = getRandomInt(45, 55);
-      
-      const yMass = (totalMass * (pTotal - p1)) / (p2 - p1);
-      const xMass = totalMass - yMass;
-      
-      if (yMass !== Math.floor(yMass) || xMass !== Math.floor(xMass) || yMass <= 0 || xMass <= 0) {
-        continue;
-      }
-      
-      const siliconSecond = Math.round((p2 / 100) * yMass * 10) / 10;
-      
-      // Calculate viewBox
-      const xMin = Math.floor(xMass / 5);
-      const xMax = Math.ceil(xMass / 2);
-      const yMin = Math.floor(yMass / 5);
-      const yMax = Math.ceil(yMass / 2);
-      
-      const distA = (p1 / 100 * xMass).toFixed(1);
-      const distB = siliconSecond.toFixed(1);
-      const distC = yMass.toFixed(1);
-      const distD = xMass.toFixed(1);
-      
+
+      // Piece masses (grams) as multiples of 10 -> keeps silicon integral.
+      const xMass = getRandomInt(3, 7) * 10;             // first piece
+      const yMass = getRandomInt(3, 7) * 10;             // second piece
+      if (xMass === yMass) continue;                     // want distinct masses
+
+      const totalMass = xMass + yMass;
+
+      // Silicon percentages as multiples of 10; first < second so pT sits between.
+      const p1 = getRandomElement([20, 30, 40]);         // first piece %
+      const p2 = getRandomElement([60, 70, 80, 90]);     // second piece %
+
+      // Silicon masses (grams) are exact integers because mass and % are tens.
+      const siliconFirst = (p1 * xMass) / 100;           // silicon in first piece
+      const siliconSecond = (p2 * yMass) / 100;          // silicon in second piece (ANSWER)
+      const siliconTotal = siliconFirst + siliconSecond; // silicon in whole sample
+
+      // Blended percentage must be an integer for a clean problem statement.
+      const pTotalTimes = siliconTotal * 100;            // = pTotal * totalMass
+      if (pTotalTimes % totalMass !== 0) continue;
+      const pTotal = pTotalTimes / totalMass;            // integer percent
+
+      // Four answer choices — must be pairwise distinct.
+      const correct = siliconSecond;                     // silicon mass in 2nd piece
+      const dPieceMass = yMass;                           // trap: the piece's mass
+      const dOtherSilicon = siliconFirst;                 // trap: silicon in 1st piece
+      const dTotalSilicon = siliconTotal;                 // trap: silicon in sample
+      const vals = [correct, dPieceMass, dOtherSilicon, dTotalSilicon];
+      if (new Set(vals).size !== 4) continue;            // reject collisions
+
       const optionsData = [
-        { text: parseFloat(distA).toString(), isCorrect: false },
-        { text: parseFloat(distB).toString(), isCorrect: true },
-        { text: parseFloat(distC).toString(), isCorrect: false },
-        { text: parseFloat(distD).toString(), isCorrect: false }
+        { text: String(correct), isCorrect: true },
+        { text: String(dPieceMass), isCorrect: false },
+        { text: String(dOtherSilicon), isCorrect: false },
+        { text: String(dTotalSilicon), isCorrect: false }
       ];
-      
+
       const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
         ...opt,
         letter: String.fromCharCode(65 + index)
       }));
-      
+
       const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
       const correctLetter = correctOption.letter;
-      
+
       result = {
-        questionText: `A sample of a certain alloy has a total mass of ${totalMass.toFixed(1)} grams and is ${pTotal}.0\\% silicon by mass. The sample was created by combining two pieces of different alloys. The first piece was ${p1}.0\\% silicon by mass and the second piece was ${p2}.0\\% silicon by mass. What was the mass, in grams, of the silicon in the second piece?`,
+        questionText:
+          `A sample of a certain alloy has a total mass of ${totalMass} grams and is ${pTotal}\\% silicon by mass. ` +
+          `The sample was formed by combining two pieces of different alloys. ` +
+          `The first piece was ${p1}\\% silicon by mass, and the second piece was ${p2}\\% silicon by mass. ` +
+          `What was the mass, in grams, of the silicon in the second piece?`,
         figureCode: null,
         options: shuffledOptions.map(o => ({ text: o.text })),
-        correctAnswer: parseFloat(distB).toString(),
-        explanation: `Choice ${correctLetter} is correct. The system $x + y = ${totalMass}$ and $${p1/100}x + ${p2/100}y = ${pTotal/100 * totalMass}$ yields $y = ${yMass}$. The silicon in the second piece is $${p2/100} \\\\times ${yMass} = ${siliconSecond}$ grams.`
+        correctAnswer: String(correct),
+        explanation:
+          `Choice ${correctLetter} is correct. Let $x$ and $y$ be the masses (in grams) of the first and second pieces. ` +
+          `The total mass gives $x + y = ${totalMass}$, and the silicon balance gives $${p1}x + ${p2}y = ${pTotal} \\times ${totalMass} = ${pTotalTimes}$ ` +
+          `(after multiplying each percentage-times-mass by 100). Solving the system gives $y = ${yMass}$ grams for the second piece. ` +
+          `Its silicon mass is ${p2}\\% of ${yMass}, which is $\\frac{${p2}}{100} \\times ${yMass} = ${correct}$ grams. ` +
+          `The choice ${dPieceMass} is the second piece's total mass, ${dOtherSilicon} is the silicon in the first piece, and ${dTotalSilicon} is the silicon in the entire sample.`
       };
     }
-    
+
     if (!result) {
       throw new Error('Failed to generate valid question after max attempts');
     }
-    
+
     return result;
   }
 };

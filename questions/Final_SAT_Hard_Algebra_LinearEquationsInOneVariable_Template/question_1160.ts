@@ -28,27 +28,21 @@ export const generator_1160 = {
     // Let y = c - dx, then a - by = e - fy
     // Solve: a - by = e - fy → fy - by = e - a → y(f - b) = e - a → y = (e-a)/(f-b)
     
-    let valid = false;
-    let a: number, b: number, c: number, d: number, e: number, f: number, y: number;
-    
-    while (!valid) {
-      a = getRandomInt(3, 8);
-      b = getRandomInt(5, 10);
-      c = getRandomInt(2, 6);
-      d = getRandomInt(3, 7);
-      e = getRandomInt(10, 20);
-      f = getRandomInt(b + 2, b + 5); // Ensure f ≠ b
-      
-      // Calculate y = (e - a)/(f - b)
-      const numerator = e - a;
-      const denominator = f - b;
-      
-      // Ensure integer solution
-      if (numerator % denominator === 0) {
-        y = numerator / denominator;
-        valid = true;
-      }
-    }
+    // Substituting y = c - dx turns  a - b y = e - f y  into
+    //   (f - b) y = e - a   =>   y = (e - a)/(f - b).
+    // f > b is enforced so (f - b) is a positive divisor. We then choose e
+    // ANSWER-FIRST so y is a clean positive integer with NO retry: within the
+    // window e in [10, 20] (11 values) there is always a value congruent to a
+    // modulo (f - b) because (f - b) <= 5, so (e - a) is divisible exactly.
+    const a = getRandomInt(3, 8);
+    const b = getRandomInt(5, 10);
+    const c = getRandomInt(2, 6);
+    const d = getRandomInt(3, 7);
+    const f = b + getRandomInt(2, 5);      // f > b  =>  f - b in [2, 5]
+    const m = f - b;
+    // smallest e >= 10 with (e - a) divisible by m (e stays <= 14 <= 20)
+    const e = 10 + (((a - 10) % m) + m) % m;
+    const y = (e - a) / m;                  // guaranteed positive integer
     
     const explanation = `To solve this problem, you can define a new variable for the repeating expression. Let $y = ${c} - ${d}x$. Then substitute $y$ into the equation:
 $${a} - ${b}y = ${e} - ${f}y$
@@ -63,12 +57,12 @@ $${f - b}y = ${e - a}$
 Divide by $${f - b}$:
 $y = ${y}$
 
-Since $y = ${c} - ${d}x$, the value of ${c} - ${d}x$ is $${y}$.`;
+Since $y = ${c} - ${d}x$, the value of ${c} - ${d}x is $${y}$.`;
     
     return {
-      questionText: `If ${a} - ${b}(${c} - ${d}x) = ${e} - ${f}(${c} - ${d}x), what is the value of ${c} - ${d}x?`,
+      questionText: `If $${a} - ${b}(${c} - ${d}x) = ${e} - ${f}(${c} - ${d}x)$, what is the value of $${c} - ${d}x$?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: y.toString(),
       explanation: explanation
     };

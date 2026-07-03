@@ -1,11 +1,11 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle, round } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 
 
 /**
  * Question 1423
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [14%, 4% (small percentages)]
  * - Difficulty factors: [Compound percentage growth, multiplicative vs additive thinking]
@@ -23,44 +23,48 @@ export const generator_1423 = {
     skill: "Percentages",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random percentages
-    const P1 = getRandomInt(8, 20); // First year increase
-    const P2 = getRandomInt(3, 12); // Second year increase
-    
-    // STEP 2: Calculate compound multiplier
-    const multiplier1 = 1 + P1 / 100;
-    const multiplier2 = 1 + P2 / 100;
-    const totalMultiplier = Math.round(multiplier1 * multiplier2 * 10000) / 10000;
-    
-    // STEP 3: Create distractors
-    const additiveError = Math.round((1 + (P1 + P2) / 100) * 10000) / 10000; // Wrong: additive
-    const multiplyPcts = Math.round((1 + (P1 * P2) / 10000) * 10000) / 10000; // Wrong: multiply pcts
-    const smallError = Math.round((1 + (P1 * P2) / 100) * 10000) / 10000; // Wrong calculation
-    
+    // Two successive percent increases compound multiplicatively:
+    //   y = (1 + P1/100)(1 + P2/100).
+    // P1, P2 are integers, so each factor has at most 2 decimals and the
+    // product has at most 4 decimals -> every value below is exact (no float
+    // artifacts) once rounded to 4 dp.
+    const P1 = getRandomInt(8, 20); // first-year increase
+    const P2 = getRandomInt(3, 12); // second-year increase
+
+    const multiplier1 = round(1 + P1 / 100, 2); // e.g. 1.14 (exact)
+    const multiplier2 = round(1 + P2 / 100, 2); // e.g. 1.05 (exact)
+    const totalMultiplier = round(multiplier1 * multiplier2, 4); // correct y
+
+    // Distractors (each a specific misconception), all rounded to 4 dp so no
+    // value can show a float artifact. Verified collision-free over the range.
+    const additiveError = round(1 + (P1 + P2) / 100, 4);   // add the percents
+    const multiplyPcts = round(1 + (P1 * P2) / 10000, 4);  // multiply the percents as decimals
+    const smallError = round(1 + (P1 * P2) / 100, 4);      // multiply the whole-number percents
+
     const optionsData = [
-      { text: smallError.toString(), isCorrect: false, reason: "results from incorrect multiplication" },
-      { text: multiplyPcts.toString(), isCorrect: false, reason: "results from multiplying percentages directly" },
-      { text: additiveError.toString(), isCorrect: false, reason: "results from adding percentages instead of compounding" },
+      { text: smallError.toString(), isCorrect: false, reason: "comes from multiplying the two whole-number percentages together" },
+      { text: multiplyPcts.toString(), isCorrect: false, reason: "comes from multiplying the two percentages as decimals" },
+      { text: additiveError.toString(), isCorrect: false, reason: "comes from adding the percentages instead of compounding them" },
       { text: totalMultiplier.toString(), isCorrect: true, reason: "" }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect);
     const correctLetter = correctOption?.letter || 'D';
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
     return {
-      questionText: `In $2008$, Zinah earned ${P1}% more than in $2007$, and in $2009$ Zinah earned ${P2}% more than in $2008$. If Zinah earned $y$ times as much in $2009$ as in $2007$, what is the value of $y$?`,
+      questionText: `In 2008, an employee earned ${P1}% more than in 2007, and in 2009 the employee earned ${P2}% more than in 2008. If the employee earned $y$ times as much in 2009 as in 2007, what is the value of $y$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: totalMultiplier.toString(),
-      explanation: `Choice ${correctLetter} is correct. Let earnings in 2007 be $x$. Then 2008 earnings = ${multiplier1}x$, and 2009 earnings = ${multiplier2}(${multiplier1}x) = ${totalMultiplier}x$. Thus $y = ${totalMultiplier}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Let the 2007 earnings be $x$. Increasing by ${P1}% makes the 2008 earnings $(${multiplier1})x$, and increasing that by a further ${P2}% makes the 2009 earnings $(${multiplier2})(${multiplier1})x = ${totalMultiplier}x$. So $y = ${totalMultiplier}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

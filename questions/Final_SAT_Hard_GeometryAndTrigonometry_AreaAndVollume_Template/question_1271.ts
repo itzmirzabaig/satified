@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -23,28 +23,25 @@ export const generator_1271 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate scale factor and areas
+    // STEP 1: Generate scale factor and areas.
+    // The smaller triangle's area is chosen first as a whole number, and the
+    // larger triangle's area is built as smallerArea · k². This guarantees the
+    // answer (largerArea / k² = smallerArea) is always an exact integer, so the
+    // fill-in answer is a single plain number.
     const scaleFactor = getRandomInt(3, 6);
     const smallerArea = getRandomInt(50, 150);
-    const largerArea = smallerArea * scaleFactor * scaleFactor;
-    
-    // STEP 2: Format answer as fraction and decimal
-    // Area of DEF = Area of ABC / scaleFactor²
-    const answer = largerArea / (scaleFactor * scaleFactor);
-    
-    const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
-    const simplifiedNum = largerArea / gcd(largerArea, scaleFactor * scaleFactor);
-    const simplifiedDen = (scaleFactor * scaleFactor) / gcd(largerArea, scaleFactor * scaleFactor);
-    
-    const simplifiedFraction = simplifiedDen === 1 ? simplifiedNum.toString() : `${simplifiedNum}/${simplifiedDen}`;
-    const decimalAnswer = (largerArea / (scaleFactor * scaleFactor)).toFixed(2);
-    
+    const areaScale = scaleFactor * scaleFactor;
+    const largerArea = smallerArea * areaScale;
+
+    // Area of DEF = Area of ABC / scaleFactor² = smallerArea (exact integer).
+    const answer = smallerArea;
+
     return {
-      questionText: `Triangles $ABC$ and $DEF$ are similar. Each side length of triangle $ABC$ is $${scaleFactor}$ times the corresponding side length of triangle $DEF$. The area of triangle $ABC$ is $${largerArea}$ square inches. What is the area, in square inches, of triangle $DEF$?`,
+      questionText: `Triangles $ABC$ and $DEF$ are similar. Each side length of triangle $ABC$ is ${scaleFactor} times the corresponding side length of triangle $DEF$. The area of triangle $ABC$ is ${largerArea} square inches. What is the area, in square inches, of triangle $DEF$?`,
       figureCode: null,
-      options: null,
-      correctAnswer: `${simplifiedFraction}, ${decimalAnswer}, ${Math.round(answer * 100) / 100}`,
-      explanation: `Since the linear scale factor is $${scaleFactor}$, the area scale factor is $${scaleFactor}^2 = ${scaleFactor * scaleFactor}$. The area of $DEF$ is $\\frac{${largerArea}}{${scaleFactor * scaleFactor}} = ${simplifiedFraction} = ${decimalAnswer}$ square inches (or equivalent).`
+      options: [],
+      correctAnswer: answer.toString(),
+      explanation: `When two figures are similar with linear scale factor $k$, their areas are in the ratio $k^2$. Here $k = ${scaleFactor}$, so the area scale factor is $k^2 = ${areaScale}$. Triangle $ABC$ is the larger triangle, so the area of triangle $DEF$ is $\\dfrac{${largerArea}}{${areaScale}} = ${answer}$ square inches.`
     };
   }
 };

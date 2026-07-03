@@ -1,15 +1,26 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1361
- * 
- * ORIGINAL ANALYSIS:
- * - Number ranges: [perimeter: 624, equilateral triangle circumscribed about circle]
- * - Difficulty factors: [Equilateral triangle height formula, solving for k in k√3]
- * - Constraints: [Height = (s/2)√3 where s is side length]
- * - Question type: [Figure→Fill in the blank]
- * - Figure generation: [Equilateral triangle with height labeled k√3]
+ *
+ * Equilateral triangle with perimeter P, so side s = P/3. The height of an
+ * equilateral triangle is h = (s/2)·√3. The height is given as k√3, so
+ * k = s/2 = P/6. The student solves for k (fill-in).
+ *
+ * Construction: pick k in [50,150], set side = 2k and perimeter = 6k, so k is
+ * always a clean integer and k = side/2 = perimeter/6.
+ *
+ * FIXES (was TEMPLATE_LEFTOVER):
+ * - The legacy figure was a nested-IIFE scatter frame with meaningless axes; it
+ *   also leaked a literal `${side` (inside single quotes) and a broken `ksqrt{3`
+ *   label. Rebuilt as a plain SVG equilateral triangle with a dashed altitude,
+ *   a right-angle marker, the base labeled with the side length, and the height
+ *   labeled k√3 — matching the question's live values.
+ * - Collapsed quadruple backslashes (\\\\sqrt, \\\\frac) to single-rendered
+ *   \\sqrt / \\frac in the question text and explanation.
+ * - Reworded the explanation so no math segment opens on a digit (clears
+ *   DOLLAR_RISK): side and k steps lead with $s$ / $k$.
  */
 
 export const generator_1361 = {
@@ -20,59 +31,43 @@ export const generator_1361 = {
     skill: "Right Triangles And Trigonometry",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // Original: Perimeter = 624, side = 208, height = 104√3, so k = 104
-    // Height of equilateral triangle = s√3/2 = (s/2)√3
-    
-    // Generate perimeter divisible by 6 for clean k value
     const k = getRandomInt(50, 150);
     const side = 2 * k;
-    const perimeter = 3 * side;
-    
-    const height = k * Math.sqrt(3);
-    
-    const _svg_0 = height + 20; const _svg_1 = side + 20;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-10,xmax=_svg_1;
-      const ymin=-10,ymax=_svg_0;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;
-    })()}${(() => {
-      const xmin=-10,xmax=(side + 20);
-      const ymin=-10,ymax=(height + 20);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((side / 2))+'" y1="'+my(0)+'" x2="'+mx((side / 2))+'" y2="'+my((height))+'" stroke="currentColor" stroke-width="2"/>';
-    })()}${(() => {
-      const xmin=-10,xmax=(side + 20);
-      const ymin=-10,ymax=(height + 20);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((side / 2))+'" y="'+my((height + 5))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">ksqrt{3</text>';
-    })()}${(() => {
-      const xmin=-10,xmax=(side + 20);
-      const ymin=-10,ymax=(height + 20);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((side / 2))+'" y="'+my(-8)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">${side</text>';
-    })()}</svg></div>`;
+    const perimeter = 3 * side; // = 6k
+
+    // Figure: a schematic equilateral triangle drawn with true equilateral
+    // proportions in screen coordinates (height = base * sqrt(3)/2), with the
+    // altitude drawn and labeled k√3 and the base labeled with the side length.
+    const W = 420, H = 300;
+    const baseLen = 260;                 // on-screen base length (px)
+    const triH = baseLen * Math.sqrt(3) / 2; // on-screen height (px)
+    const cx = W / 2;
+    const baseY = 40 + triH;             // y of the base
+    const apexY = 40;                    // y of the apex
+    const leftX = cx - baseLen / 2;
+    const rightX = cx + baseLen / 2;
+
+    const figureCode = `
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:420px;height:auto;display:block;margin:0 auto;font-family:sans-serif;">
+        <polygon points="${leftX},${baseY} ${rightX},${baseY} ${cx},${apexY}"
+          fill="#3b82f6" fill-opacity="0.08" stroke="currentColor" stroke-width="2" />
+        <line x1="${cx}" y1="${apexY}" x2="${cx}" y2="${baseY}"
+          stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4" />
+        <polyline points="${cx - 12},${baseY} ${cx - 12},${baseY - 12} ${cx},${baseY - 12}"
+          fill="none" stroke="currentColor" stroke-width="1.2" />
+        <text x="${cx + 10}" y="${(apexY + baseY) / 2}" text-anchor="start" font-size="15" font-style="italic" fill="currentColor">k&#8730;3</text>
+        <text x="${cx}" y="${baseY + 22}" text-anchor="middle" font-size="14" fill="currentColor">${side} cm</text>
+      </svg>
+    `;
 
     return {
-      questionText: `The perimeter of an equilateral triangle is ${perimeter} centimeters. The height of this triangle is $k \\\\sqrt{3}$ centimeters, where $k$ is a constant. What is the value of $k$?`,
-      figureCode: mafsCode,
+      questionText: `The perimeter of an equilateral triangle is ${perimeter} centimeters. The height of this triangle is $k\\sqrt{3}$ centimeters, where $k$ is a constant. What is the value of $k$?`,
+      figureCode,
       options: null, // Fill in the blank
       correctAnswer: k.toString(),
-      explanation: `Perimeter is ${perimeter}, so each side is $${perimeter}/3 = ${side}$ cm. The height of an equilateral triangle is $\\\\frac{s}{2}\\\\sqrt{3}$. Here, height $= \\\\frac{${side}}{2}\\\\sqrt{3} = ${k}\\\\sqrt{3}$. Thus, $k = ${k}$.`
+      explanation: `An equilateral triangle has three equal sides, so each side is $s = \\frac{${perimeter}}{3} = ${side}$ centimeters. The height of an equilateral triangle with side $s$ is $\\frac{s}{2}\\sqrt{3}$. Substituting the side length, the height is $\\frac{${side}}{2}\\sqrt{3} = ${k}\\sqrt{3}$ centimeters. Since the height is given as $k\\sqrt{3}$, it follows that $k = ${k}$.`
     };
   }
 };

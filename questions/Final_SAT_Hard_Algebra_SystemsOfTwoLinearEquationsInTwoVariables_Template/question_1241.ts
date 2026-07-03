@@ -1,18 +1,31 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
-import type { QuestionData } from '../../types';
-
-
+import { getRandomInt } from '../../utils/math';
+import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1241
- * 
- * ORIGINAL ANALYSIS:
- * - Number ranges: [coefficients: 10/7, p, -7, constants: -6/7, 11/7]
- * - Difficulty factors: [No solution, parameter identification]
- * - Distractor patterns: [None - fill in blank]
- * - Constraints: [p must make lines parallel]
- * - Question type: [Figure→Fill in blank]
- * - Figure generation: [Two parallel lines]
+ * Skill: Systems Of Two Linear Equations In Two Variables
+ * Difficulty: Hard
+ *
+ * Intent (from original analysis):
+ * - System in variables w and r with a constant p.
+ * - The system has NO SOLUTION -> the two lines are parallel but distinct.
+ * - Fill-in-the-blank: find the value of p.
+ *
+ * Math:
+ *   eq1:  p*w - den*r = b1
+ *   eq2:  num*w - den*r = c2
+ *   Both equations share the r-coefficient (-den), so parallel-lines
+ *   requires the w-coefficients to match: p/num = (-den)/(-den) = 1  =>  p = num.
+ *   Distinct (no solution, not infinitely many) requires b1 != c2, which is
+ *   guaranteed by constructing c2 = b1 + positive offset.
+ *
+ * Fixes vs. corrupted original:
+ * - Repaired import path (../../study/types).
+ * - eq1 now shows the literal symbol p (was hard-coded to the numeric answer).
+ * - Rebuilt the figure as a plain SVG template literal (was broken nested IIFEs
+ *   with `const y = ((num);` syntax errors that failed to import). Figure now
+ *   draws the two genuinely parallel lines from the live coefficients.
+ * - Removed dangling duplicate comment block at end of file.
  */
 
 export const generator_1241 = {
@@ -23,98 +36,72 @@ export const generator_1241 = {
     skill: "Systems Of Two Linear Equations In Two Variables",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    const num = getRandomInt(8, 15);
+    // Shared r-coefficient (den) forces p = num for parallel lines.
     const den = getRandomInt(5, 9);
-    
-    const b1 = getRandomInt(2, 8);
-    const c2 = getRandomInt(5, 15);
-    
+    const num = getRandomInt(8, 15);   // coefficient of w in eq2  => p = num
     const p_answer = num;
-    
-    // Calculate viewBox
-    const xMin = -5;
-    const xMax = 5;
-    const yMin = -5;
-    const yMax = 5;
-    
-    const _svg_0 = yMax; const _svg_1 = yMin; const _svg_2 = xMax; const _svg_3 = xMin;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="transparent"/>${(() => {
-      const xmin=_svg_3, xmax=_svg_2;
-      const ymin=_svg_1, ymax=_svg_0;
-      const W=400, H=300, P=40;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      if(ymin<=0&&ymax>=0) s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      if(xmin<=0&&xmax>=0) s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // Grid lines
-      for(let x=Math.ceil(xmin); x<=Math.floor(xmax); x++) {
-        if(x===0) continue;
-        s+='<line x1="'+mx(x)+'" y1="'+P+'" x2="'+mx(x)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>';
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      for(let y=Math.ceil(ymin); y<=Math.floor(ymax); y++) {
-        if(y===0) continue;
-        s+='<line x1="'+P+'" y1="'+my(y)+'" x2="'+(W-P)+'" y2="'+my(y)+'" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>';
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${
-    (() => {
-      const pts = [];
-      const xmin = (xMin);
-      const xmax = (xMax);
-      const ymin = (yMin);
-      const ymax = (yMax);
-      const W = 400, H = 300, P = 40;
-      const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
-      const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
-      for(let x=xmin; x<=xmax; x+=(xmax-xmin)/100) {
-        const y = ((num);
-        if(y>=ymin-1 && y<=ymax+1) pts.push(mx(x)+','+my(y));
-      }
-      return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="currentColor" stroke-width="2"/>';
-    })()}${
-    (() => {
-      const pts = [];
-      const xmin = (xMin);
-      const xmax = (xMax);
-      const ymin = (yMin);
-      const ymax = (yMax);
-      const W = 400, H = 300, P = 40;
-      const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
-      const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
-      for(let x=xmin; x<=xmax; x+=(xmax-xmin)/100) {
-        const y = ((num);
-        if(y>=ymin-1 && y<=ymax+1) pts.push(mx(x)+','+my(y));
-      }
-      return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="currentColor" stroke-width="2"/>';
-    })()}</svg></div>`;
-    
-    const eq1 = `${p_answer}w - ${den}r = ${b1}`;
+
+    // Constants: keep them distinct so the lines are parallel-but-not-identical
+    // (no solution). Constructing c2 above b1 guarantees b1 !== c2.
+    const b1 = getRandomInt(2, 6);
+    const c2 = b1 + getRandomInt(4, 9); // c2 in [6, 15], always > b1
+
+    const eq1 = `pw - ${den}r = ${b1}`;
     const eq2 = `${num}w - ${den}r = ${c2}`;
-    
+
+    // ── Figure: two parallel lines r = (num*w - b1)/den and r = (num*w - c2)/den ──
+    const W = 450, H = 250, P = 40;
+    const xMin = -6, xMax = 6, yMin = -6, yMax = 6;
+    const mx = (x: number) => P + (x - xMin) / (xMax - xMin) * (W - 2 * P);
+    const my = (y: number) => H - P - (y - yMin) / (yMax - yMin) * (H - 2 * P);
+
+    // Build a clipped polyline for r as a function of w over [xMin, xMax].
+    const lineFor = (rhs: number): string => {
+      const pts: string[] = [];
+      const steps = 100;
+      for (let i = 0; i <= steps; i++) {
+        const x = xMin + (xMax - xMin) * (i / steps);
+        const y = (num * x - rhs) / den;
+        if (y >= yMin && y <= yMax) pts.push(`${mx(x).toFixed(1)},${my(y).toFixed(1)}`);
+      }
+      return pts.length
+        ? `<polyline points="${pts.join(' ')}" fill="none" stroke="#3b82f6" stroke-width="2.5"/>`
+        : '';
+    };
+
+    // Grid lines + axis tick labels.
+    let grid = '';
+    for (let x = xMin; x <= xMax; x++) {
+      if (x === 0) continue;
+      grid += `<line x1="${mx(x).toFixed(1)}" y1="${P}" x2="${mx(x).toFixed(1)}" y2="${H - P}" stroke="currentColor" stroke-width="0.4" stroke-dasharray="2,3" opacity="0.35"/>`;
+      grid += `<text x="${mx(x).toFixed(1)}" y="${(my(0) + 14).toFixed(1)}" text-anchor="middle" font-size="9" fill="currentColor">${x}</text>`;
+    }
+    for (let y = yMin; y <= yMax; y++) {
+      if (y === 0) continue;
+      grid += `<line x1="${P}" y1="${my(y).toFixed(1)}" x2="${W - P}" y2="${my(y).toFixed(1)}" stroke="currentColor" stroke-width="0.4" stroke-dasharray="2,3" opacity="0.35"/>`;
+      grid += `<text x="${(mx(0) - 8).toFixed(1)}" y="${(my(y) + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="currentColor">${y}</text>`;
+    }
+
+    const figureCode = `<div style="width:100%;max-width:450px;margin:0 auto;">` +
+      `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;font-family:sans-serif;" xmlns="http://www.w3.org/2000/svg">` +
+      `<rect width="${W}" height="${H}" fill="transparent"/>` +
+      grid +
+      `<line x1="${P}" y1="${my(0).toFixed(1)}" x2="${W - P}" y2="${my(0).toFixed(1)}" stroke="currentColor" stroke-width="1.5"/>` +
+      `<line x1="${mx(0).toFixed(1)}" y1="${P}" x2="${mx(0).toFixed(1)}" y2="${H - P}" stroke="currentColor" stroke-width="1.5"/>` +
+      `<text x="${W - P + 6}" y="${(my(0) + 3).toFixed(1)}" font-size="10" fill="currentColor">w</text>` +
+      `<text x="${(mx(0) + 6).toFixed(1)}" y="${P - 6}" font-size="10" fill="currentColor">r</text>` +
+      lineFor(b1) +
+      lineFor(c2) +
+      `</svg></div>`;
+
     return {
       questionText: `In the given system of equations, $p$ is a constant. If the system has no solution, what is the value of $p$? $$${eq1}$$ $$${eq2}$$`,
-      figureCode: mafsCode,
-      options: null,
+      figureCode,
+      options: [],
       correctAnswer: p_answer.toString(),
-      explanation: `For no solution, the lines must be parallel. In standard form, the coefficients must be proportional. The ratio of r-coefficients is $\\frac{-${den}}{-${den}} = 1$, so the ratio of w-coefficients must also be 1. Therefore $\\frac{p}{${num}} = 1$, which gives $p = ${p_answer}$.`
+      explanation: `For a system of two linear equations to have no solution, the lines must be parallel: the $w$- and $r$-coefficients are proportional while the constants are not. Both equations already have the same $r$-coefficient $(-${den})$, so the $w$-coefficients must be equal as well. Setting $\\frac{p}{${num}} = \\frac{-${den}}{-${den}} = 1$ gives $p = ${p_answer}$. With $p = ${p_answer}$ the two equations are $${num}w - ${den}r = ${b1}$ and $${num}w - ${den}r = ${c2}$, which are parallel and distinct (since $${b1} \\ne ${c2}$), so the system has no solution.`
     };
   }
 };
-
-/**
- * Question 1241
- * 
- * ORIGINAL ANALYSIS:
- * - Number ranges: [coefficients: 5, 14, 10, 7, constants: 45, 27, answer: 9/5]
- * - Difficulty factors: [Finding xy product, not individual values]
- * - Distractor patterns: [None - fill in blank]
- * - Constraints: [Solution must give clean fraction for xy]
- * - Question type: [Figure→Fill in blank]
- * - Figure generation: [Two lines intersecting]
- */

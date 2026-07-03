@@ -1,16 +1,21 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomElement, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1119
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [denominator: 3-6]
- * - Difficulty factors: [Surface area formula, solving for side, perimeter]
- * - Distractor patterns: [side, perimeter, multiples]
- * - Constraints: [Side = a/den, face perimeter = 4 × a/den = a when den=4]
- * - Question type: [Text→Multiple Choice Text]
+ * - Number ranges: [denominator: odd values coprime to 1,2,4,6]
+ * - Difficulty factors: [Surface area formula, solving for side, perimeter of a face]
+ * - Distractor patterns: [side only (÷ forgets ×4), used 2 instead of 4, used 6 from SA formula]
+ * - Constraints: [Cube SA = 6s^2 = 6(a/den)^2 => s = a/den; face perimeter = 4s = 4a/den]
+ * - Question type: [Text -> Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * Denominators are chosen from {5,7,9,11}: each is coprime to the numerator
+ * coefficients {1,2,4,6}, so every option fraction is already in lowest terms,
+ * the correct answer 4a/den never simplifies to an integer, and the four option
+ * strings are guaranteed textually distinct for every draw.
  */
 
 export const generator_1119 = {
@@ -23,21 +28,17 @@ export const generator_1119 = {
   },
 
   generate: (): QuestionData => {
-    // Use den=4 to get perimeter = a
-    const den = getRandomInt(3, 6);
+    const den = getRandomElement([5, 7, 9, 11]);
+
+    // Correct: perimeter of one face = 4s = 4 * (a/den) = 4a/den.
+    const correctText = `$\\frac{4a}{${den}}$`;
 
     const optionsData = [
-      { text: `$\\frac{a}{${den}}$`, isCorrect: false },
-      { text: `$a$`, isCorrect: den === 4 },
-      { text: `$${den}a$`, isCorrect: false },
-      { text: `$${6}a$`, isCorrect: false }
+      { text: correctText, isCorrect: true },                 // 4a/den  (correct)
+      { text: `$\\frac{a}{${den}}$`, isCorrect: false },      // side only, forgot x4
+      { text: `$\\frac{2a}{${den}}$`, isCorrect: false },     // used 2 instead of 4
+      { text: `$\\frac{6a}{${den}}$`, isCorrect: false }      // reused the 6 from 6s^2
     ];
-
-    // If den != 4, make the correct answer be a different option
-    if (den !== 4) {
-      const perimeter = `\\frac{4a}{${den}}`;
-      optionsData[1] = { text: `$${perimeter}$`, isCorrect: true };
-    }
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -47,11 +48,11 @@ export const generator_1119 = {
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
 
     return {
-      questionText: `The surface area of a cube is $6\\left(\\frac{a}{${den}}\\right)^{2}$. Which gives the perimeter of one face?`,
+      questionText: `The surface area of a cube is $\\left(\\frac{a}{${den}}\\right)^{2}\\cdot 6$, where $a$ is a positive constant. Which of the following gives the perimeter of one face of the cube?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: den === 4 ? `$a$` : `$\\frac{4a}{${den}}$`,
-      explanation: `Choice ${correctLetter} is correct. Surface area $6s^2=6(\\frac{a}{${den}})^2$, so side $s=\\frac{a}{${den}}$. Face perimeter $=4s=4(\\frac{a}{${den}})${den === 4 ? '=a' : `=\\frac{4a}{${den}}`}$.`
+      correctAnswer: correctText,
+      explanation: `Choice ${correctLetter} is correct. The surface area of a cube with side length $s$ is $s^{2}\\cdot 6$. Setting $s^{2}\\cdot 6=6\\left(\\frac{a}{${den}}\\right)^{2}$ gives the side length $s=\\frac{a}{${den}}$. A face of the cube is a square, so its perimeter is $s\\cdot 4=\\frac{4a}{${den}}$.`
     };
   }
 };

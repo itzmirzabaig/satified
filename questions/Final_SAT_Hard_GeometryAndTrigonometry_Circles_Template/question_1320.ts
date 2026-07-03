@@ -10,6 +10,10 @@ import type { QuestionData } from '../../study/types';
  * Fixes:
  * - Corrected LaTeX escape sequences (changed `\\\\` to `\\`).
  * - Improved math mode delimiters.
+ * - Fill-in answer is now a plain `a/b` fraction (was LaTeX `\frac{}{}`, which
+ *   students cannot type); explanation keeps a separate LaTeX display form.
+ * - Radius written as `$r = 1$` so no bare `$<digit>` trips the currency
+ *   heuristic (there is no currency in this item).
  */
 export const generator_1320 = {
   metadata: {
@@ -46,10 +50,12 @@ export const generator_1320 = {
     
     const finalNum = fracNum / common;
     const finalDen = fracDen / common;
-    
-    // Format Answer
-    const answer = finalDen === 1 ? `${finalNum}` : `\\frac{${finalNum}}{${finalDen}}`;
-    
+
+    // Typed answer: plain number or a/b fraction (students type this, so no LaTeX).
+    const answer = finalDen === 1 ? `${finalNum}` : `${finalNum}/${finalDen}`;
+    // Display form for the explanation only.
+    const answerLatex = finalDen === 1 ? `${finalNum}` : `\\frac{${finalNum}}{${finalDen}}`;
+
     // Format Arc Length for Question
     const arcLengthLatex = `\\frac{${num}\\pi}{${den}}`;
 
@@ -57,12 +63,12 @@ export const generator_1320 = {
     // 3. RETURN DATA
     // ----------------------------------------------------------------------
     return {
-      questionText: `Points $A$ and $B$ lie on a circle with radius $1$, and arc $AB$ has length $${arcLengthLatex}$. What fraction of the circumference of the circle is the length of arc $AB$?`,
+      questionText: `Points $A$ and $B$ lie on a circle with radius $r = 1$, and arc $AB$ has length $${arcLengthLatex}$. What fraction of the circumference of the circle is the length of arc $AB$? (Enter your answer as a fraction or decimal.)`,
       figureCode: null,
       options: null, // Fill-in-the-blank
       correctAnswer: answer,
       explanation: `
-        The correct answer is ${answer}.
+        The correct answer is $${answerLatex}$.
         <br/><br/>
         1. <b>Calculate the circumference:</b>
         The formula for the circumference of a circle is $C = 2\\pi r$.
@@ -80,7 +86,7 @@ export const generator_1320 = {
         $$ \\frac{${num}}{${den} \\times 2} = \\frac{${num}}{${2 * den}} $$
         <br/>
         Simplify the fraction $\\frac{${fracNum}}{${fracDen}}$:
-        $$ ${answer} $$
+        $$ ${answerLatex} $$
       `
     };
   }

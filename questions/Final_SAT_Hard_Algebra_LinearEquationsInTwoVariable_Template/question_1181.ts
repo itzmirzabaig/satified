@@ -24,10 +24,16 @@ export const generator_1181 = {
   generate: (): QuestionData => {
     // 1. Generate Coefficients for Ax + By = C
     // To ensure nice integer intercepts, C must be a multiple of A and B.
+    // A and B MUST differ: the "swapped coefficients" distractor (Bx + Ay = C)
+    // becomes identical to the correct equation when A === B, so resample B
+    // (bounded) until it differs from A.
     const A = getRandomInt(2, 6);
-    const B = getRandomInt(2, 6);
-    const factor = getRandomInt(2, 4); 
-    const C = A * B * factor; // e.g. if A=3, B=4, factor=2 -> C=24. 
+    let B = getRandomInt(2, 6);
+    let tries = 0;
+    while (B === A && tries++ < 50) B = getRandomInt(2, 6);
+    if (B === A) B = A === 6 ? 2 : A + 1; // deterministic fallback, still in [2,6]
+    const factor = getRandomInt(2, 4);
+    const C = A * B * factor; // e.g. if A=3, B=4, factor=2 -> C=24.
 
     // Intercepts
     const xInt = C / A; // 24/3 = 8
@@ -59,6 +65,12 @@ export const generator_1181 = {
     }));
     
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+
+    // Letters for each distractor (only known after the shuffle).
+    const letterOf = (t: string) => shuffledOptions.find(o => o.text === t)!.letter;
+    const letter1 = letterOf(`$${dist1}$`);
+    const letter2 = letterOf(`$${dist2}$`);
+    const letter3 = letterOf(`$${dist3}$`);
 
     // 3. Build SVG Graph
     // Define bounds
@@ -132,19 +144,19 @@ export const generator_1181 = {
 
     // 4. Explanation
     const explanation = `
-      The graph shows a line passing through the y-intercept $(0, ${yInt})$ and the x-intercept $(${xInt}, 0)$.
-      <br/><br/>
-      We can test which equation is satisfied by these points.
+      Choice ${correctOption.letter} is correct.
       <br/>
-      Test the point $(0, ${yInt})$ in the equation $${correctEq}$:
+      The graph shows a line passing through the $y$-intercept $(0, ${yInt})$ and the $x$-intercept $(${xInt}, 0)$. The correct equation must be satisfied by both points.
+      <br/><br/>
+      Test the point $(0, ${yInt})$ in $${correctEq}$:
       $$ ${A}(0) + ${B}(${yInt}) = 0 + ${B * yInt} = ${C} $$
-      This is correct.
-      <br/><br/>
-      Test the point $(${xInt}, 0)$ in the equation $${correctEq}$:
+      Test the point $(${xInt}, 0)$ in $${correctEq}$:
       $$ ${A}(${xInt}) + ${B}(0) = ${A * xInt} + 0 = ${C} $$
-      This is also correct.
+      Both points satisfy $${correctEq}$, so this is the equation of the line.
       <br/><br/>
-      Therefore, the equation of the line is $${correctEq}$.
+      Choice ${letter1} ($${dist1}$) flips the sign of the $y$-term; the point $(0, ${yInt})$ gives $-${B}(${yInt}) = ${-(B * yInt)} \\ne ${C}$.
+      Choice ${letter2} ($${dist2}$) swaps the coefficients of $x$ and $y$; the $x$-intercept $(${xInt}, 0)$ gives $${B}(${xInt}) = ${B * xInt} \\ne ${C}$.
+      Choice ${letter3} ($${dist3}$) uses the wrong constant, $${C * 2}$ instead of $${C}$.
     `;
     
     return {

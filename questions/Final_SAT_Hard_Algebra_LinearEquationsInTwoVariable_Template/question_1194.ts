@@ -46,13 +46,33 @@ export const generator_1194 = {
     const yInt = s / rateB; // Max hours for Job B
 
     // 4. Options
+    // correctVal = s. Two axis-swap distractors that a student gets by pairing
+    // one job's max hours with the OTHER job's rate. Writing them out:
+    //   correctVal = s            = mult * (rateA*rateB) / gcd
+    //   dist1 = rateB * xInt      = mult * rateB^2    / gcd
+    //   dist2 = rateA * yInt      = mult * rateA^2    / gcd
+    // Because rateA != rateB (both positive) the three products
+    // rateA*rateB, rateB^2, rateA^2 are pairwise distinct, so correctVal,
+    // dist1 and dist2 are pairwise distinct for every draw.
     const correctVal = s;
-    // Distractor: RateA * yInt (Mixing up axes)
-    const dist1 = rateA * yInt;
-    // Distractor: RateB * xInt (Mixing up axes)
-    const dist2 = rateB * xInt;
-    // Distractor: Sum of rates * sum of intercepts (Nonsense)
-    const dist3 = (rateA + rateB) * 10;
+    const dist1 = rateB * xInt; // used Job B's rate with Job A's hours
+    const dist2 = rateA * yInt; // used Job A's rate with Job B's hours
+
+    // 4th distractor: pick the first positive candidate that does not collide
+    // with the three values above. The primary candidate is xInt*yInt (a common
+    // "multiply the two intercepts" error). The deterministic fallbacks below
+    // guarantee a distinct 4th option for every draw in the declared ranges
+    // (verified by exhaustive sweep of rateA,rateB in 10..25 and mult in 3..8).
+    const taken = new Set([correctVal, dist1, dist2]);
+    const candidates = [
+      xInt * yInt,
+      s + rateA,
+      s + rateB,
+      s + gcd(rateA, rateB),
+      s + rateA + rateB,
+    ];
+    let dist3 = candidates.find(c => c > 0 && !taken.has(c));
+    if (dist3 === undefined) dist3 = s + rateA * rateB; // unreachable safety net
 
     const optionsData = [
       { text: `$${correctVal}$`, isCorrect: true },
@@ -133,7 +153,7 @@ export const generator_1194 = {
 
     // 6. Explanation
     return {
-      questionText: `Avery earns ${rateA} per hour at Job A and ${rateB} per hour at Job B. The graph represents all combinations of hours Avery can work to earn a total of $s$ dollars. What is the value of $s$?`,
+      questionText: `A student earns \\$${rateA} per hour at Job A and \\$${rateB} per hour at Job B. The graph represents all combinations of hours the student can work to earn a total of $s$ dollars. What is the value of $s$?`,
       figureCode: finalFigure,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
@@ -143,12 +163,13 @@ export const generator_1194 = {
         1. <strong>Identify an intercept:</strong>
         Look at the x-intercept $(${xInt}, 0)$. This point represents working ${xInt} hours at Job A and 0 hours at Job B.
         <br/>
-        2. <strong>Calculate total earnings ($s$):</strong>
-        Since Avery works only at Job A in this scenario, multiply the hours by the rate for Job A ($${rateA}/hr):
-        $$ s = (\\text{Hours}_A) \\times (\\text{Rate}_A) $$
-        $$ s = ${xInt} \\times ${rateA} = ${s} $$
+        2. <strong>Calculate total earnings $s$:</strong>
+        In this scenario the student works only at Job A, so multiply the hours by the Job A rate of \\$${rateA} per hour:
+        $$ s = \\text{Hours}_A \\times \\text{Rate}_A = ${xInt} \\times ${rateA} = ${s} $$
         <br/>
-        (You can verify this with the y-intercept: $${yInt} \\text{ hours} \\times $${rateB}/\\text{hr} = $${yInt * rateB}$, which also equals $${s}$.)
+        You can verify this with the y-intercept $(0, ${yInt})$: working only at Job B gives
+        $$ ${yInt} \\times ${rateB} = ${yInt * rateB}, $$
+        which also equals $s$. So the value of $s$ is $s = ${s}$.
       `
     };
   }

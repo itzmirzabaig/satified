@@ -1,14 +1,14 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, round } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1390
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [Andrew: 6 rocks, Maria: 6 rocks with unknown x, mean difference 0.1 kg]
- * - Difficulty factors: [Setting up equation from means, solving for unknown]
- * - Distractor patterns: [N/A - fill in blank]
- * - Constraints: [Maria's mean = Andrew's mean + 0.1, solve for x]
+ * - Number ranges: [two students, six rocks each, one mass unknown (x), mean difference 0.1–0.3 kg]
+ * - Difficulty factors: [Setting up equation from means, solving for the unknown mass]
+ * - Distractor patterns: [N/A - fill in the blank]
+ * - Constraints: [second student's mean = first student's mean + difference; solve for x]
  * - Question type: [Table→Fill in the blank]
  */
 
@@ -20,79 +20,76 @@ export const generator_1390 = {
     skill: "Onevariable Data Distributions And Measures Of Center And Spread",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate Andrew's rocks (6 values)
-    let valid = false;
-    let andrewValues: number[] = [];
-    let mariaValues: number[] = [];
-    let x = 0;
-    let attempts = 0;
-    
-    while (!valid && attempts < 100) {
-      andrewValues = Array.from({length: 6}, () => getRandomInt(20, 50) / 10); // 2.0 to 5.0
-      
-      // STEP 2: Calculate Andrew's mean
-      const andrewSum = andrewValues.reduce((a, b) => a + b, 0);
-      const andrewMean = andrewSum / 6;
-      
-      // STEP 3: Determine target mean for Maria
-      const meanDifference = getRandomInt(1, 3) / 10; // 0.1 to 0.3
-      const targetMariaMean = andrewMean + meanDifference;
-      
-      // STEP 4: Generate 5 of Maria's rocks and calculate x
-      mariaValues = Array.from({length: 5}, () => getRandomInt(25, 45) / 10);
-      const mariaSumWithoutX = mariaValues.reduce((a, b) => a + b, 0);
-      
-      // x = targetMean * 6 - sumOfOther5
-      const calculatedX = (targetMariaMean * 6) - mariaSumWithoutX;
-      
-      // Ensure x is reasonable (positive, not too large)
-      if (calculatedX > 0 && calculatedX <= 10) {
-        x = Math.round(calculatedX * 10) / 10;
-        valid = true;
-      }
-      attempts++;
+    // Work entirely in integer tenths of a kilogram so x is exact and no
+    // floating-point artifacts can reach the student. Divide by 10 only for
+    // display. Because the second student's total is forced to the first
+    // student's total plus 6 * difference, the stated mean relationship holds
+    // EXACTLY for the value of x reported below.
+    const mass = (tenths: number): string => `${Math.trunc(tenths / 10)}.${Math.abs(tenths % 10)}`;
+    const dec = (tenths: number): string => (tenths % 10 === 0 ? String(tenths / 10) : mass(tenths));
+
+    let firstValues10: number[] = [25, 27, 28, 30, 32, 34];
+    let secondOther10: number[] = [28, 30, 31, 33, 35];
+    let meanDiff10 = 2;   // 0.2 kg
+    let x10 = 36;         // 3.6 kg
+
+    let tries = 0;
+    let ready = false;
+    while (!ready && tries++ < 50) {
+      firstValues10 = Array.from({ length: 6 }, () => getRandomInt(20, 50));   // 2.0–5.0 kg
+      secondOther10 = Array.from({ length: 5 }, () => getRandomInt(25, 45));   // 2.5–4.5 kg
+      meanDiff10 = getRandomInt(1, 3);                                         // 0.1–0.3 kg
+
+      const firstSum10 = firstValues10.reduce((a, b) => a + b, 0);
+      // second student's six masses must total firstSum + 6 * difference.
+      const secondSum10 = firstSum10 + 6 * meanDiff10;
+      const otherSum10 = secondOther10.reduce((a, b) => a + b, 0);
+      x10 = secondSum10 - otherSum10;
+
+      // x must be a realistic single rock mass.
+      if (x10 >= 15 && x10 <= 60) ready = true;
     }
-    
-    // Fallback
-    if (!valid) {
-      andrewValues = [2.5, 2.7, 2.8, 3.0, 3.2, 3.4];
-      mariaValues = [2.8, 3.0, 3.1, 3.3, 3.5];
-      x = 3.6;
+
+    if (!ready) {
+      firstValues10 = [25, 27, 28, 30, 32, 34];   // sum 176 -> 17.6
+      secondOther10 = [28, 30, 31, 33, 35];        // sum 157 -> 15.7
+      meanDiff10 = 2;                              // 0.2 kg
+      const firstSum10 = 176;
+      x10 = firstSum10 + 6 * meanDiff10 - 157;     // 176 + 12 - 157 = 31 -> 3.1
     }
-    
-    const andrewSum = andrewValues.reduce((a, b) => a + b, 0);
-    const andrewMean = andrewSum / 6;
-    const meanDifference = 0.1; // Simplified for fallback
-    
-    // STEP 5: Build table HTML
+
+    const firstSum10 = firstValues10.reduce((a, b) => a + b, 0);
+    const otherSum10 = secondOther10.reduce((a, b) => a + b, 0);
+    const secondSum10 = firstSum10 + 6 * meanDiff10;
+    const firstMean = round(firstSum10 / 60, 2);   // informational, <=2 decimals
+
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto;">
   <thead>
     <tr>
-      <th style="border: 1px solid currentColor; padding: 8px;">Person</th>
+      <th style="border: 1px solid currentColor; padding: 8px;">Student</th>
       <th style="border: 1px solid currentColor; padding: 8px;">Masses (kilograms)</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td style="border: 1px solid currentColor; padding: 8px;">Andrew</td>
-      <td style="border: 1px solid currentColor; padding: 8px;">${andrewValues.join(", ")}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">First student</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">${firstValues10.map(mass).join(", ")}</td>
     </tr>
     <tr>
-      <td style="border: 1px solid currentColor; padding: 8px;">Maria</td>
-      <td style="border: 1px solid currentColor; padding: 8px;">x, ${mariaValues.join(", ")}</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">Second student</td>
+      <td style="border: 1px solid currentColor; padding: 8px;">x, ${secondOther10.map(mass).join(", ")}</td>
     </tr>
   </tbody>
 </table>`;
-    
-    // STEP 6: Return question data
+
     return {
-      questionText: `Andrew and Maria each collected six rocks, shown in the table. Maria's mean mass is ${meanDifference} kg greater than Andrew's. What is the value of x?`,
+      questionText: `Two students each collected six rocks, and the mass of each rock is shown in the table. The mean mass of the second student's rocks is ${dec(meanDiff10)} kilograms greater than the mean mass of the first student's rocks. What is the value of x?`,
       figureCode: tableCode,
       options: null,
-      correctAnswer: x.toFixed(1),
-      explanation: `The correct answer is ${x.toFixed(1)}. Andrew's mean is (${andrewValues.join(" + ")})/6 = ${andrewSum.toFixed(1)}/6 = ${andrewMean.toFixed(2)} kg. Maria's mean is ${andrewMean.toFixed(2)} + ${meanDifference} = ${(andrewMean + meanDifference).toFixed(2)} kg. Setting up the equation for Maria's mean: (x + ${mariaValues.reduce((a,b)=>a+b,0).toFixed(1)})/6 = ${(andrewMean + meanDifference).toFixed(2)}. Solving: x + ${mariaValues.reduce((a,b)=>a+b,0).toFixed(1)} = ${((andrewMean + meanDifference) * 6).toFixed(1)}, so x = ${x.toFixed(1)}.`
+      correctAnswer: mass(x10),
+      explanation: `The correct answer is ${mass(x10)}. The first student's six masses sum to ${dec(firstSum10)} kg, so the first student's mean mass is ${dec(firstSum10)} ÷ 6 = ${firstMean} kg. Because both students collected six rocks and the second student's mean is ${dec(meanDiff10)} kg greater, the second student's six masses must sum to ${dec(firstSum10)} + 6 × ${dec(meanDiff10)} = ${dec(secondSum10)} kg. The five known masses of the second student sum to ${dec(otherSum10)} kg, so x = ${dec(secondSum10)} − ${dec(otherSum10)} = ${mass(x10)} kg.`
     };
   }
 };

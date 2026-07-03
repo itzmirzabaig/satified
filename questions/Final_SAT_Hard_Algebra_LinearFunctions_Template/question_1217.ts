@@ -32,7 +32,10 @@ export const generator_1217 = {
     
     // New intercept for h(x)
     const newIntercept = yIntercept - k;
-    
+    // Trailing "+N" / "-N" piece for the final simplified line of the explanation.
+    // The minus sign for a negative intercept comes from the number itself.
+    const signNewText = `${newIntercept >= 0 ? '+' : ''}${newIntercept}`;
+
     // Format x2 as fraction for display
     // Logic: x2 always ends in .8 (e.g., -3.8), which is -19/5. Numerator is x2 * 5.
     const num = Math.round(x2 * 5);
@@ -68,55 +71,68 @@ export const generator_1217 = {
     `;
 
     // STEP 3: Create options
-    const signNew = newIntercept >= 0 ? '+' : '';
-    const correctText = `h(x)=${slope}x${signNew}${newIntercept}`;
-    
-    // Distractors
-    // A: Incorrect transformation (subtracts 2k)
+    // Helper: render "h(x)=<slope>x±<int>" with a sign that reads correctly
+    // for negative intercepts (the minus comes from the number itself).
+    const formatH = (intercept: number) =>
+      `h(x)=${slope}x${intercept >= 0 ? '+' : ''}${intercept}`;
+
+    const correctText = `$${formatH(newIntercept)}$`;
+
+    // Distractors — each intercept is guaranteed distinct from the correct
+    // intercept (yIntercept - k) and from one another for every draw:
+    //   correct = yIntercept - k
+    //   A       = yIntercept - 2k   (differs from correct by k >= 10)
+    //   C       = yIntercept - k + 2 (differs from correct by 2)
+    //   D       = yIntercept        (differs from correct by k >= 10)
+    // Pairwise gaps are k, 2, k, k-2, 2k, k-2 — all nonzero since k in [10,20],
+    // so no two options can ever collide. No retry guard needed.
+    // A: subtracts the shift twice instead of once.
     const distA_int = yIntercept - k * 2;
-    const distA = `h(x)=${slope}x${distA_int >= 0 ? '+' : ''}${distA_int}`;
-    
-    // C: Arithmetic error (adds 2 instead of subtracting k)
+    // C: adds 2 instead of subtracting the shift (sign/operation slip).
     const distC_int = yIntercept - k + 2;
-    const distC = `h(x)=${slope}x${distC_int >= 0 ? '+' : ''}${distC_int}`;
-    
-    // D: Original function f(x)
-    const distD = `h(x)=${slope}x+${yIntercept}`;
-    
+    // D: leaves f(x) unchanged (forgets the transformation).
+    const distD_int = yIntercept;
+
     const optionsData = [
-      { text: `$${distA}$`, isCorrect: false },
-      { text: `$${correctText}$`, isCorrect: true },
-      { text: `$${distC}$`, isCorrect: false },
-      { text: `$${distD}$`, isCorrect: false }
+      { text: `$${formatH(distA_int)}$`, isCorrect: false,
+        reason: `this subtracts ${k} twice; $h(x)=f(x)-${k}$ shifts the graph down only once` },
+      { text: correctText, isCorrect: true },
+      { text: `$${formatH(distC_int)}$`, isCorrect: false,
+        reason: `this adds 2 to the intercept instead of subtracting ${k}` },
+      { text: `$${formatH(distD_int)}$`, isCorrect: false,
+        reason: `this is the original function $f$; the shift of $-${k}$ was not applied` }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctLetter = shuffledOptions.find(opt => opt.isCorrect)?.letter;
-    
+
+    const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+    const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
+
     return {
       questionText: `For the linear function $f$, the table shows three values of $x$ and their corresponding values of $f(x)$. If $h(x)=f(x)-${k}$, which equation defines $h$?`,
       figureCode: tableHTML,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. 
-      
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctLetter} is correct.
+
 First, determine the equation for $f(x)$. The table provides points such as $(${x1}, ${y1})$ and $(${x3}, ${y3})$.
 The y-intercept is explicitly given in the table as $b = ${y3}$.
 
 The slope $m$ can be calculated using the points $(${x1}, ${y1})$ and $(${x2Display}, ${y2})$:
-$$m = \\frac{${y2} - ${y1}}{${x2Display} - (${x1})} = \\frac{${(y2-y1).toFixed(1)}}{${(x2-x1).toFixed(1)}} = ${slope}$$
+$$m = \\frac{${y2} - ${y1}}{${x2Display} - (${x1})} = \\frac{${(y2 - y1).toFixed(1)}}{${(x2 - x1).toFixed(1)}} = ${slope}$$
 
 Thus, the function $f$ is:
 $$f(x) = ${slope}x + ${yIntercept}$$
 
 The function $h$ is defined as $h(x) = f(x) - ${k}$. Substitute the expression for $f(x)$:
 $$h(x) = (${slope}x + ${yIntercept}) - ${k}$$
-$$h(x) = ${slope}x + (${yIntercept} - ${k})$$
-$$h(x) = ${slope}x ${signNew} ${newIntercept}$$`
+$$h(x) = ${slope}x + (${yIntercept} - ${k}) = ${slope}x${signNewText}$$
+
+Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
     };
   }
 };

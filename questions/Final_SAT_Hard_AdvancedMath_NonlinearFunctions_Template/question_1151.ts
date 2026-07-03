@@ -34,7 +34,7 @@ export const generator_1151 = {
       figureCode: null,
       options: null,
       correctAnswer: b.toString(),
-      explanation: `The surface is at depth $g(x)=0$. Setting $-\\frac{1}{${k}}(x+${a})(x-${b})=0$ gives $x=-${a}$ or $x=${b}$. Since $x>0$, the answer is ${b}$ minutes.`
+      explanation: `The device is at the surface when its depth is $g(x)=0$. Setting $-\\frac{1}{${k}}(x+${a})(x-${b})=0$ makes the product zero, which gives $x=-${a}$ or $x=${b}$. Since the time must satisfy $x>0$, the device reaches the surface after ${b} minutes.`
     };
   }
 };

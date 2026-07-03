@@ -24,28 +24,30 @@ export const generator_1157 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values (similar structure to f14484a5)
-    let valid = false;
-    let size1: number, size2: number, size3: number, multiplier: number, constantCount: number, totalItems: number, nCoeff: number;
-    
-    while (!valid) {
-      size1 = getRandomInt(8, 12); // Large size
-      size2 = getRandomInt(6, 9);  // Medium size (n refers to this)
-      size3 = getRandomInt(3, 7);  // Small size
-      
+    // STEP 1: Draw sizes and counts so the resulting equation has a positive
+    // integer solution for n. Bounded retry (never unbounded).
+    let size1 = 0, size2 = 0, size3 = 0, multiplier = 0, constantCount = 0, totalItems = 0, nCoeff = 0;
+    for (let tries = 0; tries < 50; tries++) {
+      size1 = getRandomInt(8, 12); // larger length
+      size2 = getRandomInt(6, 9);  // medium length (the variable n counts these)
+      size3 = getRandomInt(3, 7);  // smaller length
+
       multiplier = getRandomInt(4, 7);
       constantCount = getRandomInt(15, 30);
       totalItems = getRandomInt(90, 130);
-      
-      // STEP 2: Verify integer solution
-      nCoeff = multiplier + 1;
-      const constSum = totalItems - constantCount;
-      
-      if (constSum > 0 && constSum % nCoeff === 0) {
-        valid = true;
-      }
+
+      nCoeff = multiplier + 1;                       // coefficient of n after combining
+      const constSum = totalItems - constantCount;   // must be a positive multiple of nCoeff
+      if (constSum > 0 && constSum % nCoeff === 0) break;
     }
-    
+    // Deterministic fallback guaranteeing a valid, self-consistent draw even if
+    // the loop exhausts (keeps constSum a positive multiple of nCoeff).
+    if ((totalItems - constantCount) <= 0 || (totalItems - constantCount) % nCoeff !== 0) {
+      constantCount = 20;
+      nCoeff = multiplier + 1;
+      totalItems = constantCount + nCoeff * getRandomInt(8, 16); // >= 52, integer n in [8,16]
+    }
+
     // STEP 3: Build equations
     const correctEquation = `${nCoeff}n + ${constantCount} = ${totalItems}`;
     const distractorA = `${size1}(${multiplier}n) + ${size2}n + ${size3}(${constantCount}) = ${totalItems}`;
@@ -53,9 +55,9 @@ export const generator_1157 = {
     const distractorC = `${multiplier}n + ${constantCount} = ${totalItems}`;
     
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "this multiplies the count of each screw by its length, which would give total length, not total count" },
-      { text: distractorB, isCorrect: false, reason: "this assumes there are n screws of each size and multiplies by length" },
-      { text: distractorC, isCorrect: false, reason: "this misses the n screws of ${size2}-inch length, only counting ${size1}-inch and ${size3}-inch screws" },
+      { text: distractorA, isCorrect: false, reason: `this multiplies each screw count by its length in inches, which gives a total length rather than a total count of screws` },
+      { text: distractorB, isCorrect: false, reason: `this treats the lengths (${size1}, ${size2}, ${size3}) as the numbers of screws and assumes there are $n$ screws of every size` },
+      { text: distractorC, isCorrect: false, reason: `this omits the $n$ screws that are ${size2} inches long, counting only the ${size1}-inch screws ($${multiplier}n$) and the ${size3}-inch screws ($${constantCount}$)` },
       { text: correctEquation, isCorrect: true }
     ];
     
@@ -87,7 +89,7 @@ $$Total = (${multiplier}n) + (n) + (${constantCount})$$
 We know the total is ${totalItems}.
 $$${totalItems} = ${multiplier}n + n + ${constantCount}$$
 
-Combine like terms (${multiplier}n and $n$):
+Combine like terms ($${multiplier}n$ and $n$):
 $$${multiplier}n + 1n = ${nCoeff}n$$
 So, the equation becomes:
 $$${correctEquation}$$

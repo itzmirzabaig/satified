@@ -3,6 +3,8 @@ import type { QuestionData } from '../../study/types';
 
 
 
+
+
 /**
  * Question 1411
  * 
@@ -25,60 +27,62 @@ export const generator_1411 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate percentage increase and result
-    const increasePct = getRandomInt(200, 600); // 200% to 600%
-    let result: number;
-    let multiplier: number;
-    let originalValue: number;
-    let attempts = 0;
-    const maxAttempts = 100;
-    
-    // Use while loop instead of recursion to ensure clean division
-    while (attempts < maxAttempts) {
-      result = getRandomInt(30, 120);
-      multiplier = 1 + increasePct / 100;
-      originalValue = result / multiplier;
-      
-      if (originalValue === Math.floor(originalValue)) {
-        break;
-      }
-      attempts++;
-    }
-    
-    // Fallback if no valid value found
-    if (attempts >= maxAttempts) {
-      result = 60;
-      multiplier = 1 + increasePct / 100;
-      originalValue = result / multiplier;
-    }
-    
-    // STEP 3: Create distractors
-    const forgotOriginal = Math.round(result / (increasePct / 100)); // Wrong: x * P/100 = result
-    const multiplied = result * multiplier; // Wrong: result * multiplier
-    const divided = result / (increasePct / 100); // Wrong: simple division
-    
+    // Answer-first construction. "Increasing x by p% gives result" means
+    //   x * (1 + p/100) = result,  so  x = result / (1 + p/100).
+    // Pick an integer multiplier m = 1 + p/100 (so p is a clean multiple of 100)
+    // and an integer x; then result = x * m is exact and x is exactly correct.
+    // Distractors are built from x/m/result and re-drawn (bounded) until all
+    // four options are distinct positive integers.
+    let increasePct = 0;
+    let result = 0;
+    let x = 0;
+    let multiplier = 3;
+    // Wrong: took result as p% of x, i.e. x = result / (p/100).
+    let forgotOriginal = 0;
+    // Wrong: multiplied by the growth factor instead of dividing.
+    let multiplied = 0;
+    // Wrong: reported the amount of the increase (result - x) instead of x.
+    let increaseAmount = 0;
+
+    let tries = 0;
+    do {
+      multiplier = getRandomElement([3, 4, 5, 6]); // p = 200%, 300%, 400%, 500%
+      increasePct = (multiplier - 1) * 100;
+      x = getRandomInt(6, 30);
+      result = x * multiplier;
+
+      forgotOriginal = Math.round(result / (increasePct / 100)); // = result*100/p
+      multiplied = result * multiplier;                          // result * growth factor
+      increaseAmount = result - x;                               // = x*(m-1)
+      tries++;
+    } while (
+      tries < 50 &&
+      new Set([x, forgotOriginal, multiplied, increaseAmount]).size !== 4
+    );
+
     const optionsData = [
-      { text: Math.round(originalValue).toString(), isCorrect: true, reason: "" },
-      { text: Math.round(forgotOriginal).toString(), isCorrect: false, reason: "results from forgetting to include the original amount" },
-      { text: Math.round(multiplied).toString(), isCorrect: false, reason: "results from multiplying instead of dividing" },
-      { text: Math.round(divided).toString(), isCorrect: false, reason: "results from incorrect division" }
+      { value: x, isCorrect: true, reason: "" },
+      { value: forgotOriginal, isCorrect: false, reason: `results from finding ${increasePct}% of ${result} instead of dividing by $\\left(1 + \\frac{${increasePct}}{100}\\right)$` },
+      { value: multiplied, isCorrect: false, reason: "results from multiplying by the growth factor instead of dividing by it" },
+      { value: increaseAmount, isCorrect: false, reason: `is the amount of the increase, ${result} - ${x}, rather than the original quantity $x$` },
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
-      letter: String.fromCharCode(65 + index)
+      text: opt.value.toString(),
+      letter: String.fromCharCode(65 + index),
     }));
-    
-    const correctOption = shuffledOptions.find(opt => opt.isCorrect);
-    const correctLetter = correctOption?.letter || 'A';
+
+    const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
     return {
       questionText: `The result of increasing the quantity $x$ by ${increasePct}% is ${result}. What is the value of $x$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: Math.round(originalValue).toString(),
-      explanation: `Choice ${correctLetter} is correct. Increasing $x$ by ${increasePct}% means $x + \\frac{${increasePct}}{100}x = ${result}$, or $(1 + ${increasePct/100})x = ${result}$. Thus $${multiplier}x = ${result}$, so $x = \\frac{${result}}{${multiplier}} = ${Math.round(originalValue)}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctLetter} is correct. Increasing $x$ by ${increasePct}% means $x + \\frac{${increasePct}}{100}x = ${result}$, which is $\\left(1 + \\frac{${increasePct}}{100}\\right)x = ${result}$, or $x \\cdot ${multiplier} = ${result}$. Dividing both sides by ${multiplier} gives $x = \\frac{${result}}{${multiplier}} = ${x}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

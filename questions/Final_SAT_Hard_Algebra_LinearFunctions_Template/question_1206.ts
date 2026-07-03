@@ -21,39 +21,49 @@ export const generator_1206 = {
   },
   
   generate: (): QuestionData => {
-    // 1. Generate Linear Function
-    // y = mx + b
-    // We want an integer x-intercept (where y=0)
-    // Let x-intercept = xInt
-    // y = m(x - xInt) => y = mx - m*xInt
-    
-    const slope = getRandomInt(2, 5); // Positive or negative? Original analysis said negative.
-    // Let's randomize sign, but original analysis suggests negative x-intercept
-    const m = getRandomElement([slope, -slope]);
+    // 1. Generate Linear Function y = mx + b with an integer x-intercept.
+    //    Let the x-intercept be xInt (where y = 0):
+    //      y = m(x - xInt)  =>  b = -m*xInt.
+    const slope = getRandomInt(2, 5);
+    let m = getRandomElement([slope, -slope]);
     const xInt = getRandomInt(-8, -2); // Negative x-intercept (e.g., -5)
-    
-    // y = m(x - xInt)
+
+    // Guard against distractor collisions with the correct answer:
+    //   distB = (m, 0) collides with correct (xInt, 0) when m === xInt.
+    //   distC = (-xInt, 0) collides with distB (m, 0) when m === -xInt.
+    // Both are avoided by keeping |m| != |xInt|. Resample m's sign/magnitude
+    // (bounded) until that holds. |xInt| can be 6..8 which no |m|<=5 hits.
+    let tries = 0;
+    while (Math.abs(m) === Math.abs(xInt) && tries++ < 50) {
+      const s = getRandomInt(2, 5);
+      m = getRandomElement([s, -s]);
+    }
+
     // b = -m * xInt
     const b = -m * xInt;
-    
-    // 2. Generate Table Points
-    // Pick x values near the intercept but not exactly it (to make them calculate)
-    const x1 = xInt - getRandomInt(2, 5);
-    const y1 = m * (x1 - xInt);
-    
-    const x2 = xInt + getRandomInt(2, 5); // Could be positive or negative
-    const y2 = m * (x2 - xInt);
+
+    // 2. Generate Table Points near (but not at) the intercept.
+    const r1 = getRandomInt(2, 5);
+    const x1 = xInt - r1;
+    const y1 = m * (x1 - xInt); // = -m*r1
+
+    const r2 = getRandomInt(2, 5);
+    const x2 = xInt + r2;
+    const y2 = m * (x2 - xInt); // = m*r2
+
+    // Signed-term formatter: renders " + k" or " - |k|" for clean algebra,
+    // avoiding "+ -" glitches in the worked explanation.
+    const signed = (n: number) => (n < 0 ? `- ${Math.abs(n)}` : `+ ${n}`);
+    // Parenthesized signed value for substitution, e.g. "(-8)" or "(3)".
+    const paren = (n: number) => `(${n})`;
 
     // 3. Options
     const correctOption = `(${xInt}, 0)`;
-    
-    // Distractor A: Y-intercept (0, b)
+    // Distractor A: mistakes the y-intercept (0, b) for the x-intercept.
     const distA = `(0, ${b})`;
-    
-    // Distractor B: Slope as intercept
+    // Distractor B: reads the slope as the x-coordinate.
     const distB = `(${m}, 0)`;
-    
-    // Distractor C: Sign error on x-intercept
+    // Distractor C: sign error on the x-intercept.
     const distC = `(${-xInt}, 0)`;
 
     const optionsData = [
@@ -67,7 +77,7 @@ export const generator_1206 = {
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const finalCorrect = shuffledOptions.find(o => o.isCorrect)!;
 
     // 4. Build Table HTML
@@ -143,28 +153,28 @@ export const generator_1206 = {
     </div>
     `;
 
-    // 6. Explanation
+    // 6. Explanation — every displayed number comes from the live variables,
+    //    and signed terms use signed()/paren() to avoid "+ -" artifacts.
     const explanation = `
       Choice ${finalCorrect.letter} is correct.
       <br/><br/>
-      <strong>1. Find the Slope ($m$):</strong>
-      Using the points $(${x1}, ${y1})$ and $(${x2}, ${y2})$ from the table:
-      $$ m = \\frac{y_2 - y_1}{x_2 - x_1} = \\frac{${y2} - (${y1})}{${x2} - (${x1})} = \\frac{${y2 - y1}}{${x2 - x1}} = ${m} $$
+      <strong>1. Find the slope ($m$):</strong>
+      Using the points $(${x1}, ${y1})$ and $(${x2}, ${y2})$ from the table,
+      $$ m = \\frac{y_2 - y_1}{x_2 - x_1} = \\frac{${y2} - ${paren(y1)}}{${x2} - ${paren(x1)}} = \\frac{${y2 - y1}}{${x2 - x1}} = ${m}. $$
       <br/>
-      <strong>2. Find the Equation of the Line:</strong>
-      Use point-slope form with $(${x1}, ${y1})$:
-      $$ y - y_1 = m(x - x_1) $$
-      $$ y - (${y1}) = ${m}(x - (${x1})) $$
-      $$ y = ${m}x - ${m * x1} + ${y1} $$
-      $$ y = ${m}x + ${b} $$
+      <strong>2. Find the equation of the line:</strong>
+      Using point-slope form with $(${x1}, ${y1})$,
+      $$ y - ${paren(y1)} = ${m}\\,(x - ${paren(x1)}), $$
+      $$ y = ${m}x ${signed(-m * x1)} ${signed(y1)}, $$
+      $$ y = ${m}x ${signed(b)}. $$
       <br/>
-      <strong>3. Find the x-intercept:</strong>
-      The x-intercept occurs where $y = 0$:
-      $$ 0 = ${m}x + ${b} $$
-      $$ ${-b} = ${m}x $$
-      $$ x = \\frac{${-b}}{${m}} = ${xInt} $$
+      <strong>3. Find the $x$-intercept:</strong>
+      The $x$-intercept occurs where $y = 0$:
+      $$ 0 = ${m}x ${signed(b)}, $$
+      $$ ${m}x = ${-b}, $$
+      $$ x = \\frac{${-b}}{${m}} = ${xInt}. $$
       <br/>
-      The x-intercept is $(${xInt}, 0)$.
+      The $x$-intercept is $(${xInt}, 0)$.
     `;
 
     return {

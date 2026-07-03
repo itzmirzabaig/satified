@@ -126,7 +126,7 @@ export const generator_1193 = {
 
     // 5. Explanation & Return
     return {
-      questionText: `The graph shown models the possible combinations of cornflowers and wallflowers that can be purchased for exactly $${totalDollars.toFixed(2)}. What is the price, in dollars, of 1 cornflower?`,
+      questionText: `The graph shown models the possible combinations of cornflowers and wallflowers that can be purchased for exactly \\$${totalDollars.toFixed(2)}. What is the price, in dollars, of 1 cornflower?`,
       figureCode: finalFigure,
       options: null, // Fill-in-the-blank
       correctAnswer: priceCornflower.toFixed(2),
@@ -138,13 +138,13 @@ export const generator_1193 = {
         At this point:
         <ul>
             <li>Number of Cornflowers = ${xInt}</li>
-            <li>Total Cost = $${totalDollars.toFixed(2)}</li>
+            <li>Total Cost = \\$${totalDollars.toFixed(2)}</li>
         </ul>
         <br/>
         To find the price of one cornflower, divide the total cost by the number of cornflowers:
         $$ \\text{Price} = \\frac{\\text{Total Cost}}{\\text{Quantity}} = \\frac{${totalDollars.toFixed(2)}}{${xInt}} = ${priceCornflower.toFixed(2)} $$
         <br/>
-        Therefore, the price of 1 cornflower is $${priceCornflower.toFixed(2)}.
+        Therefore, the price of 1 cornflower is \\$${priceCornflower.toFixed(2)}.
       `
     };
   }

@@ -67,13 +67,18 @@ export const generator_1210 = {
     const finalNum = xIntNum / xIntGCD;
     const finalDen = xIntDen / xIntGCD;
 
-    // Helper to format fraction string
+    // Helper to format a LaTeX fraction (for display in the explanation).
     const formatFrac = (n: number, d: number) => {
         if (d === 1) return `${n}`;
         return `\\frac{${n}}{${d}}`;
     };
 
-    const correctAnswer = formatFrac(finalNum, finalDen);
+    // Fill-in answer: students TYPE this, so it must be a plain number or a/b
+    // fraction (no LaTeX). Denominator is always positive here (see derivation),
+    // so the sign lives on the numerator.
+    const correctAnswer = finalDen === 1 ? `${finalNum}` : `${finalNum}/${finalDen}`;
+    // LaTeX version of the same value for the worked explanation.
+    const correctAnswerTex = formatFrac(finalNum, finalDen);
 
     // 4. Explanation
     const f_slope = formatFrac(n1, d1);
@@ -82,31 +87,30 @@ export const generator_1210 = {
     const slope_sum_simplified = formatFrac(mNum, mDen);
 
     return {
-      questionText: `The functions $f$ and $g$ are defined as $f(x)=${f_slope}x ${c1 < 0 ? '-' : '+'} ${Math.abs(c1)}$ and $g(x)=${g_slope}x + ${c2}$. If the function $h$ is defined as $h(x)=f(x)+g(x)$, what is the x-coordinate of the x-intercept of the graph of $y=h(x)$ in the $xy$-plane?`,
+      questionText: `The functions $f$ and $g$ are defined as $f(x)=${f_slope}x ${c1 < 0 ? '-' : '+'} ${Math.abs(c1)}$ and $g(x)=${g_slope}x + ${c2}$. If the function $h$ is defined as $h(x)=f(x)+g(x)$, what is the x-coordinate of the x-intercept of the graph of $y=h(x)$ in the $xy$-plane? (Enter your answer as a fraction or a decimal.)`,
       figureCode: null,
       options: null, // Fill-in-the-blank
       correctAnswer: correctAnswer,
       explanation: `
         First, find the expression for $h(x)$ by adding $f(x)$ and $g(x)$:
         $$ h(x) = f(x) + g(x) $$
-        $$ h(x) = \\left( ${f_slope}x ${c1} \\right) + \\left( ${g_slope}x + ${c2} \\right) $$
+        $$ h(x) = \\left( ${f_slope}x - ${Math.abs(c1)} \\right) + \\left( ${g_slope}x + ${c2} \\right) $$
         Group the $x$ terms and the constant terms:
-        $$ h(x) = \\left( ${f_slope} + ${g_slope} \\right)x + (${c1} + ${c2}) $$
+        $$ h(x) = \\left( ${f_slope} + ${g_slope} \\right)x + (${b_h}) $$
         <br/>
         Calculate the new slope:
         $$ \\frac{${n1}}{${d1}} + \\frac{${n2}}{${d2}} = \\frac{${n1*d2} + ${n2*d1}}{${d1*d2}} = ${slope_sum_unsimplified} = ${slope_sum_simplified} $$
         Calculate the new constant:
-        $$ ${c1} + ${c2} = ${b_h} $$
+        $$ -${Math.abs(c1)} + ${c2} = ${b_h} $$
         So, $h(x) = ${slope_sum_simplified}x + ${b_h}$.
         <br/><br/>
         To find the x-intercept, set $h(x) = 0$:
         $$ 0 = ${slope_sum_simplified}x + ${b_h} $$
         $$ -${b_h} = ${slope_sum_simplified}x $$
-        Multiply by the reciprocal $\\frac{${mDen}}{${mNum}}$:
-        $$ x = -${b_h} \\cdot \\frac{${mDen}}{${mNum}} $$
-        $$ x = \\frac{${xIntNum}}{${xIntDen}} $$
+        Multiply both sides by the reciprocal $\\frac{${mDen}}{${mNum}}$:
+        $$ x = -${b_h} \\cdot \\frac{${mDen}}{${mNum}} = \\frac{${xIntNum}}{${xIntDen}} $$
         Simplify the fraction:
-        $$ x = ${correctAnswer} $$
+        $$ x = ${correctAnswerTex} $$
       `
     };
   }

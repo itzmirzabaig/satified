@@ -31,32 +31,28 @@ export const generator_1370 = {
     const prime = getRandomElement(primes);
     const hypotenuse = 2 * prime;
     
-    const _svg_0 = hypotenuse + 5;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-5,xmax=_svg_0;
-      const ymin=-5,ymax=_svg_0;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;
-    })()}${(() => {
-      const xmin=-5,xmax=(hypotenuse + 5);
-      const ymin=-5,ymax=(hypotenuse + 5);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((hypotenuse / 2))+'" y="'+my((hypotenuse / 2 + 2))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">${hypotenuse</text>';
-    })()}</svg></div>`;
+    // Isosceles right triangle: right angle at bottom-left vertex, two equal legs
+    // (horizontal + vertical), hypotenuse across the top-right. Hypotenuse labeled
+    // with its length. Plain SVG, pixel space (legs equal so it renders as 45-45-90).
+    const W = 450, H = 300;
+    const rx = 90,  ry = 240;          // right-angle vertex (bottom-left)
+    const leg = 160;                   // equal legs in px (figure is schematic)
+    const px_ = rx + leg, py_ = ry;    // bottom-right vertex
+    const qx = rx,        qy = ry - leg; // top-left vertex
+    const rm = 14;
+    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">`
+      + `<polygon points="${rx},${ry} ${px_},${py_} ${qx},${qy}" fill="#3b82f6" fill-opacity="0.08" stroke="#3b82f6" stroke-width="2" stroke-linejoin="round"/>`
+      + `<path d="M ${rx + rm},${ry} L ${rx + rm},${ry - rm} L ${rx},${ry - rm}" fill="none" stroke="currentColor" stroke-width="1.2"/>`
+      + `<path d="M ${rx + leg / 2 - 6},${ry - 6} l 12,0 M ${rx + leg / 2 - 6},${ry - 10} l 12,0" stroke="currentColor" stroke-width="1.2"/>`
+      + `<path d="M ${rx - 6},${ry - leg / 2 - 6} l 0,12 M ${rx - 10},${ry - leg / 2 - 6} l 0,12" stroke="currentColor" stroke-width="1.2"/>`
+      + `<text x="${(px_ + qx) / 2 + 10}" y="${(py_ + qy) / 2 - 6}" text-anchor="middle" font-size="14" fill="currentColor">${hypotenuse}</text>`
+      + `</svg></div>`;
 
     const optionsData = [
-      { text: `${prime}\\\\sqrt{2}`, isCorrect: false, reason: "gives leg length, not perimeter" },
-      { text: `${hypotenuse}\\\\sqrt{2}`, isCorrect: false, reason: "incorrectly doubles the radical term" },
-      { text: `${hypotenuse} + ${hypotenuse}\\\\sqrt{2}`, isCorrect: true, reason: "correct perimeter: 2 legs + hypotenuse = 2×(prime√2) + 2×prime" },
-      { text: `${hypotenuse} + ${2 * hypotenuse}\\\\sqrt{2}`, isCorrect: false, reason: "incorrectly calculates leg length" }
+      { text: `$${prime}\\sqrt{2}$`, isCorrect: false, reason: "gives one leg's length, not the perimeter" },
+      { text: `$${hypotenuse}\\sqrt{2}$`, isCorrect: false, reason: "omits the hypotenuse and doubles the radical incorrectly" },
+      { text: `$${hypotenuse} + ${hypotenuse}\\sqrt{2}$`, isCorrect: true, reason: "adds two legs and the hypotenuse" },
+      { text: `$${hypotenuse} + ${2 * hypotenuse}\\sqrt{2}$`, isCorrect: false, reason: "doubles the leg length before adding" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -67,13 +63,13 @@ export const generator_1370 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. Leg $x = \\\\frac{${hypotenuse}}{\\\\sqrt{2}} = ${prime}\\\\sqrt{2}$. Perimeter $= 2x + ${hypotenuse} = 2(${prime}\\\\sqrt{2}) + ${hypotenuse} = ${hypotenuse} + ${hypotenuse}\\\\sqrt{2}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. In a 45-45-90 triangle each leg equals the hypotenuse divided by $\\sqrt{2}$, so the leg length is $\\frac{${hypotenuse}}{\\sqrt{2}} = ${prime}\\sqrt{2}$. The perimeter is the two equal legs plus the hypotenuse: $2(${prime}\\sqrt{2}) + ${hypotenuse} = ${hypotenuse} + ${hypotenuse}\\sqrt{2}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `An isosceles right triangle has a hypotenuse of length ${hypotenuse} inches. What is the perimeter, in inches, of this triangle?`,
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `${hypotenuse} + ${hypotenuse}\\\\sqrt{2}`,
+      correctAnswer: `$${hypotenuse} + ${hypotenuse}\\sqrt{2}$`,
       explanation: explanation
     };
   }

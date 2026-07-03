@@ -5,7 +5,7 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1420
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [99, 12.50%]
  * - Difficulty factors: [Reverse percentage problem, careful setup]
@@ -23,64 +23,72 @@ export const generator_1420 = {
     skill: "Percentages",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate final count and percentage increase
-    let finalCount: number;
-    let increasePct: number;
-    let multiplier: number;
-    let originalCount: number;
-    let attempts = 0;
-    const maxAttempts = 100;
-    
-    // Use while loop instead of recursion
-    while (attempts < maxAttempts) {
-      finalCount = getRandomInt(80, 150);
-      increasePct = getRandomInt(8, 25); // 8-25% increase
-      multiplier = 1 + increasePct / 100;
-      originalCount = Math.round((finalCount / multiplier));
-      
-      if (Math.abs(originalCount * multiplier - finalCount) <= 0.5) {
-        break;
-      }
-      attempts++;
+    // Answer-first construction so EVERY value is an exact integer:
+    //   final = original * (1 + pct/100).
+    // Pick pct from a "nice" set and make `original` a multiple of
+    // 100/gcd(pct,100) so the increase (original*pct/100) is a whole number;
+    // then final is a whole number and x = final*100/(100+pct) = original.
+    const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+
+    const pctChoices = [5, 8, 10, 12, 15, 20, 24, 25];
+    let increasePct = 0, originalCount = 0, finalCount = 0;
+    let wrongSubtractFinal = 0, wrongPctAsCount = 0, wrongPctAbsolute = 0;
+    let tries = 0;
+
+    do {
+      increasePct = getRandomElement(pctChoices);
+      const step = 100 / gcd(increasePct, 100);           // required multiple
+      // Keep original in a sensible range and final <= ~150.
+      const kMax = Math.floor(150 / (step * (1 + increasePct / 100)));
+      const kMin = Math.max(1, Math.ceil(40 / step));
+      const k = getRandomInt(Math.min(kMin, kMax), Math.max(kMin, kMax));
+      originalCount = step * k;
+      finalCount = originalCount + (originalCount * increasePct) / 100; // exact integer
+
+      // Distractors (each a distinct, whole-number mis-step):
+      // (1) subtracts the percent OF THE FINAL count instead of solving
+      wrongSubtractFinal = finalCount - Math.round((finalCount * increasePct) / 100);
+      // (2) uses the percent itself as the count
+      wrongPctAsCount = increasePct;
+      // (3) subtracts the percent value as a raw number from the final count
+      wrongPctAbsolute = finalCount - increasePct;
+    } while (
+      new Set([originalCount, wrongSubtractFinal, wrongPctAsCount, wrongPctAbsolute]).size < 4 &&
+      ++tries < 50
+    );
+
+    // Deterministic all-distinct fallback (matches the original exemplar 99/88).
+    if (new Set([originalCount, wrongSubtractFinal, wrongPctAsCount, wrongPctAbsolute]).size < 4) {
+      increasePct = 12; originalCount = 75; finalCount = 84;
+      wrongSubtractFinal = finalCount - Math.round((finalCount * increasePct) / 100); // 74
+      wrongPctAsCount = increasePct;                                                   // 12
+      wrongPctAbsolute = finalCount - increasePct;                                     // 72
     }
-    
-    // Fallback
-    if (attempts >= maxAttempts) {
-      finalCount = 99;
-      increasePct = 12;
-      multiplier = 1.125;
-      originalCount = 88;
-    }
-    
-    // STEP 3: Create distractors
-    const wrongSubtraction = finalCount - Math.round(finalCount * increasePct / 100); // Wrong: subtract pct of final
-    const wrongSmall = Math.round(increasePct); // Wrong: using percentage as count
-    const wrongDivision = Math.round(finalCount / increasePct); // Wrong: nonsense division
-    
+
     const optionsData = [
       { text: originalCount.toString(), isCorrect: true, reason: "" },
-      { text: wrongSubtraction.toString(), isCorrect: false, reason: "incorrectly subtracts percentage of final count" },
-      { text: wrongSmall.toString(), isCorrect: false, reason: "confuses percentage with actual count" },
-      { text: wrongDivision.toString(), isCorrect: false, reason: "results from incorrect division operation" }
+      { text: wrongSubtractFinal.toString(), isCorrect: false, reason: `subtracts ${increasePct}% of the February 15 count instead of reversing the increase on the January 1 count` },
+      { text: wrongPctAsCount.toString(), isCorrect: false, reason: "uses the percent as if it were an actual number of dragonflies" },
+      { text: wrongPctAbsolute.toString(), isCorrect: false, reason: `subtracts ${increasePct} as a raw count from the February 15 total rather than a percentage` }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect);
     const correctLetter = correctOption?.letter || 'A';
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
     return {
-      questionText: `A scientist studying the life cycle of dragonflies counted the number of dragonflies in a certain habitat each day for 46 days. On February 15, there were ${finalCount} dragonflies in the habitat. The percent increase in the number of dragonflies in the habitat from January 1 to February 15 was ${increasePct}%. How many dragonflies were in the habitat on January 1?`,
+      questionText: `A researcher studying the life cycle of dragonflies counted the number of dragonflies in a certain habitat each day over a 46-day period. On February 15, there were ${finalCount} dragonflies in the habitat. The percent increase in the number of dragonflies in the habitat from January 1 to February 15 was ${increasePct}%. How many dragonflies were in the habitat on January 1?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: originalCount.toString(),
-      explanation: `Choice ${correctLetter} is correct. Let $x$ be the January 1 count. A ${increasePct}% increase means $x + ${increasePct/100}x = ${finalCount}$, or $${multiplier}x = ${finalCount}$. Solving: $x = \\frac{${finalCount}}{${multiplier}} = ${originalCount}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Let $x$ be the number of dragonflies on January 1. A ${increasePct}% increase means $x + \\frac{${increasePct}}{100}x = ${finalCount}$, so $\\frac{${100 + increasePct}}{100}x = ${finalCount}$. Solving gives $x = ${finalCount} \\cdot \\frac{100}{${100 + increasePct}} = ${originalCount}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

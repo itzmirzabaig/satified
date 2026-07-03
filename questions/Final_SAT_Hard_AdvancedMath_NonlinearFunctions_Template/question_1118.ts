@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 
@@ -34,9 +34,9 @@ export const generator_1118 = {
     return {
       questionText: `A landscaper is designing a rectangular garden. The length is to be ${diff} feet longer than the width. If the area will be ${area} square feet, what will be the length, in feet?`,
       figureCode: null,
-      options: null,
+      options: [],
       correctAnswer: length.toString(),
-      explanation: `Let width be $w$. Then $w(w+${diff})=${area}$, so $w^2+${diff}w-${area}=0$. Factoring: $(w-${w})(w+${w+diff})=0$, so $w=${w}$. The length is ${w}+${diff}=${length}$ feet.`
+      explanation: `Let the width be $w$ feet. Then the length is $w+${diff}$, and the area equation is $w(w+${diff})=${area}$, so $w^2+${diff}w-${area}=0$. Factoring gives $(w-${w})(w+${w + diff})=0$, so the positive solution is $w=${w}$. The length is therefore $w+${diff}=${length}$ feet.`
     };
   }
 };

@@ -1,16 +1,26 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1452
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [Account A: $500, 6%, Account B: $1000, $25/year]
  * - Difficulty factors: [Comparing exponential vs linear growth, compound interest calculation]
- * - Distractor patterns: [A always more (correct), A always less, A eventually less, A eventually more]
- * - Constraints: [Year 1: A = $30, B = $25; A starts higher and grows exponentially]
+ * - Distractor patterns: [A always more, A always less, A more-then-less, A less-then-more]
+ * - Constraints: [A's yearly interest is amountA*(1+r)^(n-1)*r, strictly increasing;
+ *                 B's yearly gain is the constant flatB]
  * - Question type: [Table→Multiple Choice Text]
  * - Figure generation: [HTML Table]
+ *
+ * FIXED:
+ * - Escaped all currency in the explanation as \$ (previously bare $ gave an
+ *   odd $ count — TEX_UNBALANCED).
+ * - Re-derived the correct answer: A's yearly earnings strictly increase from
+ *   firstYearA, so it is "always more" when firstYearA > flatB, otherwise
+ *   "less at first but eventually more". "Always less" and "more-then-less"
+ *   are therefore never correct. Removed the ad-hoc correctCount patching.
+ * - Corrected \times escaping and added per-distractor reasoning.
  */
 
 export const generator_1452 = {
@@ -21,20 +31,20 @@ export const generator_1452 = {
     skill: "Two Variable Data Models And Scatterplots",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random values
-    // Original: A=$500 at 6%, B=$1000 at $25/year
+    // STEP 1: Generate values. firstYearA in [16, 64], flatB in [15, 35],
+    // so both regimes (always-more / eventually-more) occur across draws.
     const amountA = getRandomInt(400, 800);
-    const rateA = getRandomInt(4, 8); // percentage
+    const rateA = getRandomInt(4, 8); // percent, compounded annually
     const amountB = getRandomInt(800, 1500);
-    const flatB = getRandomInt(15, 35); // flat amount per year
-    
-    // STEP 2: Calculate first year earnings
-    const firstYearA = amountA * (rateA / 100);
-    
-    // STEP 3: Build table HTML
-    const tableCode = `<table style="border-collapse: collapse; margin: 20px auto;">
+    const flatB = getRandomInt(15, 35); // flat dollars per year
+
+    const rateDecimal = rateA / 100;
+    const firstYearA = amountA * rateDecimal; // A's earnings in year 1
+
+    // STEP 2: Build the table (currency shown literally in HTML).
+    const tableCode = `<table style="border-collapse: collapse; margin: 20px auto; text-align: center;">
   <thead>
     <tr>
       <th style="border: 1px solid currentColor; padding: 8px;">Account</th>
@@ -55,51 +65,59 @@ export const generator_1452 = {
     </tr>
   </tbody>
 </table>`;
-    
-    // STEP 4: Determine correct answer based on calculated values
-    // Account A earns more in first year if firstYearA > flatB
+
+    // STEP 3: Determine the correct statement.
+    // A's yearly interest strictly increases from firstYearA; B is constant flatB.
     const aAlwaysMore = firstYearA > flatB;
-    
+
     const optionsData = [
-      { text: "Account A always earns more money per year than Account B.", isCorrect: aAlwaysMore },
-      { text: "Account A always earns less money per year than Account B.", isCorrect: !aAlwaysMore && firstYearA < flatB },
-      { text: "Account A earns more money per year than Account B at first but eventually earns less money per year.", isCorrect: false },
-      { text: "Account A earns less money per year than Account B at first but eventually earns more money per year.", isCorrect: !aAlwaysMore && firstYearA >= flatB }
-    ];
-    
-    // Ensure exactly one is correct by adjusting if needed
-    const correctCount = optionsData.filter(o => o.isCorrect).length;
-    if (correctCount === 0) {
-      // Default to first option if logic fails
-      optionsData[0].isCorrect = true;
-    } else if (correctCount > 1) {
-      // Keep only the first correct one
-      let foundCorrect = false;
-      for (const opt of optionsData) {
-        if (opt.isCorrect && !foundCorrect) {
-          foundCorrect = true;
-        } else if (opt.isCorrect) {
-          opt.isCorrect = false;
-        }
+      {
+        text: "Account A always earns more money per year than Account B.",
+        isCorrect: aAlwaysMore,
+        reason: `is false unless Account A's first-year earnings already exceed Account B's, which is not the case here`
+      },
+      {
+        text: "Account A always earns less money per year than Account B.",
+        isCorrect: false,
+        reason: `is false because Account A's yearly interest grows without bound, so it cannot stay below Account B forever`
+      },
+      {
+        text: "Account A earns more money per year than Account B at first but eventually earns less money per year.",
+        isCorrect: false,
+        reason: `is false because Account A's yearly interest only increases over time, while Account B's stays constant`
+      },
+      {
+        text: "Account A earns less money per year than Account B at first but eventually earns more money per year.",
+        isCorrect: !aAlwaysMore,
+        reason: `is false when Account A already earns more in the first year, so it never starts out behind`
       }
-    }
-    
-    // STEP 5: Shuffle and assign letters
+    ];
+
+    // STEP 4: Shuffle and assign letters.
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(opt => opt.isCorrect);
-    const correctLetter = correctOption!.letter;
-    
-    // STEP 6: Return question data
+
+    const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+    const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
+
+    // STEP 5: Build the explanation. All currency escaped as \$.
+    const firstYearStr = firstYearA.toFixed(2);
+    const growthClause = aAlwaysMore
+      ? `it already earns more than Account B in the first year and, because its interest compounds, its yearly earnings only grow, so Account A always earns more`
+      : `it earns less than Account B in the first year, but because its interest compounds its yearly earnings grow without bound and eventually exceed Account B's constant \\$${flatB}`;
+
+    const explanation = `Choice ${correctLetter} is correct. In the first year Account A earns $${amountA} \\times ${rateDecimal} = \\$${firstYearStr}$, compared with Account B's constant \\$${flatB} per year. Because Account A's interest is compounded, the amount it earns each year keeps increasing, while Account B earns the same amount every year. Therefore ${growthClause}. Choice ${incorrectOptions[0].letter} ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} ${incorrectOptions[2].reason}.`;
+
+    // STEP 6: Return question data.
     return {
-      questionText: `Two investments were made as shown in the table above. The interest in Account A is compounded once per year. Which of the following is true about the investments?`,
+      questionText: `Two investments were made as shown in the table above. The interest in Account A is compounded once per year. Which of the following is true about the amounts the two accounts earn each year?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: correctOption!.text,
-      explanation: `Choice ${correctLetter} is correct. Account A earns $${amountA} \\\\times ${rateA / 100} = $${firstYearA.toFixed(2)} in the first year, which is ${firstYearA > flatB ? 'more' : 'less'} than Account B's constant $${flatB}. Since Account A's interest is compound (exponential), it will ${firstYearA > flatB ? 'continue to increase and always earn more' : 'eventually overtake Account B as the principal grows'}.`
+      correctAnswer: correctOption.text,
+      explanation
     };
   }
 };

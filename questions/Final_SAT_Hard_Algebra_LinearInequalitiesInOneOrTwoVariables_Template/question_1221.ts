@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -24,6 +24,9 @@ export const generator_1221 = {
     // Inequality: y > mx + b
     const m = getRandomInt(10, 15); // Steep positive slope
     const b = -getRandomInt(15, 25); // Negative y-intercept
+
+    // Clean LaTeX for "mx + b" (b is always negative here, so " - |b|").
+    const rhsLatex = `${m}x ${b < 0 ? `- ${Math.abs(b)}` : `+ ${b}`}`;
 
     // Generate x-values for the tables
     const startX = getRandomInt(2, 4);
@@ -174,17 +177,17 @@ export const generator_1221 = {
     // 4. QUESTION TEXT & RETURN
     // ----------------------------------------------------------------------
     return {
-      questionText: `Which of the following tables shows values of $x$ and their corresponding values of $y$ that are solutions to the inequality $y > ${m}x ${b}$?`,
+      questionText: `Which of the following tables shows values of $x$ and their corresponding values of $y$ that are all solutions to the inequality $y > ${rhsLatex}$?`,
       figureCode: svgFigure,
       options: shuffledOptions.map(opt => ({ text: opt.html })),
-      correctAnswer: correctLetter,
+      correctAnswer: correctOptionIndex,
       explanation: `
-        The correct table must satisfy the inequality $y > ${m}x ${b}$.
+        The correct table must satisfy the inequality $y > ${rhsLatex}$ for every pair.
         <br/><br/>
-        We test the values from the correct option:
-        ${dataCorrect.map(d => `<br/>For $x=${d.x}$: Is $${d.y} > ${m}(${d.x}) ${b}$? $\\rightarrow ${d.y} > ${m * d.x + b}$ (True)`).join('')}
+        Testing the values from the correct table:
+        ${dataCorrect.map(d => `<br/>For $x = ${d.x}$: is $${d.y} > ${m}(${d.x}) ${b < 0 ? `- ${Math.abs(b)}` : `+ ${b}`}$? This gives $${d.y} > ${m * d.x + b}$, which is true.`).join('')}
         <br/><br/>
-        Since all pairs in this table satisfy the condition, choice ${correctLetter} is correct.
+        Since all pairs in this table satisfy the condition, choice ${correctLetter} is correct. Every other table contains at least one pair with $y \\le ${rhsLatex}$, so it does not satisfy the strict inequality.
       `
     };
   }
