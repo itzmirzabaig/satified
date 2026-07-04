@@ -104,6 +104,17 @@ currency as `\$`, names → role+pronoun, figures rebuilt to house style when
 broken) → smoke until PASS. Only touch assigned files. Structured return:
 {file, status: fixed|rebuilt|already_clean, defects_fixed[], note}.
 
+## Update (2026-07-04): Phase D CONVERGED — verification complete
+
+Full arc: 1483 questions independently verified → 213 flagged (64 wrong
+answers, 85 bad explanations, 45 figure, 35 option collisions, ~14 names) →
+all 213 fixed with counterexamples (smoke+render gated) → re-verified fresh:
+208/213 confirmed first pass → 5 stragglers hand-fixed and deterministically
+brute-force verified (309 degenerate system, 619 A=B 2nd-factor, 994/995
+shuffle-position reasons, 1232 float-cents off-by-one). All committed.
+Remaining: FINAL full re-audit (expanded names) must show 0 hard flags, then
+tsc/build gates, UI spot-check, then Phase F deploy (ASK USER before push).
+
 ## Update (2026-07-02 newest+1): Phase D verify results in
 
 Survived a Claude Code crash mid-verify (resumed from journals, no work lost).
