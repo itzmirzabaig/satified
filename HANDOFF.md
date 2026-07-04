@@ -104,6 +104,21 @@ currency as `\$`, names → role+pronoun, figures rebuilt to house style when
 broken) → smoke until PASS. Only touch assigned files. Structured return:
 {file, status: fixed|rebuilt|already_clean, defects_fixed[], note}.
 
+## Update (2026-07-04): COMPLETE — awaiting user's deploy go-ahead
+
+All phases A–E done. Final state:
+- 1483 questions, sequentially numbered, all verified. 107 backup rescued +
+  28 hidden generators recovered.
+- Audit: **0 hard flags** across 1483. `npm run build`: exit 0. tsc: 199
+  (non-blocking strictness noise; esbuild/vite ignore). UI spot-check passed
+  (loads, MathJax, MC grading green, explanations, figures all render).
+- Everything committed on `qbank-repair`, pushed to GitHub. `main` UNTOUCHED.
+
+**Phase F (deploy) is the only remaining step and is USER-GATED.** To deploy:
+`git checkout main && git merge qbank-repair && git push` (Cloudflare Pages
+auto-builds from source and publishes). Do NOT run this without the user's
+explicit go-ahead. User was asked and did not answer yet — holding.
+
 ## Update (2026-07-04): Phase D CONVERGED — verification complete
 
 Full arc: 1483 questions independently verified → 213 flagged (64 wrong
