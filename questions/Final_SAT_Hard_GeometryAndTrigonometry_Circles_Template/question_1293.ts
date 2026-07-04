@@ -33,32 +33,43 @@ export const generator_1293 = {
     // STEP 2: Translation
     const shift = getRandomInt(50, 120);
     
-    // STEP 3: Build Mafs figure
-    // Show both circles: original and translated
-    const _svg_0 = shift + 15; const _svg_1 = centerY + radius + 3;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-10,xmax=_svg_0;
-      const ymin=-2,ymax=_svg_1;
-      const W=400,H=350,P=40;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      const xstep=Math.ceil((_svg_0-(-10))/8);
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0) continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
+    // STEP 3: Build the figure for Circle A only (Circle B is "not shown").
+    // Circle A: center (0, centerY), radius = sqrt(rSquared). Use ONE equal
+    // x/y scale so the drawn circle actually encodes the true radius.
+    const W = 450, H = 300, P = 40;
+    const xmin = -5, xmax = 5;
+    const ymin = -1, ymax = centerY + radius + 2;
+    // Pick the tighter scale on each axis, then use it for both so the circle
+    // is not distorted and stays fully on-screen.
+    const sx = (W - 2 * P) / (xmax - xmin);
+    const sy = (H - 2 * P) / (ymax - ymin);
+    const s = Math.min(sx, sy);
+    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
+      const cx0 = P + (0 - xmin) * s;
+      const cy0 = H - P - (0 - ymin) * s;
+      const mx = (x: number) => P + (x - xmin) * s;
+      const my = (y: number) => H - P - (y - ymin) * s;
+      let out = '';
+      // Axes
+      out += '<line x1="' + P + '" y1="' + cy0 + '" x2="' + (W - P) + '" y2="' + cy0 + '" stroke="currentColor" stroke-width="1.5"/>';
+      out += '<line x1="' + cx0 + '" y1="' + P + '" x2="' + cx0 + '" y2="' + (H - P) + '" stroke="currentColor" stroke-width="1.5"/>';
+      // x-axis ticks
+      for (let x = Math.ceil(xmin); x <= Math.floor(xmax); x++) {
+        if (x === 0) continue;
+        out += '<text x="' + mx(x) + '" y="' + (cy0 + 14) + '" text-anchor="middle" font-size="10" fill="currentColor">' + x + '</text>';
       }
-      return s;
-    })()}${(() => {
-      const xmin=-10,xmax=(shift + 15);
-      const ymin=-2,ymax=(centerY + radius + 3);
-      const W=400,H=350,P=40;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      const r=((centerY))*(400-2*40)/((shift + 15)-(-10));
-      return '<circle cx="'+mx(0)+'" cy="'+my((centerY))+'" r="'+r+'" fill="none" stroke="currentColor" stroke-width="2"/>';
+      // y-axis ticks
+      for (let y = Math.ceil(ymin); y <= Math.floor(ymax); y++) {
+        if (y === 0) continue;
+        out += '<text x="' + (cx0 - 8) + '" y="' + (my(y) + 4) + '" text-anchor="end" font-size="10" fill="currentColor">' + y + '</text>';
+      }
+      // Circle A: center (0, centerY), radius sqrt(rSquared) in data units
+      const pr = radius * s;
+      out += '<circle cx="' + cx0 + '" cy="' + my(centerY) + '" r="' + pr.toFixed(2) + '" fill="none" stroke="#3b82f6" stroke-width="2"/>';
+      // Center dot + label
+      out += '<circle cx="' + cx0 + '" cy="' + my(centerY) + '" r="2.5" fill="#3b82f6"/>';
+      out += '<text x="' + (cx0 + 8) + '" y="' + (my(centerY) - 6) + '" font-size="11" fill="currentColor">A</text>';
+      return out;
     })()}</svg></div>`;
 
     const answer = 4 * rSquared;
@@ -68,7 +79,7 @@ export const generator_1293 = {
       figureCode: mafsCode,
       options: [],
       correctAnswer: answer.toString(),
-      explanation: `Circle A has radius $\\\\sqrt{${rSquared}}$. Since Circle B has the same radius, $a = ${rSquared}$. Therefore, $4a = 4(${rSquared}) = ${answer}$. Note that the translation affects the center coordinates $(h, k)$ but not the value of $a$.`
+      explanation: `Circle A has radius $\\sqrt{${rSquared}}$. Since Circle B has the same radius, the value of $a$ (which equals the radius squared) is unchanged: $a = ${rSquared}$. Therefore, $4a = 4(${rSquared}) = ${answer}$. Note that the translation ${shift} units to the right affects the center coordinates $(h, k)$ but not the value of $a$.`
     };
   }
 };

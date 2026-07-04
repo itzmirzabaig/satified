@@ -5,14 +5,26 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1315
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [arc length: 5π (symbolic), angle: 100°]
+ * - Number ranges: [arc length: symbolic multiple of π, angle x in degrees]
  * - Difficulty factors: [Arc length proportion, circumference calculation]
- * - Distractor patterns: [Adding instead of ratio, wrong angle usage]
- * - Constraints: [Angle must be less than 360°]
+ * - Distractor patterns: [Returning the given arc, using whole circumference, arithmetic slip]
+ * - Constraints: [Angle < 360°, radius and both arc multiples are clean integers]
  * - Question type: [Figure→Multiple Choice Text]
- * - Figure generation: [Circle with arc, angle marker - requires Mafs]
+ * - Figure generation: [Circle with center O, points A/B/C/D and central angle x°]
+ *
+ * FIXED:
+ * - Removed the broken 4th "distractor" `\frac{round(m*2)}{2}\pi`, which equalled
+ *   the correct answer exactly on every draw (Math.round(m*2)/2 === m). Distractors
+ *   are now three provably distinct integer multiples of π that never collide with
+ *   the correct answer or each other.
+ * - Collapsed the fragile two code paths (integer vs. non-integer radius) into a
+ *   single clean path: pick x° and an integer radius with (x°·r) divisible by 180,
+ *   so the given arc multiplier m = x°·r/180 and the answer 2r − m are both integers.
+ * - Distractor explanation reasons are now tied to each option's actual identity
+ *   (given arc / whole circumference / arithmetic slip), not to shuffled position.
+ * - Added a real SVG figure encoding the central angle x° and the labelled arcs.
  */
 
 export const generator_1315 = {
@@ -23,151 +35,143 @@ export const generator_1315 = {
     skill: "Circles",
     difficulty: "Hard"
   },
-  
-  generate: (): QuestionData => {
-    // STEP 1: Generate angle x (in degrees) - should be nice number
-    const xDegrees = getRandomElement([60, 72, 90, 100, 120, 135, 150]);
-    const xRadians = xDegrees * Math.PI / 180;
-    
-    // STEP 2: Generate arc ADC length (symbolic multiple of π)
-    const arcMultiplier = getRandomInt(2, 8);
-    const arcADC = `${arcMultiplier}\\\\pi`;
-    const arcADCNumeric = arcMultiplier * Math.PI;
-    
-    // STEP 3: Calculate radius from arc length formula: L = (θ/360) × 2πr
-    // arcADC = (x/360) × 2πr
-    // r = (arcADC × 360) / (2π × x) = (arcMultiplier × 360) / (2 × x)
-    const radius = (arcMultiplier * 360) / (2 * xDegrees);
-    
-    // Verify radius is reasonable
-    if (!Number.isInteger(radius) || radius < 1) {
-      // Adjust to ensure integer radius by picking different arcMultiplier
-      // Use while loop instead of recursion
-      let validRadius = 0;
-      let validMultiplier = arcMultiplier;
-      let attempts = 0;
-      while ((!Number.isInteger(validRadius) || validRadius < 1) && attempts < 20) {
-        validMultiplier = getRandomInt(2, 20);
-        validRadius = (validMultiplier * 360) / (2 * xDegrees);
-        attempts++;
-      }
-      if (attempts >= 20) {
-        // Fallback to known good values
-        validMultiplier = xDegrees / 10;
-        validRadius = (validMultiplier * 360) / (2 * xDegrees);
-      }
-      // Continue with valid values
-      const finalArcMultiplier = validMultiplier;
-      const finalRadius = validRadius;
-      
-      // Recalculate with valid values
-      const finalCircumference = 2 * Math.PI * finalRadius;
-      const finalRemainingDegrees = 360 - xDegrees;
-      const finalArcABCMultiplier = (finalRemainingDegrees / 360) * 2 * finalRadius;
-      
-      const finalArcABCText = Number.isInteger(finalArcABCMultiplier) 
-        ? `${finalArcABCMultiplier}\\\\pi`
-        : `\\\\frac{${finalRemainingDegrees * finalRadius}}{180}\\\\pi`;
-      
-      const _svg_0 = finalRadius + 3;
-      const finalMafsCode = `<div style="width:100%;max-width:400px;margin:0 auto;"><svg viewBox="0 0 350 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-              const xmin=-_svg_0,xmax=_svg_0;
-              const ymin=-_svg_0,ymax=_svg_0;
-              const W=350,H=350,P=40;
-              const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-              const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-              let s='';
-              s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5"/>';
-              s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-              return s;
-            })()}${(() => {
-              const xmin=-(finalRadius + 3),xmax=(finalRadius + 3);
-              const ymin=-(finalRadius + 3),ymax=(finalRadius + 3);
-              const W=350,H=350,P=40;
-              const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-              const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-              const scale=(W-2*P)/(xmax-xmin);
-              return '<circle cx="'+mx(0)+'" cy="'+my(0)+'" r="'+(((finalRadius))*scale)+'" fill="none" stroke="currentColor" stroke-width="2"/>';
-            })()}</svg></div>`;
 
-      const finalCorrectText = `${finalArcABCMultiplier}\\\\pi`;
-      
-      const finalOptionsData = [
-        { text: `${(xDegrees / 360) * 2 * finalRadius}\\\\pi`, isCorrect: false },
-        { text: finalCorrectText, isCorrect: true },
-        { text: `${finalArcABCMultiplier + 3}\\\\pi`, isCorrect: false },
-        { text: `\\\\frac{${Math.round(finalArcABCMultiplier * 2)}}{2}\\\\pi`, isCorrect: false }
-      ];
-      
-      const finalShuffledOptions = shuffle(finalOptionsData).map((opt, index) => ({
-        ...opt,
-        letter: String.fromCharCode(65 + index)
-      }));
-      
-      const finalCorrectLetter = finalShuffledOptions.find(o => o.isCorrect)!.letter;
-      const finalIncorrectOptions = finalShuffledOptions.filter(o => !o.isCorrect);
-      
-      return {
-        questionText: `The circle above has center $O$, the length of arc $\\widehat{ADC}$ is $${finalArcMultiplier}\\\\pi$, and $x=${xDegrees}$. What is the length of arc $\\widehat{ABC}$?`,
-        figureCode: null,
-        options: finalShuffledOptions.map(o => ({ text: o.text })),
-        correctAnswer: finalCorrectText,
-        explanation: `Choice ${finalCorrectLetter} is correct. The arc length formula is $\\frac{\\theta}{360} \\times 2\\pi r$. From arc $\\widehat{ADC}$: $${finalArcMultiplier}\\\\pi = \\frac{${xDegrees}}{360} \\times 2\\pi r$, giving $r = ${finalRadius}$. The circumference is $2\\pi(${finalRadius}) = ${2 * finalRadius}\\\\pi$. Arc $\\widehat{ABC}$ corresponds to the remaining angle $360° - ${xDegrees}° = ${finalRemainingDegrees}°$, so its length is $\\frac{${finalRemainingDegrees}}{360} \\times ${2 * finalRadius}\\\\pi = ${finalArcABCMultiplier}\\\\pi$. Choice ${finalIncorrectOptions[0].letter} is incorrect; this uses the wrong arc measure. Choice ${finalIncorrectOptions[1].letter} is incorrect; this results from arithmetic errors. Choice ${finalIncorrectOptions[2].letter} is incorrect; this uses an incorrect formula.`
-      };
+  generate: (): QuestionData => {
+    // STEP 1: Central angle x (degrees) for the MINOR arc ADC. Nice values only.
+    const xDegrees = getRandomElement([60, 72, 90, 100, 120, 135, 150]);
+
+    // STEP 2: Pick an integer radius so that the arc-ADC multiplier is an integer.
+    //   arc ADC length = (x/360)·2πr = (x·r/180)π. For an integer multiple of π we
+    //   need (x·r) divisible by 180. The major arc ABC = (2r − m)π is then also an
+    //   integer multiple of π automatically.
+    let radius = 0;
+    let arcMultiplier = 0; // multiplier of the given minor arc ADC
+    let tries = 0;
+    while (tries++ < 60) {
+      const r = getRandomInt(3, 30);
+      if ((xDegrees * r) % 180 !== 0) continue;
+      const m = (xDegrees * r) / 180;
+      if (m < 2) continue;               // keep the given arc a "nice" size (≥ 2π)
+      if (2 * r - m < 1) continue;       // major arc must be positive
+      radius = r;
+      arcMultiplier = m;
+      break;
     }
-    
-    // STEP 4: Calculate circumference
-    const circumference = 2 * Math.PI * radius;
-    
-    // STEP 5: Calculate arc ABC (the major arc)
-    // Arc ABC corresponds to angle (360 - x)
-    const remainingDegrees = 360 - xDegrees;
-    const arcABC = (remainingDegrees / 360) * circumference;
-    
-    // Format as clean multiple of π
-    const arcABCMultiplier = (remainingDegrees / 360) * 2 * radius;
-    
-    // Should be clean number
-    const arcABCText = Number.isInteger(arcABCMultiplier) 
-      ? `${arcABCMultiplier}\\\\pi`
-      : `\\\\frac{${remainingDegrees * radius}}{180}\\\\pi`; // Fallback
-    
-    // STEP 6: Generate distractors
-    // Distractor A: Just using x degrees instead of (360-x)
-    const distractorAMult = (xDegrees / 360) * 2 * radius;
-    
-    // Distractor B: Wrong operation (adding arc lengths wrong)
-    const distractorBMult = arcABCMultiplier + 3; // Arbitrary offset
-    
-    // Distractor C: Using half the angle
-    const distractorCMult = ((360 - xDegrees/2) / 360) * 2 * radius;
-    
-    // STEP 7: Build Mafs figure
-    const mafsCode = null;
+    if (radius === 0) {
+      // Deterministic fallback: the smallest r making (x·r) divisible by 180 is
+      // step = 180/gcd(x,180); take 2·step so the given arc multiple is ≥ 2.
+      const step = 180 / gcd(xDegrees, 180);
+      radius = 2 * step;
+      arcMultiplier = (xDegrees * radius) / 180;
+    }
+
+    // STEP 3: Derived clean quantities (all integer multiples of π).
+    const circumferenceMult = 2 * radius;                 // full circumference / π
+    const remainingDegrees = 360 - xDegrees;              // central angle of major arc ABC
+    const arcABCMultiplier = circumferenceMult - arcMultiplier; // answer, major arc ABC / π
 
     const correctText = `${arcABCMultiplier}\\\\pi`;
-    
+
+    // STEP 4: Distractors — three DISTINCT integer multiples of π, each a real trap.
+    //   d1: returns the given minor arc ADC (used the wrong arc).
+    //   d2: the whole circumference (forgot to subtract the minor arc).
+    //   d3: an arithmetic slip near the correct value.
+    const dGivenArc = arcMultiplier;
+    const dCircumference = circumferenceMult;
+    const used = new Set([arcABCMultiplier, dGivenArc, dCircumference]);
+    let dSlip = arcABCMultiplier + 2;
+    let delta = 2;
+    while (used.has(dSlip) && delta < 25) { delta++; dSlip = arcABCMultiplier + delta; }
+
     const optionsData = [
-      { text: `${distractorAMult}\\\\pi`, isCorrect: false },
-      { text: correctText, isCorrect: true },
-      { text: `${distractorBMult}\\\\pi`, isCorrect: false },
-      { text: `\\\\frac{${Math.round(arcABCMultiplier * 2)}}{2}\\\\pi`, isCorrect: false }
+      { text: `${dGivenArc}\\\\pi`, isCorrect: false, kind: 'givenArc' as const },
+      { text: correctText, isCorrect: true, kind: 'correct' as const },
+      { text: `${dCircumference}\\\\pi`, isCorrect: false, kind: 'circumference' as const },
+      { text: `${dSlip}\\\\pi`, isCorrect: false, kind: 'slip' as const }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
-    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+    const letterOf = (kind: string) => shuffledOptions.find(o => o.kind === kind)!.letter;
+
+    // STEP 5: Figure — circle with center O, points A, B, C, D and central angle x°.
+    const figureCode = buildCircleArcFigure(xDegrees);
+
     return {
-      questionText: `The circle above has center $O$, the length of arc $\\widehat{ADC}$ is $${arcADC}$, and $x=${xDegrees}$. What is the length of arc $\\widehat{ABC}$?`,
-      figureCode: null,
+      questionText: `In the circle above with center $O$, the length of arc $\\widehat{ADC}$ is $${arcMultiplier}\\\\pi$ and $x=${xDegrees}$. What is the length of arc $\\widehat{ABC}$?`,
+      figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The arc length formula is $\\frac{\\theta}{360} \\times 2\\pi r$. From arc $\\widehat{ADC}$: $${arcMultiplier}\\\\pi = \\frac{${xDegrees}}{360} \\times 2\\pi r$, giving $r = ${radius}$. The circumference is $2\\pi(${radius}) = ${2 * radius}\\\\pi$. Arc $\\widehat{ABC}$ corresponds to the remaining angle $360° - ${xDegrees}° = ${remainingDegrees}°$, so its length is $\\frac{${remainingDegrees}}{360} \\times ${2 * radius}\\\\pi = ${arcABCMultiplier}\\\\pi$. Choice ${incorrectOptions[0].letter} is incorrect; this uses the wrong arc measure. Choice ${incorrectOptions[1].letter} is incorrect; this results from arithmetic errors. Choice ${incorrectOptions[2].letter} is incorrect; this uses an incorrect formula.`
+      explanation: `Choice ${correctLetter} is correct. The arc length formula is $\\frac{\\theta}{360} \\times 2\\pi r$. From arc $\\widehat{ADC}$: $${arcMultiplier}\\\\pi = \\frac{${xDegrees}}{360} \\times 2\\pi r$, so $r = ${radius}$ and the circumference is $2\\pi(${radius}) = ${circumferenceMult}\\\\pi$. Arc $\\widehat{ABC}$ is the major arc, spanning $360° - ${xDegrees}° = ${remainingDegrees}°$, so its length is $\\frac{${remainingDegrees}}{360} \\times ${circumferenceMult}\\\\pi = ${arcABCMultiplier}\\\\pi$. Choice ${letterOf('givenArc')} is incorrect; it is the length of the given minor arc $\\widehat{ADC}$, not $\\widehat{ABC}$. Choice ${letterOf('circumference')} is incorrect; it is the full circumference and forgets to subtract arc $\\widehat{ADC}$. Choice ${letterOf('slip')} is incorrect; it results from an arithmetic error.`
     };
   }
 };
+
+// Greatest common divisor for the divisibility fallback.
+function gcd(a: number, b: number): number {
+  a = Math.abs(a); b = Math.abs(b);
+  while (b) { [a, b] = [b, a % b]; }
+  return a || 1;
+}
+
+// Build a self-contained SVG of a circle with center O, points A, B, C on the
+// circle, D on the minor arc and B on the major arc, and the central angle x°
+// marked at O between OA and OC. The angle drawn equals xDegrees, so the figure
+// encodes the question's number.
+function buildCircleArcFigure(xDegrees: number): string {
+  const W = 320, H = 300, cx = 160, cy = 150, R = 96;
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  // Place the minor arc ADC symmetrically about the positive x-axis direction so
+  // the angle marker reads cleanly. A at +x/2, C at -x/2 (measured from +x axis).
+  const half = xDegrees / 2;
+  const angA = half;            // point A angle (degrees, standard position)
+  const angC = -half;           // point C angle
+  const angD = 0;               // D on minor arc, midway between A and C
+  const angB = 180;             // B on major arc, opposite side
+  // SVG y grows downward, so negate the y component.
+  const pt = (deg: number, rad: number) => ({
+    x: cx + rad * Math.cos(toRad(deg)),
+    y: cy - rad * Math.sin(toRad(deg))
+  });
+  const A = pt(angA, R), C = pt(angC, R), D = pt(angD, R), B = pt(angB, R);
+  const lA = pt(angA, R + 16), lC = pt(angC, R + 16), lD = pt(angD, R + 16), lB = pt(angB, R + 16);
+
+  // Central angle arc marker between OA and OC (small radius near O).
+  const mR = 30;
+  const mStart = pt(angC, mR), mEnd = pt(angA, mR);
+  const largeArc = xDegrees > 180 ? 1 : 0;
+  // sweep from C (lower) to A (upper) going counter-clockwise in math => in SVG
+  // (y flipped) that is a sweep-flag of 0.
+  const anglePath = `M ${mStart.x.toFixed(1)} ${mStart.y.toFixed(1)} A ${mR} ${mR} 0 ${largeArc} 0 ${mEnd.x.toFixed(1)} ${mEnd.y.toFixed(1)}`;
+  // Label position for x°, just outside the marker along angle 0 (the bisector).
+  const xLabel = pt(0, mR + 16);
+
+  return `<div style="width:100%;max-width:320px;margin:0 auto;">` +
+    `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;font-family:sans-serif;user-select:none;" xmlns="http://www.w3.org/2000/svg">` +
+    // circle
+    `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="currentColor" stroke-width="2"/>` +
+    // radii OA and OC
+    `<line x1="${cx}" y1="${cy}" x2="${A.x.toFixed(1)}" y2="${A.y.toFixed(1)}" stroke="currentColor" stroke-width="1.5"/>` +
+    `<line x1="${cx}" y1="${cy}" x2="${C.x.toFixed(1)}" y2="${C.y.toFixed(1)}" stroke="currentColor" stroke-width="1.5"/>` +
+    // central angle marker
+    `<path d="${anglePath}" fill="none" stroke="#3b82f6" stroke-width="1.5"/>` +
+    `<text x="${xLabel.x.toFixed(1)}" y="${xLabel.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="14" fill="#3b82f6">x°</text>` +
+    // center point + label
+    `<circle cx="${cx}" cy="${cy}" r="3" fill="currentColor"/>` +
+    `<text x="${(cx - 12).toFixed(1)}" y="${(cy + 4).toFixed(1)}" text-anchor="middle" font-size="14" fill="currentColor">O</text>` +
+    // points on circle
+    `<circle cx="${A.x.toFixed(1)}" cy="${A.y.toFixed(1)}" r="3.5" fill="#3b82f6"/>` +
+    `<circle cx="${B.x.toFixed(1)}" cy="${B.y.toFixed(1)}" r="3.5" fill="#3b82f6"/>` +
+    `<circle cx="${C.x.toFixed(1)}" cy="${C.y.toFixed(1)}" r="3.5" fill="#3b82f6"/>` +
+    `<circle cx="${D.x.toFixed(1)}" cy="${D.y.toFixed(1)}" r="3.5" fill="#3b82f6"/>` +
+    // labels
+    `<text x="${lA.x.toFixed(1)}" y="${lA.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="14" fill="currentColor">A</text>` +
+    `<text x="${lB.x.toFixed(1)}" y="${lB.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="14" fill="currentColor">B</text>` +
+    `<text x="${lC.x.toFixed(1)}" y="${lC.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="14" fill="currentColor">C</text>` +
+    `<text x="${lD.x.toFixed(1)}" y="${lD.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="14" fill="currentColor">D</text>` +
+    `</svg></div>`;
+}

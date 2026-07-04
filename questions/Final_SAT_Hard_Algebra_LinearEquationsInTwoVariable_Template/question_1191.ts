@@ -1,16 +1,34 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1191
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [System with perpendicular lines using parameters a and b]
- * - Difficulty factors: [Determining which system is perpendicular given original is perpendicular]
- * - Distractor patterns: [A: correct, B: parallel condition, C: different scaling, D: original system]
- * - Constraints: [Must maintain 5a = 7b relationship from original]
- * - Question type: [Text → Multiple Choice Text]
+ * - Skill: Linear Equations In Two Variables (perpendicular lines, a constant to determine)
+ * - Question type: [Text -> Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * REBUILD (root-cause fix for WRONG_ANSWER / unanswerable):
+ *   The previous version asked about "the given pair of equations" but never
+ *   presented any system (figureCode was null and no equations appeared in the
+ *   stem), and its answer options contained the undefined letters a and b as
+ *   raw text. With a and b unconstrained and no system shown, perpendicularity
+ *   was mathematically indeterminate, so the "correct" choice was arbitrary.
+ *
+ *   The question is rebuilt to be fully self-contained and uniquely answerable:
+ *   a concrete pair of lines is printed in the stem, one of them containing a
+ *   single unknown constant k. The lines are stated to be perpendicular, and the
+ *   student solves for k. The answer is a live computation from the drawn
+ *   coefficients.
+ *
+ *   Math: line 1 is a1*x + b1*y = c1 with slope -a1/b1; line 2 is a2*x + k*y = c2
+ *   with slope -a2/k. Perpendicular <=> (-a1/b1)(-a2/k) = -1 <=> k = -(a1*a2)/b1.
+ *
+ *   Distractors are the three other classic slope-condition mistakes
+ *   (dropping the negative, and using the PARALLEL condition with/without the
+ *   sign): {-K}, {D}, {-D} where D = (a2*b1)/a1 is the parallel-condition value.
+ *   Draws are constrained so all four values are integers and mutually distinct.
  */
 
 export const generator_1191 = {
@@ -21,61 +39,82 @@ export const generator_1191 = {
     skill: "Linear Equations In Two Variable",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // Based on original analysis: implied original system is 5x - 7y = 1 and ax + by = 1 perpendicular
-    // This means 5a = -7b, or 5a = 7b with sign consideration
-    
-    const aCoeff = getRandomInt(2, 8);
-    const bCoeff = getRandomInt(aCoeff + 1, aCoeff + 5);
-    // Relationship: aCoeff * a = bCoeff * b for perpendicular to work out
-    
-    // Option A structure: (2*aCoeff)x + (bCoeff)y = 1 and ax - 2by = 1
-    // Actually following original pattern: 10x + 7y = 1 and ax - 2by = 1
-    
-    const m = getRandomInt(8, 15);
-    const n = getRandomInt(4, 9);
-    
-    // Fixed: Proper LaTeX formatting without raw newlines in strings
-    // Using separate lines for readability but proper string concatenation
-    const optionsData = [
-      { 
-        text: `${m}x + ${n}y = 1$ and ax - 2by = 1`, 
-        isCorrect: true 
-      },
-      { 
-        text: `${m}x + ${n}y = 1$ and ax + 2by = 1`, 
-        isCorrect: false, 
-        reason: "this creates parallel lines, not perpendicular" 
-      },
-      { 
-        text: `${m}x + ${n}y = 1$ and 2ax + by = 1`, 
-        isCorrect: false, 
-        reason: "does not maintain the perpendicular relationship" 
-      },
-      { 
-        text: `${Math.floor(m/2)}x - ${n}y = 1$ and ax + by = 1`, 
-        isCorrect: false, 
-        reason: "this represents the original system, not a new perpendicular pair" 
-      }
-    ];
-    
-    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
-      ...opt,
-      letter: String.fromCharCode(65 + index)
-    }));
-    
-    const correctOption = shuffledOptions.find(opt => opt.isCorrect);
-    const correctLetter = correctOption.letter;
-    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+    let questionText = '';
+    let correctText = '';
+    let explanation = '';
+    let options: string[] = [];
+
+    let tries = 0;
+    while (tries++ < 200) {
+      // Coefficients of the two printed lines.
+      const a1 = getRandomInt(2, 8);
+      const b1 = getRandomInt(2, 6);
+      const a2 = getRandomInt(2, 8);
+      const c1 = getRandomInt(1, 12);
+      const c2 = getRandomInt(1, 12);
+
+      // Correct value: perpendicular condition k = -(a1*a2)/b1 (must be integer).
+      if ((a1 * a2) % b1 !== 0) continue;
+      const K = -(a1 * a2) / b1;
+
+      // Parallel-condition value (the tempting wrong method): equate slopes,
+      // -a1/b1 = -a2/k  =>  k = (a2*b1)/a1 (must be integer to stay a clean option).
+      if ((a2 * b1) % a1 !== 0) continue;
+      const D = (a2 * b1) / a1;
+
+      // Four candidate answers: {K, -K, D, -D}. Require all distinct and nonzero.
+      const cand = [K, -K, D, -D];
+      if (cand.some(v => v === 0)) continue;
+      if (new Set(cand).size !== 4) continue;
+
+      const optionsData = [
+        {
+          text: `k = ${K}`,
+          isCorrect: true
+        },
+        {
+          text: `k = ${-K}`,
+          isCorrect: false,
+          reason: "drops the negative sign from the perpendicular condition (this makes the slopes' product $+1$, not $-1$)"
+        },
+        {
+          text: `k = ${D}`,
+          isCorrect: false,
+          reason: "comes from setting the slopes equal, which would make the lines parallel rather than perpendicular"
+        },
+        {
+          text: `k = ${-D}`,
+          isCorrect: false,
+          reason: "combines the parallel-slope setup with a sign error, so it is neither the perpendicular nor a correct value"
+        }
+      ];
+
+      const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
+        ...opt,
+        letter: String.fromCharCode(65 + index)
+      }));
+
+      const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+      const correctLetter = correctOption.letter;
+      const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
+
+      correctText = `${correctLetter}. $${correctOption.text}$`;
+      options = shuffledOptions.map(o => `${o.letter}. $${o.text}$`);
+
+      questionText = `In the $xy$-plane, the graphs of the equations $${a1}x + ${b1}y = ${c1}$ and $${a2}x + ky = ${c2}$ are perpendicular lines, where $k$ is a constant. What is the value of $k$?`;
+
+      explanation = `Choice ${correctLetter} is correct. Rewriting each line in slope-intercept form, the first line $${a1}x + ${b1}y = ${c1}$ has slope $-\\frac{${a1}}{${b1}}$, and the second line $${a2}x + ky = ${c2}$ has slope $-\\frac{${a2}}{k}$. Two lines are perpendicular exactly when the product of their slopes is $-1$: $\\left(-\\frac{${a1}}{${b1}}\\right)\\left(-\\frac{${a2}}{k}\\right) = -1$, which gives $\\frac{${a1 * a2}}{${b1}k} = -1$, so $k = -\\frac{${a1 * a2}}{${b1}} = ${K}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+      break;
+    }
+
     return {
-      questionText: `In the given pair of equations, $a$ and $b$ are constants. The graph of this pair of equations in the $xy$-plane is a pair of perpendicular lines. Which of the following pairs of equations also represents a pair of perpendicular lines?`,
+      questionText,
       figureCode: null,
-      // Fixed: Options as simple strings with proper LaTeX, no object wrapping
-      options: shuffledOptions.map(o => `${o.letter}. $${o.text}`),
-      correctAnswer: `${correctLetter}. $${correctOption.text}`,
-      explanation: `Choice ${correctLetter} is correct. If the original system with coefficients satisfying the perpendicular condition is given, this option maintains that relationship through consistent transformation of coefficients. The slopes multiply to $-1$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      options,
+      correctAnswer: correctText,
+      explanation
     };
   }
 };

@@ -1,16 +1,25 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1019
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [coefficients: small integers 3-5, constants: small integers 2-9]
+ * - Number ranges: [coefficients: small integers, constants: small integers]
  * - Difficulty factors: [Polynomial expansion, coefficient comparison, system of equations]
  * - Distractor patterns: [Wrong products, wrong signs, partial solutions]
  * - Constraints: [Equation must hold for all x, so coefficients must match exactly]
  * - Question type: [Fill-in-the-blank]
  * - Figure generation: [None - algebraic manipulation only]
+ *
+ * FORM (mirrors the real SAT item):
+ *   (a x + m)(n x^2 - b x + p) = [cubic]x^3 + [c2]x^2 + [c1]x + [c0]
+ * where m, n, p and the right-hand coefficients are shown as NUMBERS and
+ * a, b are the unknown CONSTANTS the student must find. The student recovers
+ *   a = cubic / n            (from the x^3 coefficient)
+ *   b = (m n - c2) / a       (from the x^2 coefficient)
+ * and reports ab. Both a and b are uniquely determined by the visible
+ * equation, so the question is well-posed for every draw.
  */
 
 export const generator_1019 = {
@@ -21,67 +30,63 @@ export const generator_1019 = {
     skill: "Equivalent Expressions",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate random coefficients for (ax + m)(nx² + bx + p) = expanded form
-    // Original used: (ax+3)(5x²-bx+4) = 20x³-9x²-2x+12, find ab = 24
-    
-    // Generate base values - all randomized
-    const a = getRandomInt(2, 6);
-    const n = getRandomInt(3, 7);
-    const m = getRandomInt(2, 5);
-    const p = getRandomInt(2, 5);
-    const b = getRandomInt(2, 6);
-    
-    // Calculate the product a*n for x³ coefficient
-    const cubicCoeff = a * n;
-    
-    // Calculate expanded form coefficients
-    // (ax + m)(nx² - bx + p) = anx³ - abx² + apx + mnx² - mbx + mp
-    // = anx³ + (-ab + mn)x² + (ap - mb)x + mp
-    
-    const coeffX2 = -a * b + m * n;
-    const coeffX1 = a * p - m * b;
-    const constant = m * p;
-    
-    // Calculate correct answer: a * b
+    // STEP 1: Generate the underlying (true) values. a and b stay symbolic in
+    // the stem; m, n, p and the expanded coefficients are shown as numbers.
+    let a = getRandomInt(2, 6);
+    let n = getRandomInt(3, 7);
+    let m = getRandomInt(2, 5);
+    let p = getRandomInt(2, 5);
+    let b = getRandomInt(2, 6);
+
+    // Expanded coefficients of (a x + m)(n x^2 - b x + p):
+    //   = a n x^3 + (-a b + m n) x^2 + (a p - m b) x + m p
+    let coeffX2 = -a * b + m * n;
+    let coeffX1 = a * p - m * b;
+
+    // Guard: avoid zero x^2 / x coefficients so the shown polynomial never
+    // renders a "+0x^2" or "+0x" term. Bounded retries.
+    let tries = 0;
+    while ((coeffX2 === 0 || coeffX1 === 0) && tries++ < 50) {
+      a = getRandomInt(2, 6);
+      n = getRandomInt(3, 7);
+      m = getRandomInt(2, 5);
+      p = getRandomInt(2, 5);
+      b = getRandomInt(2, 6);
+      coeffX2 = -a * b + m * n;
+      coeffX1 = a * p - m * b;
+    }
+
+    const cubicCoeff = a * n;     // x^3 coefficient (shown)
+    const constant = m * p;       // constant term (shown)
+
+    // Correct answer: a * b (computed live).
     const correctAnswer = (a * b).toString();
-    
-    // STEP 2: Format question text with proper signs
-    const signB = b >= 0 ? '-' : '+';
-    const absB = Math.abs(b);
-    
-    const signCoeffX2 = coeffX2 >= 0 ? '+' : '-';
+
+    // STEP 2: Sign/magnitude helpers for the RHS terms.
     const absCoeffX2 = Math.abs(coeffX2);
-    
-    const signCoeffX1 = coeffX1 >= 0 ? '+' : '-';
+    const signCoeffX2 = coeffX2 >= 0 ? '+' : '-';
     const absCoeffX1 = Math.abs(coeffX1);
-    
-    const signConst = constant >= 0 ? '+' : '-';
-    const absConst = Math.abs(constant);
-    
-    // STEP 3: Build question text
-    const questionText = `The equation $(${a}x+${m})(${n}x^{2}${signB}${absB}x+${p})=${cubicCoeff}x^{3}${signCoeffX2}${absCoeffX2}x^{2}${signCoeffX1}${absCoeffX1}x${signConst}${absConst}$ is true for all $x$, where $a$ and $b$ are constants. What is the value of $ab$?`;
-    
-    // STEP 4: Create explanation with step-by-step expansion
-    const explanation = `Expanding the left side: $(${a}x+${m})(${n}x^{2}${signB}${absB}x+${p})$.
-    
-Using the distributive property:
-- $${a}x \\cdot ${n}x^{2} = ${cubicCoeff}x^{3}$
-- $${a}x \\cdot (${signB}${absB}x) = ${a * -b < 0 ? '' : '+'}${a * -b}x^{2}$
-- $${a}x \\cdot ${p} = ${a * p < 0 ? '' : '+'}${a * p}x$
-- $${m} \\cdot ${n}x^{2} = ${m * n < 0 ? '' : '+'}${m * n}x^{2}$
-- $${m} \\cdot (${signB}${absB}x) = ${m * -b < 0 ? '' : '+'}${m * -b}x$
-- $${m} \\cdot ${p} = ${m * p < 0 ? '' : '+'}${m * p}$
+    const signCoeffX1 = coeffX1 >= 0 ? '+' : '-';
 
-Combining like terms:
-- $x^{3}$ coefficient: $${cubicCoeff}$
-- $x^{2}$ coefficient: $${a * -b}${m * n >= 0 ? '+' : ''}${m * n} = ${coeffX2}$
-- $x$ coefficient: $${a * p}${m * -b >= 0 ? '+' : ''}${m * -b} = ${coeffX1}$
-- Constant: $${constant}$
+    // STEP 3: Build question text. a and b appear as literal symbols; the
+    // second factor is (n x^2 - b x + p) with b symbolic.
+    const questionText = `The equation $(ax+${m})(${n}x^{2}-bx+${p})=${cubicCoeff}x^{3}${signCoeffX2}${absCoeffX2}x^{2}${signCoeffX1}${absCoeffX1}x+${constant}$ is true for all $x$, where $a$ and $b$ are constants. What is the value of $ab$?`;
 
-Comparing with the right side, the coefficients match. From the expansion, the value being subtracted in the second factor is $${b}$, so $b = ${b}$ and $a = ${a}$. Therefore, $ab = ${a} \\times ${b} = ${correctAnswer}$.`;
-    
+    // STEP 4: Explanation — derive a and b from the VISIBLE coefficients.
+    // a from the x^3 coefficient, b from the x^2 coefficient.
+    const explanation = `Expand the left side and match coefficients with the right side, since the equation is true for all $x$.
+
+Expanding $(ax+${m})(${n}x^{2}-bx+${p})$ gives:
+$$(${n}a)x^{3} + (${m}\\cdot${n} - ab)x^{2} + (${p}a - ${m}b)x + ${m}\\cdot${p}$$
+
+Compare the $x^{3}$ coefficients: $a \\cdot ${n} = ${cubicCoeff}$, so $a = ${a}$.
+
+Compare the $x^{2}$ coefficients: $${m} \\cdot ${n} - ab = ${coeffX2}$, so $${m * n} - ${a}b = ${coeffX2}$, giving $${a}b = ${m * n - coeffX2}$ and $b = ${b}$.
+
+Therefore, $ab = ${a} \\times ${b} = ${correctAnswer}$.`;
+
     return {
       questionText: questionText,
       figureCode: null,

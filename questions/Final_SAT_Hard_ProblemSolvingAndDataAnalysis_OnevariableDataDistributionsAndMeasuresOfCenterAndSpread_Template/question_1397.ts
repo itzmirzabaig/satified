@@ -24,9 +24,11 @@ export const generator_1397 = {
   
   generate: (): QuestionData => {
     // STEP 1: Generate random medians (the vertical line inside each box)
-    // Ensure they're different enough to have a clear answer
-    const group1Median = getRandomInt(24, 32);
-    const group2Median = group1Median + getRandomInt(2, 6); // Group 1 will be greater
+    // Ensure they're different enough to have a clear answer.
+    // Group 1's median is placed strictly ABOVE Group 2's so the marked-correct
+    // statement ("group 1 median > group 2 median") is true for every draw.
+    const group1Median = getRandomInt(28, 34);
+    const group2Median = group1Median - getRandomInt(2, 6); // Group 1 will be greater
     
     // STEP 2: Generate quartiles and whiskers for each box plot
     // Box extends from Q1 to Q3, whiskers to min/max

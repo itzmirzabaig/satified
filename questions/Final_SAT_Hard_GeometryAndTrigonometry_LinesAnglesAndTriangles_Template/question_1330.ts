@@ -1,15 +1,23 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1330
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [MP=3, NP=4 from 3-4-5 triangle, answer: 2.4]
+ * - Number ranges: [3-4-5 right triangle scaled by 1-3, answer: NQ = altitude to hypotenuse]
  * - Difficulty factors: [Similar right triangles, geometric mean, altitude to hypotenuse]
- * - Distractor patterns: [A: 2.2, B: 2.3, D: 2.5 (close values)]
+ * - Distractor patterns: [close values +/- 0.1, +/- 0.2]
  * - Constraints: [Right triangle with altitude to hypotenuse creates similar triangles]
- * - Question type: [Figure→Multiple Choice]
+ * - Question type: [Figure -> Multiple Choice]
+ *
+ * FIXED (figure mismatch):
+ * - The stem carried no numbers, so the whole question depended on the figure, but the
+ *   old figure drew only the single segment N->Q (with Q off the hypotenuse) and no
+ *   triangle, side labels, or right-angle mark, making it unsolvable.
+ * - Rebuilt the figure with a single coordinate mapper: full right triangle M-N-P,
+ *   labeled legs MN and NP, hypotenuse M-P, the altitude N-Q with Q as the true foot
+ *   of the perpendicular on M-P, and right-angle marks at N and Q.
  */
 
 export const generator_1330 = {
@@ -20,102 +28,97 @@ export const generator_1330 = {
     skill: "Lines Angles And Triangles",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate Pythagorean triple or simple right triangle
+    // STEP 1: Scaled 3-4-5 right triangle, right angle at N.
     const scale = getRandomInt(1, 3);
-    const MN = 3 * scale;
-    const NP = 4 * scale;
-    const MP = 5 * scale;
-    
-    // STEP 2: Calculate NQ
-    const NQ = (MN * NP) / MP;
-    
-    // STEP 3: Create distractors close to answer
-    const distractorOffsets = [-0.2, -0.1, 0.1];
-    const distractors = distractorOffsets.map(off => Math.round((NQ + off) * 10) / 10);
-    
-    const optionsData = [
-      { text: distractors[0].toFixed(1), isCorrect: false },
-      { text: distractors[1].toFixed(1), isCorrect: false },
-      { text: NQ.toFixed(1), isCorrect: true },
-      { text: distractors[2].toFixed(1), isCorrect: false }
-    ];
-    
-    // STEP 4: Shuffle and assign letters
+    const MN = 3 * scale; // vertical leg (N up to M)
+    const NP = 4 * scale; // horizontal leg (N right to P)
+    const MP = 5 * scale; // hypotenuse
+
+    // STEP 2: NQ = altitude from N to hypotenuse MP = (leg * leg) / hypotenuse.
+    const NQraw = (MN * NP) / MP;
+    const NQ = Math.round(NQraw * 10) / 10;
+
+    // STEP 3: Distractors close to the answer (guarded unique, all one-decimal).
+    const optionSet = new Set<string>([NQ.toFixed(1)]);
+    const offsets = [-0.2, -0.1, 0.1, 0.2, 0.3, -0.3];
+    for (const off of offsets) {
+      if (optionSet.size >= 4) break;
+      const v = Math.round((NQ + off) * 10) / 10;
+      if (v > 0) optionSet.add(v.toFixed(1));
+    }
+    const optionsData = Array.from(optionSet).map(text => ({
+      text,
+      isCorrect: text === NQ.toFixed(1)
+    }));
+
+    // STEP 4: Shuffle and assign letters.
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const correctLetter = correctOption.letter;
-    
-    // STEP 5: Build Mafs code with randomized coordinates
-    const nX = 0;
-    const nY = 0;
-    const pX = NP / scale;
-    const pY = 0;
-    const mX = 0;
-    const mY = MN / scale;
-    const qX = (NP / scale * NP / scale / MP * scale);
-    const qY = (MN / scale * NP / scale / MP * scale);
-    
-    const _svg_0 = mY + 1; const _svg_1 = nY - 1; const _svg_2 = pX + 1; const _svg_3 = nX - 1;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_3,xmax=_svg_2;
-      const ymin=_svg_1,ymax=_svg_0;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;
-    })()}${(() => {
-      const xmin=(nX - 1),xmax=(pX + 1);
-      const ymin=(nY - 1),ymax=(mY + 1);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((nX))+'" y1="'+my((nY))+'" x2="'+mx((qX.toFixed(2)))+'" y2="'+my((qY.toFixed(2)))+'" stroke="currentColor" stroke-width="2"/>';
-    })()}${(() => {
-      const xmin=(nX - 1),xmax=(pX + 1);
-      const ymin=(nY - 1),ymax=(mY + 1);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((nX))+'" y="'+my((nY - 0.5))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">N</text>';
-    })()}${(() => {
-      const xmin=(nX - 1),xmax=(pX + 1);
-      const ymin=(nY - 1),ymax=(mY + 1);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((pX))+'" y="'+my((pY - 0.5))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">P</text>';
-    })()}${(() => {
-      const xmin=(nX - 1),xmax=(pX + 1);
-      const ymin=(nY - 1),ymax=(mY + 1);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((mX - 0.5))+'" y="'+my((mY))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">M</text>';
-    })()}${(() => {
-      const xmin=(nX - 1),xmax=(pX + 1);
-      const ymin=(nY - 1),ymax=(mY + 1);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(((qX * 0.6).toFixed(2)))+'" y="'+my(((qY * 0.6).toFixed(2)))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">Q</text>';
-    })()}</svg></div>`;
-    
+
+    // STEP 5: Figure. Data coords: N origin, P on +x, M on +y, Q = foot of altitude.
+    const nX = 0, nY = 0;
+    const pX = NP, pY = 0;
+    const mX = 0, mY = MN;
+    // Foot of perpendicular from N(0,0) to line MP:  Q = (MN*NP)*(MN, NP)/(MN^2+NP^2).
+    const denom = MN * MN + NP * NP;
+    const qX = Math.round(((MN * NP) * MN / denom) * 1000) / 1000;
+    const qY = Math.round(((MN * NP) * NP / denom) * 1000) / 1000;
+
+    const round2 = (v: number) => Math.round(v * 100) / 100;
+    const W = 400, H = 340, PAD = 52;
+    const xmin = -1, xmax = NP + 1;
+    const ymin = -1, ymax = MN + 1;
+    const mx = (x: number) => round2(PAD + (x - xmin) / (xmax - xmin) * (W - 2 * PAD));
+    const my = (y: number) => round2(H - PAD - (y - ymin) / (ymax - ymin) * (H - 2 * PAD));
+
+    // Right-angle square at N (between the two legs, opening up-right).
+    const raN = `<path d="M ${mx(0.55)} ${my(0)} L ${mx(0.55)} ${my(0.55)} L ${mx(0)} ${my(0.55)}" fill="none" stroke="currentColor" stroke-width="1.2"/>`;
+
+    // Small right-angle tick at Q where the altitude meets MP.
+    const ux = (pX - mX), uy = (pY - mY); // direction along MP
+    const ulen = Math.sqrt(ux * ux + uy * uy) || 1;
+    const ex = ux / ulen, ey = uy / ulen;          // unit along hypotenuse
+    const vx = (nX - qX), vy = (nY - qY);           // from Q toward N
+    const vlen = Math.sqrt(vx * vx + vy * vy) || 1;
+    const fx = vx / vlen, fy = vy / vlen;           // unit from Q toward N
+    const t = 0.42;
+    const raQ = `<path d="M ${mx(qX + ex * t)} ${my(qY + ey * t)} L ${mx(qX + ex * t + fx * t)} ${my(qY + ey * t + fy * t)} L ${mx(qX + fx * t)} ${my(qY + fy * t)}" fill="none" stroke="currentColor" stroke-width="1.2"/>`;
+
+    const figureCode = `<div style="width:100%;max-width:420px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      // Triangle sides
+      `<line x1="${mx(nX)}" y1="${my(nY)}" x2="${mx(pX)}" y2="${my(pY)}" stroke="currentColor" stroke-width="2"/>` +
+      `<line x1="${mx(nX)}" y1="${my(nY)}" x2="${mx(mX)}" y2="${my(mY)}" stroke="currentColor" stroke-width="2"/>` +
+      `<line x1="${mx(mX)}" y1="${my(mY)}" x2="${mx(pX)}" y2="${my(pY)}" stroke="currentColor" stroke-width="2"/>` +
+      // Altitude N->Q
+      `<line x1="${mx(nX)}" y1="${my(nY)}" x2="${mx(qX)}" y2="${my(qY)}" stroke="#3b82f6" stroke-width="2"/>` +
+      raN + raQ +
+      // Vertices
+      `<circle cx="${mx(nX)}" cy="${my(nY)}" r="2.5" fill="currentColor"/>` +
+      `<circle cx="${mx(pX)}" cy="${my(pY)}" r="2.5" fill="currentColor"/>` +
+      `<circle cx="${mx(mX)}" cy="${my(mY)}" r="2.5" fill="currentColor"/>` +
+      `<circle cx="${mx(qX)}" cy="${my(qY)}" r="2.5" fill="#3b82f6"/>` +
+      // Vertex labels (placed clear of the triangle)
+      `<text x="${mx(nX) - 12}" y="${my(nY) + 16}" text-anchor="middle" font-size="14" font-style="italic" fill="currentColor">N</text>` +
+      `<text x="${mx(pX) + 12}" y="${my(pY) + 16}" text-anchor="middle" font-size="14" font-style="italic" fill="currentColor">P</text>` +
+      `<text x="${mx(mX) - 14}" y="${my(mY) - 4}" text-anchor="middle" font-size="14" font-style="italic" fill="currentColor">M</text>` +
+      `<text x="${mx(qX) + 16}" y="${my(qY) - 8}" text-anchor="middle" font-size="14" font-style="italic" fill="#3b82f6">Q</text>` +
+      // Side-length labels
+      `<text x="${mx(mX) - 20}" y="${my(mY / 2) + 4}" text-anchor="middle" font-size="13" fill="currentColor">${MN}</text>` +
+      `<text x="${mx(pX / 2)}" y="${my(0) + 20}" text-anchor="middle" font-size="13" fill="currentColor">${NP}</text>` +
+      `</svg></div>`;
+
     return {
-      questionText: `In the figure above, what is the length of $NQ$?`,
-      figureCode: mafsCode,
+      questionText: `In right triangle $MNP$ above, the right angle is at $N$, $MN = ${MN}$, and $NP = ${NP}$. Segment $NQ$ is drawn from $N$ perpendicular to the hypotenuse $MP$, meeting it at point $Q$. What is the length of $NQ$?`,
+      figureCode: figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. In right $\\\\triangle MNP$, $MP = \\\\sqrt{${MN}^2 + ${NP}^2} = ${MP}$. $\\\\triangle MNP$ is similar to $\\\\triangle NQP$. The ratio of corresponding sides is $\\\\frac{NQ}{MN} = \\\\frac{NP}{MP}$. Thus, $\\\\frac{NQ}{${MN}} = \\\\frac{${NP}}{${MP}}$, which results in $NQ = ${NQ.toFixed(1)}$.`
+      explanation: `Choice ${correctLetter} is correct. In right $\\triangle MNP$, the hypotenuse is $MP = \\sqrt{${MN}^2 + ${NP}^2} = ${MP}$. The altitude $NQ$ to the hypotenuse creates $\\triangle NQP$ similar to $\\triangle MNP$, so $\\frac{NQ}{MN} = \\frac{NP}{MP}$. Solving $\\frac{NQ}{${MN}} = \\frac{${NP}}{${MP}}$ gives $NQ = \\frac{${MN} \\times ${NP}}{${MP}} = ${NQ.toFixed(1)}$.`
     };
   }
 };

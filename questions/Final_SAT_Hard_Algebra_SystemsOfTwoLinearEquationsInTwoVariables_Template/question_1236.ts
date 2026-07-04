@@ -74,12 +74,15 @@ export const generator_1236 = {
       const correctLetter = correctOption.letter;
       const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
       
+      // Value of (6 - 2a) once x = x_val. Always an integer for accepted draws.
+      const rhsOverX = rhs / x_val;
+
       result = {
-        questionText: `In the given system of equations, $a$ and $b$ are constants. The graphs of these equations in the $xy$-plane intersect at the point $(${x_val}, y)$. What is the value of $a$? $$${correctA}x + ${b}y = ${c1}$$ $$6x + ${2*b}y = ${c2}$$`,
+        questionText: `In the given system of equations, $a$ and $b$ are constants. The graphs of these equations in the $xy$-plane intersect at the point $(${x_val}, y)$. What is the value of $a$? $$ax + by = ${c1}$$ $$6x + 2by = ${c2}$$`,
         figureCode: null,
         options: shuffledOptions.map(o => ({ text: o.text })),
         correctAnswer: correctA.toString(),
-        explanation: `Choice ${correctLetter} is correct. Multiplying the first equation by -2 yields $-${2 * correctA}x - ${2 * b}y = ${-2 * c1}$. Adding this to the second equation gives $(-${2 * correctA} + 6)x = ${-2 * c1 + c2}$, or $${-2 * correctA + 6}x = ${rhs}$. Since the intersection has x-coordinate ${x_val}, substituting gives $(-${2 * correctA + 6})(${x_val}) = ${rhs}$, so $-${2 * correctA + 6} = ${rhs / x_val}$. Solving yields $a = ${correctA}$. Choice ${incorrectOptions[0].letter} is incorrect and may result from conceptual or calculation errors. Choice ${incorrectOptions[1].letter} is incorrect and may result from conceptual or calculation errors. Choice ${incorrectOptions[2].letter} is incorrect and may result from conceptual or calculation errors.`
+        explanation: `Choice ${correctLetter} is correct. Multiply the first equation by $-2$ to get $-2ax - 2by = ${-2 * c1}$. Adding this to the second equation eliminates the $y$-term (the $-2by$ and $2by$ cancel): $(6 - 2a)x = ${rhs}$. Because the graphs intersect where $x = ${x_val}$, substitute $x = ${x_val}$: $(6 - 2a)(${x_val}) = ${rhs}$, so $6 - 2a = ${rhsOverX}$. Then $-2a = ${rhsOverX - 6}$, which gives $a = ${correctA}$. Choice ${incorrectOptions[0].letter} is incorrect and may result from an arithmetic or sign error while eliminating $y$. Choice ${incorrectOptions[1].letter} is incorrect and may result from an arithmetic or sign error while eliminating $y$. Choice ${incorrectOptions[2].letter} is incorrect and may result from an arithmetic or sign error while eliminating $y$.`
       };
     }
     

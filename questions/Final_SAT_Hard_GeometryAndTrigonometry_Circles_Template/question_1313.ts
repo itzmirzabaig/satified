@@ -34,34 +34,35 @@ export const generator_1313 = {
     const rSquared = r * r;
     const diameter = 2 * r;
     
-    // STEP 3: Generate distractors
-    const distractorA = r; // Radius
-    const distractorC = rSquared; // r²
-    const distractorD = 2 * rSquared; // Double r² (nonsense)
-    
+    // STEP 3: Generate distractors, each carrying its own explanation reason
+    // (reasons are tied to the distractor's mathematical identity, not its
+    // eventual shuffle position).
     const correctText = diameter.toString();
-    
+
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false },
-      { text: correctText, isCorrect: true },
-      { text: distractorC.toString(), isCorrect: false },
-      { text: distractorD.toString(), isCorrect: false }
+      { text: r.toString(), isCorrect: false, reason: `this is the radius, not the diameter` },
+      { text: correctText, isCorrect: true, reason: `` },
+      { text: rSquared.toString(), isCorrect: false, reason: `this is $r^{2}$, not the diameter` },
+      { text: (2 * rSquared).toString(), isCorrect: false, reason: `this results from doubling $r^{2}$ instead of $r$` }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+    const distractorText = incorrectOptions
+      .map(o => `Choice ${o.letter} is incorrect; ${o.reason}.`)
+      .join(' ');
+
     return {
       questionText: `What is the diameter of the circle in the $xy$-plane with equation $(x-${h})^{2}+(y-${k})^{2}=${rSquared}$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The equation is in standard form $(x-h)^{2}+(y-k)^{2}=r^{2}$, where $r^{2}=${rSquared}$. Thus $r=${r}$ and the diameter is $2r=${diameter}$. Choice ${incorrectOptions[0].letter} is incorrect; this is the radius, not the diameter. Choice ${incorrectOptions[1].letter} is incorrect; this is $r^{2}$. Choice ${incorrectOptions[2].letter} is incorrect; this results from doubling $r^{2}$ instead of $r$.`
+      explanation: `Choice ${correctLetter} is correct. The equation is in standard form $(x-h)^{2}+(y-k)^{2}=r^{2}$, where $r^{2}=${rSquared}$. Thus $r=${r}$ and the diameter is $2r=${diameter}$. ${distractorText}`
     };
   }
 };

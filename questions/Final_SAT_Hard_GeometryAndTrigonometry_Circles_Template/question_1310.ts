@@ -62,38 +62,48 @@ export const generator_1310 = {
       const W=400,H=350,P=40;
       const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
       const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      const r=((k))*(400-2*40)/((Math.abs(h) + rA + 2)-(-(Math.abs(h) + rA + 2)));
-      return '<circle cx="'+mx((h))+'" cy="'+my((k))+'" r="'+r+'" fill="none" stroke="currentColor" stroke-width="2"/>';
+      // Pixel radius of circle A: scale the true radius rA by the x-axis unit length.
+      const r=rA*(W-2*P)/(xmax-xmin);
+      let s='';
+      s+='<circle cx="'+mx(h)+'" cy="'+my(k)+'" r="'+r+'" fill="none" stroke="#3b82f6" stroke-width="2"/>';
+      s+='<circle cx="'+mx(h)+'" cy="'+my(k)+'" r="2.5" fill="#3b82f6"/>';
+      s+='<text x="'+(mx(h)+r+4)+'" y="'+(my(k)-4)+'" font-size="11" fill="#3b82f6">A</text>';
+      return s;
     })()}</svg></div>`;
 
-    // STEP 5: Generate options
+    // STEP 5: Generate options. Each distractor carries its own explanation
+    // reason, tied to the distractor's mathematical identity rather than its
+    // eventual shuffle position.
     const correctText = `(x${h >= 0 ? '-' : '+'}${Math.abs(h)})^{2}+(y${newK >= 0 ? '-' : '+'}${Math.abs(newK)})^{2}=(${scale}\\\\cdot${rA})^{2}`;
-    
+
     const distractorB = `2(x${h >= 0 ? '-' : '+'}${Math.abs(h)})^{2}+2(y${newK >= 0 ? '-' : '+'}${Math.abs(newK)})^{2}=${rA*rA}`; // Wrong format
     const distractorC = `(x${h >= 0 ? '-' : '+'}${Math.abs(h)})^{2}+(y-${Math.abs(newK)})^{2}=(${scale}\\\\cdot${rA})^{2}`; // Wrong sign
     const distractorD = `2(x${h >= 0 ? '-' : '+'}${Math.abs(h)})^{2}+2(y-${Math.abs(newK)})^{2}=${rA*rA}`; // Wrong format and sign
-    
+
     const optionsData = [
-      { text: correctText, isCorrect: true },
-      { text: distractorB, isCorrect: false },
-      { text: distractorC, isCorrect: false },
-      { text: distractorD, isCorrect: false }
+      { text: correctText, isCorrect: true, reason: `` },
+      { text: distractorB, isCorrect: false, reason: `the squared terms should not be multiplied by coefficients, and the radius must be squared` },
+      { text: distractorC, isCorrect: false, reason: `the sign of the $y$-term is wrong (shifting down gives $(y+${Math.abs(newK)})$)` },
+      { text: distractorD, isCorrect: false, reason: `both the format and the sign of the $y$-term are wrong` }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+    const distractorText = incorrectOptions
+      .map(o => `Choice ${o.letter} is incorrect; ${o.reason}.`)
+      .join(' ');
+
     return {
       questionText: `Circle A (shown) is defined by the equation $(x${h >= 0 ? '-' : '+'}${Math.abs(h)})^{2}+y^{2}=${rA*rA}$. Circle B (not shown) is the result of shifting circle A down ${shift} units and increasing the radius so that the radius of circle B is ${scale} times the radius of circle A. Which equation defines circle B?`,
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. Circle A has center $(${h}, ${k})$ and radius $${rA}$. Shifting down ${shift} units gives center $(${h}, ${newK})$. The new radius is $${scale} \\\\times ${rA} = ${rB}$, so $r^{2} = ${rB*rB} = (${scale}\\\\cdot${rA})^{2}$. Choice ${incorrectOptions[0].letter} is incorrect; coefficients should not multiply the squared terms. Choice ${incorrectOptions[1].letter} is incorrect; wrong sign on y-term. Choice ${incorrectOptions[2].letter} is incorrect; wrong format and wrong sign.`
+      explanation: `Choice ${correctLetter} is correct. Circle A has center $(${h}, ${k})$ and radius $${rA}$. Shifting down ${shift} units gives center $(${h}, ${newK})$. The new radius is $${scale} \\\\times ${rA} = ${rB}$, so $r^{2} = ${rB*rB} = (${scale}\\\\cdot${rA})^{2}$. ${distractorText}`
     };
   }
 };

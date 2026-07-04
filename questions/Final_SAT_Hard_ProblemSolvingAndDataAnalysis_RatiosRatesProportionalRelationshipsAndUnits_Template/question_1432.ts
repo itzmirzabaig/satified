@@ -24,30 +24,51 @@ export const generator_1432 = {
   },
 
   generate: (): QuestionData => {
-    // STEP 1: Generate ratio values (2:3 in original). Keep yellow != blue so the
-    // multiplier is not 1 (otherwise the relationship choices are trivial).
-    const blue1 = getRandomInt(2, 4);
+    // STEP 1: Generate ratio values and the scale factor together, then guard so
+    // that NO distractor can describe the same amount as the correct answer for
+    // this draw. Two collisions are possible and both are excluded here:
+    //   - yellow1 === blue1  -> multiplier is 1 (trivial) and "Exactly blue2" ties.
+    //   - yellow1 === k*blue1 -> the "wrong reference" distractor
+    //       (multiplier x first-batch yellow) = (yellow1/blue1)*yellow1 = k*yellow1,
+    //       which equals the correct required amount (a semantic double-correct).
+    // The additive distractor is constructed below to be collision-proof by design,
+    // so only these two conditions need a redraw.
+    let blue1 = getRandomInt(2, 4);
     let yellow1 = getRandomInt(3, 6);
+    let k = getRandomInt(2, 3);
     let guard = 0;
-    while (yellow1 === blue1 && guard++ < 50) yellow1 = getRandomInt(3, 6);
-    if (yellow1 === blue1) yellow1 = blue1 + 1;
+    while ((yellow1 === blue1 || yellow1 === k * blue1) && guard++ < 50) {
+      blue1 = getRandomInt(2, 4);
+      yellow1 = getRandomInt(3, 6);
+      k = getRandomInt(2, 3);
+    }
+    // Deterministic fallback (a known-valid config) in the astronomically unlikely
+    // event the bounded loop never lands a clean draw.
+    if (yellow1 === blue1 || yellow1 === k * blue1) { blue1 = 2; yellow1 = 5; k = 3; }
 
     // Make the second batch a whole-number multiple of the first so every concrete
     // amount in the explanation is an integer (no float artifacts).
-    const k = getRandomInt(2, 3);
     const blue2 = blue1 * k;          // 4 .. 12, always a multiple of blue1
     const yellow2 = yellow1 * k;      // integer yellow needed for the second batch
+
+    // The additive-error a student makes by adding to the first-batch yellow the
+    // SAME number of extra ounces that the blue paint increased by (blue2 - blue1).
+    // The amount it describes is yellow1 + (blue2 - blue1); this can only equal the
+    // correct amount k*yellow1 when blue1 === yellow1, which is already excluded
+    // above, so this distractor never becomes a second correct answer.
+    const blueIncrease = blue2 - blue1;
 
     // The multiplier yellow:blue is written EXACTLY as a fraction, so no rounding
     // is ever needed and no decimal artifact can appear.
     const multiplier = `\\frac{${yellow1}}{${blue1}}`;
 
-    // STEP 4: Create and shuffle options. All four are structurally distinct
-    // sentences, so they can never collide for any draw.
+    // STEP 4: Create and shuffle options. Every distractor describes a numeric
+    // amount that is guaranteed (by the guard + construction above) to differ from
+    // the correct required amount for this draw, so no two options can be correct.
     const correctText = `$${multiplier}$ times the amount of blue paint used in the second batch`;
     const optionsData = [
       { text: `Exactly $${blue2}$ ounces`, isCorrect: false, reason: "confuses the amount of blue paint in the second batch with the required amount of yellow paint" },
-      { text: `$${yellow1}$ ounces more than the amount of yellow paint used in the first batch`, isCorrect: false, reason: "adds a fixed amount instead of scaling by the ratio" },
+      { text: `$${blueIncrease}$ ounces more than the amount of yellow paint used in the first batch`, isCorrect: false, reason: "adds the same increase as the blue paint instead of scaling by the ratio" },
       { text: `$${multiplier}$ times the amount of yellow paint used in the first batch`, isCorrect: false, reason: "applies the correct multiplier to the wrong quantity, the first batch's yellow amount" },
       { text: correctText, isCorrect: true, reason: "" }
     ];

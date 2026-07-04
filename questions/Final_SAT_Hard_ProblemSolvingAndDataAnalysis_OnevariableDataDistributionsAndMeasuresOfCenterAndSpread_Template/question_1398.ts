@@ -58,6 +58,14 @@ export const generator_1398 = {
     
     const medianRange = ranges[medianRangeIndex];
     const [rangeMin, rangeMax] = medianRange.split(' to ').map(Number);
+
+    // Interval midpoints. Because the intervals are disjoint, these five values
+    // are pairwise distinct for every (start, intervalSize).
+    const intervalMid = (i: number) => {
+      const lo = start + i * intervalSize;
+      const hi = start + (i + 1) * intervalSize - 1;
+      return lo + Math.floor((hi - lo) / 2);
+    };
     
     // STEP 3: Build table HTML
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto;">
@@ -76,18 +84,25 @@ export const generator_1398 = {
   </tbody>
 </table>`;
     
-    // STEP 4: Generate answer options - one must be in the median range
-    const wrongOption1 = start; // Too low
-    const wrongOption2 = start + intervalSize + 1; // In second range (likely before median)
-    const wrongOption3 = start + 2 * intervalSize + 1; // In third range
-    
-    // Correct answer is a value within the median range
-    const correctAnswer = rangeMin + Math.floor((rangeMax - rangeMin) / 2);
-    
+    // STEP 4: Generate answer options.
+    // The question asks which value COULD be the median. For grouped data we
+    // only know the median lies somewhere in the median interval, so EVERY value
+    // in [rangeMin, rangeMax] is a valid answer. The question is only well-posed
+    // when exactly ONE option lies in that interval. We therefore take the
+    // correct answer to be the midpoint of the median interval and each of the
+    // three distractors to be the midpoint of a DIFFERENT (non-median) interval.
+    // Because the five interval midpoints are pairwise distinct and each lies in
+    // its own disjoint interval, no distractor can fall inside the median
+    // interval or coincide with the correct answer, for any draw.
+    const correctAnswer = intervalMid(medianRangeIndex);
+
+    const otherIndices = shuffle([0, 1, 2, 3, 4].filter(i => i !== medianRangeIndex));
+    const [d1, d2, d3] = otherIndices.slice(0, 3).map(intervalMid);
+
     const optionsData = [
-      { text: wrongOption1.toString(), isCorrect: false },
-      { text: wrongOption2.toString(), isCorrect: false },
-      { text: wrongOption3.toString(), isCorrect: false },
+      { text: d1.toString(), isCorrect: false },
+      { text: d2.toString(), isCorrect: false },
+      { text: d3.toString(), isCorrect: false },
       { text: correctAnswer.toString(), isCorrect: true }
     ];
     
@@ -99,14 +114,20 @@ export const generator_1398 = {
     
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
-    
+
+    // Cumulative count of restaurants in the intervals BEFORE the median interval.
+    const belowCount = frequencies.slice(0, medianRangeIndex).reduce((a, b) => a + b, 0);
+    const belowPhrase = medianRangeIndex === 0
+      ? `No restaurants fall below the ${medianRange} range`
+      : `The first ${medianRangeIndex} interval${medianRangeIndex === 1 ? '' : 's'} account for ${frequencies.slice(0, medianRangeIndex).join(' + ')} = ${belowCount} restaurant${belowCount === 1 ? '' : 's'}`;
+
     // STEP 6: Return question data
     return {
       questionText: "The table shown summarizes the number of employees at each of the restaurants in a town. Which of the following could be the median number of employees for the restaurants in this town?",
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctAnswer.toString(),
-      explanation: `Choice ${correctLetter} is correct. With ${totalRestaurants} restaurants, the median is the ${medianPosition}th value. Counting frequencies: ${frequencies.slice(0, medianRangeIndex).join(' + ')} = ${frequencies.slice(0, medianRangeIndex).reduce((a,b)=>a+b,0)} restaurants are below ${rangeMin}; the ${medianPosition}th falls in the ${medianRange} range. ${correctAnswer} is the only choice in that range.`
+      explanation: `Choice ${correctLetter} is correct. There are ${totalRestaurants} restaurants, so the median is the ${medianPosition}th value when the counts are ordered from least to greatest. ${belowPhrase}, so the ${medianPosition}th value lies in the ${medianRange} range. The median must be one of the values in that range, so any number from ${rangeMin} to ${rangeMax} could be the median; ${correctAnswer} is the only choice that lies in this range. Each other choice falls in a different interval, so none of them can be the median.`
     };
   }
 };

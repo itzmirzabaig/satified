@@ -44,29 +44,34 @@ export const generator_1277 = {
     const sphereVolumeRounded = Math.round(sphereVolume);
     const cubeVolumeRounded = Math.round(cubeVolume);
     const miscalculation = Math.round(cubeVolume - (2/3) * sphereVolume); // Wrong formula
-    
+
+    // Tag each distractor with its conceptual "kind" so the explanation can
+    // reference the reason that matches each distractor's identity — not its
+    // arbitrary post-shuffle position.
     const optionsData = [
-      { text: roundedRemaining.toString(), isCorrect: true },
-      { text: sphereVolumeRounded.toString(), isCorrect: false },
-      { text: miscalculation.toString(), isCorrect: false },
-      { text: cubeVolumeRounded.toString(), isCorrect: false }
+      { text: roundedRemaining.toString(), isCorrect: true, kind: 'correct' },
+      { text: sphereVolumeRounded.toString(), isCorrect: false, kind: 'sphere' },
+      { text: miscalculation.toString(), isCorrect: false, kind: 'miscalc' },
+      { text: cubeVolumeRounded.toString(), isCorrect: false, kind: 'cube' }
     ];
-    
+
     // STEP 4: Shuffle options
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
-    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+    const sphereOption = shuffledOptions.find(o => o.kind === 'sphere')!;
+    const miscalcOption = shuffledOptions.find(o => o.kind === 'miscalc')!;
+    const cubeOption = shuffledOptions.find(o => o.kind === 'cube')!;
+
     return {
       questionText: `A cube has an edge length of $${edge}$ inches. A solid sphere with a radius of $${radius}$ inches is inside the cube, such that the sphere touches the center of each face of the cube. To the nearest cubic inch, what is the volume of the space in the cube not taken up by the sphere?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The volume of the cube is $${edge}^3 = ${cubeVolume.toLocaleString()}$ cubic inches. The volume of the sphere is $\\frac{4}{3}\\pi(${radius})^3 \\approx ${sphereVolumeRounded.toLocaleString()}$ cubic inches. The remaining volume is approximately $${cubeVolume.toLocaleString()} - ${sphereVolumeRounded.toLocaleString()} \\approx ${roundedRemaining.toLocaleString()}$ cubic inches. Choice ${incorrectOptions[0].letter} is incorrect because it represents only the volume of the sphere. Choice ${incorrectOptions[1].letter} is incorrect due to a calculation error. Choice ${incorrectOptions[2].letter} is incorrect because it represents only the volume of the cube.`
+      explanation: `Choice ${correctOption.letter} is correct. The volume of the cube is $${edge}^3 = ${cubeVolume.toLocaleString()}$ cubic inches. The volume of the sphere is $\\frac{4}{3}\\pi(${radius})^3 \\approx ${sphereVolumeRounded.toLocaleString()}$ cubic inches. The remaining volume is approximately $${cubeVolume.toLocaleString()} - ${sphereVolumeRounded.toLocaleString()} \\approx ${roundedRemaining.toLocaleString()}$ cubic inches. Choice ${sphereOption.letter} is incorrect because it represents only the volume of the sphere. Choice ${miscalcOption.letter} is incorrect due to a calculation error. Choice ${cubeOption.letter} is incorrect because it represents only the volume of the cube.`
     };
   }
 };

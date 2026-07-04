@@ -26,29 +26,35 @@ export const generator_1342 = {
     const a = getRandomInt(6, 10);
     const b = getRandomInt(200, 300);
     
-    // STEP 2: Determine what expressions COULD be valid
-    const mult = getRandomInt(2, 4);
-    
+    // STEP 2: Build the four options.
+    // With one acute angle A = ax - b and its supplement (obtuse) O = 180 - A,
+    // the sum of any four of the eight angles is one of: 4A, 3A+O, 2A+2O, A+3O, 4O.
+    // Three distractors are REAL achievable sums; the correct answer is an
+    // expression with slope -2a but a constant too large to equal A+3O (= 2b + 540),
+    // so it can never be a valid sum for any x.
+    const correctConst = 2 * b + getRandomInt(1400, 1600); // > 2b + 540, so unachievable
+    // Constants of the achievable four-angle sums (in ax-form):
+    const sumA3O = 2 * b + 540; // A + 3O = -2a x + (2b + 540) — the only sum with slope -2a
     const optionsData = [
-      { 
-        text: `$${-2 * a}x + ${2 * b + getRandomInt(1400, 1600)}$`, 
+      {
+        text: `$${-2 * a}x + ${correctConst}$`,
         isCorrect: true,
-        reason: "does not correspond to any valid sum of four angles"
+        reason: "does not correspond to any valid sum of four of the angles"
       },
-      { 
-        text: `$${2 * a}x - ${getRandomInt(300, 350)}$`, 
+      {
+        text: `$${4 * a}x - ${4 * b}$`, // 4A: sum of the four acute angles
         isCorrect: false,
-        reason: "could represent sum of four acute angles"
+        reason: "is the sum of the four acute angles"
       },
-      { 
-        text: `$${-4 * a}x + ${4 * b + 720}$`, 
+      {
+        text: `$${-4 * a}x + ${4 * b + 720}$`, // 4O: sum of the four obtuse angles
         isCorrect: false,
-        reason: "could represent sum of four obtuse angles"
+        reason: "is the sum of the four obtuse angles"
       },
-      { 
-        text: `$360$`, 
+      {
+        text: `$360$`, // 2A + 2O
         isCorrect: false,
-        reason: "could represent sum of two acute and two obtuse angles"
+        reason: "is the sum of two acute and two obtuse angles"
       }
     ];
     
@@ -116,7 +122,7 @@ export const generator_1342 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. The possible sums for 4 angles in this configuration are: four acute angles ($4(${a}x - ${b}) = ${4*a}x - ${4*b}$), four obtuse angles ($4(180 - (${a}x - ${b})) = ${-4*a}x + ${4*b + 720}$), or two acute and two obtuse ($2(${a}x - ${b}) + 2(180 - (${a}x - ${b})) = 360$). Choice ${correctLetter} ${correctOption.reason}.`
+      explanation: `Choice ${correctLetter} is correct. Each acute angle measures $(${a}x - ${b})^\\\\circ$ and each obtuse angle measures $(180 - (${a}x - ${b}))^\\\\circ = (${-a}x + ${b + 180})^\\\\circ$. The sum of four of the eight angles is one of five values: four acute ($${4*a}x - ${4*b}$), four obtuse ($${-4*a}x + ${4*b + 720}$), two acute and two obtuse ($360$), one acute and three obtuse ($${-2*a}x + ${sumA3O}$), or three acute and one obtuse ($${2*a}x - ${2*b - 180}$). The only one of these with an $x$-coefficient of $${-2*a}$ is $${-2*a}x + ${sumA3O}$, and $${correctConst} \\\\ne ${sumA3O}$, so $${-2*a}x + ${correctConst}$ ${correctOption.reason}. The other three choices are the four-acute, four-obtuse, and two-acute-two-obtuse sums.`
     };
   }
 };

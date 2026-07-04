@@ -98,11 +98,11 @@ export const generator_1326 = {
     })()}</svg></div>`;
     
     return {
-      questionText: `In triangle $XYZ$, angle $Y$ is a right angle, point $P$ lies on $\\\\overline{XZ}$, and point $Q$ lies on $\\\\overline{YZ}$ such that $\\\\overline{PQ}$ is parallel to $\\\\overline{XY}$. If the measure of angle $XZY$ is $${angleXZY}^\\\\circ$, what is the measure, in degrees, of angle $XPQ$?`,
+      questionText: `In triangle $XYZ$, angle $Y$ is a right angle, point $P$ lies on $\\overline{XZ}$, and point $Q$ lies on $\\overline{YZ}$ such that $\\overline{PQ}$ is parallel to $\\overline{XY}$. If the measure of angle $XZY$ is $${angleXZY}^\\circ$, what is the measure, in degrees, of angle $XPQ$?`,
       figureCode: mafsCode,
       options: [],
       correctAnswer: angleXPQ.toString(),
-      explanation: `In $\\\\triangle ZQP$, $\\\\angle ZPQ = 180 - 90 - ${angleXZY} = ${angleZPQ}^\\\\circ$. Angle $XPQ$ is supplementary to $\\\\angle ZPQ$, so $180 - ${angleZPQ} = ${angleXPQ}$.`
+      explanation: `In $\\triangle ZQP$, $\\angle ZPQ = 180 - 90 - ${angleXZY} = ${angleZPQ}^\\circ$. Angle $XPQ$ is supplementary to $\\angle ZPQ$, so $180 - ${angleZPQ} = ${angleXPQ}$.`
     };
   }
 };

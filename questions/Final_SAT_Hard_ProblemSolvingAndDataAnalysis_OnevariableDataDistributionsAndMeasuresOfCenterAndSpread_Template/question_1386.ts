@@ -56,14 +56,35 @@ export const generator_1386 = {
     
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
-    
+
+    // Parity-correct description of where the median sits in a sorted set of size n.
+    const countG = countF + 1;
+    const ordinal = (k: number): string => {
+      const rem100 = k % 100;
+      if (rem100 >= 11 && rem100 <= 13) return `${k}th`;
+      switch (k % 10) {
+        case 1: return `${k}st`;
+        case 2: return `${k}nd`;
+        case 3: return `${k}rd`;
+        default: return `${k}th`;
+      }
+    };
+    const medianDesc = (n: number): string => {
+      if (n % 2 === 1) {
+        return `the ${ordinal((n + 1) / 2)} value`;
+      }
+      return `the average of the ${ordinal(n / 2)} and ${ordinal(n / 2 + 1)} values`;
+    };
+    const medianF = medianDesc(countF);
+    const medianG = medianDesc(countG);
+
     // STEP 6: Return question data
     return {
       questionText: `Data set F consists of ${countF} integers between ${minF} and ${maxF}. Data set G consists of all the integers in data set F as well as the integer ${outlier}. Which of the following must be less for data set F than for data set G?\n\nI. The mean\nII. The median`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: "Neither I nor II",
-      explanation: `Choice ${correctLetter} is correct. Adding ${outlier}, which is much smaller than any value in set F (range ${minF}-${maxF}), decreases the mean of the data set. Therefore, the mean of F is greater than the mean of G, not less. For the median: set F has ${countF} numbers, so the median is the ${Math.floor(countF/2)+1}th value. Set G has ${countF+1} numbers with ${outlier} as the new minimum. The new median is the average of the ${Math.floor((countF+1)/2)}th and ${Math.floor((countF+1)/2)+1}th values, which will be less than or equal to the original median. Therefore, the median of F is also not less than the median of G.`
+      explanation: `Choice ${correctLetter} is correct. Adding the value ${outlier}, which is much smaller than every value in set F (all between ${minF} and ${maxF}), lowers the mean, so the mean of F is greater than the mean of G. Statement I is therefore false. For the median, set F has ${countF} values, so its median is ${medianF} in order. Set G has ${countG} values, with ${outlier} added as a new minimum below every value of F, so its median is ${medianG} in order. Inserting a value below the entire data set shifts the middle of the ordered list toward the smaller end, so the median of G is less than or equal to the median of F; it is never greater. Thus the median of F is also not less than the median of G, and Statement II is false. Since neither statistic is less for F than for G, the answer is that neither I nor II holds.`
     };
   }
 };

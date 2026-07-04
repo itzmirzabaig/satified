@@ -87,21 +87,21 @@ export const generator_1341 = {
       const W=400,H=320,P=45;
       const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
       const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((rightX - 1))+'" y="'+my((baseY + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">$exteriorAngle^circ</text>';
+      return '<text x="'+mx((rightX - 1))+'" y="'+my((baseY + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">'+exteriorAngle+'°</text>';
     })()}${(() => {
       const xmin=(leftX - 1),xmax=(rightX + 1);
       const ymin=(baseY - 1),ymax=(topY + 1);
       const W=400,H=320,P=45;
       const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
       const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((intersectX + 0.5))+'" y="'+my((baseY + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">$smallAngle^circ</text>';
+      return '<text x="'+mx((intersectX + 0.5))+'" y="'+my((baseY + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">'+smallAngle+'°</text>';
     })()}${(() => {
       const xmin=(leftX - 1),xmax=(rightX + 1);
       const ymin=(baseY - 1),ymax=(topY + 1);
       const W=400,H=320,P=45;
       const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
       const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((topX - 0.5))+'" y="'+my((topY / 2))+'" text-anchor="middle" font-size="13" fill="currentColor">x^circ</text>';
+      return '<text x="'+mx((topX - 0.5))+'" y="'+my((topY / 2))+'" text-anchor="middle" font-size="13" fill="currentColor">x°</text>';
     })()}</svg></div>`;
     
     return {

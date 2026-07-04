@@ -1,15 +1,29 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1322
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [a=43, b=122, answer: 50.5]
- * - Difficulty factors: [Parallel lines, triangle angles, supplementary angles]
- * - Distractor patterns: [N/A - fill in the blank]
- * - Constraints: [g || t, angles a and b given, find w]
- * - Question type: [Figure→Fill in the blank]
+ * - Difficulty factors: [Parallel lines, triangle angle sum, exterior angle]
+ * - Constraints: [g || t; angles a and b given; find w]
+ * - Question type: [Figure -> Fill in the blank]
+ *
+ * REBUILT: the original figure drew four incoherent segments with NO labels for
+ * a, b, w, g, t, r, or s (only coordinate-axis ticks) and no second parallel
+ * line, so the item was unanswerable from the picture. Worse, the original
+ * answer w = (180 - (b - a)) / 2 is only realizable by an ISOSCELES apex, which
+ * requires a + b = 180 — false for most draws in the given ranges — so the stem
+ * was mathematically inconsistent with any figure.
+ *
+ * This version draws a clean, correctly-labeled schematic (357 style): two
+ * parallel lines g and t cut by two transversals r and s that meet at an apex,
+ * forming a triangle. The angle a is the triangle's interior angle at the top
+ * left, b is the (obtuse) exterior angle at the top right, and w is the apex
+ * angle. Since g is a straight line, the interior angle at the top right is
+ * 180 - b, so by the triangle angle sum w = 180 - a - (180 - b) = b - a — always
+ * a positive integer for a in [35,55], b in [110,130]. Figure, answer, and
+ * explanation are now mutually consistent.
  */
 
 export const generator_1322 = {
@@ -20,146 +34,82 @@ export const generator_1322 = {
     skill: "Lines Angles And Triangles",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate angles
+    // STEP 1: Given angles. a is acute (interior, top-left); b is obtuse
+    // (exterior at top-right). Both integers -> w = b - a is an integer.
     const a = getRandomInt(35, 55);
     const b = getRandomInt(110, 130);
-    
-    // STEP 2: Calculate
-    const thirdAngle = b - a;
-    const w = (180 - thirdAngle) / 2;
-    
-    if (Number.isInteger(w) || (w * 10) % 1 === 0) {
-      // STEP 3: Build Mafs code with randomized coordinates
-      const y1 = getRandomInt(8, 15);
-      const y2 = 0;
-      const leftX = -getRandomInt(2, 4);
-      const rightX = getRandomInt(8, 12);
-      const offset = getRandomInt(2, 5);
-      
-      const _svg_0 = y2 - 2; const _svg_1 = y1 + 2; const _svg_2 = leftX - 2; const _svg_3 = rightX + 2;
-      const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 320" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_2,xmax=_svg_3;
-      const ymin=_svg_0,ymax=_svg_1;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      const xstep=Math.max(1,Math.ceil((_svg_3-(_svg_2))/8));
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0)continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      const ystep=Math.max(1,Math.ceil((_svg_1-(_svg_0))/6));
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        if(y===0)continue;
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=(leftX - 2),xmax=(rightX + 2);
-      const ymin=(y2 - 2),ymax=(y1 + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((leftX))+'" y1="'+my((y1))+'" x2="'+mx((leftX + 4))+'" y2="'+my((y1 + 6))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(leftX - 2),xmax=(rightX + 2);
-      const ymin=(y2 - 2),ymax=(y1 + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((leftX))+'" y1="'+my((y2))+'" x2="'+mx((rightX))+'" y2="'+my((y1 + 2))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(leftX - 2),xmax=(rightX + 2);
-      const ymin=(y2 - 2),ymax=(y1 + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((leftX + offset))+'" y1="'+my((y2))+'" x2="'+mx((leftX + offset + 2))+'" y2="'+my((y1 + 6))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(leftX - 2),xmax=(rightX + 2);
-      const ymin=(y2 - 2),ymax=(y1 + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((rightX + 2))+'" y1="'+my((y2))+'" x2="'+mx((rightX - 2))+'" y2="'+my((y1 + 6))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}</svg></div>`;
-      
-      return {
-        questionText: `In the figure, parallel lines $g$ and $t$ are intersected by lines $r$ and $s$. If $a=${a}$ and $b=${b}$, what is the value of $w$?`,
-        figureCode: mafsCode,
-        options: [],
-        correctAnswer: Number.isInteger(w) ? w.toString() : w.toFixed(1),
-        explanation: `Angles in the triangle formed by intersections are $${a}$, $${180 - b}$, and $${thirdAngle}$. Angle $${thirdAngle}$ is supplementary to two angles of measure $w$ on the parallel line: $${thirdAngle} + 2w = 180$, which gives $w = ${Number.isInteger(w) ? w : w.toFixed(1)}$.`
-      };
-    }
-    
-    // Fallback
-    const fallbackA = 43;
-    const fallbackB = 122;
-    const fallbackThirdAngle = 79;
-    const fallbackW = 50.5;
-    
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 320" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-5,xmax=15;
-      const ymin=-5,ymax=15;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      const xstep=Math.max(1,Math.ceil((15-(-5))/8));
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0)continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      const ystep=Math.max(1,Math.ceil((15-(-5))/6));
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        if(y===0)continue;
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=-5,xmax=15;
-      const ymin=-5,ymax=15;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(-2)+'" y1="'+my(8)+'" x2="'+mx(2)+'" y2="'+my(14)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-5,xmax=15;
-      const ymin=-5,ymax=15;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(-2)+'" y1="'+my(0)+'" x2="'+mx(10)+'" y2="'+my(14)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-5,xmax=15;
-      const ymin=-5,ymax=15;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(0)+'" y1="'+my(0)+'" x2="'+mx(2)+'" y2="'+my(14)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-5,xmax=15;
-      const ymin=-5,ymax=15;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(14)+'" y1="'+my(0)+'" x2="'+mx(10)+'" y2="'+my(14)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}</svg></div>`;
-    
+
+    // STEP 2: The apex (third) angle of the triangle.
+    //   interior angle at top-right = 180 - b  (linear pair along line g)
+    //   triangle sum: a + (180 - b) + w = 180  ->  w = b - a
+    const interiorTopRight = 180 - b;
+    const w = b - a;
+
+    // STEP 3: Figure — fixed-layout schematic (not to scale). Two parallel
+    // horizontal lines g (top) and t (bottom); transversals r and s meet at
+    // apex P on line t, forming a triangle with base R–S on line g.
+    const width = 450;
+    const height = 260;
+    const yG = 70;          // line g (top)
+    const yT = 205;         // line t (bottom, parallel to g)
+    const xR = 150;         // R: r crosses g (top-left base vertex)
+    const xS = 320;         // S: s crosses g (top-right base vertex)
+    const xP = 235;         // apex P on line t (r and s meet here)
+
+    // Extend the transversals a little past the lines they cross so they read
+    // as full lines, not just triangle edges.
+    const ext = (x1: number, y1: number, x2: number, y2: number, k: number) => {
+      const dx = x2 - x1, dy = y2 - y1;
+      return { x: x2 + dx * k, y: y2 + dy * k };
+    };
+    // r goes S? no: r is the left transversal through R and P; s is the right
+    // transversal through S and P.
+    const rTop = ext(xP, yT, xR, yG, 0.25);   // above g on line r
+    const rBot = ext(xR, yG, xP, yT, 0.30);   // below t on line r
+    const sTop = ext(xP, yT, xS, yG, 0.25);   // above g on line s
+    const sBot = ext(xS, yG, xP, yT, 0.30);   // below t on line s
+
+    const figureCode = `
+      <div style="text-align:center;">
+        <svg viewBox="0 0 ${width} ${height}" style="width:100%; max-width:${width}px; height:auto; font-family:sans-serif; user-select:none;">
+          <!-- Parallel line g (top) -->
+          <line x1="35" y1="${yG}" x2="415" y2="${yG}" stroke="currentColor" stroke-width="2"/>
+          <text x="422" y="${yG + 5}" font-size="16" font-style="italic" fill="currentColor">g</text>
+          <!-- parallel mark on g -->
+          <path d="M 60 ${yG} l 8 -4 M 60 ${yG} l 8 4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <!-- Parallel line t (bottom) -->
+          <line x1="35" y1="${yT}" x2="415" y2="${yT}" stroke="currentColor" stroke-width="2"/>
+          <text x="422" y="${yT + 5}" font-size="16" font-style="italic" fill="currentColor">t</text>
+          <!-- parallel mark on t -->
+          <path d="M 60 ${yT} l 8 -4 M 60 ${yT} l 8 4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <!-- Transversal r (through R and apex P) -->
+          <line x1="${rTop.x}" y1="${rTop.y}" x2="${rBot.x}" y2="${rBot.y}" stroke="currentColor" stroke-width="2"/>
+          <text x="${rTop.x - 14}" y="${rTop.y + 4}" font-size="16" font-style="italic" fill="currentColor">r</text>
+          <!-- Transversal s (through S and apex P) -->
+          <line x1="${sTop.x}" y1="${sTop.y}" x2="${sBot.x}" y2="${sBot.y}" stroke="currentColor" stroke-width="2"/>
+          <text x="${sTop.x + 6}" y="${sTop.y + 4}" font-size="16" font-style="italic" fill="currentColor">s</text>
+          <!-- Vertices -->
+          <circle cx="${xR}" cy="${yG}" r="3" fill="#3b82f6"/>
+          <circle cx="${xS}" cy="${yG}" r="3" fill="#3b82f6"/>
+          <circle cx="${xP}" cy="${yT}" r="3" fill="#3b82f6"/>
+          <!-- Angle a: interior at R (between line g toward S and transversal down to P) -->
+          <text x="${xR + 16}" y="${yG + 22}" font-size="15" font-style="italic" fill="currentColor">a&#176;</text>
+          <!-- Angle b: exterior at S (between line g going right and transversal down to P) -->
+          <text x="${xS + 12}" y="${yG + 20}" font-size="15" font-style="italic" fill="currentColor">b&#176;</text>
+          <!-- Angle w: apex at P (interior angle of the triangle) -->
+          <text x="${xP - 8}" y="${yT - 12}" font-size="15" font-style="italic" fill="currentColor">w&#176;</text>
+        </svg>
+      </div>
+    `;
+
     return {
-      questionText: `In the figure, parallel lines $g$ and $t$ are intersected by lines $r$ and $s$. If $a=${fallbackA}$ and $b=${fallbackB}$, what is the value of $w$?`,
-      figureCode: mafsCode,
+      questionText: `In the figure, parallel lines $g$ and $t$ are intersected by transversals $r$ and $s$, which meet to form a triangle. If $a = ${a}$ and $b = ${b}$, what is the value of $w$?`,
+      figureCode,
       options: [],
-      correctAnswer: fallbackW.toString(),
-      explanation: `Angles in the triangle formed by intersections are $${fallbackA}$, $${180 - fallbackB}$, and $${fallbackThirdAngle}$. Angle $${fallbackThirdAngle}$ is supplementary to two angles of measure $w$ on the parallel line: $${fallbackThirdAngle} + 2w = 180$, which gives $w = ${fallbackW}$.`
+      correctAnswer: w.toString(),
+      explanation: `The angle marked $b^{\\circ}$ and the triangle's interior angle at the same vertex form a straight angle along line $g$, so that interior angle measures $180 - b = 180 - ${b} = ${interiorTopRight}$ degrees. The three interior angles of the triangle are $a^{\\circ} = ${a}^{\\circ}$, $${interiorTopRight}^{\\circ}$, and $w^{\\circ}$, and they sum to $180^{\\circ}$. Therefore $w = 180 - ${a} - ${interiorTopRight} = ${w}$.`
     };
   }
 };

@@ -38,16 +38,24 @@ export const generator_1110 = {
     const f_eval = (evalPoint - r1) * (evalPoint - r2) * (evalPoint - r3);
     const g_eval = f_eval + shift;
     
-    const factor1 = r1 >= 0 ? `(x-${r1})` : `(x+${Math.abs(r1)})`;
-    const factor2 = r2 >= 0 ? `(x-${r2})` : `(x+${Math.abs(r2)})`;
-    const factor3 = r3 >= 0 ? `(x-${r3})` : `(x+${Math.abs(r3)})`;
-    
+    const asFactor = (r: number) =>
+      r === 0 ? `x` : r > 0 ? `(x-${r})` : `(x+${Math.abs(r)})`;
+    const factor1 = asFactor(r1);
+    const factor2 = asFactor(r2);
+    const factor3 = asFactor(r3);
+
+    // Each factor evaluated at evalPoint, shown as a clean signed integer (no "--").
+    const t1 = evalPoint - r1;
+    const t2 = evalPoint - r2;
+    const t3 = evalPoint - r3;
+    const wrap = (n: number) => (n < 0 ? `(${n})` : `${n}`);
+
     return {
-      questionText: `In the $xy$-plane, when the graph of the function $f$, where $y=f(x)$, is shifted up ${shift} units, the resulting graph is defined by the function $g$. If the graph of $y=g(x)$ crosses through the point $(${evalPoint}, b)$, where $b$ is a constant, what is the value of $b$?`,
+      questionText: `The function $f$ is defined by $f(x)=${factor1}${factor2}${factor3}$. In the $xy$-plane, when the graph of $y=f(x)$ is shifted up ${shift} units, the resulting graph is defined by the function $g$. If the graph of $y=g(x)$ passes through the point $(${evalPoint}, b)$, where $b$ is a constant, what is the value of $b$?`,
       figureCode: null,
       options: [],
       correctAnswer: g_eval.toString(),
-      explanation: `Since $g(x)=f(x)+${shift}$, we have $g(${evalPoint})=f(${evalPoint})+${shift}$. Given $f(x)=${factor1}${factor2}${factor3}$, we get $f(${evalPoint})=(${evalPoint}-${r1})(${evalPoint}-${r2})(${evalPoint}-${r3})=${f_eval}$. Thus $b=${f_eval}+${shift}=${g_eval}$.`
+      explanation: `Shifting the graph of $f$ up ${shift} units gives $g(x)=f(x)+${shift}$, so $g(${evalPoint})=f(${evalPoint})+${shift}$. Evaluating $f$ at $x=${evalPoint}$: $f(${evalPoint})=${wrap(t1)}\\cdot${wrap(t2)}\\cdot${wrap(t3)}=${f_eval}$. Therefore $b=${f_eval}+${shift}=${g_eval}$.`
     };
   }
 };

@@ -45,7 +45,7 @@ export const generator_1139 = {
       figureCode: null,
       options: [],
       correctAnswer: a.toString(),
-      explanation: `From the y-intercept: $-\\frac{${b_num}}{${b_den}}+b-${shift}=\\frac{${y_int_num}}{${b_den}}$, so $b=\\frac{${b_num}}{${b_den}}$. Given $ab=\\frac{${prod_num}}{${b_den}}$, we have $a\\cdot\\frac{${b_num}}{${b_den}}=\\frac{${prod_num}}{${b_den}}$, thus $a=${a}$.`
+      explanation: `The y-intercept of $y=f(x)-${shift}$ is at $x=0$: since $f(0)=-a^{0}+b=-1+b$, we get $-1+b-${shift}=\\frac{${y_int_num}}{${b_den}}$. Solving, $b=\\frac{${y_int_num}}{${b_den}}+${shift}+1=\\frac{${b_num}}{${b_den}}$. Given $ab=\\frac{${prod_num}}{${b_den}}$, we have $a\\cdot\\frac{${b_num}}{${b_den}}=\\frac{${prod_num}}{${b_den}}$, thus $a=${a}$.`
     };
   }
 };

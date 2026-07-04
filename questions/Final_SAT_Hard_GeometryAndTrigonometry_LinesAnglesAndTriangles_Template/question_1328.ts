@@ -137,11 +137,11 @@ export const generator_1328 = {
     })()}</svg></div>`;
       
       return {
-        questionText: `In the figure shown, $AB=\\\\sqrt{${AB_sq}}$, $AC=${AC}$, and $CE=${CE}$. What is the area, in square units, of triangle $ADE$?`,
+        questionText: `In the figure shown, $AB=\\sqrt{${AB_sq}}$, $AC=${AC}$, and $CE=${CE}$. What is the area, in square units, of triangle $ADE$?`,
         figureCode: mafsCode,
         options: [],
         correctAnswer: Math.round(area).toString(),
-        explanation: `Triangles $ABC$ and $ADE$ are similar. $AE = AC + CE = ${AC} + ${CE} = ${AE}$. Similarity ratio $\\\\frac{AE}{AC} = \\\\frac{${AE}}{${AC}} = ${ratio}$. By Pythagorean theorem, $BC = \\\\sqrt{(${AB_sq}) - ${AC}^2} = ${BC}$. Height $DE = ${ratio} \\\\times ${BC} = ${DE}$. Area $= 0.5 \\\\times ${AE} \\\\times ${DE} = ${Math.round(area)}$.`
+        explanation: `Triangles $ABC$ and $ADE$ are similar. $AE = AC + CE = ${AC} + ${CE} = ${AE}$. Similarity ratio $\\frac{AE}{AC} = \\frac{${AE}}{${AC}} = ${ratio}$. By Pythagorean theorem, $BC = \\sqrt{(${AB_sq}) - ${AC}^2} = ${BC}$. Height $DE = ${ratio} \\times ${BC} = ${DE}$. Area $= 0.5 \\times ${AE} \\times ${DE} = ${Math.round(area)}$.`
       };
     }
     
@@ -242,11 +242,11 @@ export const generator_1328 = {
     })()}</svg></div>`;
     
     return {
-      questionText: `In the figure shown, $AB=\\\\sqrt{${fallbackAB_sq}}$, $AC=${fallbackAC}$, and $CE=${fallbackCE}$. What is the area, in square units, of triangle $ADE$?`,
+      questionText: `In the figure shown, $AB=\\sqrt{${fallbackAB_sq}}$, $AC=${fallbackAC}$, and $CE=${fallbackCE}$. What is the area, in square units, of triangle $ADE$?`,
       figureCode: mafsCode,
       options: [],
       correctAnswer: fallbackArea.toString(),
-      explanation: `Triangles $ABC$ and $ADE$ are similar. $AE = AC + CE = ${fallbackAC} + ${fallbackCE} = ${fallbackAE}$. Similarity ratio $\\\\frac{AE}{AC} = \\\\frac{${fallbackAE}}{${fallbackAC}} = ${fallbackRatio}$. By Pythagorean theorem, $BC = \\\\sqrt{(${fallbackAB_sq}) - ${fallbackAC}^2} = ${fallbackBC}$. Height $DE = ${fallbackRatio} \\\\times ${fallbackBC} = ${fallbackDE}$. Area $= 0.5 \\\\times ${fallbackAE} \\\\times ${fallbackDE} = ${fallbackArea}$.`
+      explanation: `Triangles $ABC$ and $ADE$ are similar. $AE = AC + CE = ${fallbackAC} + ${fallbackCE} = ${fallbackAE}$. Similarity ratio $\\frac{AE}{AC} = \\frac{${fallbackAE}}{${fallbackAC}} = ${fallbackRatio}$. By Pythagorean theorem, $BC = \\sqrt{(${fallbackAB_sq}) - ${fallbackAC}^2} = ${fallbackBC}$. Height $DE = ${fallbackRatio} \\times ${fallbackBC} = ${fallbackDE}$. Area $= 0.5 \\times ${fallbackAE} \\times ${fallbackDE} = ${fallbackArea}$.`
     };
   }
 };

@@ -23,29 +23,56 @@ export const generator_1211 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values (MATCH ORIGINAL RANGES)
-    const threshold = getRandomInt(15, 35); // First "25" people threshold
-    const firstRate = getRandomInt(15, 30); // $15-30 per person
-    const additionalRate = getRandomInt(10, 20); // $10-20 per additional
-    
-    const baseCost = firstRate * threshold;
-    
-    // STEP 2: Calculate simplified form
-    // f(n) = baseCost + additionalRate(n - threshold)
-    // f(n) = baseCost + additionalRate*n - additionalRate*threshold
-    // f(n) = additionalRate*n + (baseCost - additionalRate*threshold)
-    const slope = additionalRate;
-    const intercept = baseCost - additionalRate * threshold;
-    
-    // STEP 3: Create distractors
-    const distractorB = `${additionalRate}n + ${baseCost}`;
-    const distractorC = `${firstRate + additionalRate}n - ${additionalRate * threshold}`;
-    const distractorD = `${additionalRate}n + ${firstRate}`;
-    
-    const correctText = `$f(n) = ${slope}n + ${intercept}$`;
+    // STEP 1: Generate random values (MATCH ORIGINAL RANGES).
+    // Tiered pricing is only realistic when the per-person rate for the first
+    // block is HIGHER than the rate for additional people (as in the original
+    // $21 / $14 example). Enforcing additionalRate < firstRate also guarantees a
+    // strictly positive intercept, so the simplified form never renders "+ -k".
+    // A bounded retry then guarantees all four options are distinct (the only
+    // collision is distractor D == correct when intercept == firstRate, i.e.
+    // threshold*(firstRate - additionalRate) == firstRate).
+    let threshold = 0;
+    let firstRate = 0;
+    let additionalRate = 0;
+    let baseCost = 0;
+    let slope = 0;
+    let intercept = 0;
+    let distractorB = '';
+    let distractorC = '';
+    let distractorD = '';
+    let correctBody = '';
+
+    let tries = 0;
+    do {
+      threshold = getRandomInt(15, 35); // group-size threshold (the first "25")
+      firstRate = getRandomInt(16, 30); // $/person for the first block (higher tier)
+      additionalRate = getRandomInt(10, firstRate - 1); // $/additional person (< firstRate)
+
+      baseCost = firstRate * threshold;
+
+      // STEP 2: Calculate simplified form
+      // f(n) = baseCost + additionalRate(n - threshold)
+      //      = additionalRate*n + (baseCost - additionalRate*threshold)
+      slope = additionalRate;
+      intercept = baseCost - additionalRate * threshold; // > 0 since firstRate > additionalRate
+
+      // STEP 3: Create distractors
+      distractorB = `${additionalRate}n + ${baseCost}`;
+      distractorC = `${firstRate + additionalRate}n - ${additionalRate * threshold}`;
+      distractorD = `${additionalRate}n + ${firstRate}`;
+      correctBody = `${slope}n + ${intercept}`;
+
+      // Guard: every option must be a distinct string as MATH (no distractor may
+      // equal the correct answer or another distractor for this draw).
+    } while (
+      new Set([correctBody, distractorB, distractorC, distractorD]).size !== 4 &&
+      tries++ < 50
+    );
+
+    const correctText = `$f(n) = ${correctBody}$`;
     
     const optionsData = [
-      { text: `$f(n) = ${slope}n + ${intercept}$`, isCorrect: true },
+      { text: correctText, isCorrect: true },
       { text: `$f(n) = ${distractorB}$`, isCorrect: false, reason: `incorrectly adds the base cost without subtracting the cost for the first ${threshold} people from the variable part` },
       { text: `$f(n) = ${distractorC}$`, isCorrect: false, reason: `doesn't follow the structure of the problem's pricing model` },
       { text: `$f(n) = ${distractorD}$`, isCorrect: false, reason: `suggests a base fee of \\$${firstRate} plus \\$${additionalRate} per person, ignoring the higher rate for the first ${threshold} people` }

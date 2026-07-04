@@ -28,20 +28,32 @@ export const generator_1466 = {
 
   generate: (): QuestionData => {
     // 1. Math Setup
-    const pct1 = getRandomInt(120, 250); // e.g. 230%
-    const pct2 = getRandomInt(20, 80);   // e.g. 60%
-    
     // a = (pct1/100) * b
     // b = (pct2/100) * c
     // a = (pct1/100) * (pct2/100) * c = (pct1 * pct2 / 10000) * c
     // Percent = (pct1 * pct2) / 100
-    
-    const finalPct = (pct1 * pct2) / 100;
-    
-    // Distractors
-    const d1 = pct1 + pct2; // Addition error
-    const d2 = pct1 - pct2; // Subtraction error
-    const d3 = Math.round(finalPct / 10); // Decimal error
+    //
+    // The distractors are derived from pct1/pct2, so for some draws one of them can
+    // land exactly on the correct value (e.g. pct1=150, pct2=60 gives finalPct = 90
+    // and the subtraction distractor pct1 - pct2 = 90 — a duplicated option). Redraw
+    // with a bounded loop until all four option values are numerically distinct.
+    let pct1 = getRandomInt(120, 250); // e.g. 230%
+    let pct2 = getRandomInt(20, 80);   // e.g. 60%
+    let finalPct = (pct1 * pct2) / 100;
+    let d1 = pct1 + pct2;              // Addition error
+    let d2 = pct1 - pct2;             // Subtraction error
+    let d3 = Math.round(finalPct / 10); // Decimal error
+
+    const distinct = () => new Set([finalPct, d1, d2, d3]).size === 4;
+    let guard = 0;
+    while (!distinct() && guard++ < 50) {
+      pct1 = getRandomInt(120, 250);
+      pct2 = getRandomInt(20, 80);
+      finalPct = (pct1 * pct2) / 100;
+      d1 = pct1 + pct2;
+      d2 = pct1 - pct2;
+      d3 = Math.round(finalPct / 10);
+    }
 
     const optionsData = [
       { text: `${finalPct}%`, isCorrect: true },

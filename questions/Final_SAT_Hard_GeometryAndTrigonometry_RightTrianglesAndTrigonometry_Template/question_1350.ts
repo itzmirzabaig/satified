@@ -41,41 +41,32 @@ export const generator_1350 = {
     const leg1 = triple[0];
     const leg2 = triple[1];
     const hypotenuse = triple[2];
-    
-    const _svg_0 = leg1 * 3 + 10; const _svg_1 = leg2 * 3 + 10;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-10,xmax=_svg_1;
-      const ymin=-10,ymax=_svg_0;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;
-    })()}${(() => {
-      const xmin=-10,xmax=(leg2 * 3 + 10);
-      const ymin=-10,ymax=(leg1 * 3 + 10);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(-5)+'" y="'+my(-5)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">B</text>';
-    })()}${(() => {
-      const xmin=-10,xmax=(leg2 * 3 + 10);
-      const ymin=-10,ymax=(leg1 * 3 + 10);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((leg2 * 3 + 3))+'" y="'+my(-5)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">C</text>';
-    })()}${(() => {
-      const xmin=-10,xmax=(leg2 * 3 + 10);
-      const ymin=-10,ymax=(leg1 * 3 + 10);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(-5)+'" y="'+my((leg1 * 3 + 3))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">A</text>';
-    })()}</svg></div>`;
+
+    // ── Figure: proportional right triangle ABC, right angle at B ────────────
+    // B bottom-left (right-angle vertex), C bottom-right (BC horizontal =
+    // leg2√r), A above B (AB vertical = leg1√r). Legs are scaled so
+    // AB : BC = leg1 : leg2, matching the stated side lengths.
+    const W = 420, H = 300, P = 46;
+    const spanX = W - 2 * P, spanY = H - 2 * P;
+    const k = Math.min(spanX / leg2, spanY / leg1);
+    const legX = leg2 * k; // horizontal leg BC
+    const legY = leg1 * k; // vertical leg AB
+    const bx = P, by = H - P;             // B (right-angle vertex)
+    const cx = P + legX, cy = by;         // C
+    const ax = P, ay = by - legY;         // A
+    const rm = 15;                        // right-angle square size
+    const mafsCode = `<div style="width:100%;max-width:420px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      `<polygon points="${bx},${by} ${cx},${cy} ${ax},${ay}" fill="#3b82f6" fill-opacity="0.10" stroke="#3b82f6" stroke-width="2"/>` +
+      `<path d="M ${bx + rm} ${by} L ${bx + rm} ${by - rm} L ${bx} ${by - rm}" fill="none" stroke="#3b82f6" stroke-width="1.5"/>` +
+      `<circle cx="${bx}" cy="${by}" r="3.5" fill="#3b82f6"/>` +
+      `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#3b82f6"/>` +
+      `<circle cx="${ax}" cy="${ay}" r="3.5" fill="#3b82f6"/>` +
+      `<text x="${bx - 12}" y="${by + 18}" text-anchor="middle" font-size="15" font-style="italic" fill="currentColor">B</text>` +
+      `<text x="${cx + 12}" y="${cy + 18}" text-anchor="middle" font-size="15" font-style="italic" fill="currentColor">C</text>` +
+      `<text x="${ax - 12}" y="${ay - 6}" text-anchor="middle" font-size="15" font-style="italic" fill="currentColor">A</text>` +
+      `<text x="${ax - 16}" y="${(by + ay) / 2}" text-anchor="middle" font-size="12" fill="currentColor">${leg1}√${radicand}</text>` +
+      `<text x="${(bx + cx) / 2}" y="${by + 20}" text-anchor="middle" font-size="12" fill="currentColor">${leg2}√${radicand}</text>` +
+      `</svg></div>`;
 
     // Generate options
     const correctAnswer = `${hypotenuse}\\\\sqrt{${radicand}}`;

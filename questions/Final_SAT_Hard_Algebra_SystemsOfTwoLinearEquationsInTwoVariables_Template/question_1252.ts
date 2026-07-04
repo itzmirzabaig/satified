@@ -28,66 +28,61 @@ export const generator_1252 = {
     const slope = getRandomInt(3, 8);
     const b1 = getRandomInt(10, 25);
     const b2 = b1 + getRandomInt(3, 8);
-    
-    // Calculate viewBox
+
+    // Viewing window: show the given line y = slope*x + b1 so both its
+    // y-intercept (b1) and its slope are readable. Keep y=0 on-screen and
+    // place the intercept comfortably inside the window.
     const xMin = -5;
     const xMax = 5;
-    const yMin = Math.floor(b1 / 10) * 10 - 5;
-    const yMax = Math.ceil(b2 / 10) * 10 + 5;
-    
-    const _svg_0 = yMax; const _svg_1 = yMin; const _svg_2 = xMax; const _svg_3 = xMin;
+    const yMin = 0;
+    const yMax = Math.ceil((b1 + 3 * slope) / 5) * 5;
+
+    // Round grid spacing so labels stay legible.
+    const yStep = yMax <= 30 ? 5 : 10;
+
     const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="transparent"/>${(() => {
-      const xmin=_svg_3, xmax=_svg_2;
-      const ymin=_svg_1, ymax=_svg_0;
+      const xmin=xMin, xmax=xMax;
+      const ymin=yMin, ymax=yMax;
       const W=400, H=300, P=40;
       const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
       const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
+      const baseY = my(0);            // x-axis position (y = 0 is on-screen)
       let s='';
-      // Axes
-      if(ymin<=0&&ymax>=0) s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      if(xmin<=0&&xmax>=0) s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // Grid lines
+      // Vertical grid lines + x tick labels (labels sit just below the x-axis)
       for(let x=Math.ceil(xmin); x<=Math.floor(xmax); x++) {
-        if(x===0) continue;
-        s+='<line x1="'+mx(x)+'" y1="'+P+'" x2="'+mx(x)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>';
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
+        if(x!==0) s+='<line x1="'+mx(x)+'" y1="'+P+'" x2="'+mx(x)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>';
+        s+='<text x="'+mx(x)+'" y="'+(baseY+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
       }
-      for(let y=Math.ceil(ymin); y<=Math.floor(ymax); y++) {
-        if(y===0) continue;
-        s+='<line x1="'+P+'" y1="'+my(y)+'" x2="'+(W-P)+'" y2="'+my(y)+'" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>';
+      // Horizontal grid lines + y tick labels
+      for(let y=0; y<=ymax; y+=yStep) {
+        if(y!==0) s+='<line x1="'+P+'" y1="'+my(y)+'" x2="'+(W-P)+'" y2="'+my(y)+'" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>';
         s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
       }
+      // Axes drawn last so they sit above the grid
+      s+='<line x1="'+P+'" y1="'+baseY+'" x2="'+(W-P)+'" y2="'+baseY+'" stroke="currentColor" stroke-width="1.5"/>';
+      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
       return s;
     })()}${
     (() => {
-      const pts = [];
-      const xmin = (xMin);
-      const xmax = (xMax);
-      const ymin = (yMin);
-      const ymax = (yMax);
+      // The given line: y = slope*x + b1, clipped to the viewing window.
+      const xmin = xMin, xmax = xMax;
+      const ymin = yMin, ymax = yMax;
       const W = 400, H = 300, P = 40;
       const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
       const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
-      for(let x=xmin; x<=xmax; x+=(xmax-xmin)/100) {
-        const y = (slope);
-        if(y>=ymin-1 && y<=ymax+1) pts.push(mx(x)+','+my(y));
-      }
-      return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="currentColor" stroke-width="2"/>';
-    })()}${
-    (() => {
       const pts = [];
-      const xmin = (xMin);
-      const xmax = (xMax);
-      const ymin = (yMin);
-      const ymax = (yMax);
-      const W = 400, H = 300, P = 40;
-      const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
-      const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
-      for(let x=xmin; x<=xmax; x+=(xmax-xmin)/100) {
-        const y = (slope);
-        if(y>=ymin-1 && y<=ymax+1) pts.push(mx(x)+','+my(y));
+      for(let i=0; i<=200; i++) {
+        const x = xmin + (xmax-xmin)*i/200;
+        const y = slope*x + b1;
+        if(y>=ymin && y<=ymax) pts.push(mx(x)+','+my(y));
       }
-      return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="currentColor" stroke-width="2"/>';
+      let out = '<polyline points="'+pts.join(' ')+'" fill="none" stroke="#3b82f6" stroke-width="2.5"/>';
+      // Mark and label the y-intercept (0, b1) when it is inside the window.
+      if(b1>=ymin && b1<=ymax){
+        out += '<circle cx="'+mx(0)+'" cy="'+my(b1)+'" r="3.5" fill="#3b82f6"/>';
+        out += '<text x="'+(mx(0)+8)+'" y="'+(my(b1)-4)+'" font-size="10" fill="#3b82f6">(0, '+b1+')</text>';
+      }
+      return out;
     })()}</svg></div>`;
     
     const optA = `-${slope}x + y = ${b1}`;

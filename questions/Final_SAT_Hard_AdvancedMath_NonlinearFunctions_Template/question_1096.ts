@@ -32,8 +32,8 @@ export const generator_1096 = {
     const optionsData = [
       { text: `The minimum was ${wrongCalc}.`, isCorrect: false },
       { text: `The minimum was ${Math.round(P0/3)}.`, isCorrect: false },
-      { text: `The estimated number in 1997 was ${wrongCalc}.`, isCorrect: false },
-      { text: `The estimated number in 1997 was ${P0}.`, isCorrect: true }
+      { text: `The estimated number in 1998 was ${wrongCalc}.`, isCorrect: false },
+      { text: `The estimated number in 1998 was ${P0}.`, isCorrect: true }
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,7 +47,7 @@ export const generator_1096 = {
       questionText: `The function $f$ models the number of coupons a company sent to customers at the end of each year, where $t$ represents years since 1998. $f(t)=${P0}(${decay.toFixed(2)})^t$ for $0 \\leq t \\leq 5$. If $y=f(t)$ is graphed in the $ty$-plane, what is the best interpretation of the y-intercept?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `The estimated number in 1997 was ${P0}.`,
+      correctAnswer: `The estimated number in 1998 was ${P0}.`,
       explanation: `Choice ${correctLetter} is correct. The y-intercept is at $t=0$: $f(0)=${P0}(${decay.toFixed(2)})^0=${P0}$. This represents the number of coupons at the end of 1998 (0 years after 1998).`
     };
   }

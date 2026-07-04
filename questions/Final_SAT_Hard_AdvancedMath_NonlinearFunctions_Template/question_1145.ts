@@ -5,7 +5,7 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1145
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [f(x) = 272(2)^x, h(x) = f(x-4)]
  * - Difficulty factors: [Exponential transformation, horizontal shift]
@@ -23,34 +23,46 @@ export const generator_1145 = {
     skill: "Nonlinear Functions",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    const coeff = getRandomInt(100, 400);
+    // Pick the answer first, then derive the original coefficient so the
+    // horizontal shift produces an EXACT integer coefficient:
+    //   h(x) = f(x - shift) = coeff·base^(x-shift) = (coeff/base^shift)·base^x
+    // With coeff = newCoeff·base^shift, this collapses to newCoeff·base^x exactly.
     const base = getRandomInt(2, 5);
-    const shift = getRandomInt(2, 5);
-    
-    const newCoeff = Math.round(coeff / Math.pow(base, shift));
-    
+    const shift = getRandomInt(2, 3);
+    const powBaseShift = Math.pow(base, shift);   // base^shift, e.g. 2^4 = 16
+    const newCoeff = getRandomInt(3, 19);          // the coefficient of h(x)
+    const coeff = newCoeff * powBaseShift;         // original coefficient (exact multiple)
+
+    const correctText = `$h(x)=${newCoeff}(${base})^x$`;
+
     const optionsData = [
-      { text: `$h(x)=${newCoeff}(${base})^x$`, isCorrect: true },
-      { text: `$h(x)=${Math.round(coeff/shift)}(${base})^x$`, isCorrect: false },
-      { text: `$h(x)=${coeff}(${Math.pow(base, shift)})^x$`, isCorrect: false },
-      { text: `$h(x)=${coeff}(${Math.pow(base, shift-1)})^x$`, isCorrect: false }
+      // Correct: dividing the coefficient by base^shift, base unchanged.
+      { text: correctText, isCorrect: true },
+      // Distractor: forgot to apply the shift at all (keeps original coefficient).
+      { text: `$h(x)=${coeff}(${base})^x$`, isCorrect: false },
+      // Distractor: changed the base to base^shift instead of the coefficient.
+      { text: `$h(x)=${coeff}(${powBaseShift})^x$`, isCorrect: false },
+      // Distractor: kept the correct coefficient but wrongly raised the base.
+      { text: `$h(x)=${newCoeff}(${powBaseShift})^x$`, isCorrect: false }
     ];
-    
+    // Every option is pairwise distinct for all draws: base^shift > base (shift >= 2)
+    // and coeff = newCoeff·base^shift > newCoeff, so no coefficient/base pair repeats.
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
-    
+
     return {
       questionText: `$f(x)=${coeff}(${base})^x$ and $h(x)=f(x-${shift})$. Which defines $h$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `$h(x)=${newCoeff}(${base})^x$`,
-      explanation: `Choice ${correctLetter} is correct. $h(x)=f(x-${shift})=${coeff}(${base})^{x-${shift}}=${coeff}(${base})^{-${shift}}(${base})^x=\\frac{${coeff}}{${Math.pow(base, shift)}}(${base})^x=${newCoeff}(${base})^x$.`
+      correctAnswer: correctText,
+      explanation: `Choice ${correctLetter} is correct. $h(x)=f(x-${shift})=${coeff}(${base})^{x-${shift}}=${coeff}(${base})^{-${shift}}(${base})^x=\\frac{${coeff}}{${powBaseShift}}(${base})^x=${newCoeff}(${base})^x$. The other choices come from shifting the base instead of the coefficient, or from not applying the shift.`
     };
   }
 };

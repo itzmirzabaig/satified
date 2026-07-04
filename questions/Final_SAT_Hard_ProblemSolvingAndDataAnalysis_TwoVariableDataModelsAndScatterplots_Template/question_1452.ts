@@ -35,10 +35,20 @@ export const generator_1452 = {
   generate: (): QuestionData => {
     // STEP 1: Generate values. firstYearA in [16, 64], flatB in [15, 35],
     // so both regimes (always-more / eventually-more) occur across draws.
-    const amountA = getRandomInt(400, 800);
-    const rateA = getRandomInt(4, 8); // percent, compounded annually
+    // Guard: firstYearA must never EQUAL flatB, otherwise year-1 earnings tie
+    // and neither "always more" (not strictly more in year 1) nor "less at
+    // first" (not less in year 1) is strictly true, leaving no correct option.
+    let amountA = getRandomInt(400, 800);
+    let rateA = getRandomInt(4, 8); // percent, compounded annually
     const amountB = getRandomInt(800, 1500);
-    const flatB = getRandomInt(15, 35); // flat dollars per year
+    let flatB = getRandomInt(15, 35); // flat dollars per year
+
+    let tries = 0;
+    while (amountA * (rateA / 100) === flatB && tries++ < 50) {
+      amountA = getRandomInt(400, 800);
+      rateA = getRandomInt(4, 8);
+      flatB = getRandomInt(15, 35);
+    }
 
     const rateDecimal = rateA / 100;
     const firstYearA = amountA * rateDecimal; // A's earnings in year 1

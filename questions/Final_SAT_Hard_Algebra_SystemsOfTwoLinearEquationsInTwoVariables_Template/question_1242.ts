@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 
@@ -51,13 +51,17 @@ export const generator_1242 = {
       
       const eq1 = `(x - ${c1}) + (-${b})(y + ${c2}) = ${val1}`;
       const eq2 = `(x - ${c1}) + ${b}(y + ${c2}) = ${val2}`;
-      
+
+      const multiplier = 3 * a;
+      const sum = val1 + val2;
+      const answer = multiplier * sum / 2;
+
       result = {
-        questionText: `The solution to the given system of equations is $(x, y)$. What is the value of $${3 * a}(x - ${c1})$? $$${eq1}$$ $$${eq2}$$`,
+        questionText: `The solution to the given system of equations is $(x, y)$. What is the value of $${multiplier}(x - ${c1})$? $$${eq1}$$ $$${eq2}$$`,
         figureCode: null,
         options: [],
-        correctAnswer: (3 * (val1 + val2) / 2).toString(),
-        explanation: `Adding the two equations eliminates the $y$ terms: $2(x - ${c1}) = ${val1} + ${val2} = ${val1 + val2}$. Therefore, $${3 * a}(x - ${c1}) = ${3 * a} \\\\times \\frac{${val1 + val2}}{2} = ${3 * (val1 + val2) / 2}$.`
+        correctAnswer: answer.toString(),
+        explanation: `Adding the two equations eliminates the $y$ terms: $2(x - ${c1}) = ${val1} + ${val2} = ${sum}$, so $(x - ${c1}) = \\frac{${sum}}{2} = ${sum / 2}$. Therefore, $${multiplier}(x - ${c1}) = ${multiplier} \\times ${sum / 2} = ${answer}$.`
       };
     }
     

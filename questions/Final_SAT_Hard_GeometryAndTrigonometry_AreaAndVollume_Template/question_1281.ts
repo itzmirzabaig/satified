@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -39,27 +39,33 @@ export const generator_1281 = {
     // Distractor C: V = πr² + offset·πr (adding instead of multiplying)
     const distractorC = `V=\\pi r^2+${offset}\\pi r`;
     
+    // Each distractor carries its OWN reason so the explanation stays truthful
+    // after shuffling (reasons must track option content, not fixed positions).
     const optionsData = [
-      { text: distractorA, isCorrect: false },
-      { text: distractorB, isCorrect: false },
-      { text: distractorC, isCorrect: false },
-      { text: correctExpr, isCorrect: true }
+      { text: distractorA, isCorrect: false, reason: `treats the height as $${offset}r$ instead of $r + ${offset}$` },
+      { text: distractorB, isCorrect: false, reason: `confuses the diameter with the radius, using $2r$ in place of $r$` },
+      { text: distractorC, isCorrect: false, reason: `adds the terms instead of multiplying the base area by the height` },
+      { text: correctExpr, isCorrect: true, reason: '' }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+
+    const distractorSentences = incorrectOptions
+      .map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`)
+      .join(' ');
+
     return {
       questionText: `A manufacturer determined that right cylindrical containers with a height that is $${offset}$ inches longer than the radius offer the optimal number of containers to be displayed on a shelf. Which of the following expresses the volume, $V$, in cubic inches, of such containers, where $r$ is the radius, in inches?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctExpr,
-      explanation: `Choice ${correctOption.letter} is correct. The height is $r + ${offset}$. The volume is $V = \\pi r^2 h = \\pi r^2(r + ${offset}) = \\pi r^3 + ${offset}\\pi r^2$. Choice ${incorrectOptions[0].letter} is incorrect because it treats the height as ${offset}r instead of r + ${offset}. Choice ${incorrectOptions[1].letter} is incorrect because it confuses diameter with radius. Choice ${incorrectOptions[2].letter} is incorrect because it adds the terms instead of multiplying.`
+      explanation: `Choice ${correctOption.letter} is correct. The height is $r + ${offset}$. The volume is $V = \\pi r^2 h = \\pi r^2(r + ${offset}) = \\pi r^3 + ${offset}\\pi r^2$. ${distractorSentences}`
     };
   }
 };

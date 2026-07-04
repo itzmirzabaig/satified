@@ -50,7 +50,7 @@ export const generator_1093 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: p.toString(),
-      explanation: `Choice ${correctLetter} is correct. We have $({base.toFixed(2)})^{\\frac{1}{${denom}}}\\approx{newBase.toFixed(3)}=1+\\frac{${p}}{100}$, so $p\\approx${p}$.`
+      explanation: `Choice ${correctLetter} is correct. We have $(${base.toFixed(2)})^{\\frac{1}{${denom}}}\\approx ${newBase.toFixed(3)}=1+\\frac{${p}}{100}$, so $p\\approx ${p}$.`
     };
   }
 };

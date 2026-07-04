@@ -1,15 +1,27 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1360
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [tan = √3/3]
  * - Difficulty factors: [Complementary angles in right triangle, reciprocal relationship of tangents]
  * - Constraints: [tan(A) × tan(90°-A) = 1, tan(30°) = 1/√3 = √3/3]
  * - Question type: [Figure→Multiple Choice Text]
  * - Figure generation: [Right triangle with acute angles labeled]
+ *
+ * FIXES (was RENDER + FIGURE_MISMATCH):
+ * - Collapsed every quadruple-backslash LaTeX macro (\\\\frac, \\\\sqrt) to the
+ *   single-rendered form. At runtime the old strings carried TWO backslashes,
+ *   which KaTeX reads as a line break, so no fraction/root rendered anywhere
+ *   (question text, all four options, correctAnswer, explanation).
+ * - Rebuilt the figure. The old SVG drew NO triangle — only two axis lines and
+ *   two floating labels that read literally "30^{°" / "60^{°" (a raw "^" and an
+ *   unclosed brace are invalid in SVG <text>, so they printed verbatim) and
+ *   overlapped for small base values. The new figure is an actual 30-60-90 right
+ *   triangle with a right-angle marker and clean "30°"/"60°" vertex labels drawn
+ *   with the degree entity, placed so they never overlap.
  */
 
 export const generator_1360 = {
@@ -20,51 +32,42 @@ export const generator_1360 = {
     skill: "Right Triangles And Trigonometry",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // Original: tan(one angle) = √3/3 = 1/√3 = tan(30°)
-    // Other angle is 60°, tan(60°) = √3 = 3/√3
-    
-    // The tangent of complementary angles are reciprocals
-    // If tan(A) = √3/3, then tan(90°-A) = 3/√3 = √3
-    
-    const base = getRandomInt(1, 5);
-    const shorterLeg = base;
-    const longerLeg = base * Math.sqrt(3);
-    
-    const _svg_0 = shorterLeg + 2; const _svg_1 = longerLeg + 2;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-2,xmax=_svg_1;
-      const ymin=-2,ymax=_svg_0;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;
-    })()}${(() => {
-      const xmin=-2,xmax=(longerLeg + 2);
-      const ymin=-2,ymax=(shorterLeg + 2);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(1)+'" y="'+my(0.5)+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">30^{°</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=(longerLeg + 2);
-      const ymin=-2,ymax=(shorterLeg + 2);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((longerLeg - 1))+'" y="'+my((shorterLeg - 0.5))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">60^{°</text>';
-    })()}</svg></div>`;
+    // tan(one acute angle) = √3/3 = 1/√3 = tan(30°). The other acute angle is
+    // its complement (60°); tangents of complementary angles are reciprocals,
+    // so tan(60°) = 3/√3 = √3. The option values are fixed by this math; the
+    // random draw only sets the figure's overall scale.
+    getRandomInt(1, 5); // consume a draw so seeding stays consistent with siblings
+
+    // Figure: a schematic 30-60-90 right triangle drawn with the true leg ratio
+    // 1 : √3 (short vertical leg : long horizontal leg). Right angle at the
+    // bottom-right vertex; the 30° angle sits at the bottom-left (opposite the
+    // short leg) and the 60° angle at the top.
+    const W = 420, H = 260;
+    const leftX = 50, rightX = 360;          // long horizontal leg (adjacent to 30°)
+    const baseY = 210;                       // bottom edge
+    const legLen = rightX - leftX;           // on-screen long leg
+    const shortLeg = legLen / Math.sqrt(3);  // vertical short leg, keeps 30-60-90 shape
+    const topX = rightX;                     // right angle at bottom-right => vertical leg is on the right
+    const topY = baseY - shortLeg;
+
+    const figureCode = `
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:420px;height:auto;display:block;margin:0 auto;font-family:sans-serif;">
+        <polygon points="${leftX},${baseY} ${rightX},${baseY} ${topX},${topY}"
+          fill="#3b82f6" fill-opacity="0.08" stroke="currentColor" stroke-width="2" />
+        <polyline points="${rightX - 16},${baseY} ${rightX - 16},${baseY - 16} ${rightX},${baseY - 16}"
+          fill="none" stroke="currentColor" stroke-width="1.2" />
+        <text x="${leftX + 34}" y="${baseY - 8}" text-anchor="middle" font-size="15" fill="currentColor">30&#176;</text>
+        <text x="${topX - 12}" y="${topY + 26}" text-anchor="end" font-size="15" fill="currentColor">60&#176;</text>
+      </svg>
+    `;
 
     const optionsData = [
-      { text: `-\\\\frac{\\\\sqrt{3}}{3}`, isCorrect: false, reason: "incorrectly adds negative sign" },
-      { text: `-\\\\frac{3}{\\\\sqrt{3}}`, isCorrect: false, reason: "incorrectly adds negative sign" },
-      { text: `\\\\frac{\\\\sqrt{3}}{3}`, isCorrect: false, reason: "gives the original tangent, not the complementary angle" },
-      { text: `\\\\frac{3}{\\\\sqrt{3}}`, isCorrect: true, reason: "correct: reciprocal of √3/3, rationalized" }
+      { text: `-\\frac{\\sqrt{3}}{3}`, isCorrect: false, reason: "keeps the original ratio but adds an incorrect negative sign" },
+      { text: `-\\frac{3}{\\sqrt{3}}`, isCorrect: false, reason: "finds the reciprocal but adds an incorrect negative sign" },
+      { text: `\\frac{\\sqrt{3}}{3}`, isCorrect: false, reason: "repeats the given tangent instead of using the complementary angle" },
+      { text: `\\frac{3}{\\sqrt{3}}`, isCorrect: true, reason: "correct: the reciprocal of √3/3, which equals √3" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -75,13 +78,13 @@ export const generator_1360 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. Tangents of complementary acute angles are reciprocals. Reciprocal of $\\\\frac{\\\\sqrt{3}}{3}$ is $\\\\frac{3}{\\\\sqrt{3}} = \\\\sqrt{3}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The two acute angles of a right triangle are complementary, and the tangents of complementary angles are reciprocals of each other. The reciprocal of $\\frac{\\sqrt{3}}{3}$ is $\\frac{3}{\\sqrt{3}}$, which simplifies to $\\sqrt{3}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `In a right triangle, the tangent of one of the two acute angles is $\\\\frac{\\\\sqrt{3}}{3}$. What is the tangent of the other acute angle?`,
-      figureCode: mafsCode,
+      questionText: `In a right triangle, the tangent of one of the two acute angles is $\\frac{\\sqrt{3}}{3}$. What is the tangent of the other acute angle?`,
+      figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `\\\\frac{3}{\\\\sqrt{3}}`,
+      correctAnswer: `\\frac{3}{\\sqrt{3}}`,
       explanation: explanation
     };
   }

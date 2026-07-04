@@ -33,12 +33,14 @@ export const generator_1088 = {
     const x2 = h;
     const x3 = h + 2 * spread;
     
+    // y = A(x-h)² + k passes through (h ± 2·spread, k - 4·spread²).
+    // A·(2·spread)² = -4·spread²  =>  A = -1, so y = -(x-h)² + k.
     const y1 = k - 4 * spread * spread;
     const y2 = k;
     const y3 = k - 4 * spread * spread;
-    
-    // f(x) = -4(x-h)² + k - 4
-    const f0 = -4 * h * h + k - 4;
+
+    // y = -(x-h)² + k, and f(x) = y - 4 = -(x-h)² + (k - 4).
+    const f0 = -(h * h) + k - 4;
     
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto; text-align: center;">
       <thead>
@@ -68,7 +70,11 @@ export const generator_1088 = {
       figureCode: tableCode,
       options: [],
       correctAnswer: f0.toString(),
-      explanation: `The vertex of $y$ is at $(${h},${k})$, so $f$ has vertex at $(${h},${k-4})$. Using $f(x)=-4(x-${h})^2+${k-4}$, we get $f(0)=-4(${h})^2+${k-4}=${f0}$.`
+      explanation: `The table is symmetric about $x=${h}$, so the vertex of $y=f(x)+4$ is at $(${h},${k})$. Writing $y=A(x-${h})^2+${k}$ and substituting the point $(${x1},${y1})$: $A(${x1-h})^2+${k}=${y1}$, so $A(${(x1-h)*(x1-h)})=${y1-k}$, giving $A=${(y1-k)/((x1-h)*(x1-h))}$.
+      <br/>
+      Thus $y=-(x-${h})^2+${k}$. Since $y=f(x)+4$, we have $f(x)=y-4=-(x-${h})^2+${k-4}$.
+      <br/>
+      The y-intercept of $f$ is $f(0)=-(0-${h})^2+${k-4}=-(${h*h})+${k-4}=${f0}$.`
     };
   }
 };

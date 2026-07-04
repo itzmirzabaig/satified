@@ -53,28 +53,33 @@ export const generator_1306 = {
     const distractorDy = k - r;
     
     const correctText = `(${qx}, ${qy})`;
-    
+
+    // Attach each distractor's explanation reason to the option BEFORE shuffling,
+    // so the reason travels with its option through the shuffle.
     const optionsData = [
-      { text: correctText, isCorrect: true },
-      { text: `(${distractorBx}, ${distractorBy})`, isCorrect: false },
-      { text: `(${distractorCx}, ${distractorCy})`, isCorrect: false },
-      { text: `(${distractorDx}, ${distractorDy})`, isCorrect: false }
+      { text: correctText, isCorrect: true, reason: '' },
+      { text: `(${distractorBx}, ${distractorBy})`, isCorrect: false, reason: 'this is an endpoint of the perpendicular diameter, not the diameter through $P$' },
+      { text: `(${distractorCx}, ${distractorCy})`, isCorrect: false, reason: 'this is the center of the circle, not a point on it' },
+      { text: `(${distractorDx}, ${distractorDy})`, isCorrect: false, reason: 'this is the other endpoint of the perpendicular diameter, not the diameter through $P$' }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+    const distractorExplanations = incorrectOptions
+      .map(o => `Choice ${o.letter} is incorrect; ${o.reason}.`)
+      .join(' ');
+
     return {
       questionText: `In the $xy$-plane, the graph of the equation $(x-${h})^{2}+(y${k >= 0 ? '-' : '+'}${Math.abs(k)})^{2}=${r*r}$ is a circle. Point $P$ is on the circle and has coordinates $(${px}, ${py})$. If $\\\\overline{PQ}$ is a diameter of the circle, what are the coordinates of point $Q$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The center $(${h}, ${k})$ is the midpoint of diameter $\\\\overline{PQ}$. Using the midpoint formula: $\\\\frac{${px} + x_Q}{2} = ${h}$ and $\\\\frac{${py} + y_Q}{2} = ${k}$. Solving: $x_Q = 2(${h}) - ${px} = ${qx}$ and $y_Q = 2(${k}) - ${py} = ${qy}$. Thus $Q = (${qx}, ${qy})$. Choice ${incorrectOptions[0].letter} is incorrect; this would be on a perpendicular diameter. Choice ${incorrectOptions[1].letter} is incorrect; this is the center, not on the circle. Choice ${incorrectOptions[2].letter} is incorrect; this is also on a perpendicular diameter.`
+      explanation: `Choice ${correctLetter} is correct. The center $(${h}, ${k})$ is the midpoint of diameter $\\\\overline{PQ}$. Using the midpoint formula: $\\\\frac{${px} + x_Q}{2} = ${h}$ and $\\\\frac{${py} + y_Q}{2} = ${k}$. Solving: $x_Q = 2(${h}) - ${px} = ${qx}$ and $y_Q = 2(${k}) - ${py} = ${qy}$. Thus $Q = (${qx}, ${qy})$. ${distractorExplanations}`
     };
   }
 };

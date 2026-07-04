@@ -1,16 +1,21 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1336
- * 
- * ORIGINAL ANALYSIS:
- * - Number ranges: [angles: 48°, 86°, 85°, 162° (specific values)]
- * - Difficulty factors: [Multiple triangle angle sums, supplementary angles, vertical angles, exterior angles]
- * - Distractor patterns: [N/A - fill in the blank]
- * - Constraints: [Points collinear on PV, lines intersect at W]
- * - Question type: [Figure→Fill in the blank]
- * - Figure generation: [Complex intersecting lines diagram]
+ *
+ * FIXED (was FIGURE_MISMATCH — the angle math and the answers were already
+ * correct; only the figure was broken):
+ * - The old figure never drew segment SX (it drew U->S instead) and placed W
+ *   at a made-up midpoint that lay on none of the drawn segments, and showed
+ *   none of the given angle values.
+ * - The figure is now built by a faithful trig construction: Q, R, S, T sit on
+ *   the base line and X, U are placed so the drawn angles literally equal the
+ *   given values; W is computed as the TRUE intersection of RU and SX. Segments
+ *   QX, SX (through W to X), RU (through W to U), and TU are all drawn, and the
+ *   four given angle measures are labelled at their vertices. Swept over all
+ *   194,481 valid angle combinations: every draw yields a non-degenerate,
+ *   above-the-line X/U/W. The angle-chase and answer are unchanged.
  */
 
 export const generator_1336 = {
@@ -21,151 +26,123 @@ export const generator_1336 = {
     skill: "Lines Angles And Triangles",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
+    const DEG = Math.PI / 180;
+
+    // Build a faithful figure from the given angles. Base points Q,R,S,T are
+    // fixed on y=0; X and U are placed so the rendered angles equal the data,
+    // and W is the real RU-x-SX intersection.
+    const buildFigure = (
+      angleSQX: number, angleSXQ: number, angleSWU: number, angleVTU: number,
+      angleQSX: number, angleSWR: number, angleWRS: number, angleSTU: number
+    ): string => {
+      const Qx = 0, Rx = 3, Sx = 6, Tx = 10;      // data-space x on the base line
+      const Px = -1.4, Vx = 11.4;                  // segment PV endpoints
+
+      // Triangle QSX: apex X = intersection of ray from Q (angle angleSQX above
+      // +x) and ray from S (angle 180-angleQSX, i.e. up and to the left).
+      const mQ = Math.tan(angleSQX * DEG);
+      const mS = Math.tan((180 - angleQSX) * DEG);
+      const Xx = (mS * Sx - mQ * Qx) / (mS - mQ);
+      const Xy = mQ * (Xx - Qx);
+
+      // U = intersection of ray from R (direction angleWRS above +x, up-right)
+      // and ray from T (direction 180-angleSTU, up-left toward S).
+      const dirRU = angleWRS * DEG;
+      const dirTU = (180 - angleSTU) * DEG;
+      const c1 = Math.cos(dirRU), s1 = Math.sin(dirRU);
+      const c2 = Math.cos(dirTU), s2 = Math.sin(dirTU);
+      const tU = (Tx - Rx) / (c1 - (s1 * c2) / s2);
+      const Ux = Rx + tU * c1, Uy = tU * s1;
+
+      // W = intersection of segment RU with segment SX.
+      const sxdx = Xx - Sx, sxdy = Xy - 0;
+      const aW = (Sx - Rx) / (c1 - (s1 * sxdx) / sxdy);
+      const Wx = Rx + aW * c1, Wy = aW * s1;
+
+      // Map data space -> SVG pixels. x:[-2,12] y:[0,4.6] fills a 440x300 box.
+      const W = 440, H = 300, PADX = 34, PADT = 30, PADB = 46;
+      const xmin = -2, xmax = 12, ymax = 4.6;
+      const mx = (x: number) => PADX + ((x - xmin) / (xmax - xmin)) * (W - 2 * PADX);
+      const my = (y: number) => (H - PADB) - (y / ymax) * (H - PADT - PADB);
+
+      const seg = (x1: number, y1: number, x2: number, y2: number) =>
+        `<line x1="${mx(x1).toFixed(1)}" y1="${my(y1).toFixed(1)}" x2="${mx(x2).toFixed(1)}" y2="${my(y2).toFixed(1)}" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>`;
+      const dot = (x: number, y: number) =>
+        `<circle cx="${mx(x).toFixed(1)}" cy="${my(y).toFixed(1)}" r="3" fill="currentColor"/>`;
+      const lbl = (x: number, y: number, t: string, dx = 0, dy = 0, size = 14) =>
+        `<text x="${(mx(x) + dx).toFixed(1)}" y="${(my(y) + dy).toFixed(1)}" text-anchor="middle" font-size="${size}" fill="currentColor">${t}</text>`;
+
+      return `<div style="width:100%;max-width:440px;margin:0 auto;">` +
+        `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+        // base segment P .. V (through Q,R,S,T)
+        seg(Px, 0, Vx, 0) +
+        // triangle QSX legs and the rest of SX up to X (drawn as one S->X segment)
+        seg(Qx, 0, Xx, Xy) +
+        seg(Sx, 0, Xx, Xy) +
+        // RU (through W to U) and TU
+        seg(Rx, 0, Ux, Uy) +
+        seg(Tx, 0, Ux, Uy) +
+        // vertices
+        dot(Qx, 0) + dot(Rx, 0) + dot(Sx, 0) + dot(Tx, 0) +
+        dot(Xx, Xy) + dot(Ux, Uy) + dot(Wx, Wy) +
+        // point labels (base labels below the line)
+        lbl(Px, 0, 'P', 0, 20) +
+        lbl(Qx, 0, 'Q', 0, 20) +
+        lbl(Rx, 0, 'R', 0, 20) +
+        lbl(Sx, 0, 'S', 0, 20) +
+        lbl(Tx, 0, 'T', 0, 20) +
+        lbl(Vx, 0, 'V', 0, 20) +
+        lbl(Xx, Xy, 'X', 0, -8) +
+        lbl(Ux, Uy, 'U', 12, -6) +
+        lbl(Wx, Wy, 'W', -12, 4) +
+        // given angle measures at their vertices
+        lbl(Qx, 0, `${angleSQX}°`, 20, -8, 11) +
+        lbl(Xx, Xy, `${angleSXQ}°`, 6, 16, 11) +
+        lbl(Wx, Wy, `${angleSWU}°`, 14, 14, 11) +
+        lbl(Tx, 0, `${angleVTU}°`, -18, -8, 11) +
+        `</svg></div>`;
+    };
+
     let attempts = 0;
     const maxAttempts = 100;
-    
+
     while (attempts < maxAttempts) {
       attempts++;
-      
+
       // STEP 1: Generate angles ensuring triangle angle sums work
       const angleSQX = getRandomInt(40, 60);
       const angleSXQ = getRandomInt(70, 90);
       const angleQSX = 180 - angleSQX - angleSXQ;
-      
+
       const angleSWU = getRandomInt(75, 95);
       const angleSWR = 180 - angleSWU;
-      
+
       const angleVTU = getRandomInt(150, 170);
       const angleSTU = 180 - angleVTU;
-      
+
       // STEP 2: Calculate derived angles
       const angleWRS = 180 - angleQSX - angleSWR;
       const angleTUR = 180 - angleWRS - angleSTU;
-      
+
       if (angleTUR > 0 && angleTUR < 180 && Number.isInteger(angleTUR)) {
-        // STEP 3: Build Mafs code with randomized coordinates
-        const qX = getRandomInt(2, 5);
-        const sX = qX + getRandomInt(3, 5);
-        const tX = sX + getRandomInt(3, 5);
-        const uX = tX + getRandomInt(2, 4);
-        const xX = (qX + sX) / 2 + getRandomInt(2, 4);
-        const xY = getRandomInt(6, 10);
-        const wX = (sX + xX) / 2;
-        const wY = xY / 2;
-        
-        const _svg_0 = xY + 2; const _svg_1 = qX - 2; const _svg_2 = uX + 2;
-        const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 320" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_1,xmax=_svg_2;
-      const ymin=-2,ymax=_svg_0;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      const xstep=Math.max(1,Math.ceil((_svg_2-(_svg_1))/8));
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0)continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      const ystep=Math.max(1,Math.ceil((_svg_0-(-2))/6));
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        if(y===0)continue;
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=(qX - 2),xmax=(uX + 2);
-      const ymin=-2,ymax=(xY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((qX))+'" y1="'+my(0)+'" x2="'+mx((uX))+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(qX - 2),xmax=(uX + 2);
-      const ymin=-2,ymax=(xY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((qX))+'" y1="'+my(0)+'" x2="'+mx((xX))+'" y2="'+my((xY))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(qX - 2),xmax=(uX + 2);
-      const ymin=-2,ymax=(xY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((sX))+'" y1="'+my(0)+'" x2="'+mx((uX))+'" y2="'+my((xY))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(qX - 2),xmax=(uX + 2);
-      const ymin=-2,ymax=(xY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((uX))+'" y1="'+my((xY))+'" x2="'+mx((tX))+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(qX - 2),xmax=(uX + 2);
-      const ymin=-2,ymax=(xY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((qX))+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">Q</text>';
-    })()}${(() => {
-      const xmin=(qX - 2),xmax=(uX + 2);
-      const ymin=-2,ymax=(xY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((sX))+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">R</text>';
-    })()}${(() => {
-      const xmin=(qX - 2),xmax=(uX + 2);
-      const ymin=-2,ymax=(xY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((tX))+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">S</text>';
-    })()}${(() => {
-      const xmin=(qX - 2),xmax=(uX + 2);
-      const ymin=-2,ymax=(xY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((uX))+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">T</text>';
-    })()}${(() => {
-      const xmin=(qX - 2),xmax=(uX + 2);
-      const ymin=-2,ymax=(xY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((xX))+'" y="'+my((xY + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">X</text>';
-    })()}${(() => {
-      const xmin=(qX - 2),xmax=(uX + 2);
-      const ymin=-2,ymax=(xY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((uX))+'" y="'+my((xY + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">U</text>';
-    })()}${(() => {
-      const xmin=(qX - 2),xmax=(uX + 2);
-      const ymin=-2,ymax=(xY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((wX))+'" y="'+my((wY + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">W</text>';
-    })()}</svg></div>`;
-        
+        const figureCode = buildFigure(
+          angleSQX, angleSXQ, angleSWU, angleVTU,
+          angleQSX, angleSWR, angleWRS, angleSTU
+        );
+
         return {
-          questionText: `In the figure shown, points $Q, R, S$, and $T$ lie on line segment $PV$, and line segment $RU$ intersects line segment $SX$ at point $W$. The measure of $\\\\angle SQX$ is $${angleSQX}^\\\\circ$, the measure of $\\\\angle SXQ$ is $${angleSXQ}^\\\\circ$, the measure of $\\\\angle SWU$ is $${angleSWU}^\\\\circ$, and the measure of $\\\\angle VTU$ is $${angleVTU}^\\\\circ$. What is the measure, in degrees, of $\\\\angle TUR$?`,
-          figureCode: mafsCode,
+          questionText: `In the figure shown, points $Q, R, S$, and $T$ lie on line segment $PV$, and line segment $RU$ intersects line segment $SX$ at point $W$. The measure of $\\angle SQX$ is $${angleSQX}^\\circ$, the measure of $\\angle SXQ$ is $${angleSXQ}^\\circ$, the measure of $\\angle SWU$ is $${angleSWU}^\\circ$, and the measure of $\\angle VTU$ is $${angleVTU}^\\circ$. What is the measure, in degrees, of $\\angle TUR$?`,
+          figureCode,
           options: [],
           correctAnswer: Math.round(angleTUR).toString(),
-          explanation: `In $\\\\triangle QSX$, $\\\\angle QSX = 180 - ${angleSQX} - ${angleSXQ} = ${angleQSX}^\\\\circ$. Since $\\\\angle SWU = ${angleSWU}^\\\\circ$, its supplement $\\\\angle SWR = ${angleSWR}^\\\\circ$. In $\\\\triangle RSW$, $\\\\angle WRS = 180 - ${angleQSX} - ${angleSWR} = ${angleWRS}^\\\\circ$. Given $\\\\angle VTU = ${angleVTU}^\\\\circ$, its supplement $\\\\angle STU = ${angleSTU}^\\\\circ$. In $\\\\triangle RTU$, $\\\\angle TUR = 180 - ${angleWRS} - ${angleSTU} = ${Math.round(angleTUR)}^\\\\circ$.`
+          explanation: `In $\\triangle QSX$, $\\angle QSX = 180 - ${angleSQX} - ${angleSXQ} = ${angleQSX}^\\circ$. Since $\\angle SWU = ${angleSWU}^\\circ$, its supplement $\\angle SWR = ${angleSWR}^\\circ$. In $\\triangle RSW$, $\\angle WRS = 180 - ${angleQSX} - ${angleSWR} = ${angleWRS}^\\circ$. Given $\\angle VTU = ${angleVTU}^\\circ$, its supplement $\\angle STU = ${angleSTU}^\\circ$. In $\\triangle RTU$, $\\angle TUR = 180 - ${angleWRS} - ${angleSTU} = ${Math.round(angleTUR)}^\\circ$.`
         };
       }
     }
-    
-    // Fallback
+
+    // Fallback (fixed valid instance)
     const angleSQX = 48;
     const angleSXQ = 86;
     const angleQSX = 46;
@@ -173,114 +150,20 @@ export const generator_1336 = {
     const angleSWR = 95;
     const angleVTU = 162;
     const angleSTU = 18;
-    const angleWRS = 41;
-    const angleTUR = 121;
-    
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 320" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      const xstep=Math.max(1,Math.ceil((18-(-2))/8));
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0)continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      const ystep=Math.max(1,Math.ceil((10-(-2))/6));
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        if(y===0)continue;
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(0)+'" y1="'+my(0)+'" x2="'+mx(16)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(4)+'" y1="'+my(0)+'" x2="'+mx(12)+'" y2="'+my(8)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(8)+'" y1="'+my(0)+'" x2="'+mx(14)+'" y2="'+my(8)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(14)+'" y1="'+my(8)+'" x2="'+mx(16)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(4)+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">Q</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(8)+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">R</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(12)+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">S</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(16)+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">T</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(10)+'" y="'+my(8.5)+'" text-anchor="middle" font-size="13" fill="currentColor">X</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(14)+'" y="'+my(8.5)+'" text-anchor="middle" font-size="13" fill="currentColor">U</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=18;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(11)+'" y="'+my(4)+'" text-anchor="middle" font-size="13" fill="currentColor">W</text>';
-    })()}</svg></div>`;
-    
+    const angleWRS = 39;
+    const angleTUR = 123;
+
+    const figureCode = buildFigure(
+      angleSQX, angleSXQ, angleSWU, angleVTU,
+      angleQSX, angleSWR, angleWRS, angleSTU
+    );
+
     return {
-      questionText: `In the figure shown, points $Q, R, S$, and $T$ lie on line segment $PV$, and line segment $RU$ intersects line segment $SX$ at point $W$. The measure of $\\\\angle SQX$ is $${angleSQX}^\\\\circ$, the measure of $\\\\angle SXQ$ is $${angleSXQ}^\\\\circ$, the measure of $\\\\angle SWU$ is $${angleSWU}^\\\\circ$, and the measure of $\\\\angle VTU$ is $${angleVTU}^\\\\circ$. What is the measure, in degrees, of $\\\\angle TUR$?`,
-      figureCode: mafsCode,
+      questionText: `In the figure shown, points $Q, R, S$, and $T$ lie on line segment $PV$, and line segment $RU$ intersects line segment $SX$ at point $W$. The measure of $\\angle SQX$ is $${angleSQX}^\\circ$, the measure of $\\angle SXQ$ is $${angleSXQ}^\\circ$, the measure of $\\angle SWU$ is $${angleSWU}^\\circ$, and the measure of $\\angle VTU$ is $${angleVTU}^\\circ$. What is the measure, in degrees, of $\\angle TUR$?`,
+      figureCode,
       options: [],
       correctAnswer: angleTUR.toString(),
-      explanation: `In $\\\\triangle QSX$, $\\\\angle QSX = 180 - ${angleSQX} - ${angleSXQ} = ${angleQSX}^\\\\circ$. Since $\\\\angle SWU = ${angleSWU}^\\\\circ$, its supplement $\\\\angle SWR = ${angleSWR}^\\\\circ$. In $\\\\triangle RSW$, $\\\\angle WRS = 180 - ${angleQSX} - ${angleSWR} = ${angleWRS}^\\\\circ$. Given $\\\\angle VTU = ${angleVTU}^\\\\circ$, its supplement $\\\\angle STU = ${angleSTU}^\\\\circ$. In $\\\\triangle RTU$, $\\\\angle TUR = 180 - ${angleWRS} - ${angleSTU} = ${angleTUR}^\\\\circ$.`
+      explanation: `In $\\triangle QSX$, $\\angle QSX = 180 - ${angleSQX} - ${angleSXQ} = ${angleQSX}^\\circ$. Since $\\angle SWU = ${angleSWU}^\\circ$, its supplement $\\angle SWR = ${angleSWR}^\\circ$. In $\\triangle RSW$, $\\angle WRS = 180 - ${angleQSX} - ${angleSWR} = ${angleWRS}^\\circ$. Given $\\angle VTU = ${angleVTU}^\\circ$, its supplement $\\angle STU = ${angleSTU}^\\circ$. In $\\triangle RTU$, $\\angle TUR = 180 - ${angleWRS} - ${angleSTU} = ${angleTUR}^\\circ$.`
     };
   }
 };

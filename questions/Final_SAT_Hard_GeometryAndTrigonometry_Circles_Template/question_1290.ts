@@ -53,30 +53,39 @@ export const generator_1290 = {
     const distractorA = radius; // Just the radius
     const distractorB = tangent - radius; // Wrong calculation
     const distractorC = tangent; // Tangent length (trap!)
-    
+
     const correctText = hypotenuse.toString();
-    
+
+    // Guard: ensure all four displayed values are distinct so no distractor
+    // collides with the correct answer (or another distractor) for any draw.
+    const values = [distractorA, distractorB, distractorC, hypotenuse];
+    if (new Set(values).size !== 4) {
+      return generator_1290.generate();
+    }
+
+    // Tag each option with a stable identity so the distractor reasons stay
+    // bound to the correct value after shuffling (never to a shuffle-slot index).
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false },
-      { text: distractorB.toString(), isCorrect: false },
-      { text: distractorC.toString(), isCorrect: false },
-      { text: correctText, isCorrect: true }
+      { text: distractorA.toString(), isCorrect: false, id: 'radius' },
+      { text: distractorB.toString(), isCorrect: false, id: 'arithmetic' },
+      { text: distractorC.toString(), isCorrect: false, id: 'tangent' },
+      { text: correctText, isCorrect: true, id: 'correct' }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
-    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+    const letterOf = (id: string) => shuffledOptions.find(o => o.id === id)!.letter;
+
     return {
       questionText: `A circle has center $G$, and points $M$ and $N$ lie on the circle. Line segments $MH$ and $NH$ are tangent to the circle at points $M$ and $N$, respectively. If the radius of the circle is ${radius} millimeters and the perimeter of quadrilateral $GMHN$ is ${perimeter} millimeters, what is the distance, in millimeters, between points $G$ and $H$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. Tangents from an external point are equal, so $MH = NH$. The perimeter is $GM + MH + HN + NG = ${radius} + MH + MH + ${radius} = ${perimeter}$. Solving: $2MH = ${perimeter} - ${2 * radius} = ${2 * tangent}$, so $MH = ${tangent}$. Triangle $GMH$ is right-angled at $M$, so by the Pythagorean theorem: $GH = \\\\sqrt{${radius}^{2} + ${tangent}^{2}} = \\\\sqrt{${radius * radius} + ${tangent * tangent}} = \\\\sqrt{${radius * radius + tangent * tangent}} = ${hypotenuse}$. Choice ${incorrectOptions[0].letter} is incorrect; this is just the radius. Choice ${incorrectOptions[1].letter} is incorrect; this results from arithmetic errors. Choice ${incorrectOptions[2].letter} is incorrect; this is the tangent length, not the hypotenuse.`
+      explanation: `Choice ${correctLetter} is correct. Tangents from an external point are equal, so $MH = NH$. The perimeter is $GM + MH + HN + NG = ${radius} + MH + MH + ${radius} = ${perimeter}$. Solving: $2MH = ${perimeter} - ${2 * radius} = ${2 * tangent}$, so $MH = ${tangent}$. Triangle $GMH$ is right-angled at $M$, so by the Pythagorean theorem: $GH = \\sqrt{${radius}^{2} + ${tangent}^{2}} = \\sqrt{${radius * radius} + ${tangent * tangent}} = \\sqrt{${radius * radius + tangent * tangent}} = ${hypotenuse}$. Choice ${letterOf('radius')} is incorrect; this is just the radius. Choice ${letterOf('arithmetic')} is incorrect; this results from arithmetic errors. Choice ${letterOf('tangent')} is incorrect; this is the tangent length, not the hypotenuse.`
     };
   }
 };

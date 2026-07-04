@@ -45,24 +45,21 @@ export const generator_1032 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
     // STEP 4: Question text
-    const questionText = `If $a$ and $c$ are positive numbers, which of the following is equivalent to $\\sqrt{(a+c)^{3}\\cdot\\sqrt{a+c}}$?`;
-    
+    // The expression is the PRODUCT of two separate radicals (not one nested radical),
+    // so it simplifies exactly to (a+c)^2 = a^2 + 2ac + c^2 for all positive a, c.
+    const questionText = `If $a$ and $c$ are positive numbers, which of the following is equivalent to $\\sqrt{(a+c)^{3}}\\cdot\\sqrt{a+c}$?`;
+
     // STEP 5: Explanation
     const explanation = `Choice ${correctLetter} is correct. Let $x = a+c$. The expression becomes:
-$$\\sqrt{x^{3}\\cdot\\sqrt{x}}$$
+$$\\sqrt{x^{3}}\\cdot\\sqrt{x}$$
 
-First simplify the inner radical:
-$$\\sqrt{x} = x^{\\frac{1}{2}}$$
+Rewrite each radical using fractional exponents:
+$$\\sqrt{x^{3}} = x^{\\frac{3}{2}} \\quad\\text{and}\\quad \\sqrt{x} = x^{\\frac{1}{2}}$$
 
-So:
-$$\\sqrt{x^{3}\\cdot x^{\\frac{1}{2}}} = \\sqrt{x^{3+\\frac{1}{2}}} = \\sqrt{x^{\\frac{7}{2}}} = x^{\\frac{7}{4}}$$
+Multiply by adding the exponents:
+$$x^{\\frac{3}{2}}\\cdot x^{\\frac{1}{2}} = x^{\\frac{3}{2}+\\frac{1}{2}} = x^{2}$$
 
-Wait—that doesn't match. Re-reading: the expression is $\\sqrt{(a+c)^{3}}\\cdot\\sqrt{a+c}$ (the square root bar does not extend over both factors).
-
-Correct interpretation:
-$$\\sqrt{(a+c)^{3}}\\cdot\\sqrt{a+c} = (a+c)^{\\frac{3}{2}}\\cdot(a+c)^{\\frac{1}{2}} = (a+c)^{\\frac{3}{2}+\\frac{1}{2}} = (a+c)^{2}$$
-
-Expanding:
+Substituting back $x = a+c$ and expanding:
 $$(a+c)^{2} = a^{2} + 2ac + c^{2}$$
 
 Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.

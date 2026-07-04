@@ -29,25 +29,22 @@ export const generator_1171 = {
     const b = getRandomInt(6, 20);
     const c = getRandomInt(1, 10);
     
-    // Slope of line l: -a/b
-    const slopeL = -a / b;
-    // Perpendicular slope: b/a
-    const slopeN = b / a;
-    
-    // Check if it simplifies
+    // Equation ay + bx = c  =>  y = -(b/a)x + c/a, so slope of line l is -b/a.
+    // Perpendicular slope is the negative reciprocal of -b/a, which is +a/b.
     const gcd = (x: number, y: number): number => y === 0 ? x : gcd(y, x % y);
-    const divisor = gcd(Math.abs(b), Math.abs(a));
-    const simplifiedNum = b / divisor;
-    const simplifiedDen = a / divisor;
-    
+    const divisor = gcd(Math.abs(a), Math.abs(b));
+    const simplifiedNum = a / divisor; // numerator of a/b
+    const simplifiedDen = b / divisor; // denominator of a/b
+
     const correctAnswer = simplifiedDen === 1 ? simplifiedNum.toString() : `${simplifiedNum}/${simplifiedDen}`;
-    
+    const simplifiesFurther = divisor !== 1;
+
     return {
       questionText: `Line \\( \\ell \\) is defined by \\( ${a}y+${b}x=${c} \\). Line \\( n \\) is perpendicular to line \\( \\ell \\) in the xy-plane. What is the slope of line \\( n \\) ?`,
       figureCode: null,
       options: [],
       correctAnswer: correctAnswer,
-      explanation: `First, convert to slope-intercept form: $${a}y=-${b}x+${c}$, so $y=-\\frac{${b}}{${a}}x+\\frac{${c}}{${a}}$. The slope of line $\\ell$ is $-\\frac{${b}}{${a}}$. The perpendicular slope is the negative reciprocal: $\\frac{${b}}{${a}}${simplifiedDen === a ? '' : `=\\frac{${simplifiedNum}}{${simplifiedDen}}`}$.`
+      explanation: `First, convert to slope-intercept form: $${a}y=-${b}x+${c}$, so $y=-\\frac{${b}}{${a}}x+\\frac{${c}}{${a}}$. The slope of line $\\ell$ is $-\\frac{${b}}{${a}}$. The slope of a perpendicular line is the negative reciprocal, so the slope of line $n$ is $\\frac{${a}}{${b}}${simplifiesFurther ? `=\\frac{${simplifiedNum}}{${simplifiedDen}}` : ''}$.`
     };
   }
 };

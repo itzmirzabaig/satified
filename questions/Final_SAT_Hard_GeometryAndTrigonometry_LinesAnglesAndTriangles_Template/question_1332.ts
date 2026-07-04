@@ -1,15 +1,25 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1332
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [angle given: 60° (specific), answer: 30°]
- * - Difficulty factors: [Isosceles triangles, vertical angles, supplementary angles]
+ * - Number ranges: [vertex angle QPR randomized, answer: half of it]
+ * - Difficulty factors: [Isosceles triangles, vertical angles, straight-angle supplement]
  * - Distractor patterns: [N/A - fill in the blank]
  * - Constraints: [NP = QP and MP = PR create two isosceles triangles]
- * - Question type: [Figure→Fill in the blank]
+ * - Question type: [Figure -> Fill in the blank]
+ *
+ * FIXED (figure mismatch):
+ * - The angle measure was the only quantitative input and it lived ONLY in the figure,
+ *   but the figure printed the literal placeholder "$angleQPR^circ" (a single-quoted
+ *   string with no interpolation), so the number appeared nowhere and the item was
+ *   unsolvable.
+ * - Rebuilt the figure with a single coordinate mapper: the two intersecting lines
+ *   M-P-Q and N-P-R meeting at P, with the angle QPR drawn as an arc labelled with its
+ *   actual value. Also stated the angle in the stem so the item is solvable from text.
+ * - Constrained the angle to be even so the (half-angle) answer is an exact integer.
  */
 
 export const generator_1332 = {
@@ -20,111 +30,74 @@ export const generator_1332 = {
     skill: "Lines Angles And Triangles",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate vertex angle
-    const angleQPR = getRandomInt(50, 70);
+    // STEP 1: Vertex angle QPR (even -> half-angle answer is an exact integer).
+    const angleQPR = getRandomInt(25, 35) * 2; // 50..70, even
     const angleMPR = 180 - angleQPR;
-    
-    // STEP 2: Calculate
-    const baseAngleMPR = (180 - angleMPR) / 2;
-    
-    // STEP 3: Build Mafs code with randomized coordinates
-    const size = getRandomInt(3, 5);
-    const offset = getRandomInt(1, 3);
-    
-    const _svg_0 = -size - 1; const _svg_1 = size + 1;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 320" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_0,xmax=_svg_1;
-      const ymin=_svg_0,ymax=_svg_1;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      const xstep=Math.max(1,Math.ceil((_svg_1-(_svg_0))/8));
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0)continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      const ystep=Math.max(1,Math.ceil((_svg_1-(_svg_0))/6));
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        if(y===0)continue;
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=(-size - 1),xmax=(size + 1);
-      const ymin=(-size - 1),ymax=(size + 1);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((-size))+'" y1="'+my((size))+'" x2="'+mx((size))+'" y2="'+my((-size))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(-size - 1),xmax=(size + 1);
-      const ymin=(-size - 1),ymax=(size + 1);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((-size))+'" y1="'+my((-size))+'" x2="'+mx((size))+'" y2="'+my((size))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(-size - 1),xmax=(size + 1);
-      const ymin=(-size - 1),ymax=(size + 1);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((-size))+'" y1="'+my((size))+'" x2="'+mx((-size))+'" y2="'+my((-size))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(-size - 1),xmax=(size + 1);
-      const ymin=(-size - 1),ymax=(size + 1);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((-size - 0.5))+'" y="'+my((size))+'" text-anchor="middle" font-size="13" fill="currentColor">N</text>';
-    })()}${(() => {
-      const xmin=(-size - 1),xmax=(size + 1);
-      const ymin=(-size - 1),ymax=(size + 1);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((size + 0.5))+'" y="'+my((size))+'" text-anchor="middle" font-size="13" fill="currentColor">M</text>';
-    })()}${(() => {
-      const xmin=(-size - 1),xmax=(size + 1);
-      const ymin=(-size - 1),ymax=(size + 1);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((size + 0.5))+'" y="'+my((-size))+'" text-anchor="middle" font-size="13" fill="currentColor">R</text>';
-    })()}${(() => {
-      const xmin=(-size - 1),xmax=(size + 1);
-      const ymin=(-size - 1),ymax=(size + 1);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((-size - 0.5))+'" y="'+my((-size))+'" text-anchor="middle" font-size="13" fill="currentColor">Q</text>';
-    })()}${(() => {
-      const xmin=(-size - 1),xmax=(size + 1);
-      const ymin=(-size - 1),ymax=(size + 1);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((offset))+'" y="'+my((offset))+'" text-anchor="middle" font-size="13" fill="currentColor">P</text>';
-    })()}${(() => {
-      const xmin=(-size - 1),xmax=(size + 1);
-      const ymin=(-size - 1),ymax=(size + 1);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((offset))+'" y="'+my((-offset))+'" text-anchor="middle" font-size="13" fill="currentColor">$angleQPR^circ</text>';
-    })()}</svg></div>`;
-    
+
+    // STEP 2: angle QMR is a base angle of isosceles triangle MPR (MP = PR).
+    //   base angle = (180 - angleMPR) / 2 = angleQPR / 2.
+    const answer = angleQPR / 2;
+
+    // STEP 3: Figure. Lines N-P-R (through origin, horizontal) and M-P-Q cross at P.
+    //   Place R at 0deg, Q at angleQPR, so the drawn angle QPR equals angleQPR.
+    const round2 = (v: number) => Math.round(v * 100) / 100;
+    const W = 400, H = 320, PAD = 46;
+    const L = 4; // half-length of each line in data units
+    const span = L + 1.4;
+    const xmin = -span, xmax = span, ymin = -span, ymax = span;
+    const mx = (x: number) => round2(PAD + (x - xmin) / (xmax - xmin) * (W - 2 * PAD));
+    const my = (y: number) => round2(H - PAD - (y - ymin) / (ymax - ymin) * (H - 2 * PAD));
+
+    const rad = (deg: number) => (deg * Math.PI) / 180;
+    const th = rad(angleQPR);
+    // Endpoints (P at origin).
+    const Rx = L, Ry = 0;                 // R: right
+    const Nx = -L, Ny = 0;                // N: left
+    const Qx = L * Math.cos(th), Qy = L * Math.sin(th);   // Q: upper-right
+    const Mx = -L * Math.cos(th), My = -L * Math.sin(th); // M: lower-left
+
+    // Arc for angle QPR at P, from ray PR (0deg) to ray PQ (angleQPR).
+    const ar = 1.5; // arc radius in data units
+    const a0x = ar * Math.cos(0), a0y = ar * Math.sin(0);
+    const a1x = ar * Math.cos(th), a1y = ar * Math.sin(th);
+    const largeArc = angleQPR > 180 ? 1 : 0;
+    // SVG y is inverted, so sweep from PR up to PQ is a clockwise (sweep-flag 0) arc in screen space.
+    const arc = `<path d="M ${mx(a0x)} ${my(a0y)} A ${round2((mx(ar) - mx(0)))} ${round2((my(0) - my(ar)))} 0 ${largeArc} 0 ${mx(a1x)} ${my(a1y)}" fill="none" stroke="#3b82f6" stroke-width="1.8"/>`;
+    // Angle label placed just outside the arc, at the bisector direction.
+    const lblR = 2.35;
+    const lblx = lblR * Math.cos(th / 2), lbly = lblR * Math.sin(th / 2);
+
+    const line = (x1: number, y1: number, x2: number, y2: number) =>
+      `<line x1="${mx(x1)}" y1="${my(y1)}" x2="${mx(x2)}" y2="${my(y2)}" stroke="currentColor" stroke-width="2.5"/>`;
+    const dot = (x: number, y: number) => `<circle cx="${mx(x)}" cy="${my(y)}" r="2.6" fill="currentColor"/>`;
+    const lbl = (x: number, y: number, t: string) =>
+      `<text x="${mx(x)}" y="${my(y)}" text-anchor="middle" font-size="14" font-style="italic" fill="currentColor">${t}</text>`;
+
+    const figureCode = `<div style="width:100%;max-width:420px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      // The two full lines through P.
+      line(Nx, Ny, Rx, Ry) +
+      line(Mx, My, Qx, Qy) +
+      arc +
+      // Intersection point.
+      dot(0, 0) +
+      // Vertex labels (nudged outward from each endpoint).
+      lbl(Nx - 0.5, Ny + 0.5, 'N') +
+      lbl(Rx + 0.5, Ry + 0.4, 'R') +
+      lbl(Qx + 0.5, Qy + 0.5, 'Q') +
+      lbl(Mx - 0.5, My - 0.5, 'M') +
+      `<text x="${mx(0.35)}" y="${my(-0.55)}" text-anchor="middle" font-size="14" font-style="italic" fill="currentColor">P</text>` +
+      // Angle value label.
+      `<text x="${mx(lblx)}" y="${my(lbly)}" text-anchor="middle" font-size="13" fill="#3b82f6">${angleQPR}°</text>` +
+      `</svg></div>`;
+
     return {
-      questionText: `In the figure above, $MQ$ and $NR$ intersect at point $P$, $NP = QP$, and $MP = PR$. What is the measure, in degrees, of $\\\\angle QMR$? (Disregard the degree symbol when gridding your answer.)`,
-      figureCode: mafsCode,
+      questionText: `In the figure above, $MQ$ and $NR$ intersect at point $P$, with $NP = QP$ and $MP = PR$. If the measure of $\\angle QPR$ is $${angleQPR}^\\circ$, what is the measure, in degrees, of $\\angle QMR$? (Disregard the degree symbol when gridding your answer.)`,
+      figureCode: figureCode,
       options: [],
-      correctAnswer: Math.round(baseAngleMPR).toString(),
-      explanation: `Since $\\\\angle QPR = ${angleQPR}^\\\\circ$, then $\\\\angle MPR = ${angleMPR}^\\\\circ$. Given $MP = PR$, triangle $MPR$ is isosceles. The base angles $\\\\angle QMR$ and $\\\\angle NRM$ sum to $180 - ${angleMPR} = ${180 - angleMPR}$. Thus, $\\\\angle QMR = ${Math.round(baseAngleMPR)}^\\\\circ$.`
+      correctAnswer: answer.toString(),
+      explanation: `Since $MQ$ is a straight line, $\\angle MPR$ and $\\angle QPR$ are supplementary, so $\\angle MPR = 180 - ${angleQPR} = ${angleMPR}^\\circ$. In triangle $MPR$, the given $MP = PR$ makes it isosceles, so its base angles $\\angle PMR$ and $\\angle PRM$ are equal. They sum to $180 - ${angleMPR} = ${angleQPR}$, so each base angle is $\\frac{${angleQPR}}{2} = ${answer}^\\circ$. Since $\\angle QMR$ is the same angle as $\\angle PMR$, $\\angle QMR = ${answer}^\\circ$.`
     };
   }
 };

@@ -1,15 +1,20 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1335
- * 
- * ORIGINAL ANALYSIS:
- * - Number ranges: [angle given: 114°, answer: 64°]
- * - Difficulty factors: [Isosceles triangles, exterior angle theorem]
- * - Distractor patterns: [A: 72, B: 66, D: 58]
- * - Constraints: [RT = TU creates isosceles triangle RTU]
- * - Question type: [Figure→Multiple Choice]
+ *
+ * REBUILT (was FIGURE_MISMATCH + BAD_EXPLANATION):
+ * - Old figure drew no triangle and printed the literal string "$angleRTU^circ"
+ *   (a non-template JS string, so the value never interpolated), and used a
+ *   random "exteriorComponent" with no geometric meaning, producing a false
+ *   half-integer base-angle equation in the explanation.
+ * - Now a self-consistent isosceles / exterior-angle item: triangle RTU with
+ *   RT = TU, base RU extended past U to V, and x is the exterior angle at U.
+ *   Base angle = (180 - angleRTU)/2; x = 180 - baseAngle = 90 + angleRTU/2.
+ *   angleRTU is even so every angle is an integer for every draw. The figure
+ *   actually draws the triangle, the extension, and labels the vertex angle at
+ *   T and x at the exterior angle at U.
  */
 
 export const generator_1335 = {
@@ -20,235 +25,105 @@ export const generator_1335 = {
     skill: "Lines Angles And Triangles",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate vertex angle of isosceles triangle
-    const angleRTU = getRandomInt(100, 130);
-    
-    // STEP 2: Calculate base angles and x
-    const baseAngle = (180 - angleRTU) / 2;
-    const exteriorComponent = getRandomInt(25, 40);
-    const x = exteriorComponent + baseAngle;
-    
-    if (!Number.isInteger(x)) {
-      // Adjust to make integer
-      const adjustedX = Math.round(x);
-      const adjustedBase = Math.round(baseAngle);
-      const adjustedExterior = adjustedX - adjustedBase;
-      
-      // STEP 3: Create distractors
-      const distractors = [
-        adjustedX + 8,
-        adjustedX + 2,
-        adjustedX - 6
-      ];
-      
-      const optionsData = [
-        { text: distractors[0].toString(), isCorrect: false },
-        { text: distractors[1].toString(), isCorrect: false },
-        { text: adjustedX.toString(), isCorrect: true },
-        { text: distractors[2].toString(), isCorrect: false }
-      ];
-      
-      // STEP 4: Shuffle and assign letters
-      const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
-        ...opt,
-        letter: String.fromCharCode(65 + index)
-      }));
-      
-      const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-      const correctLetter = correctOption.letter;
-      
-      // STEP 5: Build Mafs code with randomized coordinates
-      const rX = 0;
-      const rY = 0;
-      const tX = getRandomInt(5, 8);
-      const tY = getRandomInt(6, 10);
-      const uX = tX + getRandomInt(4, 8);
-      const uY = 0;
-      const vX = tX - getRandomInt(2, 4);
-      const vY = tY + getRandomInt(1, 3);
-      
-      const _svg_0 = rY - 2; const _svg_1 = vY + 2; const _svg_2 = rX - 2; const _svg_3 = uX + 2;
-      const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 320" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_2,xmax=_svg_3;
-      const ymin=_svg_0,ymax=_svg_1;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      const xstep=Math.max(1,Math.ceil((_svg_3-(_svg_2))/8));
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0)continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      const ystep=Math.max(1,Math.ceil((_svg_1-(_svg_0))/6));
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        if(y===0)continue;
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=(rX - 2),xmax=(uX + 2);
-      const ymin=(rY - 2),ymax=(vY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((tX))+'" y1="'+my((tY))+'" x2="'+mx((vX))+'" y2="'+my((vY))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(rX - 2),xmax=(uX + 2);
-      const ymin=(rY - 2),ymax=(vY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((rX))+'" y="'+my((rY - 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">R</text>';
-    })()}${(() => {
-      const xmin=(rX - 2),xmax=(uX + 2);
-      const ymin=(rY - 2),ymax=(vY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((tX))+'" y="'+my((tY + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">T</text>';
-    })()}${(() => {
-      const xmin=(rX - 2),xmax=(uX + 2);
-      const ymin=(rY - 2),ymax=(vY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((uX))+'" y="'+my((uY - 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">U</text>';
-    })()}${(() => {
-      const xmin=(rX - 2),xmax=(uX + 2);
-      const ymin=(rY - 2),ymax=(vY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((vX + 1))+'" y="'+my((vY - 1))+'" text-anchor="middle" font-size="13" fill="currentColor">V</text>';
-    })()}${(() => {
-      const xmin=(rX - 2),xmax=(uX + 2);
-      const ymin=(rY - 2),ymax=(vY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(((tX + vX) / 2))+'" y="'+my(((tY + vY) / 2 - 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">$angleRTU^circ</text>';
-    })()}${(() => {
-      const xmin=(rX - 2),xmax=(uX + 2);
-      const ymin=(rY - 2),ymax=(vY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((rX + 1))+'" y="'+my(((rY + tY) / 2))+'" text-anchor="middle" font-size="13" fill="currentColor">x^circ</text>';
-    })()}</svg></div>`;
-      
-      return {
-        questionText: `In the figure above, $RT = TU$. What is the value of $x$?`,
-        figureCode: mafsCode,
-        options: shuffledOptions.map(o => ({ text: o.text })),
-        correctAnswer: correctOption.text,
-        explanation: `Choice ${correctLetter} is correct. Triangle $RTU$ is isosceles with $RT = TU$, so base angles are $\\\\frac{180 - ${angleRTU}}{2} = ${adjustedBase}^\\\\circ$. Angle $TUR = \\\\angle SUV = ${adjustedBase}^\\\\circ$. By the exterior angle theorem, $x = ${adjustedExterior} + ${adjustedBase} = ${adjustedX}$.`
-      };
-    }
-    
-    // If x was already integer
-    const distractors = [
-      Math.round(x + 8),
-      Math.round(x + 2),
-      Math.round(x - 6)
+    // STEP 1: Vertex angle of the isosceles triangle (even -> integer base angles).
+    const angleRTU = getRandomInt(50, 74) * 2; // 100..148, always even
+
+    // STEP 2: Base angles and the exterior angle x at U.
+    const baseAngle = (180 - angleRTU) / 2;      // integer
+    const x = 180 - baseAngle;                    // exterior angle at U = 90 + angleRTU/2
+
+    // STEP 3: Distractors — common wrong picks, all guaranteed distinct from x.
+    const candidateDistractors = [
+      baseAngle,          // forgetting the exterior step
+      angleRTU,           // copying the vertex angle
+      180 - angleRTU,     // supplement of the vertex angle
+      baseAngle + 90,     // (equals x) — filtered out below
+      x - baseAngle,      // = angleRTU/2 style slip
     ];
-    
+    const distractors: number[] = [];
+    for (const d of candidateDistractors) {
+      if (d !== x && d > 0 && d < 180 && !distractors.includes(d)) distractors.push(d);
+      if (distractors.length === 3) break;
+    }
+    // Safety net: pad with nearby values if the pool came up short.
+    let pad = 1;
+    while (distractors.length < 3) {
+      const d = x + pad;
+      if (d !== x && d > 0 && d < 180 && !distractors.includes(d)) distractors.push(d);
+      pad = pad > 0 ? -pad : -pad + 1;
+    }
+
     const optionsData = [
       { text: distractors[0].toString(), isCorrect: false },
       { text: distractors[1].toString(), isCorrect: false },
-      { text: Math.round(x).toString(), isCorrect: true },
+      { text: x.toString(), isCorrect: true },
       { text: distractors[2].toString(), isCorrect: false }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const correctLetter = correctOption.letter;
-    
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 320" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-2,xmax=14;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      const xstep=Math.max(1,Math.ceil((14-(-2))/8));
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0)continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      const ystep=Math.max(1,Math.ceil((10-(-2))/6));
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        if(y===0)continue;
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=-2,xmax=14;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(6)+'" y1="'+my(8)+'" x2="'+mx(3)+'" y2="'+my(9)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-2,xmax=14;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(0)+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">R</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=14;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(6)+'" y="'+my(8.5)+'" text-anchor="middle" font-size="13" fill="currentColor">T</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=14;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(12)+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">U</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=14;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(9)+'" y="'+my(5)+'" text-anchor="middle" font-size="13" fill="currentColor">V</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=14;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(3)+'" y="'+my(6)+'" text-anchor="middle" font-size="13" fill="currentColor">$angleRTU^circ</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=14;
-      const ymin=-2,ymax=10;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(0)+'" y="'+my(4)+'" text-anchor="middle" font-size="13" fill="currentColor">x^circ</text>';
-    })()}</svg></div>`;
-    
+
+    // STEP 4: Build the figure directly in SVG pixel space.
+    // Isosceles triangle: base R--U horizontal, apex T above the base midpoint,
+    // base extended past U to V. Small randomization keeps draws from looking
+    // identical while staying a valid depiction (SAT figures are not to scale).
+    const W = 420, H = 300;
+    const baseY = 210;
+    const Rx = 70;
+    const Ux = 300 + getRandomInt(-10, 10);
+    const Vx = 380;
+    const Tx = (Rx + Ux) / 2;
+    const Ty = 70 + getRandomInt(-8, 8);
+
+    const seg = (x1: number, y1: number, x2: number, y2: number) =>
+      `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>`;
+    const lbl = (x1: number, y1: number, t: string, anchor = 'middle') =>
+      `<text x="${x1}" y="${y1}" text-anchor="${anchor}" font-size="15" fill="currentColor">${t}</text>`;
+
+    const figureCode =
+      `<div style="width:100%;max-width:420px;margin:0 auto;">` +
+      `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      // base line R -> V (through U), then the two equal sides
+      seg(Rx, baseY, Vx, baseY) +
+      seg(Rx, baseY, Tx, Ty) +
+      seg(Ux, baseY, Tx, Ty) +
+      // tick marks indicating RT = TU
+      (() => {
+        const mid1x = (Rx + Tx) / 2, mid1y = (baseY + Ty) / 2;
+        const mid2x = (Ux + Tx) / 2, mid2y = (baseY + Ty) / 2;
+        const tick = (cx: number, cy: number, dx: number, dy: number) =>
+          `<line x1="${cx - dx}" y1="${cy - dy}" x2="${cx + dx}" y2="${cy + dy}" stroke="currentColor" stroke-width="2"/>`;
+        return tick(mid1x, mid1y, 4, -6) + tick(mid2x, mid2y, 4, 6);
+      })() +
+      // vertices
+      `<circle cx="${Rx}" cy="${baseY}" r="3" fill="currentColor"/>` +
+      `<circle cx="${Ux}" cy="${baseY}" r="3" fill="currentColor"/>` +
+      `<circle cx="${Vx}" cy="${baseY}" r="3" fill="currentColor"/>` +
+      `<circle cx="${Tx}" cy="${Ty}" r="3" fill="currentColor"/>` +
+      // point labels
+      lbl(Rx - 12, baseY + 6, 'R') +
+      lbl(Ux - 6, baseY + 22, 'U') +
+      lbl(Vx + 12, baseY + 6, 'V') +
+      lbl(Tx, Ty - 12, 'T') +
+      // vertex angle at T
+      lbl(Tx, Ty + 26, `${angleRTU}°`) +
+      // exterior angle x at U (between UT and UV, opening up-right)
+      lbl(Ux + 26, baseY - 12, 'x°') +
+      `</svg></div>`;
+
     return {
-      questionText: `In the figure above, $RT = TU$. What is the value of $x$?`,
-      figureCode: mafsCode,
+      questionText: `In the figure above, $RT = TU$ and points $R$, $U$, and $V$ lie on a line. What is the value of $x$?`,
+      figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. Triangle $RTU$ is isosceles with $RT = TU$, so base angles are $\\\\frac{180 - ${angleRTU}}{2} = ${Math.round(baseAngle)}^\\\\circ$. Angle $TUR = \\\\angle SUV = ${Math.round(baseAngle)}^\\\\circ$. By the exterior angle theorem, $x = ${exteriorComponent} + ${Math.round(baseAngle)} = ${Math.round(x)}$.`
+      explanation: `Choice ${correctLetter} is correct. Triangle $RTU$ is isosceles with $RT = TU$, so its base angles are equal: $\\angle TRU = \\angle TUR = \\frac{180 - ${angleRTU}}{2} = ${baseAngle}^\\circ$. Since $R$, $U$, and $V$ are collinear, angle $x$ is the exterior angle at $U$ and is supplementary to $\\angle TUR$: $x = 180 - ${baseAngle} = ${x}$.`
     };
   }
 };

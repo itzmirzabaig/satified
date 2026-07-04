@@ -28,20 +28,22 @@ export const generator_1065 = {
     // We'll randomize the horizontal line value and linear coefficient
     
     const horizontalY = getRandomInt(-5, -1) - 0.5; // Values like -1.5, -2.5, -3.5, etc.
-    const linearCoeff = getRandomInt(4, 12); // Random linear coefficient (original was 8)
+    // linearCoeff starts at 5 so that a = horizontalY + linearCoeff^2/4 is ALWAYS positive.
+    // Worst case: horizontalY = -5.5, linearCoeff = 5 -> a = -5.5 + 6.25 = 0.75 > 0.
+    // (linearCoeff = 4 would give linearCoeff^2/4 = 4, and horizontalY = -5.5 makes a = -1.5 < 0,
+    //  which would violate the stated "a is a positive constant" premise.)
+    const linearCoeff = getRandomInt(5, 12); // Random linear coefficient (original was 8)
     const horizontalYDisplay = horizontalY < 0 ? horizontalY.toString() : `+${horizontalY}`;
-    
+
     // STEP 2: Calculate derived values using discriminant = 0 condition
     // Substituting: horizontalY = x² + linearCoeff*x + a
     // Rearranging: x² + linearCoeff*x + (a - horizontalY) = 0
     // Discriminant: linearCoeff² - 4(1)(a - horizontalY) = 0
     // Solving for a: a = horizontalY + linearCoeff²/4
-    
+
     const aValue = horizontalY + (linearCoeff * linearCoeff) / 4;
-    
-    // Ensure a is positive (constraint from problem)
-    // This requires horizontalY + linearCoeff²/4 > 0
-    // With our ranges, this should always be positive since linearCoeff²/4 >= 4
+
+    // a is guaranteed positive because linearCoeff >= 5 => linearCoeff^2/4 >= 6.25 > 5.5 >= |horizontalY|.
     
     // Format a as fraction if needed, or decimal
     const aNumerator = (4 * horizontalY) + (linearCoeff * linearCoeff);

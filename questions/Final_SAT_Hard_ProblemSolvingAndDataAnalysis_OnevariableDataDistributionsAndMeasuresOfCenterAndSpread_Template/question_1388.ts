@@ -22,13 +22,15 @@ export const generator_1388 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate data set A (consecutive or near-consecutive integers)
+    // STEP 1: Generate data set A (consecutive integers)
     const startValue = getRandomInt(15, 35);
     const valuesA = [startValue, startValue + 1, startValue + 2, startValue + 3, startValue + 4];
-    
-    // Generate frequencies for dot plot
-    const frequencies = valuesA.map(() => getRandomInt(1, 4));
-    
+
+    // Each value appears exactly once, so the dot plot encodes precisely the
+    // five enumerated values. This keeps the plotted multiset consistent with
+    // the stem and makes the median the middle enumerated value.
+    const frequencies = valuesA.map(() => 1);
+
     // STEP 2: Calculate statistics for set A
     const medianA = valuesA[2]; // Middle value
     const rangeA = valuesA[4] - valuesA[0];

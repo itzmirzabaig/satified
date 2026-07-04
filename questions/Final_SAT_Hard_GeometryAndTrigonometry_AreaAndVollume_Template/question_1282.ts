@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -44,41 +44,76 @@ export const generator_1282 = {
     const p3y = centerY;
     
     // STEP 3: Calculate circumference factor k
-    const circumference = 2 * Math.PI * radius;
     const k = 2 * radius; // C = kπ, so k = 2r
-    
-    // STEP 4: Build Mafs code
-    const viewMinX = Math.min(p1x, p2x, p3x) - 2;
-    const viewMaxX = Math.max(p1x, p2x, p3x) + 2;
-    const viewMinY = Math.min(p1y, p2y, p3y) - 2;
-    const viewMaxY = Math.max(p1y, p2y, p3y) + 2;
-    
-    const _svg_0 = viewMinX; const _svg_1 = viewMaxX; const _svg_2 = viewMaxY; const _svg_3 = viewMinY;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_0,xmax=_svg_1;
-      const ymin=_svg_3,ymax=_svg_2;
-      const W=400,H=350,P=40;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      const xstep=Math.ceil((_svg_1-(_svg_0))/8);
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0) continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=(viewMinX),xmax=(viewMaxX);
-      const ymin=(viewMinY),ymax=(viewMaxY);
-      const W=400,H=350,P=40;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      const r=((centerY))*(400-2*40)/((viewMaxX)-((viewMinX)));
-      return '<circle cx="'+mx((centerX))+'" cy="'+my((centerY))+'" r="'+r+'" fill="none" stroke="currentColor" stroke-width="2"/>';
-    })()}</svg></div>`;
-    
+
+    // STEP 4: Build the figure as a self-contained SVG.
+    // A single coordinate mapping with an EQUAL x/y pixel scale keeps the
+    // circle circular; the window is centered on the circle center so the
+    // whole circle plus the three points fit inside the viewBox.
+    const points = [
+      { x: p1x, y: p1y },
+      { x: p2x, y: p2y },
+      { x: p3x, y: p3y }
+    ];
+
+    const W = 400, H = 350, P = 36;
+    // Data-unit half-spans needed so the circle + a 1-unit margin are visible.
+    const halfSpan = radius + 1.5;
+    const plotW = W - 2 * P;
+    const plotH = H - 2 * P;
+    // pixels per data unit, equal on both axes (min so both fit)
+    const scale = Math.min(plotW, plotH) / (2 * halfSpan);
+    const cxPix = W / 2;
+    const cyPix = H / 2;
+    // map data (x,y) -> pixel; y grows upward in data, downward in pixels
+    const mx = (x: number) => cxPix + (x - centerX) * scale;
+    const my = (y: number) => cyPix - (y - centerY) * scale;
+
+    // Integer grid range currently visible
+    const xLo = Math.ceil(centerX - halfSpan);
+    const xHi = Math.floor(centerX + halfSpan);
+    const yLo = Math.ceil(centerY - halfSpan);
+    const yHi = Math.floor(centerY + halfSpan);
+
+    let grid = '';
+    for (let x = xLo; x <= xHi; x++) {
+      grid += `<line x1="${mx(x)}" y1="${P}" x2="${mx(x)}" y2="${H - P}" stroke="currentColor" stroke-opacity="0.12" stroke-width="1"/>`;
+    }
+    for (let y = yLo; y <= yHi; y++) {
+      grid += `<line x1="${P}" y1="${my(y)}" x2="${W - P}" y2="${my(y)}" stroke="currentColor" stroke-opacity="0.12" stroke-width="1"/>`;
+    }
+
+    // Axes: draw the zero lines only when they fall inside the window.
+    let axes = '';
+    if (centerX - halfSpan <= 0 && 0 <= centerX + halfSpan) {
+      axes += `<line x1="${mx(0)}" y1="${P}" x2="${mx(0)}" y2="${H - P}" stroke="currentColor" stroke-width="1.5"/>`;
+    }
+    if (centerY - halfSpan <= 0 && 0 <= centerY + halfSpan) {
+      axes += `<line x1="${P}" y1="${my(0)}" x2="${W - P}" y2="${my(0)}" stroke="currentColor" stroke-width="1.5"/>`;
+    }
+
+    // Tick labels along the bottom (x) and left (y) edges.
+    let ticks = '';
+    for (let x = xLo; x <= xHi; x++) {
+      if (x === 0) continue;
+      ticks += `<text x="${mx(x)}" y="${H - P + 14}" text-anchor="middle" font-size="9" fill="currentColor">${x}</text>`;
+    }
+    for (let y = yLo; y <= yHi; y++) {
+      if (y === 0) continue;
+      ticks += `<text x="${P - 8}" y="${my(y) + 3}" text-anchor="end" font-size="9" fill="currentColor">${y}</text>`;
+    }
+
+    // The circle, with a true pixel radius derived from the actual radius.
+    const circle = `<circle cx="${mx(centerX)}" cy="${my(centerY)}" r="${radius * scale}" fill="none" stroke="#3b82f6" stroke-width="2"/>`;
+
+    // The three defining points as labeled markers.
+    const markers = points.map(pt =>
+      `<circle cx="${mx(pt.x)}" cy="${my(pt.y)}" r="4" fill="#3b82f6" stroke="white" stroke-width="1.5"/>` +
+      `<text x="${mx(pt.x) + 7}" y="${my(pt.y) - 6}" font-size="10" fill="currentColor">(${pt.x}, ${pt.y})</text>`
+    ).join('');
+
+    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${grid}${axes}${ticks}${circle}${markers}</svg></div>`;
+
     return {
       questionText: `The three points shown define a circle. The circumference of this circle is $k\\pi$, where $k$ is a constant. What is the value of $k$?`,
       figureCode: mafsCode,

@@ -33,7 +33,7 @@ export const generator_1213 = {
     const optionsData = [
       { text: `The length, in centimeters, of the spring with no weight attached`, isCorrect: false, reason: `describes the value ${unstretchedLength}, not ${stretchRate}` },
       { text: `The weight, in newtons, of an object that will stretch the spring ${unstretchedLength} centimeters`, isCorrect: false, reason: `${unstretchedLength} represents the unstretched length, not a stretch distance` },
-      { text: `The increase in the weight, in newtons, of the object for each one-centimeter increase in the length of the spring`, isCorrect: false, reason: `describes the inverse relationship $\\\\frac{1}{${stretchRate}}$, not the coefficient ${stretchRate}` },
+      { text: `The increase in the weight, in newtons, of the object for each one-centimeter increase in the length of the spring`, isCorrect: false, reason: `describes the inverse relationship $\\frac{1}{${stretchRate}}$, not the coefficient ${stretchRate}` },
       { text: correctText, isCorrect: true }
     ];
     
@@ -47,7 +47,7 @@ export const generator_1213 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
     return {
-      questionText: `An object hangs from a spring. The formula $\\\\ell=${unstretchedLength}+${stretchRate} w$ relates the length $\\\\ell$, in centimeters, of the spring to the weight $w$, in newtons, of the object. Which of the following describes the meaning of the ${stretchRate} in this context?`,
+      questionText: `An object hangs from a spring. The formula $\\ell=${unstretchedLength}+${stretchRate} w$ relates the length $\\ell$, in centimeters, of the spring to the weight $w$, in newtons, of the object. Which of the following describes the meaning of the ${stretchRate} in this context?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,

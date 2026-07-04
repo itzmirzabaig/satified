@@ -51,20 +51,30 @@ export const generator_1202 = {
     // D: f(x) = d + cx (Incorrect). Slope +c (Positive).
     const optPosSlope2 = `f(x) = d + cx`;
 
+    // Tag each option with a stable id so the explanation can reference the
+    // ACTUAL shuffled letter of each family (never a hardcoded A/B/C/D).
     const optionsData = [
-      { text: `$${optCorrect}$`, isCorrect: true },
-      { text: `$${optHighInt}$`, isCorrect: false },
-      { text: `$${optPosSlope1}$`, isCorrect: false },
-      { text: `$${optPosSlope2}$`, isCorrect: false }
+      { id: 'correct', text: `$${optCorrect}$`, isCorrect: true },   // slope -c, intercept V - d
+      { id: 'highInt', text: `$${optHighInt}$`, isCorrect: false },  // slope -c, intercept V + d (too high)
+      { id: 'posSlope1', text: `$${optPosSlope1}$`, isCorrect: false }, // slope +c (positive)
+      { id: 'posSlope2', text: `$${optPosSlope2}$`, isCorrect: false }  // slope +c (positive)
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
+
+    // Live letters for each distractor family, derived from the shuffle.
+    const letterOf = (id: string) => shuffledOptions.find(o => o.id === id)!.letter;
+    const highIntLetter = letterOf('highInt');
+    // The two positive-slope options, sorted so the explanation lists them A..D order.
+    const posSlopeLetters = ['posSlope1', 'posSlope2']
+      .map(letterOf)
+      .sort();
 
     // 3. Build SVG Graph
     // Define bounds
@@ -129,18 +139,18 @@ export const generator_1202 = {
       <br/>
       1. <strong>Analyze the Slope:</strong>
       The graph shows a line sloping downwards, so the slope is negative.
-      If $f(x) = -d - cx$, the slope is $-c$. Since $c$ is positive, $-c$ is negative. This matches.
-      (Options C and D have positive slope $c$, so they are incorrect).
+      The correct choice, $f(x) = -d - cx$, has slope $-c$. Since $c$ is positive, $-c$ is negative. This matches.
+      (Choices ${posSlopeLetters[0]} and ${posSlopeLetters[1]} have positive slope $+c$, so they are incorrect.)
       <br/>
       2. <strong>Analyze the Y-Intercept:</strong>
       The y-intercept of the graph is clearly less than ${verticalShift} (visible as ${yInt} on the graph).
       The equation for the graph is $y = f(x) + ${verticalShift}$.
-      Substitute option A ($f(x) = -d - cx$):
+      Substitute the correct choice $f(x) = -d - cx$:
       $$ y = (-d - cx) + ${verticalShift} $$
       $$ y = -cx + (${verticalShift} - d) $$
       The y-intercept is ${verticalShift} - d. Since $d$ is positive, ${verticalShift} - d < ${verticalShift}. This matches the graph.
       <br/>
-      (Option B would result in an intercept of ${verticalShift} + d, which would be greater than ${verticalShift}).
+      (Choice ${highIntLetter}, $f(x) = d - cx$, would give an intercept of ${verticalShift} + d, which would be greater than ${verticalShift}.)
     `;
 
     return {

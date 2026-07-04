@@ -36,7 +36,7 @@ export const generator_1434 = {
     const correctAnswer = initialX;
     
     return {
-      questionText: `Jeremy deposited x dollars in his investment account on January 1, 2001. The amount of money in the account doubled each year until Jeremy had $${finalAmount}$ dollars in his investment account on January 1, 2005. What is the value of x?`,
+      questionText: `An investor deposited x dollars in an investment account on January 1, 2001. The amount of money in the account doubled each year until the account held \\$${finalAmount} on January 1, 2005. What is the value of x?`,
       figureCode: null,
       options: [],
       correctAnswer: correctAnswer.toString(),

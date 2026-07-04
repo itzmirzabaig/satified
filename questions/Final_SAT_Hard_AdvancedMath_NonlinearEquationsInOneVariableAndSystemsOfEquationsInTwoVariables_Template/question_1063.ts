@@ -66,11 +66,11 @@ export const generator_1063 = {
     const figureCode = null;
     
     return {
-      questionText: `$x^2 + y + ${firstConstant} = ${firstConstant}$\n$${a}x + ${b + firstConstant} - y = 0$\n\nThe solution to the given system of equations is $(x, y)$. What is the value of $x$?`,
+      questionText: `$x^2 + y + ${firstConstant} = ${firstConstant}$\n$${a}x + ${b} - y = 0$\n\nThe solution to the given system of equations is $(x, y)$. What is the value of $x$?`,
       figureCode: figureCode,
       options: [],
       correctAnswer: xSolution.toString(),
-      explanation: `The correct answer is $${xSolution}$. From the first equation, $y = -x^2$. Substituting into the second equation: $${a}x + ${b + firstConstant} - (-x^2) = 0$, which gives $x^2 + ${a}x + ${b} = 0$. This factors as $(x + ${p})^2 = 0$, so $x = ${xSolution}$.`
+      explanation: `The correct answer is $${xSolution}$. From the first equation, $x^2 + y + ${firstConstant} = ${firstConstant}$, so $y = -x^2$. Substituting into the second equation: $${a}x + ${b} - (-x^2) = 0$, which gives $x^2 + ${a}x + ${b} = 0$. This factors as $(x + ${p})^2 = 0$, so $x = ${xSolution}$.`
     };
   }
 };

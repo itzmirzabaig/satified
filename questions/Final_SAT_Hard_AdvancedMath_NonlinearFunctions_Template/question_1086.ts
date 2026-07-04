@@ -32,6 +32,11 @@ export const generator_1086 = {
     const b = -2 * a * h;
     const c = a * h * h + k;
     const bc = b * c;
+
+    // Render the leading coefficient cleanly: "x^2" when a===1, else "ax^2".
+    const aCoef = a === 1 ? '' : `${a}`;
+    // Render the constant term with a proper leading sign (avoid "+ -7").
+    const cTerm = c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
     
     // 2. SVG Configuration
     // We replicate the dynamic viewbox logic from the original Mafs code
@@ -111,32 +116,42 @@ export const generator_1086 = {
     }
     const pathData = points.join(' ');
 
+    // Key points the student reads off the graph: the vertex (h, k) and the
+    // y-intercept (0, c). Both are marked with a dot AND an explicit coordinate
+    // label so their values are unambiguous regardless of gridline spacing.
+    const vx = scaleX(h);
+    const vy = scaleY(k);
+    const iy = scaleY(c);
+    const markers = `
+        <circle cx="${vx}" cy="${vy}" r="4.5" fill="#3b82f6" stroke="white" stroke-width="1.5" />
+        <text x="${vx + 8}" y="${vy + 16}" text-anchor="start" font-family="sans-serif" font-size="12" fill="#3b82f6" font-weight="bold">(${h}, ${k})</text>
+        <circle cx="${scaleX(0)}" cy="${iy}" r="4.5" fill="#3b82f6" stroke="white" stroke-width="1.5" />
+        <text x="${scaleX(0) + 8}" y="${iy + 4}" text-anchor="start" font-family="sans-serif" font-size="12" fill="#3b82f6" font-weight="bold">(0, ${c})</text>`;
+
     const svgContent = `
       <div style="width: 100%; max-width: 400px; margin: 0 auto; color: inherit;">
         <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; display: block;">
             ${grid}
             <polyline points="${pathData}" fill="none" stroke="currentColor" stroke-width="2.5" />
-            <!-- Dots removed as requested -->
+            ${markers}
         </svg>
       </div>
     `;
     
     return {
-      questionText: `The graph of $y=${a}x^{2}+bx+c$ is shown, where $b$ and $c$ are constants. What is the value of $bc$?`,
+      questionText: `The graph of $y=${aCoef}x^{2}+bx+c$ is shown, where $b$ and $c$ are constants. What is the value of $bc$?`,
       figureCode: svgContent,
       options: [],
       correctAnswer: bc.toString(),
-      explanation: `From the graph, we can identify the vertex at $(${h}, ${k})$.
+      explanation: `From the graph, the vertex is at $(${h}, ${k})$ and the y-intercept is at $(0, ${c})$.
       <br/>
-      Using the vertex form $y = a(x-h)^2 + k$:
+      With leading coefficient $a=${a}$, use the vertex form $y = a(x-h)^2 + k$:
       $$y = ${a}(x - (${h}))^2 + (${k})$$
       $$y = ${a}(x + ${Math.abs(h)})^2 - ${Math.abs(k)}$$
       $$y = ${a}(x^2 + ${2 * Math.abs(h)}x + ${h*h}) - ${Math.abs(k)}$$
-      $$y = ${a}x^2 + ${b}x + ${a*h*h - Math.abs(k)}$$
+      $$y = ${aCoef}x^2 + ${b}x ${cTerm}$$
       <br/>
-      Comparing this to $y = ax^2 + bx + c$:
-      $$b = ${b}$$
-      $$c = ${c}$$
+      Comparing this to $y = ax^2 + bx + c$ gives $b = ${b}$ and $c = ${c}$ (which matches the y-intercept read from the graph).
       <br/>
       Therefore, $bc = (${b})(${c}) = ${bc}$.`
     };
