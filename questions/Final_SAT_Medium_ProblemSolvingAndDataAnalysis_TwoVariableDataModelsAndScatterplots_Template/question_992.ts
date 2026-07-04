@@ -48,9 +48,7 @@ export const generator_992 = {
     const yMin = 0;
     const yMax = 15;
     
-    // STEP 3: Build Mafs code
-    const pointElements = points.map(p => `<Point x={${p.x}} y={${p.y}} />`).join('\n      ');
-    
+    // STEP 3: Build SVG code
     const _svg_0 = yMax; const _svg_1 = yMin; const _svg_2 = xMax; const _svg_3 = xMin;
     const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="transparent"/>${(() => {
       const xmin=_svg_3, xmax=_svg_2;
@@ -76,19 +74,27 @@ export const generator_992 = {
       return s;
     })()}${
     (() => {
+      // Line of best fit: y = slope*x + intercept, clipped to the plot band
       const pts = [];
-      const xmin = (xMin);
-      const xmax = (xMax);
-      const ymin = (yMin);
-      const ymax = (yMax);
+      const xmin = xMin, xmax = xMax;
+      const ymin = yMin, ymax = yMax;
       const W = 400, H = 300, P = 40;
       const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
       const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
-      for(let x=xmin; x<=xmax; x+=(xmax-xmin)/100) {
-        const y = (slope.toFixed(3));
-        if(y>=ymin-1 && y<=ymax+1) pts.push(mx(x)+','+my(y));
+      for(let x=xmin; x<=xmax+1e-9; x+=(xmax-xmin)/100) {
+        const y = slope*x + intercept;
+        if(y>=ymin && y<=ymax) pts.push(mx(x)+','+my(y));
       }
       return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="currentColor" stroke-width="2"/>';
+    })()}${
+    (() => {
+      // Scatter data points
+      const xmin = xMin, xmax = xMax;
+      const ymin = yMin, ymax = yMax;
+      const W = 400, H = 300, P = 40;
+      const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
+      const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
+      return points.map(p => '<circle cx="'+mx(p.x)+'" cy="'+my(p.y)+'" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>').join('');
     })()}</svg></div>`;
     
     // STEP 4: Create options

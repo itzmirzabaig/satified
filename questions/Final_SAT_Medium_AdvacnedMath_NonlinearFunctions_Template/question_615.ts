@@ -28,10 +28,17 @@ export const generator_615 = {
     // STEP 1: Generate random values (MATCH ORIGINAL RANGES)
     // Original: area = 270, difference = 12, solution h = 18
     // Randomize: difference (8-15), solution h (15-25)
-    const h = getRandomInt(15, 25); // height
-    const diff = getRandomInt(8, 15); // base = height + diff
+    // CONSTRAINT: base * h must be even so that area = 0.5 * base * h is an
+    // exact integer and h is an exact root of h^2 + diff*h - 2*area = 0.
+    let h = getRandomInt(15, 25); // height
+    let diff = getRandomInt(8, 15); // base = height + diff
+    let tries = 0;
+    while (((h * (h + diff)) % 2 !== 0) && tries++ < 50) {
+      h = getRandomInt(15, 25);
+      diff = getRandomInt(8, 15);
+    }
     const base = h + diff;
-    const area = Math.floor(0.5 * base * h);
+    const area = (base * h) / 2;
     
     // STEP 2: Calculate derived values
     // Verify: 0.5 * (h+diff) * h = area

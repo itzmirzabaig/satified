@@ -22,10 +22,10 @@ export const generator_537 = {
     const rateDecimal = (rate / 100).toFixed(2).replace(/^0\./, '0.');
     
     const optionsData = [
-      { text: `$c = ${initial}(${rateDecimal})^m$`, isCorrect: false, reason: "uses the growth rate as the base, which represents rapid decay (93% decrease per month) rather than 7% growth" },
+      { text: `$c = ${initial}(${rateDecimal})^m$`, isCorrect: false, reason: `uses the growth rate as the base, which represents rapid decay (a ${100 - rate}% decrease per month) rather than ${rate}% growth` },
       { text: `$c = ${initial}(${growthFactor})^m$`, isCorrect: true },
       { text: `$c = ${initial}(${(1 + rate/10).toFixed(1)})^m$`, isCorrect: false, reason: `incorrectly uses a ${rate * 10}% growth rate instead of ${rate}%` },
-      { text: `$c = ${initial}(${rate})^m$`, isCorrect: false, reason: "uses the percentage as a multiplier, implying 600% growth per month" }
+      { text: `$c = ${initial}(${rate})^m$`, isCorrect: false, reason: `uses the percentage as a multiplier, implying ${(rate - 1) * 100}% growth per month` }
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

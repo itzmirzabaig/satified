@@ -25,13 +25,18 @@ export const generator_937 = {
   generate: (): QuestionData => {
     // STEP 1: Generate random values
     // Original: 40% greater than 115 = 161
-    const base = getRandomInt(80, 150);
+    // Base is a multiple of 10 so that base * (1 + percent/100) is always an
+    // exact integer for every percent in {20,30,40,50} (grid-in must be exact).
+    const base = getRandomInt(8, 15) * 10; // 80, 90, ..., 150
     const percent = getRandomInt(2, 5) * 10; // 20, 30, 40, 50
-    
-    // STEP 2: Calculate answer
-    const multiplier = 1 + percent / 100;
-    const result = Math.round(base * multiplier);
-    
+
+    // STEP 2: Calculate answer with integer arithmetic.
+    // base and percent are both multiples of 10, so the increase
+    // (base/10) * (percent/10) is an exact integer — no float artifacts.
+    const multiplier = 1 + percent / 100; // 1.2, 1.3, 1.4, 1.5 (display only)
+    const increase = (base / 10) * (percent / 10);
+    const result = base + increase; // exact integer
+
     const correctAnswer = result.toString();
     
     // STEP 3: Return question data

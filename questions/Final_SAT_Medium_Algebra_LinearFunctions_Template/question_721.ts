@@ -30,12 +30,12 @@ export const generator_721 = {
     const stopTime = initialSpeed / decelRate;
     
     // STEP 2: Create options
-    const correctText = "The number of seconds it took from the time Sheila began applying the brakes until the bicycle came to a complete stop";
+    const correctText = "The number of seconds it took from the time the cyclist began applying the brakes until the bicycle came to a complete stop";
     const optionsData = [
-      { text: "The speed of Sheila's bicycle, in feet per second, before Sheila applied the brakes", isCorrect: false, reason: "describes the y-intercept, not the x-intercept" },
-      { text: "The number of feet per second the speed of Sheila's bicycle decreased each second after Sheila applied the brakes", isCorrect: false, reason: "describes the slope, not the x-intercept" },
+      { text: "The speed of the bicycle, in feet per second, before the cyclist applied the brakes", isCorrect: false, reason: "describes the y-intercept, not the x-intercept" },
+      { text: "The number of feet per second the speed of the bicycle decreased each second after the cyclist applied the brakes", isCorrect: false, reason: "describes the slope, not the x-intercept" },
       { text: correctText, isCorrect: true },
-      { text: "The number of feet Sheila's bicycle traveled from the time she began applying the brakes until the bicycle came to a complete stop", isCorrect: false, reason: "confuses time with distance" }
+      { text: "The number of feet the bicycle traveled from the time the cyclist began applying the brakes until the bicycle came to a complete stop", isCorrect: false, reason: "confuses time with distance" }
     ];
     
     // STEP 3: Shuffle and assign letters
@@ -50,7 +50,7 @@ export const generator_721 = {
     
     // STEP 4: Return question data
     return {
-      questionText: `The equation $y = ${initialSpeed} - ${decelRate}x$ represents the speed $y$, in feet per second, of Sheila's bicycle $x$ seconds after she applied the brakes at the end of a ride. If the equation is graphed in the xy-plane, which of the following is the best interpretation of the x-coordinate of the line's x-intercept in the context of the problem?`,
+      questionText: `The equation $y = ${initialSpeed} - ${decelRate}x$ represents the speed $y$, in feet per second, of a cyclist's bicycle $x$ seconds after she applied the brakes at the end of a ride. If the equation is graphed in the xy-plane, which of the following is the best interpretation of the x-coordinate of the line's x-intercept in the context of the problem?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,

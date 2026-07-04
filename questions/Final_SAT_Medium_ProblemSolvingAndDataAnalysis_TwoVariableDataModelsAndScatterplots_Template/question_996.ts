@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -89,29 +89,35 @@ export const generator_996 = {
     const wrongEquation = `n = ${(slope * 2).toLocaleString()} + ${intercept.toLocaleString()} t`;
     
     const optionsData = [
-      { text: correctEquation, isCorrect: true },
-      { text: swappedEquation, isCorrect: false },
-      { text: wrongSlopeEquation, isCorrect: false },
-      { text: wrongEquation, isCorrect: false }
+      { text: correctEquation, isCorrect: true, role: 'correct' },
+      { text: swappedEquation, isCorrect: false, role: 'swap' },
+      { text: wrongSlopeEquation, isCorrect: false, role: 'doubleSlope' },
+      { text: wrongEquation, isCorrect: false, role: 'doubleSlopeSwap' }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
-    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+    // Look up each distractor by its construction role so the reason always
+    // matches the option it is attached to, regardless of shuffle order.
+    const byRole = (r: string) => shuffledOptions.find(o => o.role === r)!;
+    const swapLetter = byRole('swap').letter;
+    const doubleSlopeLetter = byRole('doubleSlope').letter;
+    const doubleSlopeSwapLetter = byRole('doubleSlopeSwap').letter;
+
     const yAt5 = slope * 5 + intercept;
-    
+    const interceptApprox = Math.round(intercept / 1000) * 1000;
+
     return {
       questionText: "Which of the following could be an equation of the line of best fit shown?",
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctLetter} is correct. The $y$-intercept is approximately ${(intercept/1000).toFixed(0)},000. Using points $(0, ${intercept})$ and $(5, ${yAt5})$, slope $≈ (${yAt5} - ${intercept}) / 5 = ${slope}$. Choice ${correctLetter} matches these estimates. Choice ${incorrectOptions[0].letter} is incorrect; it swaps the slope and intercept. Choice ${incorrectOptions[1].letter} is incorrect; the slope is too large. Choice ${incorrectOptions[2].letter} is incorrect; it has both an incorrect slope and swapped values.`
+      explanation: `Choice ${correctLetter} is correct. The $y$-intercept is approximately ${interceptApprox.toLocaleString()}. Using the points $(0, ${intercept.toLocaleString()})$ and $(5, ${yAt5.toLocaleString()})$, the slope $≈ (${yAt5.toLocaleString()} - ${intercept.toLocaleString()}) / 5 = ${slope.toLocaleString()}$. Choice ${correctLetter} matches these estimates. Choice ${swapLetter} is incorrect; it swaps the slope and the $y$-intercept. Choice ${doubleSlopeLetter} is incorrect; it keeps the correct $y$-intercept but uses a slope that is twice too large. Choice ${doubleSlopeSwapLetter} is incorrect; it uses that doubled slope as the constant and puts the $y$-intercept on $t$, so both values are wrong.`
     };
   }
 };

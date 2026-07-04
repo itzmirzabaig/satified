@@ -24,17 +24,16 @@ export const generator_611 = {
   },
   
   generate: (): QuestionData => {
-    // Generate quadratic parameters: y = ax² + bx + c
-    // At x=0, y=c; we want c and a+b+c to have nice ratio
-    const c = getRandomInt(4, 8); // y-intercept
-    const growthFactor = getRandomInt(14, 18) / 10; // 1.4 to 1.8
-    const yAt1 = Math.round(c * growthFactor); // y when x=1
-    
-    // Ensure clean numbers
-    const a = yAt1 - c; // since at x=1: a(1)² + b(1) + c = yAt1, and b=0 for simplicity
-    // Actually let's use y = a*x² + c form for cleaner generation
-    // At x=0: y=c, at x=1: y=a+c, at x=2: y=4a+c
-    
+    // Read-off-the-graph ratio question. The student reads the integer y-values
+    // at x=0 (= c) and x=1 (= yAt1) off the graph and computes yAt1 / c.
+    // To keep that exact ratio a clean number that appears among the options, we
+    // choose the ratio FIRST and derive c and yAt1 as integers whose exact
+    // quotient equals it (c is even and the ratio is a clean half-integer, so
+    // yAt1 = c * ratioValue is always an integer and yAt1 / c === ratioValue).
+    const ratioValue = getRandomElement([1.5, 2, 2.5, 3]);
+    const c = getRandomElement([4, 6, 8, 10]); // even y-intercept -> integer yAt1
+    const yAt1 = c * ratioValue; // y when x=1 (exact integer)
+
     const _svg_0 = yAt1 + 6;
     const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
       const xmin=-1,xmax=3;
@@ -82,10 +81,13 @@ export const generator_611 = {
       return '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>';
     })()}</svg></div>`;
     
-    const ratio = (yAt1 / c).toFixed(1);
-    const ratioHalf = (yAt1 / c / 2).toFixed(1);
-    const ratioDouble = ((yAt1 / c) * 2).toFixed(1);
-    const ratioPlusOne = ((yAt1 / c) + 1).toFixed(1);
+    // Format a clean decimal without trailing-zero artifacts (3.0 -> "3", 1.25 -> "1.25").
+    const fmt = (n: number) => Number(n.toFixed(2)).toString();
+
+    const ratio = fmt(yAt1 / c);             // exact ratio, equals ratioValue
+    const ratioHalf = fmt((yAt1 / c) / 2);   // distractor: halves the ratio
+    const ratioDouble = fmt((yAt1 / c) * 2); // distractor: doubles the ratio
+    const ratioPlusOne = fmt((yAt1 / c) + 1); // distractor: adds 1 to the ratio
     
     const questionText = `The graph gives the estimated population $y$, in thousands, of a town $x$ years since 2003, where $0 \\leq x \\leq 5$. Which of the following best describes the increase in the estimated population from $x = 0$ to $x = 1$?`;
     

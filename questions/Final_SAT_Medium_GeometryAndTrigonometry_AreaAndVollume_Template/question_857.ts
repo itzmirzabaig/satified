@@ -28,38 +28,43 @@ export const generator_857 = {
     // STEP 2: Calculate derived values
     const areaCoeff = radius * radius;
     
-    // STEP 3: Create options with tracking
-    // FIXED: Changed \\\\pi to \\pi
+    // STEP 3: Create options. Each distractor carries the rationale that matches
+    // ITS OWN value, so the explanation stays correct no matter how the shuffle
+    // reorders the choices.
     const correctText = `${areaCoeff}\\pi`;
-    
-    // Distractors
-    // FIXED: Changed \\\\frac to \\frac and \\\\pi to \\pi
+
+    // Distractor A: r*pi/2  — halves the radius before applying pi (misuse of the formula)
     const distractorA = `\\frac{${radius}\\pi}{2}`;
-    // FIXED: Changed \\\\pi to \\pi
+    // Distractor B: r*pi    — forgot to square the radius (used pi*r instead of pi*r^2)
     const distractorB = `${radius}\\pi`;
-    // FIXED: Changed \\\\pi to \\pi
-    const distractorC = `${2 * radius}\\pi`; // Circumference
-    
+    // Distractor C: 2*r*pi  — computed the circumference (2*pi*r) instead of the area
+    const distractorC = `${2 * radius}\\pi`;
+
     const optionsData = [
-      { text: distractorA, isCorrect: false },
-      { text: distractorB, isCorrect: false },
-      { text: distractorC, isCorrect: false },
-      { text: correctText, isCorrect: true }
+      { text: distractorA, isCorrect: false, reason: `this halves the radius before applying $\\pi$, rather than squaring the radius as the area formula requires` },
+      { text: distractorB, isCorrect: false, reason: `this would be the result if the formula were $\\pi r$ instead of $\\pi r^2$` },
+      { text: distractorC, isCorrect: false, reason: `this is the circumference of the circle ($2\\pi r$), not the area` },
+      { text: correctText, isCorrect: true, reason: '' }
     ];
-    
+
     // STEP 4: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect);
     const correctLetter = correctOption!.letter;
-    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
-    // STEP 5: Build explanation
-    // FIXED: Changed all \\\\pi to \\pi
-    const explanation = `Choice ${correctLetter} is correct. The area of a circle is $A = \\pi r^2$. With radius ${radius}, the area is $\\pi(${radius})^2 = ${areaCoeff}\\pi$ square meters. Choice ${incorrectOptions[0].letter} is incorrect; this appears to confuse radius with diameter or uses an incorrect formula. Choice ${incorrectOptions[1].letter} is incorrect; this would be the result if the formula were $\\pi r$ instead of $\\pi r^2$. Choice ${incorrectOptions[2].letter} is incorrect; this is the circumference of the circle ($2\\pi r$), not the area.`;
+    // Report the distractors in letter order, each paired with its own rationale.
+    const incorrectOptions = shuffledOptions
+      .filter(o => !o.isCorrect)
+      .sort((a, b) => a.letter.localeCompare(b.letter));
+
+    // STEP 5: Build explanation — rationales follow each distractor's value.
+    const distractorSentences = incorrectOptions
+      .map(o => `Choice ${o.letter} is incorrect; ${o.reason}.`)
+      .join(' ');
+    const explanation = `Choice ${correctLetter} is correct. The area of a circle is $A = \\pi r^2$. With radius ${radius}, the area is $\\pi(${radius})^2 = ${areaCoeff}\\pi$ square meters. ${distractorSentences}`;
     
     return {
       questionText: `A circle has a radius of $${radius}$ meters. What is the area, in square meters, of the circle?`,

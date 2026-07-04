@@ -58,11 +58,30 @@ export const generator_598 = {
     })()}${(() => {
       const xmin=(xMin),xmax=(xMax);
       const ymin=(yMin),ymax=(yMax);
+      const rootA=(r1),rootB=(r2),rootC=(r3);
       const W=400,H=300,P=45;
       const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
       const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      const cx=mx(0),cy=my(0);
-      return '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>';
+      // Base cubic through the three roots
+      const base=(x)=>(x-rootA)*(x-rootB)*(x-rootC);
+      // Scale so the curve's peaks reach ~6 (stay inside ymin..ymax=+/-8)
+      let peak=0;
+      for(let x=xmin;x<=xmax;x+=0.05){const v=Math.abs(base(x));if(v>peak)peak=v;}
+      const a=peak>0?6/peak:1;
+      const f=(x)=>a*base(x);
+      // Plot the cubic as a polyline, clipped to the visible y-range
+      let pts='';
+      for(let x=xmin;x<=xmax+1e-9;x+=0.1){
+        const y=f(x);
+        if(y<ymin-0.5||y>ymax+0.5)continue;
+        pts+=mx(x).toFixed(2)+','+my(y).toFixed(2)+' ';
+      }
+      let g='<polyline points="'+pts.trim()+'" fill="none" stroke="#2563eb" stroke-width="2"/>';
+      // Mark the three x-intercepts
+      [rootA,rootB,rootC].forEach((rt)=>{
+        g+='<circle cx="'+mx(rt).toFixed(2)+'" cy="'+my(0).toFixed(2)+'" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>';
+      });
+      return g;
     })()}</svg></div>`;
     
     const questionText = `The graph of $y = f(x)$ is shown, where the function $f$ is defined by $f(x) = ax^3 + bx^2 + cx + d$ and $a, b, c,$ and $d$ are constants. For how many values of $x$ does $f(x) = 0$?`;

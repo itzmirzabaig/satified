@@ -46,14 +46,19 @@ export const generator_640 = {
    
    const correctOption = shuffledOptions.find(opt => opt.isCorrect);
    const correctLetter = correctOption.letter;
-   const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-   
+
+   // Identify each distractor by its actual type in the shuffled order, so the
+   // explanation's reason always matches the letter the student sees.
+   const signErrorLetter = shuffledOptions.find(opt => opt.type === "sign_error").letter;
+   const sumLetter = shuffledOptions.find(opt => opt.type === "sum").letter;
+   const partialLetter = shuffledOptions.find(opt => opt.type === "partial").letter;
+
    // STEP 3: Build explanation
    const factor1 = `(x-${r1})`;
    const factor2 = `(x-${r2})`;
    const factor3 = r3 >= 0 ? `(x-${r3})` : `(x+${Math.abs(r3)})`;
-   
-   const explanation = `The solutions are $x=${r1}$, $x=${r2}$, $x=${r3}$. Their product is $(${r1})(${r2})(${r3}) = ${product}$. Option ${correctLetter} is correct. Option ${incorrectOptions[0].letter} is a sign error, ${incorrectOptions[1].letter} and ${incorrectOptions[2].letter} are sums or partial products, not the full product.`;
+
+   const explanation = `The solutions are $x=${r1}$, $x=${r2}$, and $x=${r3}$. Their product is $(${r1})(${r2})(${r3}) = ${product}$, so Option ${correctLetter} is correct. Option ${signErrorLetter} ($${-product}$) has the wrong sign, dropping the negative from the root $x=${r3}$. Option ${sumLetter} ($${sum}$) is the sum of the solutions, not their product. Option ${partialLetter} ($${r1 * r2}$) is only the product of the two positive solutions.`;
    
    return {
      questionText: `What is the product of the solutions to the equation $${factor1}${factor2}${factor3}=0$?`,

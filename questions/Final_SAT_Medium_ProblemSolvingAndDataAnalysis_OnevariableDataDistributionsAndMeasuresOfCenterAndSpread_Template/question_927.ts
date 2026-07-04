@@ -41,31 +41,36 @@ export const generator_927 = {
     
     // STEP 3: Calculate distractor values
     const mode = lowValue; // Most frequent
-    const mean = finalDataSet.reduce((a, b) => a + b, 0) / finalDataSet.length;
+    const meanRounded = Math.round(finalDataSet.reduce((a, b) => a + b, 0) / finalDataSet.length);
     const rangeAvg = (Math.min(...finalDataSet) + Math.max(...finalDataSet)) / 2;
-    
-    // STEP 4: Create options
+
+    // STEP 4: Create options. Each distractor carries its OWN reason so the
+    // justification stays attached to the right value after shuffling.
     const optionsData = [
-      { text: mode.toString(), isCorrect: false },
-      { text: median.toString(), isCorrect: true },
-      { text: rangeAvg.toString(), isCorrect: false },
-      { text: Math.round(mean).toString(), isCorrect: false }
+      { text: mode.toString(), isCorrect: false, reason: `that is the mode (most frequent value)` },
+      { text: median.toString(), isCorrect: true, reason: `` },
+      { text: rangeAvg.toString(), isCorrect: false, reason: `that is the average of the minimum and maximum values` },
+      { text: meanRounded.toString(), isCorrect: false, reason: `that is approximately the mean` }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    // Emit distractor reasons in display (letter) order, each tied to its own option.
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+    const distractorSentences = incorrectOptions
+      .map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`)
+      .join(' ');
+
     return {
       questionText: `What is the median of the data set shown? Data Set: ${finalDataSet.join(', ')}`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To find the median, organize the data set in ascending order: ${finalDataSet.join(', ')}. Since there are ${finalDataSet.length} values, the median is the average of the 4th and 5th values (${finalDataSet[3]} and ${finalDataSet[4]}), which is ${median}. Choice ${incorrectOptions[0].letter} is incorrect because that is the mode (most frequent value). Choice ${incorrectOptions[1].letter} is incorrect because that is the average of the minimum and maximum values. Choice ${incorrectOptions[2].letter} is incorrect because that is approximately the mean.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the median, organize the data set in ascending order: ${finalDataSet.join(', ')}. Since there are ${finalDataSet.length} values, the median is the average of the 4th and 5th values (${finalDataSet[3]} and ${finalDataSet[4]}), which is ${median}. ${distractorSentences}`
     };
   }
 };

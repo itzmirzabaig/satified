@@ -24,61 +24,98 @@ export const generator_914 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate histogram data
-    // Company A: Tight distribution (low std dev)
-    const centerA = getRandomInt(15, 20);
-    const heightsA = [
-      getRandomInt(10, 15),
-      getRandomInt(12, 16),
-      getRandomInt(18, 22),
-      getRandomInt(17, 21),
-      getRandomInt(19, 23)
-    ]; // Tight cluster
-    
-    // Company B: Wide distribution (high std dev)
-    const centerB = centerA + getRandomInt(4, 8);
-    const heightsB = [
-      getRandomInt(15, 19),
-      getRandomInt(16, 20),
-      getRandomInt(17, 21),
-      getRandomInt(19, 23),
-      getRandomInt(20, 24)
-    ]; // Wider spread
-    
-    // Calculate viewBox
-    const xMin = Math.min(centerA - 1, centerB - 1) - 1;
-    const xMax = Math.max(centerA + heightsA.length, centerB + heightsB.length) + 1;
-    const yMax = Math.max(...heightsA, ...heightsB) + 3;
-    
-    // STEP 2: Build Mafs histogram code (using polygons to represent bars)
-    const _svg_0 = yMax; const _svg_1 = xMax; const _svg_2 = xMin;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_2,xmax=_svg_1;
-      const ymin=-1,ymax=_svg_0;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
+    // STEP 1: Generate histogram frequency data over a shared value axis.
+    // Both companies use the same 5 unit-sold intervals (bins). Company A is
+    // concentrated in the center bins (small spread); Company B pushes mass to
+    // the outer bins (large spread). We compute the ACTUAL standard deviation
+    // of each frequency distribution and only accept draws where A's spread is
+    // clearly smaller than B's, so the marked answer holds for every draw.
+    const binLabels = ['0-10', '10-20', '20-30', '30-40', '40-50'];
+    const binMids = [5, 15, 25, 35, 45];
+
+    // Standard deviation of a frequency distribution over binMids.
+    const freqStdDev = (freqs: number[]): number => {
+      const n = freqs.reduce((a, b) => a + b, 0);
+      const mean = freqs.reduce((s, f, i) => s + f * binMids[i], 0) / n;
+      const variance =
+        freqs.reduce((s, f, i) => s + f * (binMids[i] - mean) ** 2, 0) / n;
+      return Math.sqrt(variance);
+    };
+
+    let freqsA: number[] = [];
+    let freqsB: number[] = [];
+    let sdA = 0;
+    let sdB = 0;
+    let tries = 0;
+    do {
+      // Company A: tall in the middle, short at the edges -> tight cluster.
+      freqsA = [
+        getRandomInt(1, 3),
+        getRandomInt(6, 9),
+        getRandomInt(12, 16),
+        getRandomInt(6, 9),
+        getRandomInt(1, 3)
+      ];
+      // Company B: taller at the edges than the middle -> wide spread.
+      freqsB = [
+        getRandomInt(10, 14),
+        getRandomInt(6, 9),
+        getRandomInt(2, 4),
+        getRandomInt(6, 9),
+        getRandomInt(10, 14)
+      ];
+      sdA = freqStdDev(freqsA);
+      sdB = freqStdDev(freqsB);
+    } while (sdB - sdA < 3 && tries++ < 50);
+
+    // Guaranteed-safe fallback: fixed shapes with a large spread gap.
+    if (sdB - sdA < 3) {
+      freqsA = [1, 7, 14, 7, 1];
+      freqsB = [12, 7, 3, 7, 12];
+      sdA = freqStdDev(freqsA);
+      sdB = freqStdDev(freqsB);
+    }
+
+    // STEP 2: Build two side-by-side histograms as plain SVG bars.
+    const maxFreq = Math.max(...freqsA, ...freqsB);
+
+    const histogram = (freqs: number[], title: string): string => {
+      const W = 210, H = 250, P = 34;
+      const plotW = W - P - 8;
+      const plotH = H - P - 26;
+      const barW = plotW / freqs.length;
+      const bx = (i: number) => P + i * barW;
+      const by = (f: number) => (P - 4) + plotH - (f / maxFreq) * plotH;
+      const axisY = (P - 4) + plotH;
+      let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;font-family:sans-serif;user-select:none;" xmlns="http://www.w3.org/2000/svg">`;
+      // Title
+      s += `<text x="${W / 2}" y="18" text-anchor="middle" font-size="13" font-weight="bold" fill="currentColor">${title}</text>`;
+      // Bars
+      for (let i = 0; i < freqs.length; i++) {
+        const h = axisY - by(freqs[i]);
+        s += `<rect x="${(bx(i) + 2).toFixed(1)}" y="${by(freqs[i]).toFixed(1)}" width="${(barW - 4).toFixed(1)}" height="${h.toFixed(1)}" fill="#3b82f6" stroke="currentColor" stroke-width="0.8"/>`;
+      }
       // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
+      s += `<line x1="${P}" y1="${axisY}" x2="${W - 8}" y2="${axisY}" stroke="currentColor" stroke-width="1.2"/>`;
+      s += `<line x1="${P}" y1="${(P - 4).toFixed(1)}" x2="${P}" y2="${axisY}" stroke="currentColor" stroke-width="1.2"/>`;
+      // Y grid labels (0 and maxFreq)
+      s += `<text x="${P - 5}" y="${axisY + 4}" text-anchor="end" font-size="10" fill="currentColor">0</text>`;
+      s += `<text x="${P - 5}" y="${(P - 4 + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="currentColor">${maxFreq}</text>`;
+      // X labels (bin ranges)
+      for (let i = 0; i < freqs.length; i++) {
+        s += `<text x="${(bx(i) + barW / 2).toFixed(1)}" y="${axisY + 13}" text-anchor="middle" font-size="8" fill="currentColor">${binLabels[i]}</text>`;
+      }
+      // Axis titles
+      s += `<text x="${W / 2}" y="${H - 3}" text-anchor="middle" font-size="9" fill="currentColor">Units sold (thousands)</text>`;
+      s += `</svg>`;
       return s;
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=-1,ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((centerA + 2.5))+'" y="'+my((yMax - 1))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">Company A</text>';
-    })()}${(() => {
-      const xmin=(xMin),xmax=(xMax);
-      const ymin=-1,ymax=(yMax);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((centerB + 2.5))+'" y="'+my((yMax - 1))+'" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">Company B</text>';
-    })()}</svg></div>`;
-    
+    };
+
+    const mafsCode = `<div style="width:100%;max-width:480px;margin:0 auto;display:flex;gap:8px;">` +
+      `<div style="flex:1;">${histogram(freqsA, 'Company A')}</div>` +
+      `<div style="flex:1;">${histogram(freqsB, 'Company B')}</div>` +
+      `</div>`;
+
     // STEP 3: Create options
     const optionsData = [
       { text: `The standard deviation of number of units sold for company A is less than the standard deviation of number of units sold for company B.`, isCorrect: true },

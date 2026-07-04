@@ -29,7 +29,7 @@ export const generator_873 = {
     // STEP 2: Create options
     const optionsData = [
       { text: "The measure of angle $F$", isCorrect: false, reason: "is redundant since the third angle can be calculated and is not needed for AA similarity" },
-      { text: "The measure of angle $T$", isCorrect: false, reason: "is redundant for the same reason as option A" },
+      { text: "The measure of angle $T$", isCorrect: false, reason: "is redundant since the third angle can be calculated and is not needed for AA similarity" },
       { text: "The measure of angle $F$ and the measure of angle $T$", isCorrect: false, reason: "is redundant; knowing all three angles is not necessary once two pairs are known to be congruent" },
       { text: "No additional information is needed.", isCorrect: true }
     ];

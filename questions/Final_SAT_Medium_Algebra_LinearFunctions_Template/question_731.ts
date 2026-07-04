@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -23,18 +23,34 @@ export const generator_731 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values
-    // Initial value: 50-60
-    const initial = Math.round((Math.random() * 10 + 50) * 100) / 100;
-    // Rate: 0.10-0.25
-    const rate = Math.round((Math.random() * 0.15 + 0.10) * 100) / 100;
-    // Evaluation point: 300-350
-    const x = getRandomInt(300, 350);
-    
-    // STEP 2: Calculate answer
-    const result = Math.round((initial - rate * x) * 100) / 100;
-    
-    // STEP 3: Create options
+    // STEP 1: Generate random values, retrying until all four option
+    // values (correct answer + 3 distractors) are distinct to 2 decimals.
+    // Without this guard the -rate and (initial - rate*400) distractors, or
+    // -rate and the correct result, can coincide as strings for some draws.
+    let initial = 0;
+    let rate = 0;
+    let x = 0;
+    let result = 0;
+    let optTexts: string[] = [];
+    let tries = 0;
+    do {
+      // Initial value: 50-60
+      initial = Math.round((Math.random() * 10 + 50) * 100) / 100;
+      // Rate: 0.10-0.25
+      rate = Math.round((Math.random() * 0.15 + 0.10) * 100) / 100;
+      // Evaluation point: 300-350
+      x = getRandomInt(300, 350);
+      // Answer
+      result = Math.round((initial - rate * x) * 100) / 100;
+      optTexts = [
+        initial.toFixed(2),
+        result.toFixed(2),
+        (-rate).toFixed(2),
+        (initial - rate * 400).toFixed(2)
+      ];
+    } while (new Set(optTexts).size < 4 && tries++ < 50);
+
+    // STEP 2: Create options
     const optionsData = [
       { text: initial.toFixed(2), isCorrect: false, reason: "just gives the initial value without applying the rate" },
       { text: result.toFixed(2), isCorrect: true },

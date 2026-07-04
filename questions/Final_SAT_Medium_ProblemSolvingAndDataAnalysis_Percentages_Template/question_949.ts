@@ -23,27 +23,43 @@ export const generator_949 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values
-    // Original: 35 plants, 60% increase
-    // Generate base value (25-50 range for reasonable mental math)
-    const baseAmount = getRandomInt(25, 50);
-    // Generate percent increase (ends in 0 or 5, 20-80%)
-    const percentIncrease = getRandomInt(2, 8) * 10 + getRandomInt(0, 1) * 5;
-    
-    // STEP 2: Calculate result
-    // Method: base + (base * percent/100) or base * (1 + percent/100)
-    const increaseAmount = Math.round((baseAmount * percentIncrease) / 100);
+    // STEP 1: Generate random values.
+    // Original: 35 plants, 60% increase.
+    // The question asks for an exact plant COUNT, so the increase
+    // (base * percent/100) must itself be a whole number — otherwise the
+    // total is not an integer and the "equivalent to base + increase" step in
+    // the explanation would be false. Restrict to (base, percent) pairs where
+    // base * percent is divisible by 100, giving an exact integer increase.
+    const percentChoices: number[] = [];
+    for (let k = 2; k <= 8; k++) {
+      percentChoices.push(k * 10);     // 20, 30, ..., 80
+      percentChoices.push(k * 10 + 5); // 25, 35, ..., 85
+    }
+    const pairs: Array<{ base: number; pct: number }> = [];
+    for (let base = 25; base <= 50; base++) {
+      for (const pct of percentChoices) {
+        if ((base * pct) % 100 === 0) pairs.push({ base, pct });
+      }
+    }
+    const { base: baseAmount, pct: percentIncrease } = getRandomElement(pairs);
+
+    // STEP 2: Calculate result. increaseAmount is an exact integer here.
+    const increaseAmount = (baseAmount * percentIncrease) / 100;
     const finalAmount = baseAmount + increaseAmount;
-    
+
     const correctAnswer = finalAmount.toString();
-    
-    // STEP 3: Return question data
+
+    // Decimal form of the percent for the explanation (e.g. 0.6, 0.25).
+    const decimal = (percentIncrease / 100).toString();
+
+    // STEP 3: Return question data. Generic role ("a gardener") introduced once,
+    // consistent "she"/"her" pronouns thereafter — no personal names.
     return {
-      questionText: `Last year, Cedric had ${baseAmount} plants in his garden. This year, the number of plants in Cedric's garden is ${percentIncrease}% greater than the number of plants in his garden last year. How many plants does Cedric have in his garden this year?`,
+      questionText: `Last year, a gardener had ${baseAmount} plants in her garden. This year, the number of plants in her garden is ${percentIncrease}% greater than the number of plants in her garden last year. How many plants does the gardener have in her garden this year?`,
       figureCode: null,
       options: [],
       correctAnswer: correctAnswer,
-      explanation: `The correct answer is ${correctAnswer}. It's given that Cedric had ${baseAmount} plants in his garden last year and that the number of plants in Cedric's garden this year is ${percentIncrease}% greater than the number of plants in his garden last year. It follows that the number of plants in Cedric's garden this year is ${baseAmount} plus ${percentIncrease}% of ${baseAmount}, which is equal to \\( ${baseAmount}+${baseAmount}\\left(\\frac{${percentIncrease}}{100}\\right) \\), or \\( ${baseAmount}+${baseAmount}(${percentIncrease/100}) \\). This expression is equivalent to \\( ${baseAmount}+${increaseAmount} \\), or ${correctAnswer}.`
+      explanation: `The correct answer is ${correctAnswer}. It's given that the gardener had ${baseAmount} plants last year and that the number of plants this year is ${percentIncrease}% greater than the number last year. It follows that the number of plants this year is ${baseAmount} plus ${percentIncrease}% of ${baseAmount}, which is equal to \\( ${baseAmount}+${baseAmount}\\left(\\frac{${percentIncrease}}{100}\\right) \\), or \\( ${baseAmount}+${baseAmount}(${decimal}) \\). This expression is equivalent to \\( ${baseAmount}+${increaseAmount} \\), or ${correctAnswer}.`
     };
   }
 };

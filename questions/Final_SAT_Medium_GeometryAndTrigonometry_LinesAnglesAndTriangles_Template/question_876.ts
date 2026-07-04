@@ -34,21 +34,37 @@ export const generator_876 = {
   },
 
   generate: (): QuestionData => {
-    // STEP 1: Generate similar-triangle side lengths with distinct option values.
-    // Correspondence for triangle QPR ~ triangle STR: Q<->S, P<->T, R<->R,
-    // so QP<->ST, PR<->TR, QR<->SR. With QP = ST * scaleFactor,
-    // proportion QP/ST = QR/SR gives SR = ST*QR/QP = QR/scaleFactor.
-    let ST = 0, QP = 0, PR = 0, QR = 0;
+    // STEP 1: Generate similar-triangle side lengths from a genuine right
+    // triangle so the figure is geometrically honest (right angle at P means
+    // QR is the hypotenuse and the longest side; the three sides satisfy the
+    // triangle inequality). QP and PR are the legs, QR the hypotenuse:
+    // QP^2 + PR^2 = QR^2. The scaleFactor divides all three so the smaller
+    // similar triangle STR has integer sides ST, TR, SR.
+    //
+    // Correspondence triangle QPR ~ triangle STR: Q<->S, P<->T, R<->R, so
+    // QP<->ST, PR<->TR, QR<->SR. Then SR = ST*QR/QP = QR/scaleFactor.
+    const baseTriples: [number, number][] = [
+      [3, 4], [4, 3], [5, 12], [12, 5], [8, 15], [15, 8],
+      [7, 24], [24, 7], [20, 21], [21, 20], [6, 8], [8, 6],
+    ];
+    let ST = 0, QP = 0, PR = 0, QR = 0, scaleFactor = 2;
     let correctNum = 0, correctDen = 0;
     let optionSpecs: { num: number; den: number; isCorrect: boolean; reason?: string }[] = [];
 
     let tries = 0;
     while (tries++ < 50) {
-      const scaleFactor = getRandomInt(2, 4);
-      ST = getRandomInt(10, 18);      // corresponds to QP
-      QP = ST * scaleFactor;
-      PR = getRandomInt(15, 25);
-      QR = getRandomInt(20, 30);
+      const [legA, legB] = baseTriples[getRandomInt(0, baseTriples.length - 1)];
+      const hyp = Math.round(Math.sqrt(legA * legA + legB * legB)); // exact int for triples
+      const m = getRandomInt(2, 6);           // scale the primitive triple up
+      QP = legA * m;                            // vertical leg (Q to P)
+      PR = legB * m;                            // horizontal leg (P to R)
+      QR = hyp * m;                             // hypotenuse (Q to R)
+
+      scaleFactor = getRandomInt(2, 4);
+      // Need integer sides for the smaller similar triangle STR.
+      if (QP % scaleFactor !== 0 || PR % scaleFactor !== 0 || QR % scaleFactor !== 0) continue;
+      ST = QP / scaleFactor;                    // corresponds to QP
+      if (ST < 3) continue;                     // keep the small triangle readable
 
       // Correct: SR = ST*QR / QP  (exact, shown unsimplified)
       correctNum = ST * QR;
@@ -79,17 +95,31 @@ export const generator_876 = {
       if (ok) { optionSpecs = specs; break; }
     }
 
+    // Fallback (should never trigger): a canonical 3-4-5 based configuration.
+    if (optionSpecs.length === 0) {
+      scaleFactor = 2; QP = 24; PR = 18; QR = 30; ST = 12;
+      correctNum = ST * QR; correctDen = QP;
+      optionSpecs = [
+        { num: correctNum, den: correctDen, isCorrect: true },
+        { num: QP * QR, den: ST, isCorrect: false, reason: "inverts the proportion, solving for the wrong side" },
+        { num: ST * PR, den: QP, isCorrect: false, reason: "uses $PR$ instead of $QR$ in the numerator" },
+        { num: ST * QR, den: PR, isCorrect: false, reason: "divides by $PR$ instead of the corresponding side $QP$" },
+      ];
+    }
+
     // STEP 2: Figure — two nested similar right triangles sharing vertex R.
     // Right angle at P (large triangle QPR) and at T (small triangle STR).
-    // Coordinates are illustrative; the numeric side labels are the live values.
+    // The small triangle STR is drawn at the true similarity ratio r = 1/scale
+    // anchored at R, so S lies exactly on hypotenuse QR and T on leg PR — the
+    // figure honestly depicts the nesting. Side labels use the live values.
     const W = 420, H = 300;
     const Px = 70, Py = 250;              // P (right angle, large)
     const Rx = 370, Ry = 250;            // R (shared)
     const Qx = 70, Qy = 60;              // Q (top of large)
-    // Small triangle STR similar with T on PR and S on QR; ~55% along.
-    const t = 0.55;
-    const Tx = Px + (Rx - Px) * t, Ty = Py;         // T on PR
-    const Sx = Tx, Sy = Py + (Qy - Py) * t;         // S above T, on hypotenuse QR
+    // Similar triangle STR shares vertex R with ratio r; T = foot of S on PR.
+    const r = 1 / scaleFactor;
+    const Sx = Rx + (Qx - Rx) * r, Sy = Ry + (Qy - Ry) * r;   // S on hypotenuse QR
+    const Tx = Sx, Ty = Py;                                    // T on PR, below S
     const svg =
       `<div style="width:100%;max-width:420px;margin:0 auto;">` +
       `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +

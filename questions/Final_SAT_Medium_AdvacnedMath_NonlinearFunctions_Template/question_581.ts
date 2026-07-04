@@ -29,7 +29,7 @@ export const generator_581 = {
     const c = 19; // from original
     const k = 5;  // from original
     
-    const questionText = `In the given function $f$, $a$ is a constant. The graph of function $f$ in the $xy$-plane, where $y = f(x)$, is translated $${verticalShift}$ units down and $${horizontalShift}$ units to the right to produce the graph of $y = g(x)$. Which equation defines function $g$?`;
+    const questionText = `The function $f$ is defined by $f(x)=\\frac{a-${c}}{x}+${k}$, where $a$ is a constant. The graph of $y=f(x)$ in the $xy$-plane is translated $${verticalShift}$ units down and $${horizontalShift}$ units to the right to produce the graph of $y = g(x)$. Which equation defines function $g$?`;
     
     const correctFormula = `g(x) = \\frac{a-${c}}{x-${horizontalShift}} + ${k - verticalShift}`;
     

@@ -39,7 +39,7 @@ export const generator_969 = {
       figureCode: null,
       options: [],
       correctAnswer: n.toString(),
-      explanation: `The correct answer is ${n}. The equation $\\frac{${m}x}{ny} = ${k}$ can be rewritten as $\\left(\\frac{${m}}{n}\\right)\\left(\\frac{x}{y}\\right) = ${k}$. It's given that $\\frac{x}{y} = ${k}$. Substituting ${k} for $\\frac{x}{y}$ in the equation $\\left(\\frac{${m}}{n}\\right)\\left(\\frac{x}{y}\\right) = ${k}$ yields $\\left(\\frac{${m}}{n}\\right)(${k}) = ${k}$. Multiplying both sides of this equation by $n$ yields $({m})(${k}) = ${k}n$. Dividing both sides of this equation by ${k} yields $${m} = n$. Therefore, the value of $n$ is ${m}.`
+      explanation: `The correct answer is ${n}. The equation $\\frac{${m}x}{ny} = ${k}$ can be rewritten as $\\left(\\frac{${m}}{n}\\right)\\left(\\frac{x}{y}\\right) = ${k}$. It's given that $\\frac{x}{y} = ${k}$. Substituting ${k} for $\\frac{x}{y}$ in the equation $\\left(\\frac{${m}}{n}\\right)\\left(\\frac{x}{y}\\right) = ${k}$ yields $\\left(\\frac{${m}}{n}\\right)(${k}) = ${k}$. Multiplying both sides of this equation by $n$ yields $(${m})(${k}) = ${k}n$. Dividing both sides of this equation by ${k} yields $${m} = n$. Therefore, the value of $n$ is ${m}.`
     };
   }
 };

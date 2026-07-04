@@ -27,8 +27,16 @@ export const generator_863 = {
     // Minor arc: 20-80 range (double digit)
     // Major arc: 100-250 range (triple digit)
     const minorArc = getRandomInt(20, 80);
-    const majorArc = getRandomInt(100, 250);
-    
+    let majorArc = getRandomInt(100, 250);
+
+    // Guard: the "difference" distractor (majorArc - minorArc) must not collide
+    // with the minor-arc distractor. That happens exactly when majorArc == 2*minorArc.
+    // Re-draw (bounded) so all four options are distinct for every draw.
+    let tries = 0;
+    while (majorArc - minorArc === minorArc && tries++ < 50) {
+      majorArc = getRandomInt(100, 250);
+    }
+
     // STEP 2: Calculate circumference
     const circumference = minorArc + majorArc;
     

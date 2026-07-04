@@ -32,26 +32,31 @@ export const generator_632 = {
    ];
    const [num, den] = getRandomElement(coprimePairs);
    
-   // STEP 2: Create options
+   // STEP 2: Create options. Each distractor carries its OWN reason so the
+   // explanation stays correct no matter how the options are shuffled.
    const correctText = `$p = \\frac{${den}}{${num}}s$`;
-   
+
    const optionsData = [
-     { text: correctText, isCorrect: true },
-     { text: `$p = \\frac{${num}}{${den}}s$`, isCorrect: false },
-     { text: `$p = \\frac{${den}}{${num}} + s$`, isCorrect: false },
-     { text: `$p = \\frac{${num}}{${den}} + s$`, isCorrect: false }
+     { text: correctText, isCorrect: true, reason: '' },
+     { text: `$p = \\frac{${num}}{${den}}s$`, isCorrect: false, reason: `multiplies by $\\frac{${num}}{${den}}$ instead of its reciprocal` },
+     { text: `$p = \\frac{${den}}{${num}} + s$`, isCorrect: false, reason: 'adds instead of multiplying' },
+     { text: `$p = \\frac{${num}}{${den}} + s$`, isCorrect: false, reason: 'adds instead of multiplying' }
    ];
-   
+
    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
      ...opt,
      letter: String.fromCharCode(65 + index)
    }));
-   
+
    const correctOption = shuffledOptions.find(opt => opt.isCorrect);
    const correctLetter = correctOption.letter;
    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-   
-   const explanation = `To solve $s = \\frac{${num}}{${den}}p$ for $p$, multiply both sides by $\\frac{${den}}{${num}}$: $\\frac{${den}}{${num}}s = p$. Thus, $p = \\frac{${den}}{${num}}s$. Option ${correctLetter} is correct. Option ${incorrectOptions[0].letter} multiplies by $\\frac{${num}}{${den}}$ instead of the reciprocal. Options ${incorrectOptions[1].letter} and ${incorrectOptions[2].letter} incorrectly use addition instead of multiplication.`;
+
+   const distractorSentences = incorrectOptions
+     .map(opt => `Option ${opt.letter} ${opt.reason}.`)
+     .join(' ');
+
+   const explanation = `To solve $s = \\frac{${num}}{${den}}p$ for $p$, multiply both sides by $\\frac{${den}}{${num}}$: $\\frac{${den}}{${num}}s = p$. Thus, $p = \\frac{${den}}{${num}}s$. Option ${correctLetter} is correct. ${distractorSentences}`;
    
    return {
      questionText: `An oceanographer uses the equation $s = \\frac{${num}}{${den}}p$ to model the speed $s$, in knots, of an ocean wave, where $p$ represents the period of the wave, in seconds. Which of the following represents the period of the wave in terms of the speed of the wave?`,

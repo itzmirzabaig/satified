@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -46,9 +46,25 @@ export const generator_997 = {
     const yMin = 0;
     const yMax = 20;
     
-    // STEP 3: Build Mafs code
-    const pointElements = points.map(p => `<Point x={${p.x}} y={${p.y}} />`).join('\n      ');
-    
+    // STEP 3: Build the SVG figure
+    // Precompute the scatter-point circles and the best-fit line as finished
+    // markup strings (house-style: interpolate ready strings, no nested IIFEs
+    // that reach for out-of-scope variables).
+    const W = 400, H = 300, P = 40;
+    const mxF = (x: number) => P + (x - xMin) / (xMax - xMin) * (W - 2 * P);
+    const myF = (y: number) => H - P - (y - yMin) / (yMax - yMin) * (H - 2 * P);
+
+    const pointsMarkup = points
+      .filter(p => p.y >= yMin && p.y <= yMax)
+      .map(p => `<circle cx="${mxF(p.x)}" cy="${myF(p.y)}" r="3.5" fill="#3b82f6" stroke="white" stroke-width="1"/>`)
+      .join('');
+
+    // Line of best fit y = slope*x + intercept, drawn across the data x-range
+    // (1 to 5 feet) and clamped to the visible y-window.
+    const clampY = (x: number) => Math.max(yMin, Math.min(yMax, slope * x + intercept));
+    const lineX1 = 1, lineX2 = 5;
+    const lineMarkup = `<line x1="${mxF(lineX1)}" y1="${myF(clampY(lineX1))}" x2="${mxF(lineX2)}" y2="${myF(clampY(lineX2))}" stroke="#2563eb" stroke-width="2.5"/>`;
+
     const _svg_0 = yMax; const _svg_1 = yMin; const _svg_2 = xMax; const _svg_3 = xMin;
     const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="transparent"/>${(() => {
       const xmin=_svg_3, xmax=_svg_2;
@@ -72,22 +88,7 @@ export const generator_997 = {
         s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
       }
       return s;
-    })()}${
-    (() => {
-      const pts = [];
-      const xmin = (xMin);
-      const xmax = (xMax);
-      const ymin = (yMin);
-      const ymax = (yMax);
-      const W = 400, H = 300, P = 40;
-      const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
-      const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
-      for(let x=xmin; x<=xmax; x+=(xmax-xmin)/100) {
-        const y = (slope.toFixed(1));
-        if(y>=ymin-1 && y<=ymax+1) pts.push(mx(x)+','+my(y));
-      }
-      return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="currentColor" stroke-width="2"/>';
-    })()}</svg></div>`;
+    })()}${lineMarkup}${pointsMarkup}</svg></div>`;
     
     // STEP 4: Create options
     const correctEquation = `y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}`;
@@ -96,27 +97,32 @@ export const generator_997 = {
     const wrongSlopeSign = `y = ${slope.toFixed(2)}x - ${slope.toFixed(2)}`;
     
     const optionsData = [
-      { text: swappedEquation, isCorrect: false },
-      { text: wrongSignIntercept, isCorrect: false },
-      { text: correctEquation, isCorrect: true },
-      { text: wrongSlopeSign, isCorrect: false }
+      { text: swappedEquation, isCorrect: false, role: 'swap' },
+      { text: wrongSignIntercept, isCorrect: false, role: 'wrongSign' },
+      { text: correctEquation, isCorrect: true, role: 'correct' },
+      { text: wrongSlopeSign, isCorrect: false, role: 'negSlopeIntercept' }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
-    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+    // Look up each distractor by its construction role so every reason matches
+    // the option it is attached to, no matter how the shuffle ordered them.
+    const byRole = (r: string) => shuffledOptions.find(o => o.role === r)!;
+    const swapLetter = byRole('swap').letter;
+    const wrongSignLetter = byRole('wrongSign').letter;
+    const negSlopeInterceptLetter = byRole('negSlopeIntercept').letter;
+
     return {
       questionText: "Each dot in the scatterplot above represents the height $x$, in feet, in the high jump, and the distance $y$, in feet, in the long jump, made by each student in a group of twenty students. The graph of which of the following equations is a line that most closely fits the data?",
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctLetter} is correct. The line of best fit has an approximate slope of ${Math.round(slope)} and a positive $y$-intercept. Only choice ${correctLetter} represents a line with a slope close to ${Math.round(slope)} and a $y$-intercept near ${intercept.toFixed(2)}. Choice ${incorrectOptions[0].letter} is incorrect; it swaps the slope and intercept values. Choice ${incorrectOptions[1].letter} is incorrect; it has the wrong sign on the intercept. Choice ${incorrectOptions[2].letter} is incorrect; it has an incorrect intercept value.`
+      explanation: `Choice ${correctLetter} is correct. The data trend upward, so the line of best fit has a positive slope of about ${slope.toFixed(2)} and a small positive $y$-intercept of about ${intercept.toFixed(2)}. Only choice ${correctLetter}, $y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}$, has both. Choice ${swapLetter} is incorrect; it swaps the slope and the $y$-intercept, giving a nearly flat line. Choice ${wrongSignLetter} is incorrect; it uses the correct slope but makes the $y$-intercept negative. Choice ${negSlopeInterceptLetter} is incorrect; it keeps the correct slope but uses $-${slope.toFixed(2)}$ as the $y$-intercept.`
     };
   }
 };

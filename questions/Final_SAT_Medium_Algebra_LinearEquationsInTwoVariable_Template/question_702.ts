@@ -31,11 +31,11 @@ export const generator_702 = {
     const totalDistance = speed1 * xHours + speed2 * yHours;
     
     return {
-      questionText: `On a ${totalDistance}-mile trip, Cameron drove at an average speed of ${speed1} miles per hour for the first x hours. He then completed the trip, driving at an average speed of ${speed2} miles per hour for the remaining y hours. If x = ${xHours}, what is the value of y?`,
+      questionText: `On a ${totalDistance}-mile trip, a driver traveled at an average speed of ${speed1} miles per hour for the first x hours. They then completed the trip, driving at an average speed of ${speed2} miles per hour for the remaining y hours. If x = ${xHours}, what is the value of y?`,
       figureCode: null,
       options: [],
       correctAnswer: yHours.toString(),
-      explanation: `The correct answer is ${yHours}. It's given that Cameron drove ${speed1} miles per hour for x hours; therefore, the distance driven at this speed can be represented by ${speed1}x. He then drove ${speed2} miles per hour for y hours; therefore, the distance driven at this speed can be represented by ${speed2}y. Since Cameron drove ${totalDistance} total miles, the equation ${speed1}x + ${speed2}y = ${totalDistance} represents this situation. If x = ${xHours}, substitution yields ${speed1}(${xHours}) + ${speed2}y = ${totalDistance}, or ${speed1 * xHours} + ${speed2}y = ${totalDistance}. Subtracting ${speed1 * xHours} from both sides of this equation yields ${speed2}y = ${totalDistance - speed1 * xHours}. Dividing both sides of this equation by ${speed2} yields y = ${yHours}.`
+      explanation: `The correct answer is ${yHours}. It's given that the driver traveled ${speed1} miles per hour for x hours; therefore, the distance driven at this speed can be represented by ${speed1}x. They then drove ${speed2} miles per hour for y hours; therefore, the distance driven at this speed can be represented by ${speed2}y. Since the driver traveled ${totalDistance} total miles, the equation ${speed1}x + ${speed2}y = ${totalDistance} represents this situation. If x = ${xHours}, substitution yields ${speed1}(${xHours}) + ${speed2}y = ${totalDistance}, or ${speed1 * xHours} + ${speed2}y = ${totalDistance}. Subtracting ${speed1 * xHours} from both sides of this equation yields ${speed2}y = ${totalDistance - speed1 * xHours}. Dividing both sides of this equation by ${speed2} yields y = ${yHours}.`
     };
   }
 };

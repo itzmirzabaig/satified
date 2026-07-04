@@ -55,31 +55,45 @@ export const generator_792 = {
     // Recalculate maxWeight to ensure clean answer
     const adjustedMaxWeight = lighterWeight * minPackages + targetAnswer * (heavierWeight - lighterWeight);
     
-    // STEP 3: Calculate distractors based on SAT patterns
+    // STEP 3: Calculate distractors based on SAT patterns.
+    // Each distractor carries its OWN rationale so the reason stays bound to
+    // the value through the shuffle (never to a fixed shuffled position):
+    //   distractor1 = target - 3  -> feasible, but well below the maximum
+    //   distractor2 = target - 1  -> feasible, but not the maximum
+    //   distractor3 = target + 1  -> infeasible, exceeds the weight limit
     const correctAnswer = targetAnswer;
-    const distractor1 = Math.max(1, targetAnswer - 3); // Too low (like original A=2 when answer is 5)
-    const distractor2 = targetAnswer - 1; // Close but not maximum (like original B=4)
-    const distractor3 = targetAnswer + 1; // Violates constraint (like original D=6)
-    
-    // STEP 4: Create options with tracking
+    const distractor1 = Math.max(1, targetAnswer - 3); // Too low (feasible)
+    const distractor2 = targetAnswer - 1; // Close but not maximum (feasible)
+    const distractor3 = targetAnswer + 1; // Violates weight constraint (infeasible)
+
+    // STEP 4: Create options with tracking. `reason` completes the sentence
+    // "Choice _ is incorrect because <reason>." for each distractor.
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false },
-      { text: distractor2.toString(), isCorrect: false },
-      { text: correctAnswer.toString(), isCorrect: true },
-      { text: distractor3.toString(), isCorrect: false }
+      { text: distractor1.toString(), isCorrect: false,
+        reason: `it is possible but well below the maximum` },
+      { text: distractor2.toString(), isCorrect: false,
+        reason: `although possible, it is not the maximum` },
+      { text: correctAnswer.toString(), isCorrect: true, reason: `` },
+      { text: distractor3.toString(), isCorrect: false,
+        reason: `it violates the maximum weight constraint` }
     ];
-    
+
     // STEP 5: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    // Distractors in the order they now appear (by letter), each with the
+    // rationale that belongs to its own value.
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+    const distractorSentences = incorrectOptions
+      .map(opt => `Choice ${opt.letter} is incorrect because ${opt.reason}.`)
+      .join(' ');
+
     // STEP 6: Build explanation
-    const explanation = `Choice ${correctOption.letter} is correct. Let $x$ be the number of $${lighterWeight}$-pound packages and $y$ be the number of $${heavierWeight}$-pound packages. The constraints are: $x + y \\ge ${minPackages}$ and $${lighterWeight}x + ${heavierWeight}y \\le ${adjustedMaxWeight}$. To maximize $y$, set $x = ${minPackages} - y$ and substitute: $${lighterWeight}(${minPackages} - y) + ${heavierWeight}y \\le ${adjustedMaxWeight}$, which simplifies to $y \\le ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it is possible but not the maximum. Choice ${incorrectOptions[1].letter} is incorrect because although possible, it is not the maximum. Choice ${incorrectOptions[2].letter} is incorrect because it violates the maximum weight constraint.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Let $x$ be the number of $${lighterWeight}$-pound packages and $y$ be the number of $${heavierWeight}$-pound packages. The constraints are: $x + y \\ge ${minPackages}$ and $${lighterWeight}x + ${heavierWeight}y \\le ${adjustedMaxWeight}$. To maximize $y$, set $x = ${minPackages} - y$ and substitute: $${lighterWeight}(${minPackages} - y) + ${heavierWeight}y \\le ${adjustedMaxWeight}$, which simplifies to $y \\le ${correctAnswer}$. ${distractorSentences}`;
     
     // STEP 7: Return question data
     return {

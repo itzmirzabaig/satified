@@ -42,29 +42,43 @@ export const generator_812 = {
     const distractor3 = xValue; // 5 - just x
     
     const correctText = answerValue.toString();
+    // Each option carries a `kind` so its per-option explanation can be looked
+    // up by its ACTUAL displayed letter after shuffling.
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false },
-      { text: distractor2.toString(), isCorrect: false },
-      { text: correctText, isCorrect: true },
-      { text: distractor3.toString(), isCorrect: false }
+      { text: distractor1.toString(), isCorrect: false, kind: 'double' },
+      { text: distractor2.toString(), isCorrect: false, kind: 'plus3' },
+      { text: correctText, isCorrect: true, kind: 'correct' },
+      { text: distractor3.toString(), isCorrect: false, kind: 'xOnly' }
     ];
-    
+
     // STEP 5: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect);
     const correctLetter = correctOption!.letter;
-    
-    // STEP 6: Return question data
+
+    // STEP 6: Build the per-distractor analysis in DISPLAYED order, referencing
+    // each option by its actual shuffled letter.
+    const distractorByKind: Record<string, string> = {
+      double: `$${distractor1}$ is twice the required value ($2 \\times ${adjustedSum}$), which corresponds to $${xCoeff * 2}x$, not $${xCoeff}x$.`,
+      plus3: `$${distractor2}$ is $3$ more than the correct value of $${xCoeff}x$, so it does not satisfy the system.`,
+      xOnly: `$${distractor3}$ is just the value of $x$, not $${xCoeff}x$.`
+    };
+    const distractorAnalysis = shuffledOptions
+      .filter(o => !o.isCorrect)
+      .map(o => `${o.letter}. ${distractorByKind[o.kind]}`)
+      .join(' ');
+
+    // STEP 7: Return question data
     return {
       questionText: questionText,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `To find the value of $${xCoeff}x$, we first need to solve the system of equations for $x$. The system is given by: 1) $y = ${coeff}x$ 2) $2x + y = ${adjustedSum}$. Since the first equation already gives $y$ in terms of $x$, we can substitute $${coeff}x$ for $y$ in the second equation: $2x + (${coeff}x) = ${adjustedSum}$. Combine like terms: $${xCoeff}x = ${adjustedSum}$. The question asks for the value of $${xCoeff}x$. We have found directly that $${xCoeff}x = ${answerValue}$. Therefore, the correct answer is ${correctLetter}. Let's check why other options are incorrect: To find $x$ individually: $${xCoeff}x = ${adjustedSum} \\implies x = ${xValue}$. Then find $y$: $y = ${coeff}(${xValue}) = ${coeff * xValue}$. Check with the second equation: $2(${xValue}) + ${coeff * xValue} = ${2 * xValue} + ${coeff * xValue} = ${adjustedSum}$. The solution is correct. A. $${distractor1}$: This is $2 \\times ${adjustedSum}$ or $${xCoeff * 2}x$, incorrect. B. $${distractor2}$: This would be the value if $x=${xValue + 1}$, which is not the solution. D. $${distractor3}$: This is just the value of $x$, not $${xCoeff}x$.`
+      explanation: `To find the value of $${xCoeff}x$, first solve the system for $x$. The system is: 1) $y = ${coeff}x$ 2) $2x + y = ${adjustedSum}$. Since the first equation gives $y$ in terms of $x$, substitute $${coeff}x$ for $y$ in the second equation: $2x + (${coeff}x) = ${adjustedSum}$. Combine like terms: $${xCoeff}x = ${adjustedSum}$. The question asks for the value of $${xCoeff}x$, and we have found directly that $${xCoeff}x = ${answerValue}$. Therefore, the correct answer is ${correctLetter}. As a check, $${xCoeff}x = ${adjustedSum} \\implies x = ${xValue}$, then $y = ${coeff}(${xValue}) = ${coeff * xValue}$, and $2(${xValue}) + ${coeff * xValue} = ${2 * xValue} + ${coeff * xValue} = ${adjustedSum}$, which confirms the solution. The other options are incorrect: ${distractorAnalysis}`
     };
   }
 };

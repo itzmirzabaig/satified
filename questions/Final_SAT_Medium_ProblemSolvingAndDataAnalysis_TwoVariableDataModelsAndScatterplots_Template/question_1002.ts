@@ -48,9 +48,7 @@ export const generator_1002 = {
     const yMin = 0;
     const yMax = 16;
     
-    // STEP 3: Build Mafs code
-    const pointElements = points.map(p => `<Point x={${p.x}} y={${p.y}} />`).join('\n      ');
-    
+    // STEP 3: Build SVG code
     const _svg_0 = yMax; const _svg_1 = yMin; const _svg_2 = xMax; const _svg_3 = xMin;
     const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="transparent"/>${(() => {
       const xmin=_svg_3, xmax=_svg_2;
@@ -85,18 +83,28 @@ export const generator_1002 = {
       const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
       const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
       for(let x=xmin; x<=xmax; x+=(xmax-xmin)/100) {
-        const y = (slope.toFixed(2));
+        const y = slope * x + intercept;
         if(y>=ymin-1 && y<=ymax+1) pts.push(mx(x)+','+my(y));
       }
       return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="currentColor" stroke-width="2"/>';
+    })()}${
+    (() => {
+      const xmin = (xMin);
+      const xmax = (xMax);
+      const ymin = (yMin);
+      const ymax = (yMax);
+      const W = 400, H = 300, P = 40;
+      const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
+      const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
+      return points.map(p => '<circle cx="'+mx(p.x)+'" cy="'+my(p.y)+'" r="3.5" fill="#3b82f6"/>').join('');
     })()}</svg></div>`;
     
     // STEP 4: Create options
     const optionsData = [
-      { text: "0", isCorrect: false },
-      { text: "1/2", isCorrect: false },
-      { text: "1", isCorrect: false },
-      { text: "2", isCorrect: true }
+      { text: "0", isCorrect: false, reason: "is incorrect; the line clearly rises from left to right, so its slope is positive, not zero" },
+      { text: "1/2", isCorrect: false, reason: "is incorrect; the line is much steeper than a slope of 0.5" },
+      { text: "1", isCorrect: false, reason: "is incorrect; over each unit increase in $x$ the line rises by about 2, so the slope is closer to 2 than to 1" },
+      { text: "2", isCorrect: true, reason: "" }
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -106,17 +114,23 @@ export const generator_1002 = {
     
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
-    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+    const incorrectOptions = shuffledOptions
+      .filter(opt => !opt.isCorrect)
+      .sort((a, b) => a.letter.localeCompare(b.letter));
+
     const y1 = (slope * 1 + intercept).toFixed(1);
-    const y7 = (slope * 7 + intercept).toFixed(1);
-    
+    const y6 = (slope * 6 + intercept).toFixed(1);
+
+    const distractorSentences = incorrectOptions
+      .map(opt => `Choice ${opt.letter} ${opt.reason}.`)
+      .join(' ');
+
     return {
       questionText: "In the given scatterplot, a line of best fit for the data is shown. Which of the following is closest to the slope of the line of best fit shown?",
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: "2",
-      explanation: `Choice ${correctLetter} is correct. The line passes through approximately $(1, ${y1})$ and $(7, ${y7})$. Slope $= (${y7} - ${y1}) / (7 - 1) = ${(slope * 6).toFixed(1)} / 6 ≈ ${slope.toFixed(2)}$, which is closest to 2. Choice ${incorrectOptions[0].letter} is incorrect; the line clearly has a positive slope. Choice ${incorrectOptions[1].letter} is incorrect; the slope is much steeper than 0.5. Choice ${incorrectOptions[2].letter} is incorrect; the slope is closer to 2 than to 1.`
+      explanation: `Choice ${correctLetter} is correct. The line of best fit passes through approximately $(1, ${y1})$ and $(6, ${y6})$. Slope $= (${y6} - ${y1}) / (6 - 1) = ${(slope * 5).toFixed(1)} / 5 ≈ ${slope.toFixed(2)}$, which is closest to 2. ${distractorSentences}`
     };
   }
 };

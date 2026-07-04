@@ -29,15 +29,24 @@ export const generator_684 = {
 
   generate: (): QuestionData => {
     // STEP 1: Parameters (answer-first so the solution is a clean integer).
+    // Keep cupsIceCream !== bananas so the "×bananas" and "×cups" distractors are
+    // distinct multiples of the answer by construction — otherwise they would
+    // coincide and the de-dup would silently change one, decoupling the displayed
+    // value from its stated rationale.
     const cupsIceCream = getRandomInt(3, 6);
-    const bananas = getRandomInt(2, 4);
+    let bananas = getRandomInt(2, 4);
+    while (bananas === cupsIceCream) bananas = getRandomInt(2, 4);
     const calciumPerCup = getRandomInt(100, 400);
     const bananaCalcium = getRandomInt(3, 15); // the answer, in mg per banana
     const calciumFromIceCream = cupsIceCream * calciumPerCup;
     const totalCalcium = calciumFromIceCream + bananas * bananaCalcium;
 
-    // STEP 2: Distractors from concrete error patterns, all forced distinct from
-    // the correct answer and from one another via a bounded de-dup.
+    // STEP 2: Distractors from concrete error patterns. Each value is distinct
+    // from the answer and from the others by construction (bananaCalcium >= 3 > 0,
+    // bananas >= 2, cupsIceCream >= 3, bananas != cupsIceCream, and the "+ one cup"
+    // distractor is >= 103 while every multiple here is <= 90). The de-dup below is
+    // a defensive backstop only and never alters these values, so each displayed
+    // number always matches the error its rationale describes.
     const correct = bananaCalcium;
     const used = new Set<number>([correct]);
     const distractors: number[] = [];
@@ -45,7 +54,7 @@ export const generator_684 = {
     const addDistractor = (value: number): void => {
       let v = value;
       let tries = 0;
-      while ((used.has(v) || v <= 0) && tries++ < 50) v += 1; // nudge off any collision
+      while ((used.has(v) || v <= 0) && tries++ < 50) v += 1; // defensive backstop
       used.add(v);
       distractors.push(v);
     };

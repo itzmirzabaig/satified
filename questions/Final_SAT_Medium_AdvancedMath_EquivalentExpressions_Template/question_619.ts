@@ -73,7 +73,7 @@ export const generator_619 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
 
     return {
-      questionText: `Which of the following is equivalent to the expression $${polynomial}$?`,
+      questionText: `Which of the following is a factor of the polynomial $${polynomial}$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,

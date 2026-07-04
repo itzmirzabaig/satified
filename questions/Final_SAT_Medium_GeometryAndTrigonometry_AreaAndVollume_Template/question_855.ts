@@ -32,32 +32,38 @@ export const generator_855 = {
     const surfaceArea = 6 * faceArea;
     
     // STEP 3: Create options with tracking
+    // Each distractor carries its OWN rationale so the explanation stays
+    // correct after shuffling (reason is bound to the value, not to a letter).
     const correctText = volume.toLocaleString();
-    
+
     // Distractors
     const distractorA = (4 * edge).toString(); // Perimeter of face
     const distractorB = faceArea.toLocaleString(); // Face area
     const distractorC = surfaceArea.toLocaleString(); // Surface area
-    
+
     const optionsData = [
-      { text: distractorA, isCorrect: false },
-      { text: distractorB, isCorrect: false },
-      { text: distractorC, isCorrect: false },
-      { text: correctText, isCorrect: true }
+      { text: distractorA, isCorrect: false, reason: `this is the perimeter of one face ($4 \\times ${edge} = ${4 * edge}$), not the volume` },
+      { text: distractorB, isCorrect: false, reason: `this is the area of one face ($${edge}^2 = ${faceArea}$), not the volume` },
+      { text: distractorC, isCorrect: false, reason: `this is the total surface area of the cube ($6 \\times ${edge}^2 = ${surfaceArea}$), not the volume` },
+      { text: correctText, isCorrect: true, reason: '' }
     ];
-    
+
     // STEP 4: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect);
     const correctLetter = correctOption!.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
-    // STEP 5: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. The volume of a cube with edge length $s$ is $V = s^3$. With edge length ${edge}, the volume is ${edge}^3 = ${volume} cubic inches. Choice ${incorrectOptions[0].letter} is incorrect; this is the perimeter of one face ($4 \\\\times ${edge}$). Choice ${incorrectOptions[1].letter} is incorrect; this is the area of one face (${edge}^2 = ${faceArea}), not the volume. Choice ${incorrectOptions[2].letter} is incorrect; this is the total surface area of the cube ($6 \\\\times ${edge}^2 = ${surfaceArea}$).`;
+
+    // STEP 5: Build explanation — pull each distractor's reason from the
+    // shuffled option itself so every letter matches its actual value.
+    const distractorExplanations = incorrectOptions
+      .map(o => `Choice ${o.letter} is incorrect; ${o.reason}.`)
+      .join(' ');
+    const explanation = `Choice ${correctLetter} is correct. The volume of a cube with edge length $s$ is $V = s^3$. With edge length ${edge}, the volume is $${edge}^3 = ${volume}$ cubic inches. ${distractorExplanations}`;
     
     return {
       questionText: `A cube has an edge length of ${edge} inches. What is the volume, in cubic inches, of the cube?`,

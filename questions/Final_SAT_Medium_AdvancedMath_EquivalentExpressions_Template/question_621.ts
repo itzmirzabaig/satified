@@ -44,55 +44,75 @@ export const generator_621 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate simplified form first, then add common factor
-    // Simplified form: (mx + n) / (px + q)
-    const m = getRandomInt(1, 4);
-    const n = getRandomInt(1, 6);
-    const p = getRandomInt(1, 4);
-    const q = getRandomInt(1, 6);
-    
+    const gcd = (a: number, b: number): number => (b === 0 ? Math.abs(a) : gcd(b, a % b));
+
+    // STEP 1: Generate the fully-simplified form first: (mx + n) / (px + q).
+    // Two well-posedness guards (bounded retry):
+    //   (1) mq !== np  — otherwise (mx+n) and (px+q) are proportional, so the
+    //       "answer" collapses to the constant m/p and would tie distractor A.
+    //   (2) gcd(m,n,p,q) === 1 — otherwise (mx+n)/(px+q) still shares an integer
+    //       common factor and is NOT fully reduced, so it wouldn't be the unique
+    //       simplest form.
+    // Together these make (mx+n)/(px+q) the one genuinely-simplest equivalent.
+    let m = getRandomInt(1, 4);
+    let n = getRandomInt(1, 6);
+    let p = getRandomInt(1, 4);
+    let q = getRandomInt(1, 6);
+    let guard = 0;
+    while ((m * q === n * p || gcd(gcd(m, n), gcd(p, q)) !== 1) && guard++ < 50) {
+      m = getRandomInt(1, 4);
+      n = getRandomInt(1, 6);
+      p = getRandomInt(1, 4);
+      q = getRandomInt(1, 6);
+    }
+
     // Choose common factor (usually simple)
     const commonFactor = getRandomInt(2, 4);
-    
+
     // STEP 2: Build original expression by multiplying by common factor
     // Numerator: commonFactor * (mx + n) = (commonFactor*m)x + (commonFactor*n)
     const numA = commonFactor * m;
     const numB = commonFactor * n;
-    
+
     // Denominator: commonFactor * (px + q) = (commonFactor*p)x + (commonFactor*q)
     const denC = commonFactor * p;
     const denD = commonFactor * q;
-    
+
     // STEP 3: Format expressions
     const originalNum = formatLinearExpression(numA, numB);
     const originalDen = formatLinearExpression(denC, denD);
     const simplifiedNum = formatLinearExpression(m, n);
     const simplifiedDen = formatLinearExpression(p, q);
-    
+
     const originalExpr = `\\frac{${originalNum}}{${originalDen}}`;
     const correctAnswer = `\\frac{${simplifiedNum}}{${simplifiedDen}}`;
-    
-    // STEP 4: Generate distractors
-    
-    // Distractor A: Cancels terms instead of factors (classic error)
-    // Incorrectly cancels the x terms or constants
-    const wrongNum1 = m;  // Just takes coefficient of x
-    const wrongDen1 = p;
-    const distractorA = `\\frac{${wrongNum1}}{${wrongDen1}}`;
-    
-    // Distractor B: Forgets to simplify, keeps original
-    const distractorB = originalExpr;
-    
-    // Distractor C: Wrong sign on constant term
+
+    // STEP 4: Generate distractors. Every distractor must be genuinely NOT
+    // equivalent to the given expression for every draw (the stem asks "which
+    // is equivalent", so an equivalent distractor would be a second right
+    // answer). None of these reduces to (mx+n)/(px+q) given the guards above.
+
+    // Distractor A: cancels terms instead of factors — cancels the x-terms and
+    // the constants separately, yielding the constant m/p (shown reduced).
+    // Not equivalent because mq !== np means (mx+n)/(px+q) is non-constant.
+    const gA = gcd(m, p);
+    const distractorA = `\\frac{${m / gA}}{${p / gA}}`;
+
+    // Distractor B: cancels the common factor from the numerator only, leaving
+    // the original denominator. Not equivalent because the denominator keeps
+    // the factor of commonFactor (commonFactor >= 2).
+    const distractorB = `\\frac{${simplifiedNum}}{${originalDen}}`;
+
+    // Distractor C: sign error on the numerator's constant term (mx - n).
+    // Not equivalent because n >= 1, so mx - n != mx + n.
     const wrongNum2 = formatLinearExpression(m, -n);
-    const wrongDen2 = formatLinearExpression(p, q);
-    const distractorC = `\\frac{${wrongNum2}}{${wrongDen2}}`;
-    
+    const distractorC = `\\frac{${wrongNum2}}{${simplifiedDen}}`;
+
     // Create options
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "results from canceling terms instead of factors" },
+      { text: distractorA, isCorrect: false, reason: "results from canceling terms instead of common factors" },
       { text: correctAnswer, isCorrect: true },
-      { text: distractorB, isCorrect: false, reason: "fails to factor and simplify the expression" },
+      { text: distractorB, isCorrect: false, reason: "cancels the common factor from the numerator but not the denominator" },
       { text: distractorC, isCorrect: false, reason: "results from a sign error when simplifying" }
     ];
     

@@ -25,9 +25,19 @@ export const generator_620 = {
   generate: (): QuestionData => {
     // STEP 1: Generate base coefficients for perfect square pattern (ax + by)²
     // Original uses 2 and 5, giving (2a + 5b)² = 4a² + 20ab + 25b²
-    // Generate new values in similar range (2-6) to preserve difficulty
+    // Generate new values in similar range (2-6) to preserve difficulty.
+    // GUARD: coefA must differ from coefB. If coefA === coefB === k, the
+    // polynomial is k²(a+b)², so (a+b) [distractor A] and (k²a+k²b)
+    // [distractor D] both become genuine factors alongside the correct
+    // (ka+kb) — three simultaneously-valid answers. Requiring coefA ≠ coefB
+    // makes (coefA a + coefB b) the unique binomial-square factorization, so
+    // no distractor divides the polynomial.
     const coefA = getRandomInt(2, 5);  // Will be squared for first term
-    const coefB = getRandomInt(2, 5);  // Will be squared for last term
+    let coefB = getRandomInt(2, 5);    // Will be squared for last term
+    let guard = 0;
+    while (coefB === coefA && guard++ < 50) {
+      coefB = getRandomInt(2, 5);
+    }
     
     // STEP 2: Calculate perfect square trinomial coefficients
     const firstTermCoeff = coefA * coefA;      // a²

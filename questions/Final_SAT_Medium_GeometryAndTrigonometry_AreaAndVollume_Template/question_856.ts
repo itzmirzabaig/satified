@@ -21,48 +21,38 @@ export const generator_856 = {
   generate: (): QuestionData => {
     // STEP 1: Generate random values
     const edge = getRandomInt(4, 8); // s
-    const height = getRandomInt(15, 30); // h (reduced range for cleaner mental math)
-    
+    let height = getRandomInt(15, 30); // h (reduced range for cleaner mental math)
+
+    const baseArea = edge * edge; // s^2
+
+    // The correct answer is h. Three distractors model real student errors:
+    //   - base area s^2          (confusing the base area with the height)
+    //   - V / s = s*h            (dividing the volume by the edge, not by s^2)
+    //   - 2h                     (an off-by-a-factor slip on the final step)
+    // s*h (>= 60) and 2h (<= 60) can never equal h, and s*h can never equal 2h
+    // (that needs s=2, impossible) nor s^2 (that needs s=h, impossible since
+    // s<=8<15<=h). The only reachable collision is s^2 vs h or s^2 vs 2h, so we
+    // re-draw h a bounded number of times until all four values are distinct.
+    let tries = 0;
+    while (
+      (baseArea === height || baseArea === 2 * height) &&
+      tries++ < 50
+    ) {
+      height = getRandomInt(15, 30);
+    }
+
     // Calculate Volume V = s^2 * h
     const volume = edge * edge * height;
-    
-    // STEP 2: Calculate Derived Values
-    const baseArea = edge * edge;
-    
-    // STEP 3: Create Options
-    // Correct Answer: h
-    const correctText = `$${height}$`;
-    
-    // Distractor 1: Base Area (s^2)
-    // Common mistake: confusing base area with height or just picking an intermediate number
-    const distractorBaseArea = `$${baseArea}$`;
-    
-    // Distractor 2: V / s (Forgot to square the edge)
-    // = (s^2 * h) / s = s * h
-    const distractorLinearDiv = `$${edge * height}$`;
-    
-    // Distractor 3: Perimeter of base (4s) or just a random convincing number
-    // Let's use perimeter 4s
-    const distractorPerimeter = `$${4 * edge}$`;
-    
-    // Distractor Alternate: If we want to keep a square root distractor to test the renderer (as per original intent?),
-    // we can generate a "nonsense" distractor that looks mathy.
-    // e.g., s * sqrt(h) formatted correctly
-    const distractorRoot = `$${edge}\\sqrt{${height}}$`;
 
-    // Select distractors. We ensure they are unique.
-    const uniqueOptions = new Set<string>();
-    uniqueOptions.add(correctText);
-    uniqueOptions.add(distractorBaseArea);
-    uniqueOptions.add(distractorLinearDiv);
-    
-    // Fill remaining spots
-    if (uniqueOptions.size < 4) uniqueOptions.add(distractorPerimeter);
-    if (uniqueOptions.size < 4) uniqueOptions.add(distractorRoot);
-    
-    const optionsData = Array.from(uniqueOptions).map(text => ({
-      text,
-      isCorrect: text === correctText
+    // STEP 2: Assemble the four numeric option values (guaranteed distinct)
+    const correctValue = height;
+    const optionValues = [correctValue, baseArea, edge * height, 2 * height];
+
+    // STEP 3: Create Options
+    const correctText = `$${correctValue}$`;
+    const optionsData = optionValues.map(value => ({
+      text: `$${value}$`,
+      isCorrect: value === correctValue
     }));
 
     // STEP 4: Shuffle

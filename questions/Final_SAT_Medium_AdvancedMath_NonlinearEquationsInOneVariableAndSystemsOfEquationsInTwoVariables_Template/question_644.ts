@@ -81,10 +81,10 @@ const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg vi
       const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
       const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
       for(let x=xmin; x<=xmax; x+=(xmax-xmin)/100) {
-        const y = (a);
+        const y = (a * x * x);
         if(y>=ymin-1 && y<=ymax+1) pts.push(mx(x)+','+my(y));
       }
-      return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="currentColor" stroke-width="2"/>';
+      return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="#3b82f6" stroke-width="2"/>';
     })()}${
     (() => {
       const pts = [];
@@ -96,10 +96,10 @@ const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg vi
       const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
       const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
       for(let x=xmin; x<=xmax; x+=(xmax-xmin)/100) {
-        const y = (m);
+        const y = (m * x + b);
         if(y>=ymin-1 && y<=ymax+1) pts.push(mx(x)+','+my(y));
       }
-      return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="currentColor" stroke-width="2"/>';
+      return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="#ef4444" stroke-width="2"/>';
     })()}</svg></div>`;
    
    // STEP 4: Create options (0, 1, 2, 3)

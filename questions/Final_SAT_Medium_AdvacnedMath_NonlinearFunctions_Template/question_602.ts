@@ -57,7 +57,7 @@ export const generator_602 = {
       return '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>';
     })()}</svg></div>`;
     
-    const questionText = `The graph gives the estimated number of catalogs $y$, in thousands, a company sent to its customers at the end of each year, where $x$ represents the number of years since the end of 1992, where $0 \\\\leq x \\\\leq 10$. Which statement is the best interpretation of the y-intercept in this context?`;
+    const questionText = `The graph gives the estimated number of catalogs $y$, in thousands, a company sent to its customers at the end of each year, where $x$ represents the number of years since the end of 1992, where $0 \\leq x \\leq 10$. Which statement is the best interpretation of the y-intercept in this context?`;
     
     const totalApprox = Math.floor(initial * 10);
     

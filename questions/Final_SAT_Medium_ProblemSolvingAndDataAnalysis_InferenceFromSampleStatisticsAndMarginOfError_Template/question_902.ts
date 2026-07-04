@@ -48,26 +48,29 @@ export const generator_902 = {
     // STEP 2: Create options with tracking
     const correctText = `It is plausible that the proportion is between ${lowerBound} and ${upperBound}.`;
     
+    // Each incorrect option carries its OWN rebuttal so the explanation stays
+    // correct no matter where the shuffle places it (reason is emitted per
+    // shuffled option, never by positional index).
     const optionsData = [
-      { 
-        text: correctText, 
+      {
+        text: correctText,
         isCorrect: true,
         reason: "correctly calculates the confidence interval by adding and subtracting the margin of error from the estimate"
       },
-      { 
-        text: `It is plausible that the proportion is less than ${lowerBound}.`, 
+      {
+        text: `It is plausible that the proportion is less than ${lowerBound}.`,
         isCorrect: false,
-        reason: "suggests values below the lower confidence bound are plausible"
+        reason: `A value less than ${lowerBound} is outside the interval of plausible values for the proportion of the population that ${characteristic}.`
       },
-      { 
-        text: `The proportion is exactly ${estimatedProportion}.`, 
+      {
+        text: `The proportion is exactly ${estimatedProportion}.`,
         isCorrect: false,
-        reason: "ignores the margin of error and claims the estimate is exact"
+        reason: `The value ${estimatedProportion} is an estimate for the proportion based on this sample. However, since the margin of error for this estimate is known, the most appropriate conclusion is not that the proportion is exactly one value but instead lies in an interval of plausible values.`
       },
-      { 
-        text: `It is plausible that the proportion is greater than ${upperBound}.`, 
+      {
+        text: `It is plausible that the proportion is greater than ${upperBound}.`,
         isCorrect: false,
-        reason: "suggests values above the upper confidence bound are plausible"
+        reason: `A value greater than ${upperBound} is outside the interval of plausible values for the proportion of the population that ${characteristic}.`
       }
     ];
     
@@ -87,7 +90,7 @@ export const generator_902 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. It's given that the estimate for the proportion of the population that ${characteristic} is ${estimatedProportion} with an associated margin of error of ${marginOfError}. Subtracting the margin of error from the estimate and adding the margin of error to the estimate gives an interval of plausible values for the true proportion of the population that ${characteristic}. Therefore, it's plausible that the proportion of the population that ${characteristic} is between ${estimatedProportion} - ${marginOfError} = ${lowerBound} and ${estimatedProportion} + ${marginOfError} = ${upperBound}.\n\nChoice ${incorrectOptions[0].letter} is incorrect. A value less than ${lowerBound} is outside the interval of plausible values for the proportion of the population that ${characteristic}.\n\nChoice ${incorrectOptions[1].letter} is incorrect. The value ${estimatedProportion} is an estimate for the proportion based on this sample. However, since the margin of error for this estimate is known, the most appropriate conclusion is not that the proportion is exactly one value but instead lies in an interval of plausible values.\n\nChoice ${incorrectOptions[2].letter} is incorrect. A value greater than ${upperBound} is outside the interval of plausible values for the proportion of the population that ${characteristic}.`
+      explanation: `Choice ${correctLetter} is correct. It's given that the estimate for the proportion of the population that ${characteristic} is ${estimatedProportion} with an associated margin of error of ${marginOfError}. Subtracting the margin of error from the estimate and adding the margin of error to the estimate gives an interval of plausible values for the true proportion of the population that ${characteristic}. Therefore, it's plausible that the proportion of the population that ${characteristic} is between ${estimatedProportion} - ${marginOfError} = ${lowerBound} and ${estimatedProportion} + ${marginOfError} = ${upperBound}.\n\nChoice ${incorrectOptions[0].letter} is incorrect. ${incorrectOptions[0].reason}\n\nChoice ${incorrectOptions[1].letter} is incorrect. ${incorrectOptions[1].reason}\n\nChoice ${incorrectOptions[2].letter} is incorrect. ${incorrectOptions[2].reason}`
     };
   }
 };

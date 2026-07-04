@@ -32,10 +32,23 @@ export const generator_828 = {
     // STEP 2: Build question text
     const questionText = `Which of the following systems of linear equations has no solution?`;
     
-    // STEP 3: Create options
+    // STEP 3: Create options.
+    // Option A is the ONLY intended no-solution system (parallel: equal slope m,
+    // different intercepts b1 != b2). Every distractor must intersect at exactly
+    // one point, so its two lines must have DIFFERENT slopes. Force distinct
+    // slopes on option C (drawn from overlapping ranges) so it can never become a
+    // second parallel/no-solution system.
+    let cSlope1 = getRandomInt(10, 20);
+    let cSlope2 = getRandomInt(5, 15);
+    let cGuard = 0;
+    while (cSlope2 === cSlope1 && cGuard++ < 50) {
+      cSlope2 = getRandomInt(5, 15);
+    }
+    if (cSlope2 === cSlope1) cSlope2 = cSlope1 === 5 ? 6 : cSlope1 - 1;
+
     const optionA = `$y=${m}x+${b1}$ $y=${m}x+${b2}$`;
     const optionB = `$y=${getRandomInt(10, 20)}$ $y=${getRandomInt(5, 15)}x+${getRandomInt(5, 15)}$`;
-    const optionC = `$y=${getRandomInt(10, 20)}x+${getRandomInt(10, 20)}$ $y=${getRandomInt(5, 15)}x+${getRandomInt(10, 20)}$`;
+    const optionC = `$y=${cSlope1}x+${getRandomInt(10, 20)}$ $y=${cSlope2}x+${getRandomInt(10, 20)}$`;
     const optionD = `$x=${getRandomInt(2, 5)}$ $y=${getRandomInt(5, 15)}$`;
     
     const optionsData = [

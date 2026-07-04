@@ -47,29 +47,34 @@ export const generator_903 = {
     const lowerBound = estimatedMean - marginOfError;
     const upperBound = estimatedMean + marginOfError;
     
-    // STEP 2: Create options with tracking
-    const correctText = `It is plausible that the actual ${context} is between ${lowerBound} and ${upperBound}.`;
-    
+    // STEP 2: Create options with tracking.
+    // Contexts already begin with an article (e.g. "the average time to
+    // complete a task"), so templates must NOT prepend another "the"/"The".
+    // Each incorrect option carries its OWN rebuttal so the explanation stays
+    // correct no matter where the shuffle places it (reason is emitted per
+    // shuffled option, never by positional index).
+    const correctText = `It is plausible that the actual value of ${context} is between ${lowerBound} and ${upperBound}.`;
+
     const optionsData = [
-      { 
-        text: correctText, 
+      {
+        text: correctText,
         isCorrect: true,
         reason: "correctly identifies the confidence interval as the range of plausible values"
       },
-      { 
-        text: `It is not possible that the ${context} is less than ${lowerBound} or greater than ${upperBound}.`, 
+      {
+        text: `It is not possible that ${context} is less than ${lowerBound} or greater than ${upperBound}.`,
         isCorrect: false,
-        reason: "confuses 'plausible' with 'impossible' - values outside the margin are possible just less likely"
+        reason: `The estimated mean value and associated margin of error describe only plausible values, not all the possible values, for the actual value of ${context}. A value outside this interval is less likely but not impossible, so this is not an appropriate conclusion.`
       },
-      { 
-        text: `Every value of the variable in the population is between ${lowerBound} and ${upperBound}.`, 
+      {
+        text: `Every value of the variable in the population is between ${lowerBound} and ${upperBound}.`,
         isCorrect: false,
-        reason: "incorrectly applies the confidence interval for the mean to individual data points"
+        reason: `The estimated mean value and associated margin of error describe only plausible values for the actual value of ${context}, not all the possible values of the variable, so this is not an appropriate conclusion.`
       },
-      { 
-        text: `The ${context} is ${estimatedMean}.`, 
+      {
+        text: `The exact value of ${context} is ${estimatedMean}.`,
         isCorrect: false,
-        reason: "claims the exact population mean is known, ignoring the margin of error"
+        reason: `Since ${estimatedMean} is the estimated mean value based on a random sample, the actual value of ${context} may not be exactly ${estimatedMean}. Therefore, this is not an appropriate conclusion.`
       }
     ];
     
@@ -89,7 +94,7 @@ export const generator_903 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. It's given that based on a random sample from a population, the estimated ${context} is ${estimatedMean}, with an associated margin of error of ${marginOfError}. This means that it is plausible that the actual ${context} is between ${estimatedMean} - ${marginOfError} and ${estimatedMean} + ${marginOfError}. Therefore, the most appropriate conclusion is that it is plausible that the actual ${context} is between ${lowerBound} and ${upperBound}.\n\nChoice ${incorrectOptions[0].letter} is incorrect. The estimated mean value and associated margin of error describe only plausible values, not all the possible values, for the actual mean value of the variable, so this is not an appropriate conclusion.\n\nChoice ${incorrectOptions[1].letter} is incorrect. The estimated mean value and associated margin of error describe only plausible values for the actual mean value of the variable, not all the possible values of the variable, so this is not an appropriate conclusion.\n\nChoice ${incorrectOptions[2].letter} is incorrect. Since ${estimatedMean} is the estimated mean value of the variable based on a random sample, the actual mean value of the variable may not be exactly ${estimatedMean}. Therefore, this is not an appropriate conclusion.`
+      explanation: `Choice ${correctLetter} is correct. It's given that based on a random sample from a population, the estimated value of ${context} is ${estimatedMean}, with an associated margin of error of ${marginOfError}. This means that it is plausible that the actual value of ${context} is between ${estimatedMean} - ${marginOfError} = ${lowerBound} and ${estimatedMean} + ${marginOfError} = ${upperBound}. Therefore, the most appropriate conclusion is that it is plausible that the actual value of ${context} is between ${lowerBound} and ${upperBound}.\n\nChoice ${incorrectOptions[0].letter} is incorrect. ${incorrectOptions[0].reason}\n\nChoice ${incorrectOptions[1].letter} is incorrect. ${incorrectOptions[1].reason}\n\nChoice ${incorrectOptions[2].letter} is incorrect. ${incorrectOptions[2].reason}`
     };
   }
 };

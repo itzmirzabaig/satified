@@ -31,35 +31,50 @@ export const generator_811 = {
     // STEP 2: Build question text
     const questionText = `One of the two equations in a system of linear equations is given. The system has infinitely many solutions. Which equation could be the second equation in this system?\n\n$$y = ${m}x + ${b}$$`;
     
-    // STEP 3: Create options
+    // STEP 3: Create options.
+    // Each option carries a `kind` so its per-option explanation can be looked
+    // up by its ACTUAL displayed letter after shuffling (letters are only
+    // meaningful post-shuffle).
     const optionA = `$$y = 2(${m}x) + ${b}$$`; // Only x multiplied
     const optionB = `$$y = 2(${m}x + ${b})$$`; // Everything multiplied but not distributed
     const optionC = `$$2(y) = 2(${m}x) + ${b}$$`; // Only partial
     const optionD = `$$2(y) = 2(${m}x + ${b})$$`; // Correct - multiply both sides by 2
-    
+
     const optionsData = [
-      { text: optionA, isCorrect: false },
-      { text: optionB, isCorrect: false },
-      { text: optionC, isCorrect: false },
-      { text: optionD, isCorrect: true }
+      { text: optionA, isCorrect: false, kind: 'xOnly' },
+      { text: optionB, isCorrect: false, kind: 'notDistributed' },
+      { text: optionC, isCorrect: false, kind: 'partial' },
+      { text: optionD, isCorrect: true, kind: 'correct' }
     ];
-    
+
     // STEP 4: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect);
     const correctLetter = correctOption!.letter;
-    
-    // STEP 5: Return question data
+
+    // STEP 5: Build the per-option analysis in DISPLAYED order so every letter
+    // in the explanation matches what the student sees.
+    const analysisByKind: Record<string, string> = {
+      xOnly: `$$y = 2(${m}x) + ${b}$$\n   Distributing gives $$y = ${2 * m}x + ${b}$$.\n   This is not equivalent to $$y = ${m}x + ${b}$$, so it is incorrect.`,
+      notDistributed: `$$y = 2(${m}x + ${b})$$\n   Distributing gives $$y = ${2 * m}x + ${2 * b}$$.\n   This is not equivalent to $$y = ${m}x + ${b}$$, so it is incorrect.`,
+      partial: `$$2(y) = 2(${m}x) + ${b}$$\n   This simplifies to $$2y = ${2 * m}x + ${b}$$, and dividing by $$2$$ gives $$y = ${m}x + ${b / 2}$$.\n   This is not equivalent to $$y = ${m}x + ${b}$$, so it is incorrect.`,
+      correct: `$$2(y) = 2(${m}x + ${b})$$\n   This is the original equation with both sides multiplied by $$2$$.\n   $$2y = 2(${m}x) + 2(${b}) = ${2 * m}x + ${2 * b}$$\n   Dividing by $$2$$ returns $$y = ${m}x + ${b}$$, so this represents the same line and is the correct answer.`
+    };
+    const optionAnalysis = shuffledOptions
+      .map(o => `${o.letter}. ${analysisByKind[o.kind]}`)
+      .join('\n\n');
+
+    // STEP 6: Return question data
     return {
       questionText: questionText,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: optionD,
-      explanation: `The problem asks for a second equation that would result in a system with infinitely many solutions. A system of linear equations has infinitely many solutions if the two lines are identical. This means the second equation must be equivalent to the first equation, $$y = ${m}x + ${b}$$.\n\nLet's check each option to see if it simplifies to $$y = ${m}x + ${b}$$:\n\nA. $$y = 2(${m}x) + ${b}$$\n   $$y = ${2*m}x + ${b}$$\n   This is not equivalent to $$y = ${m}x + ${b}$$.\n\nB. $$y = 2(${m}x + ${b})$$\n   $$y = ${2*m}x + ${2*b}$$\n   This is not equivalent to $$y = ${m}x + ${b}$$.\n\nC. $$2(y) = 2(${m}x) + ${b}$$\n   $$2y = ${2*m}x + ${b}$$\n   Dividing the entire equation by $$2$$ gives: $$y = ${m}x + ${b/2}$$.\n   This is not equivalent to $$y = ${m}x + ${b}$$.\n\nD. $$2(y) = 2(${m}x + ${b})$$\n   This equation represents multiplying both sides of the original equation ($$y = ${m}x + ${b}$$) by $$2$$.\n   $$2y = 2(${m}x) + 2(${b})$$\n   $$2y = ${2*m}x + ${2*b}$$\n   If we divide this equation by $$2$$, we get back to $$y = ${m}x + ${b}$$. Therefore, this equation represents the same line.\n\nThe correct option is **${correctLetter}**.`
+      explanation: `The problem asks for a second equation that would result in a system with infinitely many solutions. A system of linear equations has infinitely many solutions if the two lines are identical, so the second equation must be equivalent to the first equation, $$y = ${m}x + ${b}$$.\n\nChecking each option:\n\n${optionAnalysis}\n\nThe correct option is **${correctLetter}**.`
     };
   }
 };

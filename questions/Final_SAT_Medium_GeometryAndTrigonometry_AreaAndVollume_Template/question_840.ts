@@ -30,33 +30,37 @@ export const generator_840 = {
     // STEP 2: Calculate derived values
     const area = (base * height) / 2;
     
-    // STEP 3: Create options with tracking
+    // STEP 3: Create options with tracking. Each distractor carries its own
+    // reason so the explanation stays correct regardless of shuffle order.
     const correctText = area.toLocaleString();
-    
+
     // Distractors
     const distractorA = (base + height).toString(); // Sum
     const distractorB = (area / 2).toLocaleString(); // Quartered
     const distractorD = (base * height).toLocaleString(); // No 1/2
-    
+
     const optionsData = [
-      { text: distractorA, isCorrect: false },
-      { text: distractorB, isCorrect: false },
-      { text: correctText, isCorrect: true },
-      { text: distractorD, isCorrect: false }
+      { text: distractorA, isCorrect: false, reason: `this is the sum of the base and height, not the area` },
+      { text: distractorB, isCorrect: false, reason: `this divides by 4 instead of by 2` },
+      { text: correctText, isCorrect: true, reason: '' },
+      { text: distractorD, isCorrect: false, reason: `this multiplies base and height without dividing by 2, which would be the area of a rectangle` }
     ];
-    
+
     // STEP 4: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect);
     const correctLetter = correctOption!.letter;
-    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+    const distractorNotes = shuffledOptions
+      .filter(o => !o.isCorrect)
+      .map(o => `Choice ${o.letter} is incorrect; ${o.reason}.`)
+      .join(' ');
+
     // STEP 5: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. The area of a triangle is $A = \\\\frac{1}{2}bh$. With base $b = ${base}$ and height $h = ${height}$, the area is $\\\\frac{1}{2}(${base})(${height}) = ${area}$ cm². Choice ${incorrectOptions[0].letter} is incorrect; this is the sum of the base and height, not the area. Choice ${incorrectOptions[1].letter} is incorrect; this appears to divide by 4 instead of by 2. Choice ${incorrectOptions[2].letter} is incorrect; this multiplies base and height without dividing by 2, which would be the area of a rectangle.`;
+    const explanation = `Choice ${correctLetter} is correct. The area of a triangle is $A = \\\\frac{1}{2}bh$. With base $b = ${base}$ and height $h = ${height}$, the area is $\\\\frac{1}{2}(${base})(${height}) = ${area}$ cm². ${distractorNotes}`;
     
     return {
       questionText: `A triangle has a base length of $${base}$ centimeters and a height of $${height}$ centimeters. What is the area, in square centimeters, of the triangle?`,

@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -42,50 +42,35 @@ export const generator_998 = {
     const xMax = 10;
     const yMin = 0;
     const yMax = 16;
-    
-    // STEP 3: Build Mafs code
-    const pointElements = points.map(p => `<Point x={${p.x}} y={${p.y}} />`).join('\n      ');
-    
-    const _svg_0 = yMax; const _svg_1 = yMin; const _svg_2 = xMax; const _svg_3 = xMin;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="transparent"/>${(() => {
-      const xmin=_svg_3, xmax=_svg_2;
-      const ymin=_svg_1, ymax=_svg_0;
-      const W=400, H=300, P=40;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      if(ymin<=0&&ymax>=0) s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      if(xmin<=0&&xmax>=0) s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // Grid lines
-      for(let x=Math.ceil(xmin); x<=Math.floor(xmax); x++) {
-        if(x===0) continue;
-        s+='<line x1="'+mx(x)+'" y1="'+P+'" x2="'+mx(x)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>';
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      for(let y=Math.ceil(ymin); y<=Math.floor(ymax); y++) {
-        if(y===0) continue;
-        s+='<line x1="'+P+'" y1="'+my(y)+'" x2="'+(W-P)+'" y2="'+my(y)+'" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>';
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${
-    (() => {
-      const pts = [];
-      const xmin = (xMin);
-      const xmax = (xMax);
-      const ymin = (yMin);
-      const ymax = (yMax);
-      const W = 400, H = 300, P = 40;
-      const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
-      const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
-      for(let x=xmin; x<=xmax; x+=(xmax-xmin)/100) {
-        const y = (slope.toFixed(2));
-        if(y>=ymin-1 && y<=ymax+1) pts.push(mx(x)+','+my(y));
-      }
-      return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="currentColor" stroke-width="2"/>';
-    })()}</svg></div>`;
-    
+
+    // STEP 3: Build SVG scatterplot with a correctly-sloped line of best fit.
+    const W = 400, H = 300, P = 40;
+    const mx = (x: number) => P + (x - xMin) / (xMax - xMin) * (W - 2 * P);
+    const my = (y: number) => H - P - (y - yMin) / (yMax - yMin) * (H - 2 * P);
+
+    // Axes + grid
+    let gridSvg = '';
+    if (yMin <= 0 && yMax >= 0) gridSvg += `<line x1="${P}" y1="${my(0)}" x2="${W - P}" y2="${my(0)}" stroke="currentColor" stroke-width="1.5"/>`;
+    if (xMin <= 0 && xMax >= 0) gridSvg += `<line x1="${mx(0)}" y1="${P}" x2="${mx(0)}" y2="${H - P}" stroke="currentColor" stroke-width="1.5"/>`;
+    for (let x = Math.ceil(xMin); x <= Math.floor(xMax); x++) {
+      if (x === 0) continue;
+      gridSvg += `<line x1="${mx(x)}" y1="${P}" x2="${mx(x)}" y2="${H - P}" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>`;
+      gridSvg += `<text x="${mx(x)}" y="${my(0) + 14}" text-anchor="middle" font-size="9" fill="currentColor">${x}</text>`;
+    }
+    for (let y = Math.ceil(yMin); y <= Math.floor(yMax); y += 2) {
+      if (y === 0) continue;
+      gridSvg += `<line x1="${P}" y1="${my(y)}" x2="${W - P}" y2="${my(y)}" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>`;
+      gridSvg += `<text x="${mx(0) - 8}" y="${my(y) + 3}" text-anchor="end" font-size="9" fill="currentColor">${y}</text>`;
+    }
+
+    // Line of best fit: y = slope*x + intercept, clipped to the visible x-range.
+    const lineSvg = `<line x1="${mx(xMin)}" y1="${my(slope * xMin + intercept)}" x2="${mx(xMax)}" y2="${my(slope * xMax + intercept)}" stroke="currentColor" stroke-width="2"/>`;
+
+    // Scatter points (blue dots) — the actual data.
+    const dotsSvg = points.map(p => `<circle cx="${mx(p.x)}" cy="${my(p.y)}" r="4" fill="#3b82f6"/>`).join('');
+
+    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg"><rect width="${W}" height="${H}" fill="transparent"/>${gridSvg}${lineSvg}${dotsSvg}</svg></div>`;
+
     // STEP 4: Create options
     const slopeValue = parseFloat(slope.toFixed(1));
     const optionValues = [
@@ -109,17 +94,29 @@ export const generator_998 = {
     
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
-    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
+    // Key each distractor's reason to its VALUE (not its shuffled position) so
+    // the description always matches the option it refers to.
+    const reasonFor = (text: string): string => {
+      if (text === optionValues[0]) return "is approximately the $y$-intercept, not the slope";
+      if (text === optionValues[1]) return "corresponds to a line that is too flat (slope too small)";
+      if (text === optionValues[3]) return "corresponds to a line that is too steep (slope too large)";
+      return "does not match the slope shown";
+    };
+    const distractorNotes = shuffledOptions
+      .filter(opt => !opt.isCorrect)
+      .map(opt => `Choice ${opt.letter} is incorrect; it ${reasonFor(opt.text)}.`)
+      .join(' ');
+
     const y0 = intercept;
     const y5 = slope * 5 + intercept;
-    
+
     return {
       questionText: "Which of the following is closest to the slope of the line of best fit shown?",
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: slopeValue.toFixed(1),
-      explanation: `Choice ${correctLetter} is correct. The line passes through approximately $(0, ${y0.toFixed(1)})$ and $(5, ${y5.toFixed(1)})$. Slope $= (${y5.toFixed(1)} - ${y0.toFixed(1)}) / 5 = ${(y5 - y0).toFixed(1)} / 5 = ${slope.toFixed(2)}$, closest to ${slopeValue.toFixed(1)}. Choice ${incorrectOptions[0].letter} is incorrect; it is approximately the y-intercept. Choice ${incorrectOptions[1].letter} is incorrect; the slope is steeper. Choice ${incorrectOptions[2].letter} is incorrect; the slope is not that steep.`
+      explanation: `Choice ${correctLetter} is correct. The line of best fit passes through approximately $(0, ${y0.toFixed(1)})$ and $(5, ${y5.toFixed(1)})$. Slope $= (${y5.toFixed(1)} - ${y0.toFixed(1)}) / 5 = ${(y5 - y0).toFixed(1)} / 5 = ${slope.toFixed(2)}$, which is closest to ${slopeValue.toFixed(1)}. ${distractorNotes}`
     };
   }
 };

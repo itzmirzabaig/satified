@@ -106,7 +106,10 @@ export const generator_784 = {
     const correctText = correctOption.text;
 
     // STEP 5: Build explanation (all numbers from the same live variables)
-    const explanation = `Choice ${correctOption.letter} is correct. The boundary line passes through $(0, ${yIntercept})$ and $(${x2}, ${y2})$, so its slope is $\\frac{${y2} - (${yIntercept})}{${x2} - 0} = ${slope}$ and its $y$-intercept is $${yIntercept}$. The line is therefore $y = ${slope}x ${slopeSign} ${absSlope}$. The boundary is dashed (so it is not included) and the region above it is shaded, which means $y$ is greater than the line: $y > ${slope}x ${slopeSign} ${absSlope}$, written as $y > ${interceptStr} ${slopeSign} ${absSlope}x$. A "$<$" choice would shade below the line, and using $+${absIntercept}$ instead of $${yIntercept}$ would move the intercept to the wrong side of the $x$-axis.`;
+    // Connector before the CONSTANT term is set by the intercept's sign
+    // (always '-' here since yIntercept < 0); the operand is |intercept|.
+    const interceptSign = yIntercept >= 0 ? '+' : '-';
+    const explanation = `Choice ${correctOption.letter} is correct. The boundary line passes through $(0, ${yIntercept})$ and $(${x2}, ${y2})$, so its slope is $\\frac{${y2} - (${yIntercept})}{${x2} - 0} = ${slope}$ and its $y$-intercept is $${yIntercept}$. The line is therefore $y = ${slope}x ${interceptSign} ${absIntercept}$. The boundary is dashed (so it is not included) and the region above it is shaded, which means $y$ is greater than the line: $y > ${slope}x ${interceptSign} ${absIntercept}$, written as $y > ${interceptStr} ${slopeSign} ${absSlope}x$. A "$<$" choice would shade below the line, and using $+${absIntercept}$ instead of $${yIntercept}$ would move the intercept to the wrong side of the $x$-axis.`;
 
     // STEP 6: Return question data
     return {

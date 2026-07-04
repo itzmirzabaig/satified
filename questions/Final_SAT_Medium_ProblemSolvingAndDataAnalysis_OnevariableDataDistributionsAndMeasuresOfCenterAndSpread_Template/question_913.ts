@@ -30,19 +30,41 @@ export const generator_913 = {
     // Generate base values for 2012 (unordered)
     const base2012 = [83.0, 66.7, 57.5, 57.7, 46.4, 35.7, 30.4, 26.3, 24.7];
     const variations = base2012.map(() => (Math.random() - 0.5) * 10);
-    
+
     const data2012 = base2012.map((base, i) => Math.round((base + variations[i]) * 10) / 10);
-    const data2013 = data2012.map((val, i) => {
-      const change = (Math.random() - 0.3) * 5; // Slight upward trend
-      return Math.round((val + change) * 10) / 10;
-    });
-    
-    // STEP 2: Find medians (5th value in ordered list of 9, 0-indexed index 4)
     const sorted2012 = [...data2012].sort((a, b) => a - b);
-    const sorted2013 = [...data2013].sort((a, b) => a - b);
     const median2012 = sorted2012[4];
-    const median2013 = sorted2013[4];
-    const difference = Math.round((median2013 - median2012) * 10) / 10;
+
+    // Generate 2013 data so its median is strictly GREATER than 2012's by a
+    // clean positive tenth. The question asks "how much greater ... in 2013
+    // than ... in 2012", so a positive difference must be guaranteed for every
+    // draw (independent per-country noise can otherwise flip the sign).
+    let data2013: number[] = [];
+    let sorted2013: number[] = [];
+    let median2013 = 0;
+    let difference = 0;
+    let tries = 0;
+    do {
+      data2013 = data2012.map((val) => {
+        const change = (Math.random() - 0.15) * 5; // Upward trend
+        return Math.round((val + change) * 10) / 10;
+      });
+      sorted2013 = [...data2013].sort((a, b) => a - b);
+      median2013 = sorted2013[4];
+      difference = Math.round((median2013 - median2012) * 10) / 10;
+    } while (difference <= 0 && tries++ < 50);
+
+    // Fallback guard: if the retry budget was exhausted, shift EVERY 2013
+    // value up by a fixed positive amount. Adding a constant to all values
+    // shifts the sorted list uniformly, so the 2013 median is guaranteed to
+    // exceed the 2012 median and the difference stays a clean positive tenth.
+    if (difference <= 0) {
+      const bump = Math.round((median2012 - median2013) * 10) / 10 + 1.5;
+      data2013 = data2013.map((v) => Math.round((v + bump) * 10) / 10);
+      sorted2013 = [...data2013].sort((a, b) => a - b);
+      median2013 = sorted2013[4];
+      difference = Math.round((median2013 - median2012) * 10) / 10;
+    }
     
     // STEP 3: Build HTML table
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto;">

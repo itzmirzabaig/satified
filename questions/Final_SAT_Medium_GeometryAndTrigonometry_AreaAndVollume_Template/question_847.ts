@@ -30,34 +30,38 @@ export const generator_847 = {
     const fruitVolume = totalVolume - syrupVolume;
     
     // STEP 2: Create options with tracking
-    // FIXED: Changed \\\\text to \\text for proper LaTeX text command
+    // Each distractor carries its OWN rationale so the explanation stays
+    // correct after shuffling (reason is bound to the value, not to a letter).
     const correctText = `${fruitVolume}\\text{ cm}^3`;
-    
+
     // Distractors
     const distractorA = `${(baseArea / 10).toFixed(1)}\\text{ cm}^3`; // Base/10
     const distractorB = `${(syrupVolume + baseArea)}\\text{ cm}^3`; // Syrup + base
     const distractorD = `${totalVolume}\\text{ cm}^3`; // Total volume
-    
+
     const optionsData = [
-      { text: distractorA, isCorrect: false },
-      { text: distractorB, isCorrect: false },
-      { text: correctText, isCorrect: true },
-      { text: distractorD, isCorrect: false }
+      { text: distractorA, isCorrect: false, reason: `this divides the base area by 10, which is not part of the volume calculation` },
+      { text: distractorB, isCorrect: false, reason: `this adds the syrup volume and the base area, two unrelated quantities` },
+      { text: correctText, isCorrect: true, reason: '' },
+      { text: distractorD, isCorrect: false, reason: `this is the total volume of the can, not just the volume of the fruit` }
     ];
-    
+
     // STEP 3: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(o => o.isCorrect);
     const correctLetter = correctOption!.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
-    // STEP 4: Build explanation
-    // FIXED: Changed all \\\\text to \\text, and \\\\times to \\times
-    const explanation = `Choice ${correctLetter} is correct. The total volume of the can is $V = \\text{base area} \\times \\text{height} = ${baseArea} \\times ${height} = ${totalVolume}$ cm³. The volume of fruit is the total volume minus the syrup volume: $${totalVolume} - ${syrupVolume} = ${fruitVolume}$ cm³. Choice ${incorrectOptions[0].letter} is incorrect; this appears to divide the base area by 10 arbitrarily. Choice ${incorrectOptions[1].letter} is incorrect; this adds unrelated quantities. Choice ${incorrectOptions[2].letter} is incorrect; this is the total volume of the can, not just the fruit.`;
+
+    // STEP 4: Build explanation — pull each distractor's reason from the
+    // shuffled option itself so every letter matches its actual value.
+    const distractorExplanations = incorrectOptions
+      .map(o => `Choice ${o.letter} is incorrect; ${o.reason}.`)
+      .join(' ');
+    const explanation = `Choice ${correctLetter} is correct. The total volume of the can is $V = \\text{base area} \\times \\text{height} = ${baseArea} \\times ${height} = ${totalVolume}$ cm³. The volume of fruit is the total volume minus the syrup volume: $${totalVolume} - ${syrupVolume} = ${fruitVolume}$ cm³. ${distractorExplanations}`;
     
     return {
       // FIXED: Changed \\\\text to \\text in questionText

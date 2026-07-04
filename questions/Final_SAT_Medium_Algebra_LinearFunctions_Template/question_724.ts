@@ -23,14 +23,31 @@ export const generator_724 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values
-    // Rate: -0.03 to -0.08
-    const rate = -Math.round((Math.random() * 0.05 + 0.03) * 100) / 100;
-    // Initial: 10-15
-    const initial = Math.round((Math.random() * 5 + 10) * 10) / 10;
-    
+    // STEP 1: Generate random values, guarding so all four option strings
+    // are distinct as rendered (the initial-amount distractor and the
+    // miles-per-gallon distractor can otherwise coincide, e.g. initial 12.5
+    // vs 1/0.08 = 12.5, or initial 14.3 vs 1/0.07 = 14.29 -> 14.3).
+    let rate: number;
+    let initial: number;
+    let correctText: string;
+    let optionStrings: string[];
+    let tries = 0;
+    do {
+      // Rate: -0.03 to -0.08
+      rate = -Math.round((Math.random() * 0.05 + 0.03) * 100) / 100;
+      // Initial: 10-15
+      initial = Math.round((Math.random() * 5 + 10) * 10) / 10;
+
+      correctText = Math.abs(rate).toFixed(2);
+      optionStrings = [
+        correctText,
+        initial.toFixed(1),
+        (1 / Math.abs(rate)).toFixed(1),
+        (initial / Math.abs(rate)).toFixed(1)
+      ];
+    } while (new Set(optionStrings).size !== optionStrings.length && tries++ < 50);
+
     // STEP 2: Create options
-    const correctText = Math.abs(rate).toFixed(2);
     const optionsData = [
       { text: correctText, isCorrect: true },
       { text: initial.toFixed(1), isCorrect: false, reason: "gives the initial amount in the tank" },

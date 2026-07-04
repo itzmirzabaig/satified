@@ -19,33 +19,45 @@ export const generator_958 = {
   },
 
   generate: (): QuestionData => {
-    // STEP 1: Generate table values
-    const chinstrapM = getRandomInt(35, 48);
-    const chinstrapF = getRandomInt(55, 65);
-    const emperorM = getRandomInt(6, 12);
-    const emperorF = getRandomInt(24, 30);
-    const gentooM = getRandomInt(45, 55);
-    const gentooF = getRandomInt(50, 60);
-    const macaroniM = getRandomInt(35, 48);
-    const macaroniF = getRandomInt(35, 48);
+    // STEP 1: Generate table values, retrying (bounded) until exactly ONE type
+    // is closest to 1/3 of the total female population. Without this guard the
+    // chinstrap (55-65) and gentoo (50-60) ranges overlap on 55-60, so two
+    // types can be exactly equidistant from the target, making two option
+    // NAMES equally correct while only the sort winner is marked right.
+    let chinstrapM = 0, chinstrapF = 0, emperorM = 0, emperorF = 0;
+    let gentooM = 0, gentooF = 0, macaroniM = 0, macaroniF = 0;
+    let totalFemale = 0, targetValue = 0;
+    let types: { name: string; female: number; diff: number }[] = [];
+
+    let tries = 0;
+    do {
+      chinstrapM = getRandomInt(35, 48);
+      chinstrapF = getRandomInt(55, 65);
+      emperorM = getRandomInt(6, 12);
+      emperorF = getRandomInt(24, 30);
+      gentooM = getRandomInt(45, 55);
+      gentooF = getRandomInt(50, 60);
+      macaroniM = getRandomInt(35, 48);
+      macaroniF = getRandomInt(35, 48);
+
+      totalFemale = chinstrapF + emperorF + gentooF + macaroniF;
+      targetValue = totalFemale / 3;
+
+      // Find which is closest to 1/3
+      types = [
+        { name: "Chinstrap", female: chinstrapF, diff: Math.abs(chinstrapF - targetValue) },
+        { name: "Emperor", female: emperorF, diff: Math.abs(emperorF - targetValue) },
+        { name: "Gentoo", female: gentooF, diff: Math.abs(gentooF - targetValue) },
+        { name: "Macaroni", female: macaroniF, diff: Math.abs(macaroniF - targetValue) }
+      ];
+      types.sort((a, b) => a.diff - b.diff);
+    } while (types[0].diff === types[1].diff && tries++ < 50);
 
     const chinstrapTotal = chinstrapM + chinstrapF;
     const emperorTotal = emperorM + emperorF;
     const gentooTotal = gentooM + gentooF;
     const macaroniTotal = macaroniM + macaroniF;
 
-    const totalFemale = chinstrapF + emperorF + gentooF + macaroniF;
-    const targetValue = totalFemale / 3;
-
-    // Find which is closest to 1/3
-    const types = [
-      { name: "Chinstrap", female: chinstrapF, diff: Math.abs(chinstrapF - targetValue) },
-      { name: "Emperor", female: emperorF, diff: Math.abs(emperorF - targetValue) },
-      { name: "Gentoo", female: gentooF, diff: Math.abs(gentooF - targetValue) },
-      { name: "Macaroni", female: macaroniF, diff: Math.abs(macaroniF - targetValue) }
-    ];
-
-    types.sort((a, b) => a.diff - b.diff);
     const correctType = types[0].name;
     const correctTypeFemale = types[0].female;
 

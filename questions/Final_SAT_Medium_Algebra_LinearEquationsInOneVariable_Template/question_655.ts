@@ -3,11 +3,15 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 655
- * 
+ *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [coefficient leading to undefined: b=2, constant: 8]
- * - Diffactor patterns: [Values that give valid solutions instead of no solution]
- * - Constraints: [For no solution: coefficient of x must be 0 but constant term non-zero]
+ * - Concept: a linear equation ax + p = cx + q has NO solution exactly when the
+ *   coefficient of x, (a - c), is zero (a = c) while the constant terms differ
+ *   (p != q). Ask for the value of the parameter a that creates this condition.
+ * - Number ranges: [c = 2..8; distinct constants p, q with p != q]
+ * - Distractor patterns: [values of a != c, each giving a unique solution]
+ * - Constraints: [Exactly one value (a = c) yields no solution; require p != q so
+ *   a = c is "no solution", not "infinitely many"]
  * - Question type: [Multiple Choice Text]
  */
 
@@ -19,24 +23,30 @@ export const generator_655 = {
     skill: "Linear Equations In One Variable",
     difficulty: "Medium"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate equation of form (b - c)x = d
-    // For no solution: b - c = 0 but d ≠ 0
-    const b = getRandomInt(2, 8);
-    const c = 0; // We want (b - something) = 0, so something = b
-    // Actually let's use form (x - b)*k = constant where b is the no-solution value
-    const k = getRandomInt(2, 5);
-    const constant = getRandomInt(5, 20) * k; // Ensures it's divisible
-    
-    // Correct answer is when coefficient of x becomes 0
-    const correctValue = b;
-    
-    // Distractors: values that give valid solutions
-    const distractorB = b + 2;
-    const distractorC = b + 4;
-    const distractorD = b + 8;
-    
+    // STEP 1: Build an equation  a*x + p = c*x + q  with a as the unknown
+    // parameter. Rearranged: (a - c)*x = q - p. The coefficient of x is (a - c),
+    // which is zero exactly when a = c. Provided q != p, that makes the equation
+    // 0 = (nonzero), i.e. NO solution. So the answer is a = c.
+    const c = getRandomInt(2, 8);
+    const p = getRandomInt(1, 9);
+    // Constant on the other side, guaranteed different from p so a = c really
+    // produces "no solution" (not infinitely many solutions).
+    let q = getRandomInt(1, 9);
+    let guard = 0;
+    while (q === p && guard++ < 50) q = getRandomInt(1, 9);
+    if (q === p) q = p + 1; // deterministic fallback
+
+    // Correct answer: the parameter value that zeroes the coefficient of x.
+    const correctValue = c;
+
+    // Distractors: other parameter values (a != c), each giving a unique
+    // solution. None can equal c, so none accidentally becomes "no solution".
+    const distractorB = c + 2;
+    const distractorC = c + 4;
+    const distractorD = c + 6;
+
     const correctText = `$${correctValue}$`;
     const optionsData = [
       { text: `$${correctValue}$`, isCorrect: true },
@@ -44,21 +54,21 @@ export const generator_655 = {
       { text: `$${distractorC}$`, isCorrect: false },
       { text: `$${distractorD}$`, isCorrect: false }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect);
     const correctLetter = correctOption!.letter;
-    
+
     return {
-      questionText: `$(x - ${b}) \\cdot ${k} = ${constant}$\n\nIn the given equation, the coefficient of x depends on a constant. If the equation has no solution when the coefficient equals zero, what value of the constant creates this condition?`,
+      questionText: `$a x + ${p} = ${c}x + ${q}$\n\nIn the equation above, $a$ is a constant. For what value of $a$ does the equation have no solution?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. This equation has no solution when there is no value of $x$ that produces a true statement. When rearranged to standard form, if the coefficient of $x$ becomes zero while the constant term remains non-zero, no solution exists. For the given structure, when the parameter equals ${correctValue}, the coefficient becomes zero, making the equation unsolvable.`
+      explanation: `Choice ${correctLetter} is correct. Collect the $x$ terms on one side: $a x - ${c}x = ${q} - ${p}$, which is $(a - ${c})x = ${q - p}$. A linear equation of the form $(\\text{coefficient})x = ${q - p}$ has no solution only when the coefficient of $x$ is $0$ while the right side is nonzero. Setting $a - ${c} = 0$ gives $a = ${correctValue}$; since $${q - p} \\neq 0$, the equation becomes $0 = ${q - p}$, which is never true, so there is no solution. For any other value of $a$ the coefficient $a - ${c}$ is nonzero, giving exactly one solution.`
     };
   }
 };

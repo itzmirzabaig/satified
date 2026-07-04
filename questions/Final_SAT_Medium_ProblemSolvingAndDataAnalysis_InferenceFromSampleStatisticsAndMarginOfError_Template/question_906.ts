@@ -29,10 +29,19 @@ export const generator_906 = {
     const sampleSize = getRandomInt(200, 400);
     // Estimated percentage: 5-20% range (defect rates are typically low)
     const estimatedPercent = getRandomInt(5, 20);
-    // Margin of error: 2-6% range with 2 decimal places
-    const marginWhole = getRandomInt(2, 5);
-    const marginDecimal = getRandomInt(0, 99) / 100;
-    const marginOfError = parseFloat((marginWhole + marginDecimal).toFixed(2));
+    // Margin of error: 2-6% range with 2 decimal places.
+    // Guard against the rare draw where the margin of error renders as the same
+    // number as the estimated percent (e.g. marginWhole=5, marginDecimal=0 ->
+    // "5" and estimatedPercent=5 -> "5"): that would make the "margin only" and
+    // "point estimate only" distractors byte-identical. Redraw the margin with a
+    // bounded retry (HOUSE_STYLE rule 4) until the two rendered values differ.
+    let marginOfError = 0;
+    let marginTries = 0;
+    do {
+      const marginWhole = getRandomInt(2, 5);
+      const marginDecimal = getRandomInt(0, 99) / 100;
+      marginOfError = parseFloat((marginWhole + marginDecimal).toFixed(2));
+    } while (marginOfError === estimatedPercent && marginTries++ < 50);
     // Product type
     const products = ["socks", "gloves", "hats", "scarves", "belts"];
     const product = getRandomElement(products);
@@ -78,8 +87,7 @@ export const generator_906 = {
     
     const correctOption = shuffledOptions.find(o => o.isCorrect);
     const correctLetter = correctOption!.letter;
-    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    
+
     // STEP 4: Return question data
     return {
       questionText: `A company that produces ${product} wants to estimate the percent of the ${product} produced in a typical ${period} that are defective. A random sample of ${sampleSize} ${product} produced in a certain ${period} were inspected. Based on the sample, it is estimated that ${estimatedPercent}% of all ${product} produced by the company in this ${period} are defective, with an associated margin of error of ${marginOfError}%. Based on the estimate and associated margin of error, which of the following is the most appropriate conclusion about all ${product} produced by the company during this ${period}?`,

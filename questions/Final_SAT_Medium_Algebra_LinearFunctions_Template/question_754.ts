@@ -23,20 +23,23 @@ export const generator_754 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values
-    // Rate: 20-30 (minutes per km or similar)
-    const rate = getRandomInt(20, 30);
-    // Base distance and time values
-    const baseDist = Math.round((Math.random() * 0.2 + 0.2) * 100) / 100; // 0.2-0.4
-    const baseTime = Math.round(rate * baseDist);
-    
-    // Generate table data with consistent rate
-    const d1 = baseDist;
-    const t1 = baseTime;
-    const d2 = Math.round((d1 + 0.2) * 100) / 100;
-    const t2 = Math.round(rate * d2);
-    const d3 = Math.round((d2 + 0.15) * 100) / 100;
-    const t3 = Math.round(rate * d3);
+    // STEP 1: Generate random values.
+    // Rate (minutes per km) is a multiple of 5 and distances are multiples of
+    // 0.2 km. This guarantees rate * distance is ALWAYS an exact integer, so
+    // every time value in the table is a whole number and the slope computed
+    // from any two displayed points reproduces the rate exactly (no rounding
+    // drift that would make the table inconsistent with the answer).
+    const rate = getRandomElement([20, 25, 30]);
+    const d1 = getRandomElement([0.2, 0.4, 0.6]);
+    const step1 = getRandomElement([0.2, 0.4]);
+    const step2 = getRandomElement([0.2, 0.4]);
+
+    // Generate table data with an exactly consistent rate.
+    const d2 = Math.round((d1 + step1) * 100) / 100;
+    const d3 = Math.round((d2 + step2) * 100) / 100;
+    const t1 = rate * d1;
+    const t2 = rate * d2;
+    const t3 = rate * d3;
     
     // STEP 2: Build table HTML
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto;"><thead><tr><th style="border: 1px solid currentColor; padding: 8px;">Distance (kilometers)</th><th style="border: 1px solid currentColor; padding: 8px;">Average time (minutes)</th></tr></thead><tbody><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${d1}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${t1}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${d2}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${t2}</td></tr><tr><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${d3}</td><td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${t3}</td></tr></tbody></table>`;
@@ -54,7 +57,7 @@ export const generator_754 = {
       { text: `t=\\frac{1}{${rate + 5}}d`, isCorrect: false, reason: "inverts the relationship incorrectly" },
       { text: distA, isCorrect: false, reason: "inverts the rate relationship" },
       { text: correctEq, isCorrect: true },
-      { text: `t=\\frac{1}{Math.max(1, Math.floor(rate/2))}d`, isCorrect: false, reason: "uses incorrect inverted rate" }
+      { text: `t=\\frac{1}{${Math.max(1, Math.floor(rate / 2))}}d`, isCorrect: false, reason: "uses incorrect inverted rate" }
     ];
     
     // STEP 4: Shuffle and assign letters

@@ -43,16 +43,21 @@ export const generator_995 = {
       { x: 10, y: Math.round(intercept + slope * 10 + getRandomInt(-1, 1)) }
     ];
     
-    // Calculate viewBox bounds
-    const xMin = -0.5;
-    const xMax = 11;
-    const yMin = 0;
-    const yMax = 10;
-    
-    // STEP 3: Build Mafs code
-    const pointElements = points.map(p => `<Point x={${p.x}} y={${p.y}} />`).join('\n      ');
-    
+    // Calculate viewBox bounds so every data point AND the full best-fit
+    // line (endpoints at x=0 and x=10) are always on-chart for any draw.
+    const lineY0 = intercept;                 // best-fit y at x = 0
+    const lineY10 = intercept + slope * 10;    // best-fit y at x = 10
+    const allY = [...points.map(p => p.y), lineY0, lineY10];
+    const dataYMin = Math.min(...allY);
+    const dataYMax = Math.max(...allY);
+    const xMin = 0;
+    const xMax = 10;
+    const yMin = Math.min(0, Math.floor(dataYMin) - 1);
+    const yMax = Math.max(10, Math.ceil(dataYMax) + 1);
+
+    // STEP 3: Build SVG scatterplot with data points and line of best fit
     const _svg_0 = yMax; const _svg_1 = yMin; const _svg_2 = xMax; const _svg_3 = xMin;
+    const _pts = points; const _slope = slope; const _intercept = intercept;
     const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="transparent"/>${(() => {
       const xmin=_svg_3, xmax=_svg_2;
       const ymin=_svg_1, ymax=_svg_0;
@@ -61,15 +66,17 @@ export const generator_995 = {
       const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
       let s='';
       // Axes
-      if(ymin<=0&&ymax>=0) s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      if(xmin<=0&&xmax>=0) s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // Grid lines
+      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5"/>';
+      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
+      // Grid lines + x labels
       for(let x=Math.ceil(xmin); x<=Math.floor(xmax); x++) {
         if(x===0) continue;
         s+='<line x1="'+mx(x)+'" y1="'+P+'" x2="'+mx(x)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>';
         s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
       }
-      for(let y=Math.ceil(ymin); y<=Math.floor(ymax); y++) {
+      // Grid lines + y labels (step 2 from an even base to avoid clutter)
+      const yStart = Math.ceil(ymin) % 2 === 0 ? Math.ceil(ymin) : Math.ceil(ymin) + 1;
+      for(let y=yStart; y<=Math.floor(ymax); y+=2) {
         if(y===0) continue;
         s+='<line x1="'+P+'" y1="'+my(y)+'" x2="'+(W-P)+'" y2="'+my(y)+'" stroke="currentColor" stroke-width="0.3" stroke-dasharray="2,3" opacity="0.4"/>';
         s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
@@ -77,19 +84,20 @@ export const generator_995 = {
       return s;
     })()}${
     (() => {
-      const pts = [];
-      const xmin = (xMin);
-      const xmax = (xMax);
-      const ymin = (yMin);
-      const ymax = (yMax);
+      const xmin = xMin, xmax = xMax, ymin = yMin, ymax = yMax;
       const W = 400, H = 300, P = 40;
       const mx = (x) => P + (x-xmin)/(xmax-xmin)*(W-2*P);
       const my = (y) => H-P - (y-ymin)/(ymax-ymin)*(H-2*P);
-      for(let x=xmin; x<=xmax; x+=(xmax-xmin)/100) {
-        const y = (slope.toFixed(1));
-        if(y>=ymin-1 && y<=ymax+1) pts.push(mx(x)+','+my(y));
+      // Line of best fit: y = slope*x + intercept, clipped to plot box
+      const x1 = xmin, x2 = xmax;
+      const y1 = _slope*x1 + _intercept;
+      const y2 = _slope*x2 + _intercept;
+      let s = '<line x1="'+mx(x1)+'" y1="'+my(y1)+'" x2="'+mx(x2)+'" y2="'+my(y2)+'" stroke="currentColor" stroke-width="2"/>';
+      // Data points
+      for(const p of _pts) {
+        s += '<circle cx="'+mx(p.x)+'" cy="'+my(p.y)+'" r="4" fill="#3b82f6" stroke="white" stroke-width="1.5"/>';
       }
-      return '<polyline points="'+pts.join(' ')+'" fill="none" stroke="currentColor" stroke-width="2"/>';
+      return s;
     })()}</svg></div>`;
     
     // STEP 4: Create options

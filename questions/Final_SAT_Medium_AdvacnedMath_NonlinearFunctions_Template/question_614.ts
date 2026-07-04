@@ -24,7 +24,11 @@ export const generator_614 = {
   generate: (): QuestionData => {
     const root1 = getRandomInt(-6, -2);
     const root2 = getRandomInt(1, 3);
-    const root3Num = getRandomInt(3, 7);
+    // root3Num is ODD so that root3 = root3Num/2 is a genuine non-integer
+    // (3/2, 5/2, 7/2). This guarantees it can never equal the integer root2,
+    // so the factor (2x - root3Num) always yields a THIRD distinct root and the
+    // options (root2, 0) and (root3Num/2, 0) can never collide as the same point.
+    const root3Num = getRandomElement([3, 5, 7]);
     const root3Den = 2;
     const root3 = root3Num / root3Den; // Fraction like 3/2
     

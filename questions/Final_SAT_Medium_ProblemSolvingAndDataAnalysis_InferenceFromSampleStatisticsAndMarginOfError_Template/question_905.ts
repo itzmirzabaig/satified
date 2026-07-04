@@ -24,16 +24,49 @@ export const generator_905 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values (MATCH ORIGINAL RANGES)
-    // Total population: 1,000 to 3,000
-    const totalPopulation = getRandomInt(10, 30) * 100;
-    // Sample size: divisor of 100 or easily divisible (40, 50, 80, 100, 125, 200)
+    // STEP 1: Generate random values (MATCH ORIGINAL RANGES).
+    // Constraints enforced by construction / bounded retry so EVERY draw is
+    // valid: (a) sampleCount = sampleSize/denominator must be a whole number
+    // (you can't observe a fractional receipt); (b) estimatedTotal must be a
+    // whole number (denominators all divide any multiple of 100 — no float
+    // artifact); (c) the three displayed numbers (correct estimate, wrongExact,
+    // wrongFraction) must be pairwise distinct so no two distractors collide.
+    // Sample size: easily divisible values.
     const sampleSizes = [40, 50, 80, 100, 125, 200];
-    const sampleSize = getRandomElement(sampleSizes);
-    // Sample count with characteristic: create clean fraction (1/4, 1/5, 1/2, etc.)
-    const denominators = [2, 4, 5, 8, 10];
-    const denominator = getRandomElement(denominators);
-    const sampleCount = sampleSize / denominator;
+    // Clean fractions (1/2, 1/4, 1/5, 1/10). 8 is intentionally excluded: it
+    // does not divide every multiple of 100, which would make estimatedTotal
+    // fractional (e.g. 1100/8 = 137.5 customers).
+    const denominators = [2, 4, 5, 10];
+
+    let totalPopulation = 0;
+    let sampleSize = 0;
+    let denominator = 0;
+    let sampleCount = 0;
+    let estimatedTotal = 0;
+    let wrongExact = 0;
+    let wrongFraction = 0;
+    let tries = 0;
+    do {
+      totalPopulation = getRandomInt(10, 30) * 100; // 1,000 to 3,000
+      sampleSize = getRandomElement(sampleSizes);
+      denominator = getRandomElement(denominators);
+      sampleCount = sampleSize / denominator;
+      estimatedTotal = (sampleCount / sampleSize) * totalPopulation; // = totalPopulation / denominator
+      // Exact-claim distractor: correct value shifted by 50 (a plausible slip).
+      wrongExact = Math.round(estimatedTotal) - 50;
+      // Wrong-fraction distractor: student halved the fraction.
+      wrongFraction = Math.round((sampleCount / (sampleSize * 2)) * totalPopulation); // = estimatedTotal / 2
+    } while (
+      (!Number.isInteger(sampleCount) ||
+        !Number.isInteger(estimatedTotal) ||
+        wrongExact <= 0 ||
+        wrongFraction <= 0 ||
+        wrongExact === wrongFraction ||
+        wrongExact === estimatedTotal ||
+        wrongFraction === estimatedTotal) &&
+      tries++ < 50
+    );
+
     // Context
     const contexts = [
       { action: "purchased fruit", item: "receipts", place: "last Thursday" },
@@ -42,39 +75,31 @@ export const generator_905 = {
       { action: "purchased a gift card", item: "receipts", place: "last month" }
     ];
     const context = getRandomElement(contexts);
-    
-    // Calculate estimated total
-    const estimatedTotal = (sampleCount / sampleSize) * totalPopulation;
-    
-    // Calculate distractors
-    // Wrong calculation: 1/4 of total but wrong base
-    const wrongCalc1 = (sampleCount / sampleSize) * (totalPopulation / 5); // Arbitrary wrong base
-    // Exact claim with wrong number
-    const wrongExact = Math.round((sampleCount / sampleSize) * totalPopulation) - 50;
-    // Wrong fraction
-    const wrongFraction = Math.round((sampleCount / (sampleSize * 2)) * totalPopulation);
-    
-    // STEP 2: Create options with tracking
+
+    // STEP 2: Create options with tracking.
+    // Each incorrect option carries its OWN rebuttal so the explanation stays
+    // correct no matter where the shuffle places it (reason is emitted per
+    // shuffled option, never by positional index).
     const correctText = `The best estimate for the number of customers who ${context.action} ${context.place} is ${estimatedTotal.toLocaleString()}.`;
-    
+
     const optionsData = [
-      { 
-        text: `Exactly ${wrongExact.toLocaleString()} customers must have ${context.action} ${context.place}.`, 
+      {
+        text: `Exactly ${wrongExact.toLocaleString()} customers must have ${context.action} ${context.place}.`,
         isCorrect: false,
-        reason: "claims an exact number which is impossible from a random sample, and uses incorrect calculation"
+        reason: `A random sample can only be used to estimate the number of customers who ${context.action}, not determine it exactly, so the word "exactly" is not appropriate. This value also does not match the estimate ${estimatedTotal.toLocaleString()} obtained from the sample proportion.`
       },
-      { 
-        text: `Exactly ${estimatedTotal.toLocaleString()} customers must have ${context.action} ${context.place}.`, 
+      {
+        text: `Exactly ${estimatedTotal.toLocaleString()} customers must have ${context.action} ${context.place}.`,
         isCorrect: false,
-        reason: "claims an exact number which is impossible from random sampling"
+        reason: `Although ${estimatedTotal.toLocaleString()} is the correct estimate, a random sample can only be used to estimate this number, not determine it exactly, so the word "exactly" makes this conclusion inappropriate.`
       },
-      { 
-        text: `The best estimate for the number of customers who ${context.action} ${context.place} is ${wrongFraction.toLocaleString()}.`, 
+      {
+        text: `The best estimate for the number of customers who ${context.action} ${context.place} is ${wrongFraction.toLocaleString()}.`,
         isCorrect: false,
-        reason: "uses incorrect calculation of the proportion"
+        reason: `This value results from a calculation error. The correct estimate is (1/${denominator})(${totalPopulation.toLocaleString()}) = ${estimatedTotal.toLocaleString()}, not ${wrongFraction.toLocaleString()}.`
       },
-      { 
-        text: correctText, 
+      {
+        text: correctText,
         isCorrect: true,
         reason: "correctly scales the sample proportion to the total population using estimation"
       }
@@ -96,7 +121,7 @@ export const generator_905 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. It's given that the manager took a random selection of the ${context.item} of ${sampleSize} customers from a total of ${totalPopulation.toLocaleString()}. It's also given that of those ${sampleSize} ${context.item}, ${sampleCount} showed that the customer had ${context.action}. This means that an appropriate estimate of the fraction of customers who ${context.action} is ${sampleCount}/${sampleSize}, or 1/${denominator}. Multiplying this fraction by the total number of customers yields (1/${denominator})(${totalPopulation.toLocaleString()}) = ${estimatedTotal.toLocaleString()}. Therefore, the best estimate for the number of customers who ${context.action} is ${estimatedTotal.toLocaleString()}. \n\nChoice ${incorrectOptions[0].letter} and ${incorrectOptions[1].letter} are incorrect because an exact number of customers can't be known from taking a random selection. Additionally, choice ${incorrectOptions[0].letter} may also be the result of a calculation error. Choice ${incorrectOptions[2].letter} is incorrect and may result from a calculation error.`
+      explanation: `Choice ${correctLetter} is correct. It's given that the manager took a random selection of the ${context.item} of ${sampleSize} customers from a total of ${totalPopulation.toLocaleString()}. It's also given that of those ${sampleSize} ${context.item}, ${sampleCount} showed that the customer had ${context.action}. This means that an appropriate estimate of the fraction of customers who ${context.action} is ${sampleCount}/${sampleSize}, or 1/${denominator}. Multiplying this fraction by the total number of customers yields (1/${denominator})(${totalPopulation.toLocaleString()}) = ${estimatedTotal.toLocaleString()}. Therefore, the best estimate for the number of customers who ${context.action} is ${estimatedTotal.toLocaleString()}.\n\nChoice ${incorrectOptions[0].letter} is incorrect. ${incorrectOptions[0].reason}\n\nChoice ${incorrectOptions[1].letter} is incorrect. ${incorrectOptions[1].reason}\n\nChoice ${incorrectOptions[2].letter} is incorrect. ${incorrectOptions[2].reason}`
     };
   }
 };

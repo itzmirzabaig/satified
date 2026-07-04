@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -30,12 +30,12 @@ export const generator_733 = {
     const initial = getRandomInt(20, 50);
     
     // STEP 2: Create options
-    const correctText = `Caleb had approximately ${initial} fluid ounces of juice when he began to make the popsicles.`;
+    const correctText = `The student had approximately ${initial} fluid ounces of juice when they began to make the popsicles.`;
     const optionsData = [
-      { text: `Caleb used approximately ${Math.abs(rate)} fluid ounces of juice for each popsicle.`, isCorrect: false, reason: "interprets the slope rather than the y-intercept" },
-      { text: `Caleb had approximately ${initial + 10} fluid ounces of juice when he began to make the popsicles.`, isCorrect: false, reason: "conceptual error with incorrect initial amount" },
+      { text: `The student used approximately ${Math.abs(rate)} fluid ounces of juice for each popsicle.`, isCorrect: false, reason: "interprets the slope rather than the y-intercept" },
+      { text: `The student had approximately ${initial + 10} fluid ounces of juice when they began to make the popsicles.`, isCorrect: false, reason: "uses an incorrect value for the initial amount" },
       { text: correctText, isCorrect: true },
-      { text: `Caleb used approximately ${initial} fluid ounces of juice for each popsicle.`, isCorrect: false, reason: "confuses the initial amount with the rate of use" }
+      { text: `The student used approximately ${initial} fluid ounces of juice for each popsicle.`, isCorrect: false, reason: "confuses the initial amount with the rate of use" }
     ];
     
     // STEP 3: Shuffle and assign letters
@@ -50,7 +50,7 @@ export const generator_733 = {
     
     // STEP 4: Return question data
     return {
-      questionText: `Caleb used juice to make popsicles. The function $f(x)=${rate}x+${initial}$ approximates the volume, in fluid ounces, of juice Caleb had remaining after making $x$ popsicles. Which statement is the best interpretation of the y-intercept of the graph of $y=f(x)$ in the xy-plane in this context?`,
+      questionText: `A student used juice to make popsicles. The function $f(x)=${rate}x+${initial}$ approximates the volume, in fluid ounces, of juice the student had remaining after making $x$ popsicles. Which statement is the best interpretation of the y-intercept of the graph of $y=f(x)$ in the xy-plane in this context?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,

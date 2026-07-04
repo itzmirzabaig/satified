@@ -70,7 +70,15 @@ export const generator_570 = {
     
     // STEP 6: Build explanation with dynamic letters
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. Substituting $-1$ for $x$: $f(-1)=${a}(-1)^{3}+${b}(-1)^{2}${c >= 0 ? '+' : '-'}${Math.abs(c)}(-1)${d >= 0 ? '+' : '-'}${Math.abs(d)} = ${a}(-1)+${b}(1)${c >= 0 ? '+' : ''}${c * (-1)}${d >= 0 ? '+' : '-'}${Math.abs(d)} = ${-a + b + (c * -1) + d}$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
+    // Middle substep: each evaluated term, correctly signed so operators never collide.
+    // f(-1) = a(-1) + b(1) + c(-1) + d, where c(-1) = -c (positive) and d < 0.
+    const term1 = a * (-1);            // a(-1)^3  -> negative
+    const term2 = b * (1);             // b(-1)^2  -> positive
+    const term3 = c * (-1);            // c(-1)    -> positive (c is negative)
+    const signed = (n: number, first = false) =>
+      first ? `${n}` : (n >= 0 ? `+${n}` : `-${Math.abs(n)}`);
+    const middleStep = `${signed(term1, true)}${signed(term2)}${signed(term3)}${signed(d)}`;
+    const explanation = `Choice ${correctLetter} is correct. Substituting $-1$ for $x$: $f(-1)=${a}(-1)^{3}+${b}(-1)^{2}${c >= 0 ? '+' : '-'}${Math.abs(c)}(-1)${d >= 0 ? '+' : '-'}${Math.abs(d)} = ${middleStep} = ${term1 + term2 + term3 + d}$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
     
     // STEP 7: Return question data
     return {

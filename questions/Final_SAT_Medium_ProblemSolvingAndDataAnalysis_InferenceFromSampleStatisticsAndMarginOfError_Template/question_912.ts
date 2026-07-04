@@ -52,38 +52,45 @@ export const generator_912 = {
     // Format: 1,300 < r < 1,700 style
     const correctText = `${lowerCount.toLocaleString()} < r < ${upperCount.toLocaleString()}`;
     
+    // Arbitrary wrong range distractor (does not match the confidence interval).
+    const arbitraryLow = Math.round(lowerCount * 0.15);
+    const arbitraryHigh = Math.round(upperCount * 0.88);
+
     const optionsData = [
-      { 
-        text: `r > ${upperCount.toLocaleString()}`, 
+      {
+        text: `r > ${upperCount.toLocaleString()}`,
         isCorrect: false,
-        reason: "represents values greater than the upper confidence bound"
+        kind: "high" as const
       },
-      { 
-        text: correctText, 
+      {
+        text: correctText,
         isCorrect: true,
-        reason: "correctly converts the percentage confidence interval to actual counts"
+        kind: "correct" as const
       },
-      { 
-        text: `${Math.round(lowerCount * 0.15).toLocaleString()} < r < ${Math.round(upperCount * 0.88).toLocaleString()}`, 
+      {
+        text: `${arbitraryLow.toLocaleString()} < r < ${arbitraryHigh.toLocaleString()}`,
         isCorrect: false,
-        reason: "uses arbitrary incorrect ranges that don't match the confidence interval"
+        kind: "arbitrary" as const
       },
-      { 
-        text: `r < ${lowerCount.toLocaleString()}`, 
+      {
+        text: `r < ${lowerCount.toLocaleString()}`,
         isCorrect: false,
-        reason: "represents values less than the lower confidence bound"
+        kind: "low" as const
       }
     ];
-    
+
     // STEP 3: Shuffle and assign letters
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(o => o.isCorrect);
-    const correctLetter = correctOption!.letter;
-    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+
+    const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
+    // Resolve each distractor's letter by its KIND (not by shuffle position) so
+    // the explanation always pairs the right letter with the right description.
+    const highLetter = shuffledOptions.find(o => o.kind === "high")!.letter;
+    const arbitraryLetter = shuffledOptions.find(o => o.kind === "arbitrary")!.letter;
+    const lowLetter = shuffledOptions.find(o => o.kind === "low")!.letter;
     
     // STEP 4: Return question data
     return {
@@ -91,7 +98,7 @@ export const generator_912 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. To find the most plausible range for the number of ${item.color} ${item.name}, r, we need to calculate the range of percentages given by the estimate and the margin of error, and then convert those percentages into actual counts of ${item.name}.\n\n1. Determine the percentage range:\n   The estimated percent of ${item.color} ${item.name} is ${estimatedPercent}%.\n   The margin of error is ${marginOfError}%.\n   This means the plausible range for the actual percent of ${item.color} ${item.name} is from ${estimatedPercent}% - ${marginOfError}% to ${estimatedPercent}% + ${marginOfError}%.\n   Lower bound percent = ${lowerPercent}%\n   Upper bound percent = ${upperPercent}%\n\n2. Convert percentages to numbers:\n   The total number of ${item.name} in the ${item.container} is ${totalBeads.toLocaleString()}.\n   To find the range for the number of ${item.color} ${item.name} (r), we calculate ${lowerPercent}% and ${upperPercent}% of ${totalBeads.toLocaleString()}.\n\n   • Lower bound for r = ${lowerPercent}% of ${totalBeads.toLocaleString()} = 0.${lowerPercent} × ${totalBeads.toLocaleString()} = ${lowerCount.toLocaleString()}\n   • Upper bound for r = ${upperPercent}% of ${totalBeads.toLocaleString()} = 0.${upperPercent} × ${totalBeads.toLocaleString()} = ${upperCount.toLocaleString()}\n\n3. Evaluate the options:\n   Based on the calculation, the most plausible number of ${item.color} ${item.name} r is between ${lowerCount.toLocaleString()} and ${upperCount.toLocaleString()}.\n\n   • Choice ${incorrectOptions[0].letter}: r > ${upperCount.toLocaleString()}: This represents values greater than the upper limit of our plausible range.\n   • Choice ${correctLetter}: ${lowerCount.toLocaleString()} < r < ${upperCount.toLocaleString()}: This matches the range we calculated exactly (${lowerPercent}% to ${upperPercent}% of ${totalBeads.toLocaleString()}).\n   • Choice ${incorrectOptions[1].letter}: While this overlaps with part of our range, it does not correctly represent the confidence interval.\n   • Choice ${incorrectOptions[2].letter}: r < ${lowerCount.toLocaleString()}: This represents values less than the lower limit of our plausible range.\n\nTherefore, the correct choice is ${correctLetter}.`
+      explanation: `Choice ${correctLetter} is correct. To find the most plausible range for the number of ${item.color} ${item.name}, r, we need to calculate the range of percentages given by the estimate and the margin of error, and then convert those percentages into actual counts of ${item.name}.\n\n1. Determine the percentage range:\n   The estimated percent of ${item.color} ${item.name} is ${estimatedPercent}%.\n   The margin of error is ${marginOfError}%.\n   This means the plausible range for the actual percent of ${item.color} ${item.name} is from ${estimatedPercent}% - ${marginOfError}% to ${estimatedPercent}% + ${marginOfError}%.\n   Lower bound percent = ${lowerPercent}%\n   Upper bound percent = ${upperPercent}%\n\n2. Convert percentages to numbers:\n   The total number of ${item.name} in the ${item.container} is ${totalBeads.toLocaleString()}.\n   To find the range for the number of ${item.color} ${item.name} (r), we calculate ${lowerPercent}% and ${upperPercent}% of ${totalBeads.toLocaleString()}.\n\n   • Lower bound for r = ${lowerPercent}% of ${totalBeads.toLocaleString()} = ${(lowerPercent / 100).toFixed(2)} × ${totalBeads.toLocaleString()} = ${lowerCount.toLocaleString()}\n   • Upper bound for r = ${upperPercent}% of ${totalBeads.toLocaleString()} = ${(upperPercent / 100).toFixed(2)} × ${totalBeads.toLocaleString()} = ${upperCount.toLocaleString()}\n\n3. Evaluate the options:\n   Based on the calculation, the most plausible number of ${item.color} ${item.name} r is between ${lowerCount.toLocaleString()} and ${upperCount.toLocaleString()}.\n\n   • Choice ${highLetter} (r > ${upperCount.toLocaleString()}): This represents values greater than the upper limit of our plausible range.\n   • Choice ${correctLetter} (${lowerCount.toLocaleString()} < r < ${upperCount.toLocaleString()}): This matches the range we calculated exactly (${lowerPercent}% to ${upperPercent}% of ${totalBeads.toLocaleString()}).\n   • Choice ${arbitraryLetter} (${arbitraryLow.toLocaleString()} < r < ${arbitraryHigh.toLocaleString()}): This is an arbitrary range that does not correspond to the estimate and margin of error, so it does not represent the confidence interval.\n   • Choice ${lowLetter} (r < ${lowerCount.toLocaleString()}): This represents values less than the lower limit of our plausible range.\n\nTherefore, the correct choice is ${correctLetter}.`
     };
   }
 };
