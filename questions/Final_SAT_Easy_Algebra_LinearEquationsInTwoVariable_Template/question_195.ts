@@ -21,7 +21,13 @@ export const generator_195 = {
 
   generate: (): QuestionData => {
     const totalMass = getRandomInt(100, 300);
-    const massVitaminD = getRandomInt(30, totalMass - 30);
+    // Guard: massVitaminD must not equal massCalcium (i.e. not half the total),
+    // otherwise the vitamin-D distractor collides with the correct answer.
+    let massVitaminD = getRandomInt(30, totalMass - 30);
+    let tries = 0;
+    while (massVitaminD === totalMass - massVitaminD && tries++ < 50) {
+      massVitaminD = getRandomInt(30, totalMass - 30);
+    }
     const massCalcium = totalMass - massVitaminD;
 
     const optionsData = [

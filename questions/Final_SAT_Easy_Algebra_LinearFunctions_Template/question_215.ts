@@ -31,6 +31,10 @@ export const generator_215 = {
     const distractor2 = initialAmount + weeklyDeposit;
     const distractor3 = initialAmount + weeklyDeposit + numWeeks;
 
+    // Ordinal suffix for the week number so the stem reads "3rd/4th/5th/6th week"
+    // (numWeeks is 3-6, so only "3rd" needs the special case; the rest take "th").
+    const ordinal = numWeeks === 3 ? "3rd" : `${numWeeks}th`;
+
     const optionsData = [
       { text: distractor1.toString(), isCorrect: false, reason: "results from subtracting the deposits instead of adding them" },
       { text: distractor2.toString(), isCorrect: false, reason: "results from calculating only one week of deposits" },
@@ -47,11 +51,11 @@ export const generator_215 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `Gabriella deposits ${weeklyDeposit} in a savings account at the end of each week. At the beginning of the 1st week of a year there was ${initialAmount} in that savings account. How much money, in dollars, will be in the account at the end of the ${numWeeks}th week of that year?`,
+      questionText: `A student deposits \\$${weeklyDeposit} in a savings account at the end of each week. At the beginning of the 1st week of a year there was \\$${initialAmount} in that savings account. How much money, in dollars, will be in the account at the end of the ${ordinal} week of that year?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: totalAmount.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The initial balance is ${initialAmount}. Over ${numWeeks} weeks, Gabriella deposits ${weeklyDeposit} × ${numWeeks} = ${weeklyDeposit * numWeeks}. The total is ${initialAmount} + ${weeklyDeposit * numWeeks} = ${totalAmount}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The initial balance is \\$${initialAmount}. Over ${numWeeks} weeks, the student deposits \\$${weeklyDeposit} × ${numWeeks} = \\$${weeklyDeposit * numWeeks}. The total is \\$${initialAmount} + \\$${weeklyDeposit * numWeeks} = \\$${totalAmount}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

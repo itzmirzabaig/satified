@@ -23,14 +23,22 @@ export const generator_65 = {
   },
 
   generate: (): QuestionData => {
-    // Generate a point that lies on the parabola y = -5.76(x - 0.8)^2 + 5.6
-    // x ranges from 0 to ~1.6 (where it hits ground)
-    const xVal = parseFloat((getRandomInt(6, 14) / 10).toFixed(1));
-    
-    // Calculate y based on the parabola equation to ensure point lies on curve
+    // Parabola y = -5.76(x - 0.8)^2 + 5.6, vertex (maximum) at (0.8, 5.6).
     const a = 5.76;
     const h = 0.8;
     const k = 5.6;
+
+    // Generate a point that lies on the parabola. Exclude the vertex x = 0.8
+    // (int draw 8): there the marked height would equal the maximum height,
+    // making the "maximum height" distractor simultaneously correct.
+    let intDraw = getRandomInt(6, 14);
+    let tries = 0;
+    while (intDraw === 8 && tries++ < 50) {
+      intDraw = getRandomInt(6, 14);
+    }
+    const xVal = parseFloat((intDraw / 10).toFixed(1));
+
+    // Calculate y based on the parabola equation to ensure point lies on curve
     const yVal = parseFloat((-a * Math.pow(xVal - h, 2) + k).toFixed(1));
 
     const mafsCode = `<Mafs viewBox={{ x: [0, 2], y: [0, 7] }}>

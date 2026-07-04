@@ -25,7 +25,10 @@ export const generator_91 = {
   generate: (): QuestionData => {
     const root = getRandomInt(4, 10);
 
-    const mafsCode = `<Mafs viewBox={{ x:, y: [-5, 10] }}>
+    // viewBox x-range is centered on the vertex (root) so the x-intercept the
+    // question asks about is always on-screen with both arms of the parabola
+    // visible. y in [-5, 10] shows the vertex sitting on the x-axis clearly.
+    const mafsCode = `<Mafs viewBox={{ x: [${root - 5}, ${root + 5}], y: [-5, 10] }}>
   <Coordinates.Cartesian />
   <Plot.OfX y={(x) => Math.pow(x - ${root}, 2)} color="var(--mafs-blue)" />
 </Mafs>`;

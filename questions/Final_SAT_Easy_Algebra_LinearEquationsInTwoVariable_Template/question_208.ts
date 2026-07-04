@@ -22,8 +22,14 @@ export const generator_208 = {
   generate: (): QuestionData => {
     // Randomize slope (20-50)
     const m = getRandomInt(20, 50);
-    // Randomize y-intercept (50-100)
-    const b = getRandomInt(50, 100);
+    // Randomize y-intercept (50-100). Guard b != m so the correct answer
+    // (0, b) never collides with the "uses slope" distractor (0, m),
+    // and (0, -b) never collides with (0, -m).
+    let b = getRandomInt(50, 100);
+    let tries = 0;
+    while (b === m && tries++ < 50) {
+      b = getRandomInt(50, 100);
+    }
 
     const optionsData = [
       { text: `(0, ${b})`, isCorrect: true },

@@ -46,7 +46,7 @@ export const generator_158 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `Lorenzo purchased a box of cereal and some strawberries. Lorenzo paid ${fixedCost} dollars for the box of cereal and ${rateStr} dollars per pound for the strawberries. If Lorenzo paid a total of ${totalStr} dollars, which equation can be used to find p, the number of pounds of strawberries?`,
+      questionText: `A shopper purchased a box of cereal and some strawberries. They paid \\$${fixedCost} for the box of cereal and \\$${rateStr} per pound for the strawberries. If they paid a total of \\$${totalStr}, which equation can be used to find $p$, the number of pounds of strawberries?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `$${rateStr}p + ${fixedCost} = ${totalStr}$`,

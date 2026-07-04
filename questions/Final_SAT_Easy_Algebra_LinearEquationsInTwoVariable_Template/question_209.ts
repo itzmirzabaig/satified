@@ -24,7 +24,16 @@ export const generator_209 = {
 
   generate: (): QuestionData => {
     const smallPrice = parseFloat((getRandomInt(3, 8) + getRandomInt(0, 99) / 100).toFixed(2));
-    const largePrice = parseFloat((getRandomInt(6, 12) + getRandomInt(0, 99) / 100).toFixed(2));
+    // Guard: the larger container must cost strictly more than the smaller one.
+    // Their ranges overlap on [6.00, 8.99], so without this retry largePrice
+    // could equal smallPrice, making the "$largePrice$" distractor collide with
+    // the correct "$smallPrice$" answer. Bounded retry keeps every draw valid.
+    let largePrice = parseFloat((getRandomInt(6, 12) + getRandomInt(0, 99) / 100).toFixed(2));
+    let tries = 0;
+    while (largePrice <= smallPrice && tries++ < 50) {
+      largePrice = parseFloat((getRandomInt(6, 12) + getRandomInt(0, 99) / 100).toFixed(2));
+    }
+    if (largePrice <= smallPrice) largePrice = parseFloat((smallPrice + 1).toFixed(2));
     const totalSales = parseFloat((getRandomInt(500, 2000) + getRandomInt(0, 99) / 100).toFixed(2));
 
     const correctText = `$${smallPrice.toFixed(2)}$`;

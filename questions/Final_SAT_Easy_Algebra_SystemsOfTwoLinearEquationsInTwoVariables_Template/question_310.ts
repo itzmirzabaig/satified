@@ -51,7 +51,7 @@ export const generator_310 = {
     const explanation = `Choice ${correctOption.letter} is correct. Each coin is worth $c$ points and each star is worth $s$ points. From the first game: $${coins1}c + ${stars1}s = ${score1}$. From the second game: $${coins2}c + ${stars2}s = ${score2}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `Angela is playing a video game. In this game, players can score points only by collecting coins and stars. Each coin is worth $c$ points, and each star is worth $s$ points. \n\n- The first time she played, Angela scored ${score1} points. She collected ${coins1} coins and ${stars1} stars.\n\n- The second time she played, Angela scored ${score2} points. She collected ${coins2} coins and ${stars2} stars.\n\nWhich system of equations can be used to correctly determine the values of $c$ and $s$?`,
+      questionText: `A student is playing a video game. In this game, players can score points only by collecting coins and stars. Each coin is worth $c$ points, and each star is worth $s$ points. \n\n- The first time she played, she scored ${score1} points. She collected ${coins1} coins and ${stars1} stars.\n\n- The second time she played, she scored ${score2} points. She collected ${coins2} coins and ${stars2} stars.\n\nWhich system of equations can be used to correctly determine the values of $c$ and $s$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,

@@ -23,7 +23,9 @@ export const generator_313 = {
   },
 
   generate: (): QuestionData => {
-    const m = -1 * getRandomInt(2, 5);
+    // m is a negative coefficient; exclude -4 so that (4 + m) is never 0
+    // (which would degenerate the second equation to 0x = 0 with no unique solution).
+    const m = getRandomElement([-2, -3, -5]);
     const x = getRandomInt(10, 20);
     const total = (4 + m) * x;
 

@@ -37,7 +37,7 @@ export const generator_164 = {
     const correctLetter = shuffled.find(o => o.isCorrect)!.letter;
 
     return {
-      questionText: `Jay walks at ${s1} mph ($w$ hours) and runs at ${s2} mph ($r$ hours) for a total of ${total} miles. Which equation represents this?`,
+      questionText: `A commuter walks at ${s1} mph for $w$ hours and runs at ${s2} mph for $r$ hours, covering a total of ${total} miles. Which equation represents this?`,
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: `$${s1}w + ${s2}r = ${total}$`,

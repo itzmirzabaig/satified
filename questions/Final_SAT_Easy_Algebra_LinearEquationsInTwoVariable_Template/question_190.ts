@@ -25,13 +25,24 @@ export const generator_190 = {
     const finalPercent = getRandomInt(5, 15);
     const totalKg = getRandomInt(20, 50);
 
-    const correctEquation = `0.0${lowPercent}x + 0.${highPercent}y = (0.0${finalPercent})(${totalKg})`;
+    // Convert each percentage to its decimal form as a real number so the
+    // representation is correct regardless of digit count. (String templates
+    // like `0.0${p}` break for two-digit percentages, e.g. 11% -> "0.011".)
+    const toDecimal = (percent: number): string => {
+      const val = Math.round(percent) / 100; // exact to 2 decimals for integer percents
+      return val.toFixed(2);
+    };
+    const lowDec = toDecimal(lowPercent);   // e.g. "0.05"
+    const highDec = toDecimal(highPercent); // e.g. "0.96"
+    const finalDec = toDecimal(finalPercent); // e.g. "0.11"
+
+    const correctText = `$${lowDec}x + ${highDec}y = (${finalDec})(${totalKg})$`;
 
     const optionsData = [
-      { text: `$0.0${lowPercent}x + 0.${highPercent}y = (0.0${finalPercent})(${totalKg})$`, isCorrect: true },
-      { text: `$0.${highPercent}x + 0.0${lowPercent}y = (0.0${finalPercent})(${totalKg})$`, isCorrect: false, reason: "swaps the percentages" },
-      { text: `$0.${highPercent}x + 0.0${lowPercent}y = ${totalKg}$`, isCorrect: false, reason: "swaps percentages and equates to total mass" },
-      { text: `$0.0${lowPercent}x + 0.${highPercent}y = ${totalKg}$`, isCorrect: false, reason: "equates to total mass rather than salt mass" }
+      { text: correctText, isCorrect: true },
+      { text: `$${highDec}x + ${lowDec}y = (${finalDec})(${totalKg})$`, isCorrect: false, reason: "swaps the two salt concentrations between $x$ and $y$" },
+      { text: `$${highDec}x + ${lowDec}y = ${totalKg}$`, isCorrect: false, reason: "swaps the concentrations and sets the salt mass equal to the total mixture mass" },
+      { text: `$${lowDec}x + ${highDec}y = ${totalKg}$`, isCorrect: false, reason: "sets the total salt mass equal to the total mixture mass instead of the salt mass of the final mixture" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -46,8 +57,8 @@ export const generator_190 = {
       questionText: `A chemist mixes $x$ kilograms of a low-salt mixture (${lowPercent}% salt) with $y$ kilograms of a high-salt mixture (${highPercent}% salt) to create ${totalKg} kilograms of a mixture that is ${finalPercent}% salt by weight. Which equation represents this situation?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: shuffledOptions.find(o => o.isCorrect)!.text,
-      explanation: `Choice ${correctLetter} is correct. Salt from low-salt is $0.0${lowPercent}x$ and high-salt is $0.${highPercent}y$. Final salt is $(0.0${finalPercent})(${totalKg})$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.`
+      correctAnswer: correctText,
+      explanation: `Choice ${correctLetter} is correct. The salt from the low-salt mixture is $${lowDec}x$ and the salt from the high-salt mixture is $${highDec}y$; their sum equals the salt in the final mixture, $(${finalDec})(${totalKg})$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.`
     };
   }
 };

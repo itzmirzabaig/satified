@@ -27,14 +27,17 @@ export const generator_100 = {
 
     const dVal = getRandomInt(40, 60);
 
-    const xVal = getRandomInt(10, 30);
+    // xVal must be a multiple of 4 so that (5/4)*xVal is an integer and
+    // f(xVal) = (5/4 * xVal)(dVal - xVal) is exact (never a half-integer).
+    const xVal = getRandomInt(3, 7) * 4; // 12, 16, 20, 24, 28
 
-    const result = Math.round(cVal * xVal * (dVal - xVal));
+    const coeffTimesX = cVal * xVal;          // integer by construction
+    const result = coeffTimesX * (dVal - xVal); // integer
 
     const optionsData = [
       { text: `${result}`, isCorrect: true },
-      { text: `${Math.round(cVal * xVal * dVal) - 50}`, isCorrect: false },
-      { text: `${Math.round(xVal * (dVal - xVal))}`, isCorrect: false },
+      { text: `${coeffTimesX * dVal - 50}`, isCorrect: false },
+      { text: `${xVal * (dVal - xVal)}`, isCorrect: false },
       { text: `${result + 100}`, isCorrect: false }
     ];
 
@@ -49,7 +52,7 @@ export const generator_100 = {
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xVal} for $x$: $f(${xVal})=(${cStr} \\cdot ${xVal})(${dVal}-${xVal}) = (${Math.round(cVal * xVal)})(${dVal - xVal}) = ${result}$.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xVal} for $x$: $f(${xVal})=(${cStr} \\cdot ${xVal})(${dVal}-${xVal}) = (${coeffTimesX})(${dVal - xVal}) = ${result}$.`
     };
   }
 };

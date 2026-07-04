@@ -23,20 +23,31 @@ export const generator_110 = {
   },
 
   generate: (): QuestionData => {
-    const coeff = getRandomInt(2, 6);
-    const rightSide = getRandomInt(2, 8);
-    const multiplier = getRandomInt(4, 8);
-    const result = multiplier * rightSide;
+    // Redraw until the correct answer and all three distractors are four
+    // distinct integers (guards the rightSide===multiplier collision and any
+    // over-multiply overlap). Bounded so an unlucky draw can never hang.
+    let coeff = 0, rightSide = 0, multiplier = 0, result = 0;
+    let distractorA = 0, distractorB = 0, distractorD = 0;
+    let tries = 0;
+    do {
+      coeff = getRandomInt(2, 6);
+      rightSide = getRandomInt(2, 8);
+      multiplier = getRandomInt(4, 8);
+      result = multiplier * rightSide;
 
-    const distractorA = (multiplier / 2) * rightSide;
-    const distractorB = multiplier;
-    const distractorD = multiplier * coeff * rightSide;
+      distractorA = rightSide;                    // forgot to scale at all
+      distractorB = multiplier;                   // used only the scale factor
+      distractorD = multiplier * coeff * rightSide; // multiplied the full new coefficient
+    } while (
+      new Set([result, distractorA, distractorB, distractorD]).size !== 4 &&
+      ++tries < 50
+    );
 
     const optionsData = [
-      { text: `\\(\\frac{${distractorA}}{2}\\)`, isCorrect: false, reason: "fraction calculation error" },
-      { text: distractorB.toString(), isCorrect: false, reason: "just the multiplier" },
+      { text: distractorA.toString(), isCorrect: false, reason: "this is the value of the given expression before scaling" },
+      { text: distractorB.toString(), isCorrect: false, reason: "this is only the scale factor, not multiplied by the given value" },
       { text: result.toString(), isCorrect: true },
-      { text: distractorD.toString(), isCorrect: false, reason: "multiplies without solving" }
+      { text: distractorD.toString(), isCorrect: false, reason: "this multiplies the full coefficient by the value instead of scaling" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

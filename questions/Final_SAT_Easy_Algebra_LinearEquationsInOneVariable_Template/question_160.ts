@@ -23,14 +23,31 @@ export const generator_160 = {
   },
 
   generate: (): QuestionData => {
-    const rate = getRandomInt(3000, 8000);
-    const time = getRandomInt(15, 30);
-    const remaining = getRandomInt(200000, 400000);
-    const initial = remaining + rate * time;
+    let rate = getRandomInt(3000, 8000);
+    let time = getRandomInt(15, 30);
+    let remaining = getRandomInt(200000, 400000);
+    let initial = remaining + rate * time;
 
-    const distractorB = Math.floor(remaining / time);
-    const distractorC = Math.floor((initial - remaining) / 2);
-    const distractorD = initial - remaining;
+    let distractorB = Math.floor(remaining / time);
+    let distractorC = Math.floor((initial - remaining) / 2);
+    let distractorD = initial - remaining;
+
+    // Guard: re-draw until all four option values are distinct so no
+    // distractor collides with the correct answer (rate) or with each other.
+    // e.g. rate=7000, time=30, remaining=210000 gives floor(210000/30)=7000=rate.
+    let tries = 0;
+    while (
+      new Set([rate, distractorB, distractorC, distractorD]).size < 4 &&
+      tries++ < 50
+    ) {
+      rate = getRandomInt(3000, 8000);
+      time = getRandomInt(15, 30);
+      remaining = getRandomInt(200000, 400000);
+      initial = remaining + rate * time;
+      distractorB = Math.floor(remaining / time);
+      distractorC = Math.floor((initial - remaining) / 2);
+      distractorD = initial - remaining;
+    }
 
     const optionsData = [
       { text: rate.toLocaleString(), isCorrect: true },

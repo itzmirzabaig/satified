@@ -36,8 +36,6 @@ export const generator_400 = {
     const totalPopulation = sampleSize * scaleFactor;
     const correctAnswer = (successesInSample / sampleSize) * totalPopulation;
 
-    const selectorTypes = ["Scott", "Alex", "Jordan", "Taylor"];
-    const selector = getRandomElement(selectorTypes);
     const groupTypes = ["employees", "workers", "staff members", "team members"];
     const group = getRandomElement(groupTypes);
     const orgTypes = ["company", "firm", "organization", "business"];
@@ -72,7 +70,7 @@ export const generator_400 = {
     const explanation = `Choice ${correctLetter} is correct. The sample proportion is $\\frac{${successesInSample}}{${sampleSize}}$. Multiply by the total: $${totalPopulation} \\times \\frac{${successesInSample}}{${sampleSize}} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `${selector} selected $${sampleSize}$ ${group} at random from all $${totalPopulation}$ ${group} at a ${org}. ${selector} found that $${successesInSample}$ of the ${group} in this sample are ${activity.activity} this year. Based on ${selector}'s findings, which of the following is the best estimate of the number of ${group} at the ${org} who are ${activity.activity} this year?`,
+      questionText: `A manager selected $${sampleSize}$ ${group} at random from all $${totalPopulation}$ ${group} at a ${org}. They found that $${successesInSample}$ of the ${group} in this sample are ${activity.activity} this year. Based on these findings, which of the following is the best estimate of the number of ${group} at the ${org} who are ${activity.activity} this year?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,

@@ -26,11 +26,24 @@ export const generator_302 = {
     const x = getRandomInt(1, 15);
     const y = getRandomInt(1, 15);
 
+    // Each incorrect option carries a `reason` derived from its OWN sign claims
+    // (xPos/yPos), so the explanation stays correct no matter how shuffle()
+    // reorders the choices.
+    const reasonFor = (xPos: boolean, yPos: boolean): string => {
+      if (!xPos && !yPos) {
+        return `it claims both coordinates are negative, but ${x} and ${y} are both positive`;
+      }
+      if (!xPos) {
+        return `it claims $x < 0$ (negative), but ${x} is positive`;
+      }
+      return `it claims $y < 0$ (negative), but ${y} is positive`;
+    };
+
     const optionsData = [
-      { text: `$x > 0$ $y > 0$`, isCorrect: true },
-      { text: `$x > 0$ $y < 0$`, isCorrect: false },
-      { text: `$x < 0$ $y > 0$`, isCorrect: false },
-      { text: `$x < 0$ $y < 0$`, isCorrect: false }
+      { text: `$x > 0$ $y > 0$`, isCorrect: true, xPos: true, yPos: true },
+      { text: `$x > 0$ $y < 0$`, isCorrect: false, xPos: true, yPos: false },
+      { text: `$x < 0$ $y > 0$`, isCorrect: false, xPos: false, yPos: true },
+      { text: `$x < 0$ $y < 0$`, isCorrect: false, xPos: false, yPos: false }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -42,7 +55,11 @@ export const generator_302 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The point $(${x}, ${y})$ has x-coordinate ${x} and y-coordinate ${y}. Since both coordinates are positive, $x > 0$ and $y > 0$. ${incorrectOptions[0].letter} is incorrect because it claims $y < 0$ (negative), but ${y} is positive. ${incorrectOptions[1].letter} is incorrect because it claims $x < 0$ (negative), but ${x} is positive. ${incorrectOptions[2].letter} is incorrect because it claims both coordinates are negative.`;
+    const distractorText = incorrectOptions
+      .map(opt => `${opt.letter} is incorrect because ${reasonFor(opt.xPos, opt.yPos)}.`)
+      .join(" ");
+
+    const explanation = `Choice ${correctLetter} is correct. The point $(${x}, ${y})$ has x-coordinate ${x} and y-coordinate ${y}. Since both coordinates are positive, $x > 0$ and $y > 0$. ${distractorText}`;
 
     return {
       questionText: `The point $(${x}, ${y})$ in the $xy$-plane is a solution to which of the following systems of inequalities?`,

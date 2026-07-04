@@ -31,7 +31,12 @@ export const generator_180 = {
   generate: (): QuestionData => {
     // Coefficient of x is the consulting rate; coefficient of y is the drawing rate.
     const rate1 = getRandomInt(50, 80);   // consulting rate (the answer's value)
-    const rate2 = getRandomInt(70, 100);  // drawing rate
+    let rate2 = getRandomInt(70, 100);    // drawing rate
+    // The [50,80] and [70,100] ranges overlap on [70,80]; if rate2 === rate1 the
+    // number rate1 would be the coefficient of BOTH terms, making the "drawing
+    // rate" distractor equally correct. Guard so the two rates are distinct.
+    let tries = 0;
+    while (rate2 === rate1 && tries++ < 50) rate2 = getRandomInt(70, 100);
     const total = getRandomInt(800, 1500);
 
     const optionsData = [

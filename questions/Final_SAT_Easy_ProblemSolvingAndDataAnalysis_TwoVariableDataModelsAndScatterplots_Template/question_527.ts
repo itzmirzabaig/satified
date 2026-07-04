@@ -127,10 +127,10 @@ export const generator_527 = {
     const optWrongShape = `y=${a}x^{2}-${h}x+${k}`;
 
     const optionsData = [
-      { text: `$${optWrongInt}$`, isCorrect: false },
-      { text: `$${optCorrect}$`, isCorrect: true },
-      { text: `$${optWrongVertex}$`, isCorrect: false },
-      { text: `$${optWrongShape}$`, isCorrect: false }
+      { text: `$${optWrongInt}$`, isCorrect: false, kind: 'wrongInt' },
+      { text: `$${optCorrect}$`, isCorrect: true, kind: 'correct' },
+      { text: `$${optWrongVertex}$`, isCorrect: false, kind: 'wrongVertex' },
+      { text: `$${optWrongShape}$`, isCorrect: false, kind: 'wrongShape' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -139,22 +139,24 @@ export const generator_527 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
-    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+    // Look up each distractor by its ROLE (not shuffle position) so every
+    // per-choice reason describes the option it actually points to.
+    const wrongIntOpt = shuffledOptions.find(o => o.kind === 'wrongInt')!;
+    const wrongVertexOpt = shuffledOptions.find(o => o.kind === 'wrongVertex')!;
+    const wrongShapeOpt = shuffledOptions.find(o => o.kind === 'wrongShape')!;
 
     return {
       questionText: "Of the following, which is the best model for the data in the scatterplot?",
       figureCode: svgContent,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The scatterplot shows data that forms an upward-opening parabola. 
-      The data suggests a y-intercept (where $x=0$) near $y=${c}$ and a vertex (lowest point) around $x=${h}$.
-      
+      explanation: `Choice ${correctOption.letter} is correct. The scatterplot shows data that forms an upward-opening parabola. The data suggests a y-intercept (where $x=0$) near $y=${c}$ and a vertex (lowest point) around $x=${h}$.
+
       Looking at the correct equation $${correctOption.text}$:
       1. The constant term is $+${c}$, matching the y-intercept.
       2. The axis of symmetry for $y=ax^2+bx+c$ is $x = -b/(2a)$. Here, $x = -(${b}) / (2 \\cdot ${a}) = ${h}$, which matches the vertex x-coordinate.
-      
-      Choice ${incorrectOptions[0].letter} is incorrect because the y-intercept is negative. 
-      Choices ${incorrectOptions[1].letter} and ${incorrectOptions[2].letter} do not align with the vertex or intercepts shown in the graph.`
+
+      Choice ${wrongIntOpt.letter} is incorrect because its constant term is $-${c}$, giving a negative y-intercept, but the data crosses the y-axis at the positive value $y=${c}$. Choice ${wrongVertexOpt.letter} is incorrect because its axis of symmetry is $x = -${wrongBVal >= 0 ? wrongBVal : -wrongBVal}/(2 \\cdot ${a}) = ${-h}$, placing the vertex to the left of the y-axis instead of at $x=${h}$. Choice ${wrongShapeOpt.letter} is incorrect because its constant term $+${k}$ does not match the y-intercept $y=${c}$, and its vertex does not fall at $x=${h}$.`
     };
   }
 };

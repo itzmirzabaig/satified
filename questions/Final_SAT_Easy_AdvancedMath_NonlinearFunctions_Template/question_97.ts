@@ -27,7 +27,10 @@ export const generator_97 = {
 
     const a = getRandomInt(1, 3);
 
-    const mafsCode = `<Mafs viewBox={{ x:, y: [-2, 10] }}>
+    // viewBox x-range is centered on the vertex (h) so the x-intercept the
+    // question asks about is always on-screen with both arms of the parabola
+    // visible. y in [-2, 10] shows the vertex touching the x-axis clearly.
+    const mafsCode = `<Mafs viewBox={{ x: [${h - 5}, ${h + 5}], y: [-2, 10] }}>
   <Coordinates.Cartesian />
   <Plot.OfX y={(x) => ${a} * Math.pow(x - ${h}, 2)} color="var(--mafs-blue)" />
 </Mafs>`;

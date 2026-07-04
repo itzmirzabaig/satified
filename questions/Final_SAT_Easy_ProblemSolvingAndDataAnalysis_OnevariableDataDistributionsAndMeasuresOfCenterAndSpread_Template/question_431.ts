@@ -38,7 +38,7 @@ export const generator_431 = {
       outlier
     ];
 
-    const median = dataValues;
+    const median = dataValues[3];
     const mode = baseValue;
 
     const tableCode = `

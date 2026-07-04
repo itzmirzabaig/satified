@@ -30,13 +30,12 @@ export const generator_309 = {
     const totalItems = numExpensive + numCheap;
     const totalCost = priceExpensive * numExpensive + priceCheap * numCheap;
 
-    const items = getRandomElement([
-      ['novels', 'magazines'],
-      ['hardcover books', 'paperbacks'],
-      ['CDs', 'posters']
+    const itemPair = getRandomElement([
+      { expPlural: 'novels', expSingular: 'novel', cheapPlural: 'magazines', cheapSingular: 'magazine' },
+      { expPlural: 'hardcover books', expSingular: 'hardcover book', cheapPlural: 'paperbacks', cheapSingular: 'paperback' },
+      { expPlural: 'CDs', expSingular: 'CD', cheapPlural: 'posters', cheapSingular: 'poster' }
     ]);
     const store = getRandomElement(['bookstore', 'shop', 'store']);
-    const buyer = getRandomElement(['Sadie', 'Alex', 'Jordan', 'Taylor']);
 
     const optionsData = [
       { text: (numExpensive - 1).toString(), isCorrect: false, reason: "is off by one from the correct answer" },
@@ -53,10 +52,10 @@ export const generator_309 = {
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. Let $n$ be the number of ${items} and $m$ be the number of ${items}. Then $n + m = ${totalItems}$ and $${priceExpensive}n + ${priceCheap}m = ${totalCost}$. Subtracting $${priceCheap}(n + m) = ${priceCheap * totalItems}$ from the second equation: $${priceExpensive - priceCheap}n = ${totalCost - priceCheap * totalItems}$, so $n = ${numExpensive}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Let $n$ be the number of ${itemPair.expPlural} and $m$ be the number of ${itemPair.cheapPlural}. Then $n + m = ${totalItems}$ and $${priceExpensive}n + ${priceCheap}m = ${totalCost}$. Subtracting $${priceCheap}(n + m) = ${priceCheap * totalItems}$ from the second equation gives $${priceExpensive - priceCheap}n = ${totalCost - priceCheap * totalItems}$, so $n = ${numExpensive}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `An online ${store} sells ${items} and ${items}. Each ${items.slice(0, -1)} sells for $${priceExpensive}$, and each ${items.slice(0, -1)} sells for $${priceCheap}$. If ${buyer} purchased a total of $${totalItems}$ ${items} and ${items} that have a combined selling price of $${totalCost}$, how many ${items} did ${buyer} purchase?`,
+      questionText: `An online ${store} sells ${itemPair.expPlural} and ${itemPair.cheapPlural}. Each ${itemPair.expSingular} sells for $\\$${priceExpensive}$, and each ${itemPair.cheapSingular} sells for $\\$${priceCheap}$. A customer purchased a total of ${totalItems} ${itemPair.expPlural} and ${itemPair.cheapPlural} that have a combined selling price of $\\$${totalCost}$. How many ${itemPair.expPlural} did the customer purchase?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: numExpensive.toString(),

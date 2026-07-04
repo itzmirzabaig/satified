@@ -108,20 +108,20 @@ export const generator_532 = {
     // 5. Generate Options
     // We are looking for the NOT TRUE statement.
     const optionsData = [
-      { 
-        text: "Theresa ran at a constant speed for five minutes.", 
+      {
+        text: "The runner ran at a constant speed for five minutes.",
         isCorrect: false // TRUE statement (5-10 min), so incorrect choice
       },
-      { 
-        text: "Theresa's speed was increasing for a longer period of time than it was decreasing.", 
+      {
+        text: "The runner's speed was increasing for a longer period of time than it was decreasing.",
         isCorrect: true // FALSE statement: Increasing (10) < Decreasing (15). Correct choice.
       },
-      { 
-        text: "Theresa's speed decreased at a constant rate during the last five minutes.", 
+      {
+        text: "The runner's speed decreased at a constant rate during the last five minutes.",
         isCorrect: false // TRUE statement (25-30 min is decreasing), so incorrect choice
       },
-      { 
-        text: "Theresa's speed reached its maximum during the last ten minutes.", 
+      {
+        text: "The runner's speed reached its maximum during the last ten minutes.",
         isCorrect: false // TRUE statement (Max is at 25 min, which is within the last 10 mins), so incorrect choice
       }
     ];
@@ -134,7 +134,7 @@ export const generator_532 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
 
     return {
-      questionText: "Theresa ran on a treadmill for thirty minutes. The graph shows her speed, in miles per hour (mph), during the run. Which statement is NOT true concerning her run?",
+      questionText: "A runner ran on a treadmill for thirty minutes. The graph shows her speed, in miles per hour (mph), during the run. Which statement is NOT true concerning her run?",
       figureCode: svgCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
@@ -143,7 +143,7 @@ export const generator_532 = {
 - **Increasing Speed:** From 0 to 5 minutes and 20 to 25 minutes. Total time = 5 + 5 = 10 minutes.
 - **Decreasing Speed:** From 10 to 20 minutes and 25 to 30 minutes. Total time = 10 + 5 = 15 minutes.
 
-The statement "Theresa's speed was increasing for a longer period of time than it was decreasing" claims that 10 > 15, which is false. Therefore, this is the correct answer.`
+The statement "The runner's speed was increasing for a longer period of time than it was decreasing" claims that 10 > 15, which is false. Therefore, this is the correct answer.`
     };
   }
 };

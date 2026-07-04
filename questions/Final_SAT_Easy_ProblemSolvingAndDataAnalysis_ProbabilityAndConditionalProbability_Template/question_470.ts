@@ -36,14 +36,22 @@ export const generator_470 = {
 
     const totalPlay = malesPlay + femalesPlay;
 
-    const tableCode = `<table><thead><tr><th></th><th>Males</th><th>Females</th></tr></thead><tbody><tr><td>Play a school sport</td><td>${malesPlay}</td><td>${femalesPlay}</td></tr><tr><td>Do not play a school sport</td><td>?</td><td>${femalesNoPlay}</td></tr></tbody></table>`;
-
     const correctValue = malesNoPlay;
     const correctText = correctValue.toString();
 
     const distractor1 = Math.abs(totalStudents - malesPlay - femalesPlay - femalesNoPlay - 50);
     const distractor2 = totalStudents - totalPlay;
     const distractor3 = malesPlay + femalesNoPlay;
+
+    // Guard: all four option values must be distinct. distractor2 and
+    // distractor3 collide whenever totalStudents = 2*malesPlay + femalesPlay +
+    // femalesNoPlay; redraw rather than emit a duplicated choice.
+    const optionValues = [correctValue, distractor1, distractor2, distractor3];
+    if (new Set(optionValues).size !== 4) {
+      return this.generate();
+    }
+
+    const tableCode = `<table><thead><tr><th></th><th>Males</th><th>Females</th></tr></thead><tbody><tr><td>Play a school sport</td><td>${malesPlay}</td><td>${femalesPlay}</td></tr><tr><td>Do not play a school sport</td><td>?</td><td>${femalesNoPlay}</td></tr></tbody></table>`;
 
     const optionsData = [
       { text: distractor1.toString(), isCorrect: false, reason: "would result in an incorrect total count" },

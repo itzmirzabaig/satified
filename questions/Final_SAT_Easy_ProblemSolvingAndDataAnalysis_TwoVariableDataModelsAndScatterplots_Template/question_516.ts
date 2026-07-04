@@ -27,16 +27,37 @@ export const generator_516 = {
 
     const base = getRandomInt(3, 6);
     const growthRate = (1.4 + Math.random() * 0.4).toFixed(1);
+    const rate = parseFloat(growthRate);
     const maxX = getRandomInt(5, 7);
 
-    const points = [];
-    for (let x = 1; x <= maxX; x++) {
-      const y = Math.round(base * Math.pow(parseFloat(growthRate), x));
-      points.push({ x, y });
-    }
+    // Build the scatter by jittering each point off the exact model value
+    // base*rate^x by a signed amount, so the data genuinely straddles the
+    // dashed model curve (some points strictly above, some strictly below).
+    // This makes the "both above and below" description true for EVERY draw.
+    // A bounded retry guarantees at least one point on each side.
+    let points: { x: number; y: number }[] = [];
+    let tries = 0;
+    do {
+      points = [];
+      for (let x = 1; x <= maxX; x++) {
+        const exact = base * Math.pow(rate, x);
+        // Jitter grows with the model value so points stay visibly off the
+        // curve at larger x; at least +/-1 so rounding can't erase the offset.
+        const spread = Math.max(1, Math.round(exact * 0.08));
+        const dir = Math.random() < 0.5 ? -1 : 1;
+        const mag = getRandomInt(1, spread);
+        const y = Math.max(1, Math.round(exact) + dir * mag);
+        points.push({ x, y });
+      }
+    } while (
+      tries++ < 50 &&
+      // require a genuine split relative to the exact model curve
+      !(points.some(p => p.y > base * Math.pow(rate, p.x)) &&
+        points.some(p => p.y < base * Math.pow(rate, p.x)))
+    );
 
     const pointElements = points.map(p => `<Point x={${p.x}} y={${p.y}} />`).join('\n ');
-    const maxVal = Math.max(...points.map(p => p.y)) + 10;
+    const maxVal = Math.max(...points.map(p => p.y), Math.round(base * Math.pow(rate, maxX))) + 10;
 
     const mafsCode = `
       <Mafs viewBox={{ x: [0, ${maxX + 1}], y: [0, ${maxVal}] }}>

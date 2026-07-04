@@ -22,14 +22,25 @@ export const generator_415 = {
   },
 
   generate: (): QuestionData => {
-    // Foothill: starts high, decreases over 5 years
-    const fhStart = getRandomInt(82, 95);
-    const fhDecrement = getRandomInt(2, 5);
-    const fh = [fhStart, fhStart - fhDecrement, fhStart - 2*fhDecrement, fhStart - 3*fhDecrement, fhStart - 4*fhDecrement];
+    // Both series are arithmetic, so mean === median for each. To keep "I and II"
+    // the correct answer for every draw, Foothill's central value (fhStart - 2*fhDecrement)
+    // must strictly exceed Valley's central value (vlyStart + 2*vlyIncrement). Guard with
+    // a bounded retry so an unlucky draw can never tie or invert the intended answer.
+    let fhStart = 0, fhDecrement = 0, vlyStart = 0, vlyIncrement = 0;
+    let tries = 0;
+    do {
+      // Foothill: starts high, decreases over 5 years
+      fhStart = getRandomInt(82, 95);
+      fhDecrement = getRandomInt(2, 5);
+      // Valley: starts low, increases over 5 years
+      vlyStart = getRandomInt(55, 68);
+      vlyIncrement = getRandomInt(2, 5);
+    } while (
+      (fhStart - 2 * fhDecrement) <= (vlyStart + 2 * vlyIncrement) &&
+      tries++ < 50
+    );
 
-    // Valley: starts low, increases over 5 years
-    const vlyStart = getRandomInt(55, 68);
-    const vlyIncrement = getRandomInt(2, 5);
+    const fh = [fhStart, fhStart - fhDecrement, fhStart - 2*fhDecrement, fhStart - 3*fhDecrement, fhStart - 4*fhDecrement];
     const vly = [vlyStart, vlyStart + vlyIncrement, vlyStart + 2*vlyIncrement, vlyStart + 3*vlyIncrement, vlyStart + 4*vlyIncrement];
 
     // Compute means and medians (fh is sorted descending, vly ascending)

@@ -20,11 +20,20 @@ export const generator_171 = {
   },
 
   generate: (): QuestionData => {
-    // Randomize total (150-400)
-    const total = getRandomInt(150, 400);
-    // Randomize x (100 to total-20)
-    const x = getRandomInt(100, total - 20);
-    const y = total - x;
+    let total = 0;
+    let x = 0;
+    let y = 0;
+    let tries = 0;
+    do {
+      // Randomize total (150-400) and x (100 to total-20)
+      total = getRandomInt(150, 400);
+      x = getRandomInt(100, total - 20);
+      y = total - x;
+      // The four option VALUES are {y, y-10, y+15, x}. Redraw until they are
+      // pairwise distinct so the correct answer is never duplicated and no two
+      // distractors coincide. (y-10, y+15 differ from y and each other always;
+      // only the x-distractor can collide, when x == y, y-10, or y+15.)
+    } while (tries++ < 50 && (x === y || x === y - 10 || x === y + 15));
 
     const optionsData = [
       { text: y.toString(), isCorrect: true },

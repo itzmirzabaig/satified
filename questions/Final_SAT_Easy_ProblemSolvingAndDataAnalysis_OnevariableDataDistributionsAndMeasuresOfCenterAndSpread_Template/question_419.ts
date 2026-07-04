@@ -24,9 +24,24 @@ export const generator_419 = {
   generate: (): QuestionData => {
     const mean = getRandomInt(7, 12);
     const targetSum = mean * 10;
-    const values = Array.from({ length: 9 }, () => getRandomInt(2, 20));
-    const currentSum = values.reduce((a, b) => a + b, 0);
-    values.push(targetSum - currentSum);
+
+    // Build 9 heights, then force the 10th so the total is exactly targetSum.
+    // Every plant height must be a valid positive value (2-20 cm), so retry
+    // (bounded) until the forced 10th value also lands in [2, 20].
+    let values: number[] = [];
+    let tries = 0;
+    do {
+      const first9 = Array.from({ length: 9 }, () => getRandomInt(2, 20));
+      const tenth = targetSum - first9.reduce((a, b) => a + b, 0);
+      if (tenth >= 2 && tenth <= 20) {
+        values = [...first9, tenth];
+      }
+    } while (values.length === 0 && tries++ < 50);
+
+    // Guaranteed fallback (never negative): all ten heights equal the mean.
+    if (values.length === 0) {
+      values = Array.from({ length: 10 }, () => mean);
+    }
 
     return {
       questionText: `Each value in the data set shown represents the height, in centimeters, of a plant.\n\n${values.join(', ')}\n\nWhat is the mean height, in centimeters, of these plants?`,

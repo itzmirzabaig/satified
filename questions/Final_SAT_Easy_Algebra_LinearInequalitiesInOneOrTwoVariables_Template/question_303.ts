@@ -47,7 +47,7 @@ export const generator_303 = {
     const explanation = `Choice ${correctLetter} is correct. The mean of four scores is the sum divided by 4. For the mean to be at least ${targetMean}: $\\frac{G + ${score1} + ${score2} + ${score3}}{4} \\ge ${targetMean}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `Tom scored ${score1}, ${score2}, and ${score3} on his first three exams in history class. Solving which inequality gives the score, $G$, on Tom's fourth exam that will result in a mean score on all four exams of at least ${targetMean}?`,
+      questionText: `A student scored ${score1}, ${score2}, and ${score3} on their first three exams in history class. Solving which inequality gives the score, $G$, on their fourth exam that will result in a mean score on all four exams of at least ${targetMean}?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,

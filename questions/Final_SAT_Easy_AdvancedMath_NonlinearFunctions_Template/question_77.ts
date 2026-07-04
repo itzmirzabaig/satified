@@ -25,7 +25,7 @@ export const generator_77 = {
   generate: (): QuestionData => {
     const h = getRandomInt(3, 7);
 
-    const mafsCode = `<Mafs viewBox={{ x:, y: [-5, 5] }}>
+    const mafsCode = `<Mafs viewBox={{ x: [${h - 5}, ${h + 5}], y: [-5, 5] }}>
   <Coordinates.Cartesian />
   <Plot.OfX y={(x) => -0.1 * Math.pow(x - ${h}, 2)} color="var(--mafs-blue)" />
 </Mafs>`;

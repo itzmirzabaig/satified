@@ -24,13 +24,32 @@ export const generator_152 = {
 
   generate: (): QuestionData => {
     const coeff = getRandomInt(10, 20);
-    const const1 = getRandomInt(20, 50);
-    const rightSide = const1 + coeff * getRandomInt(5, 15);
-    const result = rightSide - const1;
+
+    // Draw the constant and the right-hand side so that the four option values
+    // (const1, wrongSub, result, rightSide) are all distinct. result = coeff*m
+    // is always >= 50, and rightSide = const1 + result is always strictly
+    // greater than both const1 and result, so the only collisions to guard are
+    // const1 vs result and the "wrong subtraction" value vs the other three.
+    let const1 = 0, rightSide = 0, result = 0, wrongSub = 0, tries = 0;
+    do {
+      const1 = getRandomInt(20, 50);
+      rightSide = const1 + coeff * getRandomInt(5, 15);
+      result = rightSide - const1;
+      // "Wrong subtraction": student subtracts an extra amount. Keep it positive
+      // and distinct from every other option value.
+      wrongSub = result - getRandomInt(10, Math.min(result - 1, 40));
+    } while (
+      (const1 === result ||
+        wrongSub <= 0 ||
+        wrongSub === const1 ||
+        wrongSub === result ||
+        wrongSub === rightSide) &&
+      tries++ < 50
+    );
 
     const optionsData = [
-      { text: `$$${coeff}x = ${const1}$$`, isCorrect: false, reason: "wrong constant" },
-      { text: `$$${coeff}x = ${result - 30}$$`, isCorrect: false, reason: "wrong subtraction" },
+      { text: `$$${coeff}x = ${const1}$$`, isCorrect: false, reason: "kept the wrong constant" },
+      { text: `$$${coeff}x = ${wrongSub}$$`, isCorrect: false, reason: "subtracted the wrong amount" },
       { text: `$$${coeff}x = ${result}$$`, isCorrect: true },
       { text: `$$${coeff}x = ${rightSide}$$`, isCorrect: false, reason: "ignored the constant" }
     ];
