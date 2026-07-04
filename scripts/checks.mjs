@@ -93,7 +93,7 @@ const NAMES = [
   'Leah','Lena','Leon','Leonard','Levi','Lewis','Lila','Linda','Lisa','Logan',
   'Lola','Lorna','Louis','Louise','Luca','Lucy','Luis','Luke','Lydia','Lyle',
   'Mabel','Madeline','Madison','Manuel','Marcia','Margaret','Marie','Mario','Marisa','Marlon',
-  'Marshall','Martha','Martin','Marvin','Mason','Matthew','Maureen','Maurice','Maxine','Megan',
+  'Martha','Martin','Marvin','Mason','Matthew','Maureen','Maurice','Maxine','Megan',
   'Melanie','Melissa','Melvin','Meredith','Micah','Michael','Michelle','Mildred','Miranda','Miriam',
   'Mitchell','Molly','Monica','Muriel','Myra','Nadia','Nancy','Nathan','Nathaniel','Nelson',
   'Nicholas','Nicole','Nikki','Nina','Nolan','Norman','Octavia','Olga','Oliver','Oscar',
@@ -243,12 +243,16 @@ function checkDraw(d, drawIndex) {
 
 function staticChecks(source) {
   const flags = [];
-  // Names in authored strings (template literals) — scan whole source; agents
-  // confirm and reword. Reset lastIndex since NAME_RE is global.
+  // Names in authored strings — scan code/strings only, NOT comments (a name in
+  // a "removed the name X" comment is not user-facing and must not trip the
+  // gate). Strip block and line comments first (avoid eating https:// URLs).
+  const noComments = source
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/(^|[^:])\/\/[^\n]*/g, '$1');
   NAME_RE.lastIndex = 0;
   const seen = new Set();
   let m;
-  while ((m = NAME_RE.exec(source)) !== null) seen.add(m[1]);
+  while ((m = NAME_RE.exec(noComments)) !== null) seen.add(m[1]);
   if (seen.size > 0) flags.push({ code: 'NAME_HIT', detail: [...seen].join(', '), drawIndex: -1 });
   return flags;
 }
