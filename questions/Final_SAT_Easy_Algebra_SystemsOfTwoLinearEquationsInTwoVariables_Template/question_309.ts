@@ -24,7 +24,9 @@ export const generator_309 = {
 
   generate: (): QuestionData => {
     const priceExpensive = getRandomInt(3, 6);
-    const priceCheap = getRandomInt(1, 3);
+    // priceCheap must stay strictly below priceExpensive (which is >= 3);
+    // an equal price makes the two equations dependent (0n = 0, no unique solution).
+    const priceCheap = getRandomInt(1, 2);
     const numExpensive = getRandomInt(2, 5);
     const numCheap = getRandomInt(6, 12);
     const totalItems = numExpensive + numCheap;

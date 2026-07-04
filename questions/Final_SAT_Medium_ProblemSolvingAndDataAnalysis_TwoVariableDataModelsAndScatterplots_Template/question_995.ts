@@ -106,11 +106,13 @@ export const generator_995 = {
     const wrongMagnitude = (slope * 10).toFixed(0);
     const wrongSignMagnitude = (0 - slope * 10).toFixed(0);
     
+    // Reasons attached per distractor so they survive the shuffle
+    // (keying explanation text to post-shuffle position mislabels the options).
     const optionsData = [
-      { text: wrongSignMagnitude, isCorrect: false }, // 7
-      { text: wrongSign, isCorrect: false }, // 0.7
-      { text: slopeDisplay, isCorrect: true }, // -0.7
-      { text: wrongMagnitude, isCorrect: false } // -7
+      { text: wrongSignMagnitude, isCorrect: false, reason: "has both the wrong sign and the wrong magnitude" }, // e.g. 7
+      { text: wrongSign, isCorrect: false, reason: "has the correct magnitude but the wrong sign" }, // e.g. 0.7
+      { text: slopeDisplay, isCorrect: true, reason: "" }, // e.g. -0.7
+      { text: wrongMagnitude, isCorrect: false, reason: "has the correct sign but results from ignoring the decimal place" } // e.g. -7
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -130,7 +132,7 @@ export const generator_995 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: slopeDisplay,
-      explanation: `Choice ${correctLetter} is correct. The line of best fit passes through approximately $(0, ${yAt0})$ and $(10, ${yAt10.toFixed(0)})$. Slope $= (${yAt10.toFixed(0)} - ${yAt0}) / (10 - 0) = ${(yAt10 - yAt0).toFixed(0)}/10 = ${slopeDisplay}$. Choice ${incorrectOptions[0].letter} is incorrect; it may result from ignoring the decimal place. Choice ${incorrectOptions[1].letter} is incorrect; it has the wrong sign. Choice ${incorrectOptions[2].letter} is incorrect; it has the wrong magnitude.`
+      explanation: `Choice ${correctLetter} is correct. The line of best fit passes through approximately $(0, ${yAt0})$ and $(10, ${yAt10.toFixed(0)})$. Slope $= (${yAt10.toFixed(0)} - ${yAt0}) / (10 - 0) = ${(yAt10 - yAt0).toFixed(0)}/10 = ${slopeDisplay}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

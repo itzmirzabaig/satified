@@ -29,11 +29,17 @@ export const generator_1232 = {
     // Minimum quantity needed
     const minCandles = getRandomInt(15, 25) * 10; 
 
-    // Prices
+    // Prices held in integer CENTS so all optimization arithmetic is exact.
+    // (Float dollars like 4.8 carry rounding error that made Math.floor drop
+    //  the true integer optimum by one, e.g. 176.99999997 -> 176.)
     // Small: $4.50 - $6.50
-    const smallPrice = (getRandomInt(45, 65) / 10);
-    // Large: $6.00 - $8.00 more than small
-    const largePrice = smallPrice + getRandomInt(6, 8); 
+    const smallCents = getRandomInt(45, 65) * 10;
+    const smallPrice = smallCents / 100;
+    // Large: $6 - $8 more than small
+    const diffDollars = getRandomInt(6, 8);
+    const largeCents = smallCents + diffDollars * 100;
+    const largePrice = largeCents / 100;
+    const budgetCents = budget * 100;
     
     // ----------------------------------------------------------------------
     // 2. OPTIMIZATION LOGIC
@@ -59,17 +65,19 @@ export const generator_1232 = {
     //     => L <= (budget - smallPrice*minCandles) / (largePrice - smallPrice).
     //
     // The true maximum is the larger feasible L over the two cases.
-    const denominator = largePrice - smallPrice;
+    const denominator = diffDollars; // largePrice - smallPrice, exact integer
 
-    // Case A cap (buy 0 small candles; budget-limited).
-    const budgetOnlyCap = Math.floor(budget / largePrice);
+    // Case A cap (buy 0 small candles; budget-limited). Integer-cents division.
+    const budgetOnlyCap = Math.floor(budgetCents / largeCents);
     const caseA = budgetOnlyCap >= minCandles ? budgetOnlyCap : -1;
 
-    // Case B cap (quantity minimum forces some small candles).
-    const caseBExact = (budget - smallPrice * minCandles) / denominator;
+    // Case B cap (quantity minimum forces some small candles). All in cents.
+    const caseBNumerCents = budgetCents - smallCents * minCandles;
+    const caseBDenomCents = largeCents - smallCents; // = diffDollars * 100, exact
+    const caseBExact = caseBDenomCents > 0 ? caseBNumerCents / caseBDenomCents : 0;
     // In this regime L must stay below minCandles (L = minCandles is Case A).
-    const caseB = caseBExact >= 0
-      ? Math.min(Math.floor(caseBExact), minCandles - 1)
+    const caseB = caseBNumerCents >= 0
+      ? Math.min(Math.floor(caseBNumerCents / caseBDenomCents), minCandles - 1)
       : -1;
 
     const maxLarge = Math.max(caseA, caseB);
@@ -86,9 +94,9 @@ export const generator_1232 = {
     // 3. RETURN DATA
     // ----------------------------------------------------------------------
     // Values used in the explanation text.
-    const budgetOnlyExact = budget / largePrice;
+    const budgetOnlyExact = budgetCents / largeCents;
     const smallForAnswer = Math.max(0, minCandles - maxLarge); // s at the optimum
-    const costAtAnswer = smallPrice * smallForAnswer + largePrice * maxLarge;
+    const costAtAnswer = (smallCents * smallForAnswer + largeCents * maxLarge) / 100;
 
     const explanation = usedCaseA
       ? `

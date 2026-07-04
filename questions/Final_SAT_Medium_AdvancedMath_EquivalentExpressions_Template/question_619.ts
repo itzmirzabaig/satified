@@ -25,7 +25,13 @@ export const generator_619 = {
     // Factors: (Ax^n + By^m)(Ax^n - By^m)
     
     const A = getRandomInt(2, 6);
-    const B = getRandomInt(2, 6);
+    // B must differ from A: when A === B, distractor d1 (A^2 x^n ± B^2 y^m)
+    // becomes A·(correct factor), which is itself a genuine factor of the
+    // polynomial — giving the question two correct answers.
+    let B = getRandomInt(2, 6);
+    let bGuard = 0;
+    while (B === A && bGuard++ < 50) B = getRandomInt(2, 6);
+    if (B === A) B = A === 6 ? 5 : A + 1;
     const n = getRandomInt(1, 3);
     const m = getRandomInt(1, 3);
     
