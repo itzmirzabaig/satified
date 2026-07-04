@@ -104,6 +104,39 @@ currency as `\$`, names → role+pronoun, figures rebuilt to house style when
 broken) → smoke until PASS. Only touch assigned files. Structured return:
 {file, status: fixed|rebuilt|already_clean, defects_fixed[], note}.
 
+## Update (2026-07-02 newest+1): Phase D verify results in
+
+Survived a Claude Code crash mid-verify (resumed from journals, no work lost).
+Verifier results: Easy 497 PASS / 39 FAIL, Medium 404 PASS / 84 FAIL, Hard
+running (116/120). Verifiers caught REAL semantic bugs the format-harness
+can't: wrong answers, equivalent-option collisions (5x^2y^1 vs 5x^2y as
+strings), malformed figures (viewBox `x:,` empty x-range; cubic graphs with no
+curve plotted; questions referencing tables/graphs that render as null), and
+personal names the harness list missed (Nasir, Lorenzo, Immanuel, ...).
+Actions taken: expanded checks.mjs NAMES (~350 precision-filtered names);
+saved fails to reports/verify-fails-{easy,medium,hard}.json; wrote
+build-verifyfix-batches.mjs (batch size 2, embeds each verifier
+counterexample). NEXT: run build-verifyfix-batches.mjs → launch 3 fix-escalation
+workflows on Opus (each fix agent gets the verifier evidence + counterexample,
+fixes root cause, smoke-gates, re-renders to confirm the counterexample is
+resolved) → re-verify the fixed files → re-audit with expanded names → then
+Phase E UI spot-check + Phase F deploy (ASK USER before push to main).
+
+## Update (2026-07-02 newest): Phase D verification RUNNING
+
+Phase C done (0 real hard flags), Phase E deterministic gates done (build exit
+0; tsc 1105→226 non-blocking noise, waived). User chose single-verifier-per-
+question for Phase D. Running now: 3 verify workflows on Opus (verify-easy 142,
+verify-medium 130, verify-hard 120 batches; ~4 Qs each = all 1483). Verifiers
+are READ-ONLY: render 3 seeded draws via scripts/render.mjs, solve each
+independently, symbolic range audit, figure-match check, explanation audit;
+return {file, verdict PASS|FAIL, failures[with counterexample]}. On completion:
+collect FAILs, escalate each to a fix + 3-agent adversarial re-check, re-verify
+until clean. Batches: reports/verify-batches/<Diff>-<i>.json (built by
+build-verify-batches.mjs). To resume: relaunch the 3 verify workflows (scripts
+saved under .../workflows/scripts/verify-*.js). THEN Phase E UI spot-check +
+Phase F deploy (ASK USER before pushing to main).
+
 ## Update (2026-07-02 latest): Phase C COMPLETE — 0 real hard flags
 
 All 3 partitions fixed on Opus 4.8 (Easy 55 + Medium 80 + Hard 81 batches),
