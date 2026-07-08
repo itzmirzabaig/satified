@@ -1,0 +1,16 @@
+{
+  "name": "Satified",
+  "short_name": "Satified",
+  "description": "Free SAT Math practice",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0A0901",
+  "theme_color": "#0A0901",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

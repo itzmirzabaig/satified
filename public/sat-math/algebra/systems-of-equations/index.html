@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAT Systems of Equations Practice | Satified</title>
+  <meta name="description" content="Free SAT systems of equations practice: elimination, no solution rules, word problems, graph crossings, a worked example, and unlimited regenerating questions.">
+  <link rel="canonical" href="https://satified.org/sat-math/algebra/systems-of-equations/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Satified">
+  <meta property="og:title" content="SAT Systems of Equations Practice | Satified">
+  <meta property="og:description" content="Elimination, proportional coefficients, word problems, intersections: real SAT systems patterns plus free regenerating drills.">
+  <meta property="og:url" content="https://satified.org/sat-math/algebra/systems-of-equations/">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/pages.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://satified.org/" },
+          { "@type": "ListItem", "position": 2, "name": "SAT Math", "item": "https://satified.org/sat-math/" },
+          { "@type": "ListItem", "position": 3, "name": "Algebra", "item": "https://satified.org/sat-math/algebra/" },
+          { "@type": "ListItem", "position": 4, "name": "Systems of Equations", "item": "https://satified.org/sat-math/algebra/systems-of-equations/" }
+        ]
+      },
+      {
+        "@type": "LearningResource",
+        "name": "SAT Systems of Equations Practice",
+        "description": "Free systems of equations practice matching digital SAT patterns, from elimination to no solution logic, with drills that rebuild endlessly.",
+        "url": "https://satified.org/sat-math/algebra/systems-of-equations/",
+        "learningResourceType": "Practice problems",
+        "educationalLevel": "High school",
+        "teaches": "Systems of two linear equations on the digital SAT Math section",
+        "isAccessibleForFree": true,
+        "provider": { "@type": "Organization", "name": "Satified", "url": "https://satified.org/" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "How many systems of equations questions are on the digital SAT?", "acceptedAnswer": { "@type": "Answer", "text": "Expect 2 to 4 across the two adaptive modules, ranging from quick elimination setups to word problems and no solution logic. They are a core piece of the Algebra domain." } },
+          { "@type": "Question", "name": "When does a system have no solution?", "acceptedAnswer": { "@type": "Answer", "text": "When the x and y coefficients are proportional but the constants are not, as in 3x + y = 5 and 6x + 2y = 14. The lines are parallel, so they never meet." } },
+          { "@type": "Question", "name": "When does a system have infinitely many solutions?", "acceptedAnswer": { "@type": "Answer", "text": "When one equation is a multiple of the other from end to end, constants included. Both describe the same line, so every point on that line works." } },
+          { "@type": "Question", "name": "Is substitution or elimination better on the SAT?", "acceptedAnswer": { "@type": "Answer", "text": "Whichever fits the setup. If a variable is already isolated, substitute. If coefficients align or can be scaled to align, eliminate. Desmos is the third option that skips both." } },
+          { "@type": "Question", "name": "Can I practice systems here without signing up?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every drill loads instantly with no account, and each one rebuilds itself with new coefficients every time, so the supply never runs dry." } }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="pg-header">
+      <a class="brand" href="/"><span class="b1">sat</span><span class="b2">ified</span></a>
+      <nav class="pg-nav" aria-label="Main">
+        <a href="/sat-math-practice/" class="hide-m">Practice</a>
+        <a href="/sat-math-practice-test/" class="hide-m">Practice test</a>
+        <a href="/faq/" class="hide-m">FAQ</a>
+        <a class="cta" href="/study/">Study →</a>
+      </nav>
+    </header>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span><a href="/sat-math/">SAT Math</a><span>/</span><a href="/sat-math/algebra/">Algebra</a><span>/</span>Systems of equations
+    </nav>
+
+    <main>
+      <div class="pg-hero">
+        <p class="eyebrow">Algebra · Skill 5 of 5</p>
+        <h1>SAT <span class="accent">Systems</span> of Equations Practice</h1>
+        <p class="lede">Two equations, two unknowns, one meeting point. The digital SAT tests systems as word problems, as bare elimination setups, and as slope logic about when no solution can exist. Learn the four moves, watch one solved cleanly, then practice on questions that rebuild themselves.</p>
+        <ul class="facts">
+          <li>Domain: Algebra</li>
+          <li>About 35% of the test is Algebra</li>
+          <li>Difficulty: easy to hard</li>
+          <li>Free, no account</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn dark" href="/study/">Drill systems now →</a>
+          <a class="btn" href="/sat-math/algebra/">The full Algebra lineup</a>
+        </div>
+      </div>
+
+      <section>
+        <h2>The four shapes these questions take</h2>
+        <p>The College Board writes systems questions from a small playbook. These are its four plays.</p>
+        <div class="patterns">
+          <article class="pattern">
+            <p class="k">Pattern 01</p>
+            <h3>Elimination setups</h3>
+            <p>Two equations where one variable can be made to cancel. Scale one or both until the coefficients match, then add or subtract. The SAT usually picks numbers where a single multiplication does it.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Pattern 02</p>
+            <h3>No solution, infinite solutions</h3>
+            <p>In <span class="math">2x + 3y = 7</span> and <span class="math">4x + 6y = 20</span>, the left sides are proportional but the constants are not: parallel lines, no solution. Make the constants proportional as well and the two lines merge, giving infinitely many.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Pattern 03</p>
+            <h3>Word problem systems</h3>
+            <p>A story with two totals, typically a count and a cost. One equation adds the items, the other adds the money. Setting the pair up correctly is most of the credit.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Pattern 04</p>
+            <h3>Graph intersections</h3>
+            <p>Two lines drawn or described, and the solution is wherever they cross. Some versions show no numbers at all and simply test whether you know that crossing once means exactly one solution.</p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>One system, worked to the end</h2>
+        <div class="worked">
+          <p class="k">Worked example · medium</p>
+          <p class="q">A food truck sold 51 items today, all tacos and burritos, for $284 in total. Tacos cost $4 each and burritos cost $9 each. How many burritos did the truck sell?</p>
+          <ol>
+            <li>Count equation: t + b = 51. Money equation: 4t + 9b = 284.</li>
+            <li>Set up elimination by multiplying the count equation by 4: 4t + 4b = 204.</li>
+            <li>Subtract that from the money equation: (4t + 9b) − (4t + 4b) = 284 − 204, which leaves 5b = 80, so b = 16.</li>
+            <li>Substitute back into the count equation: t = 51 − 16 = 35. Check the money: 4 × 35 + 9 × 16 = 140 + 144 = 284. Both equations hold.</li>
+          </ol>
+          <p class="ans">Answer: 16 burritos</p>
+          <p>Change the menu and the prices and it is still the same two line dance: one equation counts the items, the other counts the dollars.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>How strong students still miss these</h2>
+        <ul class="traps">
+          <li><strong>Answering the variable you did not solve for.</strong> Elimination hands you b = 16, but the question wanted tacos. Circle what is asked before touching the algebra.</li>
+          <li><strong>Scaling half an equation.</strong> Multiplying t + b = 51 by 4 must produce 4t + 4b = 204. Leaving the right side at 51 is the single most common elimination slip.</li>
+          <li><strong>Subtracting sloppily.</strong> When you subtract equations, every term of the bottom row changes sign. Miss one and the variable refuses to cancel.</li>
+          <li><strong>Confusing parallel with identical.</strong> Proportional x and y coefficients with mismatched constants means no solution. Fully proportional including constants means infinitely many. The two setups look nearly the same on purpose.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Let Desmos find the intersection</h2>
+        <p>Paste both equations in and tap the intersection: that ordered pair is the solution, found faster than elimination whenever the coefficients are awkward. If the two lines come up parallel, you are looking at a no solution question. If only one line appears, the equations overlap and the solutions are infinite.</p>
+      </section>
+
+      <section>
+        <h2>Why drilling here is different</h2>
+        <p>Systems reward repetition more than almost any other SAT skill, and repetition is what generators are for. Every drill rebuilds its coefficients and its context on each load, from friendly elimination to proportional coefficient puzzles. The bank behind it all, 1,483 questions strong, has had every solution independently verified.</p>
+        <div class="cta-band">
+          <p class="big">Every system meets its match <em>here.</em></p>
+          <a class="btn dark" href="/study/">Drill systems free →</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>The questions that come up most</h2>
+        <dl class="faq">
+          <div><dt>How many systems of equations questions are on the digital SAT?</dt><dd>Expect 2 to 4 across the two adaptive modules, ranging from quick elimination setups to word problems and no solution logic. They are a core piece of the Algebra domain.</dd></div>
+          <div><dt>When does a system have no solution?</dt><dd>When the x and y coefficients are proportional but the constants are not, as in 3x + y = 5 and 6x + 2y = 14. The lines are parallel, so they never meet.</dd></div>
+          <div><dt>When does a system have infinitely many solutions?</dt><dd>When one equation is a multiple of the other from end to end, constants included. Both describe the same line, so every point on that line works.</dd></div>
+          <div><dt>Is substitution or elimination better on the SAT?</dt><dd>Whichever fits the setup. If a variable is already isolated, substitute. If coefficients align or can be scaled to align, eliminate. Desmos is the third option that skips both.</dd></div>
+          <div><dt>Can I practice systems here without signing up?</dt><dd>Yes. Every drill loads instantly with no account, and each one rebuilds itself with new coefficients every time, so the supply never runs dry.</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Step back or push on</h2>
+        <p>Systems sit at the top of the Algebra ladder. If elimination felt rough, drop back one rung and rebuild from there.</p>
+        <nav class="related" aria-label="Related skills">
+          <a href="/sat-math/algebra/linear-equations-one-variable/">Linear equations in one variable</a>
+          <a href="/sat-math/algebra/linear-equations-two-variables/">Linear equations in two variables</a>
+          <a href="/sat-math/algebra/linear-functions/">Linear functions</a>
+          <a href="/sat-math/algebra/linear-inequalities/">Linear inequalities</a>
+          <a href="/sat-math/algebra/">All of Algebra</a>
+        </nav>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pg-footer">
+    <div class="wrap">
+      <a class="fbrand" href="/">sat<span class="b2">ified</span></a>
+      <a href="/sat-math-practice/">Practice</a>
+      <a href="/sat-math-practice-test/">Practice test</a>
+      <a href="/sat-math/">All topics</a>
+      <a href="/about/">About</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <span>© 2026 Satified</span>
+    </div>
+  </footer>
+</body>
+</html>

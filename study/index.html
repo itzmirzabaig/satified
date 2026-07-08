@@ -3,11 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>SAT Math Practice</title>
+  <title>SAT Math Practice: 1,483 Free Questions | Satified</title>
+  <meta name="description" content="Practice SAT Math with 1,483 free exam-level questions. Filter by domain, skill and difficulty, take full adaptive practice tests, use the built-in Desmos calculator.">
+  <link rel="canonical" href="https://satified.org/study/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="Satified Study: free SAT Math practice">
+  <meta property="og:description" content="Practice SAT Math with 1,483 free exam-level questions. Filter by domain, skill and difficulty, take full adaptive practice tests, use the built-in Desmos calculator.">
+  <meta property="og:url" content="https://satified.org/study/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
   <!-- mafs CSS from CDN (fixes "no CSS" issue when not running via Vite dev server) -->
   <link rel="stylesheet" href="https://unpkg.com/mafs@0.21.0/core.css">
   <link rel="stylesheet" href="https://unpkg.com/mafs@0.21.0/font.css">
-  <!-- style.css — relative path works with both Vite dev server and static serving -->
+  <!-- style.css: relative path works with both Vite dev server and static serving -->
   <link rel="stylesheet" href="./style.css">
   <script>
     window.MathJax = {
@@ -29,27 +40,22 @@
 </head>
 <body>
 
-  <!-- Theme toggle — desktop only (hidden on mobile via CSS) -->
-  <div class="theme-corner">
-    <div class="switch-container">
-      <input class="toggle-checkbox" id="toggle-switch" type="checkbox" />
-      <label class="switch" for="toggle-switch">
-        <div class="toggle"><div class="led"></div></div>
-      </label>
+  <!-- Top toolbar: brand on the left; practice test, theme switch and exit on the right -->
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Satified home">sat<em>ified</em></a>
+    <div class="theme-corner">
+      <button id="brick-btn" class="pt-launch-btn" type="button">Practice test</button>
+      <div class="switch-container">
+        <input class="toggle-checkbox" id="toggle-switch" type="checkbox" />
+        <label class="switch" for="toggle-switch">
+          <div class="toggle"><div class="led"></div></div>
+        </label>
+      </div>
+      <a class="exit-link" href="/">Exit &rarr;</a>
     </div>
-    <!-- Mario brick — desktop only -->
-    <div class="mario-wrap" id="mario-wrap">
-      <div class="mario-tooltip">Create Practice Test</div>
-      <!-- pixel mushroom (hidden, animates up on hover/click) -->
-      <div class="mario-pixel-mush" id="mario-mush" aria-hidden="true"></div>
-      <!-- invisible hit box that triggers hover mushroom + click -->
-      <div class="mario-hitbox" id="brick-btn" role="button" tabindex="0" aria-label="Create Practice Test"></div>
-      <!-- pixel brick (question block) -->
-      <div class="mario-pixel-brick" id="mario-pixel-brick"></div>
-    </div>
-  </div>
+  </header>
 
-  <!-- Mobile burger menu — shown only on mobile (≤640px) -->
+  <!-- Mobile burger menu: shown only on mobile (≤640px) -->
   <div class="mob-burger-corner">
     <label class="popup">
       <input type="checkbox" id="mob-burger-checkbox">
@@ -61,7 +67,7 @@
       <nav class="popup-window">
         <legend>Filters</legend>
         <ul>
-          <!-- Create Practice Test — mobile only -->
+          <!-- Create Practice Test: mobile only -->
           <li class="mob-filter-item" style="border-bottom: 1px solid var(--border-color, #333); margin-bottom: 4px; padding-bottom: 8px;">
             <button class="mob-filter-row mob-create-test-btn" type="button" id="mob-create-test-btn" style="font-weight:700;color:var(--text);">
               <span class="mob-filter-row-left">
@@ -242,7 +248,7 @@
               <input type="checkbox" class="pt-adap-chk" id="pt-adaptive-toggle">
               <span class="pt-adap-slider"></span>
             </label>
-            <span class="pt-adaptive-desc" id="pt-adaptive-desc">Off — equal difficulty both modules</span>
+            <span class="pt-adaptive-desc" id="pt-adaptive-desc">Off: equal difficulty both modules</span>
           </div>
         </div>
       </div>
@@ -262,39 +268,39 @@
                 <div class="pt-bar" style="--bar-h:82%;--bar-color:#4a90e2;" data-label="Algebra" data-pct="~35%"></div>
               </div>
               <div class="pt-bar-wrap">
-                <div class="pt-bar" style="--bar-h:65%;--bar-color:#7b68ee;" data-label="Adv. Math" data-pct="~28%"></div>
+                <div class="pt-bar" style="--bar-h:82%;--bar-color:#7b68ee;" data-label="Adv. Math" data-pct="~35%"></div>
               </div>
               <div class="pt-bar-wrap">
-                <div class="pt-bar" style="--bar-h:42%;--bar-color:#50c878;" data-label="PS&amp;DA" data-pct="~18%"></div>
+                <div class="pt-bar" style="--bar-h:35%;--bar-color:#50c878;" data-label="PS&amp;DA" data-pct="~15%"></div>
               </div>
               <div class="pt-bar-wrap">
-                <div class="pt-bar" style="--bar-h:33%;--bar-color:#ff8c42;" data-label="Geo &amp; Trig" data-pct="~14%"></div>
+                <div class="pt-bar" style="--bar-h:35%;--bar-color:#ff8c42;" data-label="Geo &amp; Trig" data-pct="~15%"></div>
               </div>
             </div>
-            <p class="pt-chart-note">Domain share per module (observed across 5 real CollegeBoard tests)</p>
+            <p class="pt-chart-note">Domain share per College Board's published test specification</p>
           </section>
 
           <section class="pt-info-section">
             <h3>How Scoring Works</h3>
-            <p>The SAT Math section is scored on a <strong>200–800</strong> scale. Each question has a point value that contributes to a raw score, which maps to the 200–800 range. Our scoring system uses:</p>
+            <p>The SAT Math section is scored on a <strong>200 to 800</strong> scale. Each question has a point value that contributes to a raw score, which maps to the 200 to 800 range. Our scoring system uses:</p>
             <ul class="pt-info-list">
-              <li><strong>Easy</strong> — 10 points</li>
-              <li><strong>Medium</strong> — 20 points</li>
-              <li><strong>Hard</strong> — 30 points</li>
+              <li><strong>Easy</strong>: 10 points</li>
+              <li><strong>Medium</strong>: 20 points</li>
+              <li><strong>Hard</strong>: 30 points</li>
             </ul>
-            <p>There is no penalty for wrong answers — blank and incorrect count the same. Your raw score is converted to the 200–800 scale based on which path you took.</p>
+            <p>There is no penalty for wrong answers: blank and incorrect count the same. Your raw score is converted to the 200 to 800 scale based on which path you took.</p>
           </section>
 
           <section class="pt-info-section">
             <h3>How the Adaptive System Works</h3>
-            <p>Every student starts with the same <strong>Module 1</strong> — 22 questions that are predominantly easy with a few medium questions. Based on your Module 1 performance, you are routed to one of two versions of Module 2:</p>
+            <p>Every student starts with the same <strong>Module 1</strong>: 22 questions that are predominantly easy with a few medium questions. Based on your Module 1 performance, you are routed to one of two versions of Module 2:</p>
             <ul class="pt-info-list">
-              <li><strong>Hard Module 2</strong> — If you perform well (roughly 15–16 of 22 correct), you get a harder second module. Your maximum possible score is <strong>800</strong>.</li>
-              <li><strong>Easy Module 2</strong> — If you perform below that threshold, you get a module similar to Module 1. Your maximum possible score is <strong>600</strong>.</li>
+              <li><strong>Hard Module 2</strong>: If you perform well (roughly 15 or 16 of 22 correct), you get a harder second module. Your maximum possible score is <strong>800</strong>.</li>
+              <li><strong>Easy Module 2</strong>: If you perform below that threshold, you get a module similar to Module 1. Your maximum possible score is <strong>600</strong>.</li>
             </ul>
-            <p>This adaptive routing is how CollegeBoard ensures scores are spread across the full 200–800 range — higher-difficulty paths give access to higher score bands.</p>
+            <p>This adaptive routing is how CollegeBoard ensures scores are spread across the full 200 to 800 range: higher-difficulty paths give access to higher score bands.</p>
 
-            <h4 style="margin-top:18px;margin-bottom:8px;font-size:13px;opacity:0.8;">Module 1 — All Students (22 questions)</h4>
+            <h4 style="margin-top:18px;margin-bottom:8px;font-size:13px;opacity:0.8;">Module 1: All Students (22 questions)</h4>
             <div class="pt-bar-chart" id="chart-mod1">
               <div class="pt-bar-wrap">
                 <div class="pt-bar" style="--bar-h:82%;--bar-color:#50c878;" data-label="Easy" data-pct="82%"></div>
@@ -307,7 +313,7 @@
               </div>
             </div>
 
-            <h4 style="margin-top:24px;margin-bottom:8px;font-size:13px;opacity:0.8;">Module 2 — Hard Path (max 800)</h4>
+            <h4 style="margin-top:24px;margin-bottom:8px;font-size:13px;opacity:0.8;">Module 2: Hard Path (max 800)</h4>
             <div class="pt-bar-chart" id="chart-mod2h">
               <div class="pt-bar-wrap">
                 <div class="pt-bar" style="--bar-h:2%;--bar-color:#50c878;" data-label="Easy" data-pct="0%"></div>
@@ -320,7 +326,7 @@
               </div>
             </div>
 
-            <h4 style="margin-top:24px;margin-bottom:8px;font-size:13px;opacity:0.8;">Module 2 — Easy Path (max 600)</h4>
+            <h4 style="margin-top:24px;margin-bottom:8px;font-size:13px;opacity:0.8;">Module 2: Easy Path (max 600)</h4>
             <div class="pt-bar-chart" id="chart-mod2e">
               <div class="pt-bar-wrap">
                 <div class="pt-bar" style="--bar-h:73%;--bar-color:#50c878;" data-label="Easy" data-pct="73%"></div>
@@ -341,7 +347,7 @@
 
           <section class="pt-info-section">
             <h3>Our Tests vs. CollegeBoard</h3>
-            <p>Our adaptive tests mirror the domain distribution, difficulty routing, and scoring bands of the real digital SAT Math section. Questions come from the same 1,000+ item bank used for individual practice — each generator produces a fresh variation, so two test administrations will rarely repeat the exact same numbers.</p>
+            <p>Our adaptive tests mirror the domain distribution, difficulty routing, and scoring bands of the real digital SAT Math section. Questions come from the same 1,000+ item bank used for individual practice: each generator produces a fresh variation, so two test administrations will rarely repeat the exact same numbers.</p>
           </section>
 
         </div>
@@ -411,7 +417,7 @@
         <div class="pt-results-top">
           <div class="pt-score-left">
             <span class="pt-score-label">Your Score</span>
-            <span class="pt-score-num" id="pt-score-num">—</span>
+            <span class="pt-score-num" id="pt-score-num">…</span>
             <span class="pt-score-sub" id="pt-score-sub">/ 800</span>
             <div class="pt-domain-breakdown" id="pt-domain-breakdown"></div>
           </div>

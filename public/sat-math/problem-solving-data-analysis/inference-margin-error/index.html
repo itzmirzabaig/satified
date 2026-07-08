@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAT Margin of Error and Inference Practice | Satified</title>
+  <meta name="description" content="Free SAT margin of error and inference practice: plausible ranges, sample size effects, and honest conclusions, with a fully worked example and drills that regenerate forever.">
+  <link rel="canonical" href="https://satified.org/sat-math/problem-solving-data-analysis/inference-margin-error/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Satified">
+  <meta property="og:title" content="SAT Margin of Error and Inference Practice | Satified">
+  <meta property="og:description" content="The exact margin of error patterns the digital SAT uses, a worked example, the conclusion wording that earns credit, and free drills that regenerate forever.">
+  <meta property="og:url" content="https://satified.org/sat-math/problem-solving-data-analysis/inference-margin-error/">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/pages.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://satified.org/" },
+          { "@type": "ListItem", "position": 2, "name": "SAT Math", "item": "https://satified.org/sat-math/" },
+          { "@type": "ListItem", "position": 3, "name": "Data Analysis", "item": "https://satified.org/sat-math/problem-solving-data-analysis/" },
+          { "@type": "ListItem", "position": 4, "name": "Margin of Error and Inference", "item": "https://satified.org/sat-math/problem-solving-data-analysis/inference-margin-error/" }
+        ]
+      },
+      {
+        "@type": "LearningResource",
+        "name": "SAT Margin of Error and Inference Practice",
+        "description": "Free SAT practice questions on margin of error and inference from random samples at real digital SAT difficulty, with unlimited regenerating drills.",
+        "url": "https://satified.org/sat-math/problem-solving-data-analysis/inference-margin-error/",
+        "learningResourceType": "Practice problems",
+        "educationalLevel": "High school",
+        "teaches": "Margin of error and inference from samples on the digital SAT Math section",
+        "isAccessibleForFree": true,
+        "provider": { "@type": "Organization", "name": "Satified", "url": "https://satified.org/" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Will I ever calculate a margin of error from a formula?", "acceptedAnswer": { "@type": "Answer", "text": "No. The digital SAT always hands you the margin. The question tests whether you know what to do with it: build the plausible range around the sample estimate and say something honest about the population." } },
+          { "@type": "Question", "name": "What does a margin of error actually mean?", "acceptedAnswer": { "@type": "Answer", "text": "The sample gives an estimate, and the margin marks how far the true population value plausibly sits from that estimate. A sample mean of 128 with a margin of 6 supports plausible population means from 122 to 134." } },
+          { "@type": "Question", "name": "What makes a margin of error smaller?", "acceptedAnswer": { "@type": "Answer", "text": "A larger random sample. More data means less random wobble in the estimate. Changing the population size barely matters, and no sample size can fix a sample that was biased in the first place." } },
+          { "@type": "Question", "name": "Does the interval apply to individual people?", "acceptedAnswer": { "@type": "Answer", "text": "No, and the SAT tests exactly this. The interval bounds the population average, not any single household or person. Individual values can and do fall far outside it." } },
+          { "@type": "Question", "name": "How is practicing this skill on Satified different?", "acceptedAnswer": { "@type": "Answer", "text": "The generators rebuild every question with new samples, margins, and populations, and every answer in the 1,483 question bank has been independently verified, so the conclusion wording you learn is the correct wording." } }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="pg-header">
+      <a class="brand" href="/"><span class="b1">sat</span><span class="b2">ified</span></a>
+      <nav class="pg-nav" aria-label="Main">
+        <a href="/sat-math-practice/" class="hide-m">Practice</a>
+        <a href="/sat-math-practice-test/" class="hide-m">Practice test</a>
+        <a href="/faq/" class="hide-m">FAQ</a>
+        <a class="cta" href="/study/">Study →</a>
+      </nav>
+    </header>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span><a href="/sat-math/">SAT Math</a><span>/</span><a href="/sat-math/problem-solving-data-analysis/">Data Analysis</a><span>/</span>Margin of error and inference
+    </nav>
+
+    <main>
+      <div class="pg-hero">
+        <p class="eyebrow">Data Analysis · Skill 6 of 7</p>
+        <h1>SAT Margin of Error and <span class="accent">Inference</span> Practice</h1>
+        <p class="lede">Margin of error questions are vocabulary questions in disguise. The digital SAT gives you the margin, no formula required, and grades whether you can build the plausible range around a sample estimate and then say only what the sample honestly supports about the population.</p>
+        <ul class="facts">
+          <li>Domain: Data Analysis</li>
+          <li>About 15% of the test is Data Analysis</li>
+          <li>Difficulty: easy to hard</li>
+          <li>Free, no account</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn dark" href="/study/">Drill inference now →</a>
+          <a class="btn" href="/sat-math/problem-solving-data-analysis/">See all Data Analysis skills</a>
+        </div>
+      </div>
+
+      <section>
+        <h2>The patterns the SAT actually uses</h2>
+        <p>Four patterns cover this skill, and only one of them involves arithmetic. The other three are tests of what a sample can and cannot promise.</p>
+        <div class="patterns">
+          <article class="pattern">
+            <p class="k">Pattern 01</p>
+            <h3>Build the plausible range</h3>
+            <p>Estimate plus and minus the margin. A sample mean of 128 with a margin of 6 supports plausible population means from 122 to 134. That subtraction and addition is the entire computation.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Pattern 02</p>
+            <h3>Choose the honest conclusion</h3>
+            <p>Answer choices restate the interval with different subjects and different confidence. The credited one talks about the population mean or proportion, with suitably careful language.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Pattern 03</p>
+            <h3>Shrink the margin</h3>
+            <p>Which change reduces the margin of error: a larger random sample. Recognize this answer even when it arrives wrapped in a story about redesigning the study.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Pattern 04</p>
+            <h3>Reject the overreach</h3>
+            <p>Wrong choices apply the interval to individuals, to other populations, or claim certainty. Knowing what the margin cannot say wins as many points as knowing what it can.</p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>One worked example, start to finish</h2>
+        <div class="worked">
+          <p class="k">Worked example · medium</p>
+          <p class="q">Researchers selected a random sample of 250 households from the 12,000 households in a town and recorded each household's daily water use. The sample mean was 128 gallons per day, with an associated margin of error of 6 gallons. Based on this sample, which values are plausible for the mean daily water use of all households in the town?</p>
+          <ol>
+            <li>The sample mean is the estimate for the population mean: 128 gallons per day.</li>
+            <li>The margin of error stretches that estimate both ways: 128 − 6 = 122 and 128 + 6 = 134.</li>
+            <li>So plausible values for the mean daily use of all 12,000 households run from 122 to 134 gallons. The claim is about the population mean, not about any single household.</li>
+            <li>Check: the interval is centered at 128, and its total width is 12, exactly twice the margin of 6. Both ends check out.</li>
+          </ol>
+          <p class="ans">Answer: 122 to 134 gallons per day</p>
+          <p>Different towns, different margins on every regeneration, same two moves: stretch the estimate both ways, then speak only about the population mean.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Where students lose the point</h2>
+        <ul class="traps">
+          <li><strong>Applying the interval to individuals.</strong> From 122 to 134 bounds the plausible population mean. Any single household can use 60 gallons or 300 and contradict nothing in the study.</li>
+          <li><strong>Expecting the margin to fix bias.</strong> The margin quantifies random sampling error only. A survey of volunteers keeps its bias no matter how small the reported margin looks.</li>
+          <li><strong>Treating the interval as certain.</strong> Values outside 122 to 134 are not impossible, only less plausible. Choices containing must or certainly overstate what a sample can promise.</li>
+          <li><strong>Confusing margin with width.</strong> The margin of error, 6, is added on each side, so the full width of the plausible range is 12. Both numbers appear in the answer choices.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Using Desmos here</h2>
+        <p>You will barely need Desmos on margin of error questions: the arithmetic is one subtraction and one addition, and the numbers are chosen to be friendly. The graded skill is verbal precision, what a random sample does and does not license you to say. Spend your practice time on the conclusion wording, and save the calculator for the skills that reward it.</p>
+      </section>
+
+      <section>
+        <h2>Why drilling here is different</h2>
+        <p>Satified regenerates these questions with fresh samples, margins, and populations on every load, at easy, medium, and hard difficulty, so the plausible range move and the careful conclusion wording both get real repetitions. Every answer and explanation across the 1,483 question bank has been independently verified.</p>
+        <div class="cta-band">
+          <p class="big">New samples, new margins, <em>forever.</em></p>
+          <a class="btn dark" href="/study/">Start this skill free →</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Questions students ask</h2>
+        <dl class="faq">
+          <div><dt>Will I ever calculate a margin of error from a formula?</dt><dd>No. The digital SAT always hands you the margin. The question tests whether you know what to do with it: build the plausible range around the sample estimate and say something honest about the population.</dd></div>
+          <div><dt>What does a margin of error actually mean?</dt><dd>The sample gives an estimate, and the margin marks how far the true population value plausibly sits from that estimate. A sample mean of 128 with a margin of 6 supports plausible population means from 122 to 134.</dd></div>
+          <div><dt>What makes a margin of error smaller?</dt><dd>A larger random sample. More data means less random wobble in the estimate. Changing the population size barely matters, and no sample size can fix a sample that was biased in the first place.</dd></div>
+          <div><dt>Does the interval apply to individual people?</dt><dd>No, and the SAT tests exactly this. The interval bounds the population average, not any single household or person. Individual values can and do fall far outside it.</dd></div>
+          <div><dt>How is practicing this skill on Satified different?</dt><dd>The generators rebuild every question with new samples, margins, and populations, and every answer in the 1,483 question bank has been independently verified, so the conclusion wording you learn is the correct wording.</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Keep going</h2>
+        <p>The wording discipline you build here is exactly what statistical claims questions grade next.</p>
+        <nav class="related" aria-label="Related skills">
+          <a href="/sat-math/problem-solving-data-analysis/ratios-rates-units/">Ratios, rates, and units</a>
+          <a href="/sat-math/problem-solving-data-analysis/percentages/">Percentages</a>
+          <a href="/sat-math/problem-solving-data-analysis/one-variable-data/">One variable data</a>
+          <a href="/sat-math/problem-solving-data-analysis/two-variable-data/">Two variable data</a>
+          <a href="/sat-math/problem-solving-data-analysis/probability/">Probability</a>
+          <a href="/sat-math/problem-solving-data-analysis/statistical-claims/">Statistical claims</a>
+          <a href="/sat-math/problem-solving-data-analysis/">All of Data Analysis</a>
+        </nav>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pg-footer">
+    <div class="wrap">
+      <a class="fbrand" href="/">sat<span class="b2">ified</span></a>
+      <a href="/sat-math-practice/">Practice</a>
+      <a href="/sat-math-practice-test/">Practice test</a>
+      <a href="/sat-math/">All topics</a>
+      <a href="/about/">About</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <span>© 2026 Satified</span>
+    </div>
+  </footer>
+</body>
+</html>

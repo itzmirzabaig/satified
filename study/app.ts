@@ -1436,7 +1436,7 @@ class PracticeTestEngine {
       const fillIn = !q.data.options || q.data.options.length === 0;
       const norm = (s: string) => s.trim().toLowerCase().replace(/\.0+$/, '');
       const correct = fillIn
-        ? norm(q.userInput) === norm(String(q.data.correctAnswer))
+        ? (norm(q.userInput) === norm(String(q.data.correctAnswer)) || numericallyEqual(q.userInput, String(q.data.correctAnswer)))
         : q.selectedOpt === resolveCorrect(q.data.correctAnswer, q.data.options);
       return sum + (correct ? (pts[q.difficulty] ?? 10) : 0);
     }, 0);
@@ -1478,13 +1478,13 @@ class PracticeTestEngine {
     const allQs = [...this.module1, ...this.module2];
     const domainStats: Record<string, { correct: number; total: number }> = {};
     for (const q of allQs) {
-      if (!q.data) continue;
       if (!domainStats[q.domain]) domainStats[q.domain] = { correct: 0, total: 0 };
       domainStats[q.domain].total++;
+      if (!q.data) continue;
       const fillIn = !q.data.options || q.data.options.length === 0;
       const norm = (s: string) => s.trim().toLowerCase().replace(/\.0+$/, '');
       const correct = fillIn
-        ? norm(q.userInput) === norm(String(q.data.correctAnswer))
+        ? (norm(q.userInput) === norm(String(q.data.correctAnswer)) || numericallyEqual(q.userInput, String(q.data.correctAnswer)))
         : q.selectedOpt === resolveCorrect(q.data.correctAnswer, q.data.options);
       if (correct) domainStats[q.domain].correct++;
     }
@@ -1661,7 +1661,7 @@ class PracticeTestEngine {
         const fillIn = !d.options || d.options.length === 0;
         const norm = (s: string) => s.trim().toLowerCase().replace(/\.0+$/, '');
         const correct = fillIn
-          ? norm(q.userInput) === norm(String(d.correctAnswer))
+          ? (norm(q.userInput) === norm(String(d.correctAnswer)) || numericallyEqual(q.userInput, String(d.correctAnswer)))
           : q.selectedOpt === resolveCorrect(d.correctAnswer, d.options);
 
         const iconColor = correct ? '#27ae60' : '#e74c3c';

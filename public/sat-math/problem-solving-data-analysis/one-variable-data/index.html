@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAT One Variable Data Practice | Satified</title>
+  <meta name="description" content="Free SAT one variable data practice: histograms, boxplots, mean versus median, and spread, with a fully worked example, common traps, and drills that regenerate forever.">
+  <link rel="canonical" href="https://satified.org/sat-math/problem-solving-data-analysis/one-variable-data/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Satified">
+  <meta property="og:title" content="SAT One Variable Data Practice | Satified">
+  <meta property="og:description" content="The exact distribution, center, and spread patterns the digital SAT uses, a worked example, common traps, and free drills that regenerate forever.">
+  <meta property="og:url" content="https://satified.org/sat-math/problem-solving-data-analysis/one-variable-data/">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/pages.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://satified.org/" },
+          { "@type": "ListItem", "position": 2, "name": "SAT Math", "item": "https://satified.org/sat-math/" },
+          { "@type": "ListItem", "position": 3, "name": "Data Analysis", "item": "https://satified.org/sat-math/problem-solving-data-analysis/" },
+          { "@type": "ListItem", "position": 4, "name": "One Variable Data", "item": "https://satified.org/sat-math/problem-solving-data-analysis/one-variable-data/" }
+        ]
+      },
+      {
+        "@type": "LearningResource",
+        "name": "SAT One Variable Data Practice",
+        "description": "Free SAT practice questions on data with one variable: distributions, center, spread, boxplots, and histograms at real digital SAT difficulty, with unlimited regenerating drills.",
+        "url": "https://satified.org/sat-math/problem-solving-data-analysis/one-variable-data/",
+        "learningResourceType": "Practice problems",
+        "educationalLevel": "High school",
+        "teaches": "One variable data, center, and spread on the digital SAT Math section",
+        "isAccessibleForFree": true,
+        "provider": { "@type": "Organization", "name": "Satified", "url": "https://satified.org/" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Will the SAT ask me to calculate standard deviation?", "acceptedAnswer": { "@type": "Answer", "text": "No. You will never compute it from a formula. You compare it: a data set clustered tightly around its mean has a smaller standard deviation than one that is spread out. Every standard deviation question is that comparison in costume." } },
+          { "@type": "Question", "name": "How do I find the median from a frequency table?", "acceptedAnswer": { "@type": "Answer", "text": "Count positions, not rows. With 50 values, the median is the average of the 25th and 26th values, so add frequencies from the top until you pass those positions. The row or bar you land in holds the median." } },
+          { "@type": "Question", "name": "When do the mean and median disagree?", "acceptedAnswer": { "@type": "Answer", "text": "When the data is skewed or has outliers. A few huge values drag the mean upward while the median barely moves, which is why the SAT loves asking what happens to each measure when an outlier is removed." } },
+          { "@type": "Question", "name": "What exactly does a boxplot show?", "acceptedAnswer": { "@type": "Answer", "text": "Five numbers: the minimum, the first quartile, the median, the third quartile, and the maximum. The box holds the middle 50 percent of the data, and the SAT mostly asks you to read those five values or compare two plots." } },
+          { "@type": "Question", "name": "Why do these drills regenerate?", "acceptedAnswer": { "@type": "Answer", "text": "Each question is a generator, so the data set is new every time it loads. That forces you to practice the counting and comparing method itself instead of remembering that one answer was 85.6. It is free, with no account needed." } }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="pg-header">
+      <a class="brand" href="/"><span class="b1">sat</span><span class="b2">ified</span></a>
+      <nav class="pg-nav" aria-label="Main">
+        <a href="/sat-math-practice/" class="hide-m">Practice</a>
+        <a href="/sat-math-practice-test/" class="hide-m">Practice test</a>
+        <a href="/faq/" class="hide-m">FAQ</a>
+        <a class="cta" href="/study/">Study →</a>
+      </nav>
+    </header>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span><a href="/sat-math/">SAT Math</a><span>/</span><a href="/sat-math/problem-solving-data-analysis/">Data Analysis</a><span>/</span>One variable data
+    </nav>
+
+    <main>
+      <div class="pg-hero">
+        <p class="eyebrow">Data Analysis · Skill 3 of 7</p>
+        <h1>SAT One Variable <span class="accent">Data</span> Practice</h1>
+        <p class="lede">These questions hand you a histogram, a boxplot, a dot plot, or a frequency table and ask what the center and spread are really saying. The digital SAT never makes you crunch a standard deviation; it makes you reason about one. This page covers the patterns, works a weighted mean completely, then links drills whose data sets never repeat.</p>
+        <ul class="facts">
+          <li>Domain: Data Analysis</li>
+          <li>About 15% of the test is Data Analysis</li>
+          <li>Difficulty: easy to hard</li>
+          <li>Free, no account</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn dark" href="/study/">Drill data questions now →</a>
+          <a class="btn" href="/sat-math/problem-solving-data-analysis/">See all Data Analysis skills</a>
+        </div>
+      </div>
+
+      <section>
+        <h2>The patterns the SAT actually uses</h2>
+        <p>Data with one variable shows up in four reliable costumes. Each one is a reading skill plus at most one short calculation.</p>
+        <div class="patterns">
+          <article class="pattern">
+            <p class="k">Pattern 01</p>
+            <h3>Read the display</h3>
+            <p>Histograms, dot plots, boxplots, frequency tables. Count how many values land in a range, or read the five number summary straight off a boxplot without touching a formula.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Pattern 02</p>
+            <h3>Pick the right center</h3>
+            <p>Mean questions reward totals thinking, median questions reward position thinking. Skewed data or an outlier splits the two apart, and the question hinges on which one resists.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Pattern 03</p>
+            <h3>Combine groups by size</h3>
+            <p>Two classes with different means merge into one group. Weight each mean by its group size and rebuild the totals. Averaging the two means is the planted trap.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Pattern 04</p>
+            <h3>Compare spreads</h3>
+            <p>Two data sets, one clustered and one scattered. The clustered one has the smaller standard deviation and often the smaller range. No formula, just a judgment of distance from center.</p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>One worked example, start to finish</h2>
+        <div class="worked">
+          <p class="k">Worked example · medium</p>
+          <p class="q">A school has two sections of a statistics course. The 20 students in the morning section have a mean final exam score of 82. The 30 students in the afternoon section have a mean final exam score of 88. What is the mean score for all 50 students?</p>
+          <ol>
+            <li>You cannot average 82 and 88 directly, because the sections have different sizes. Rebuild the totals instead.</li>
+            <li>Morning section total: 20 × 82 = 1,640 points. Afternoon section total: 30 × 88 = 2,640 points.</li>
+            <li>Combine: 1,640 + 2,640 = 4,280 points across 20 + 30 = 50 students.</li>
+            <li>Divide: 4,280 ÷ 50 = 85.6. Check the logic: 85.6 sits between 82 and 88 and closer to 88, the larger section. That is exactly where it should sit.</li>
+          </ol>
+          <p class="ans">Answer: 85.6</p>
+          <p>New sections, new means, new sizes every time this regenerates. Rebuild totals, divide once, done.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Where students lose the point</h2>
+        <ul class="traps">
+          <li><strong>Averaging the averages.</strong> (82 + 88) ÷ 2 = 85 ignores the group sizes and misses by 0.6. Group means only average directly when the groups are the same size, and on the SAT they rarely are.</li>
+          <li><strong>Counting rows instead of values.</strong> The median of a frequency table lives at a position among all the values. Find the middle position first, then count frequencies down until you reach it.</li>
+          <li><strong>Reading bar height as a value.</strong> In a histogram the height is a count of values in that interval. The tallest bar marks the most common interval, not the largest data value.</li>
+          <li><strong>Expecting the median to chase an outlier.</strong> Removing one extreme value can move the mean a lot and the median barely or not at all. When asked which measure changed more, the answer is almost always the mean.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Using Desmos here</h2>
+        <p>The built in Desmos handles lists: type mean(82, 90, 95) or median with a pasted list and it answers instantly, which is perfect for checking a frequency table computation or a combined mean. It will not read a histogram for you, and boxplot questions are pure reading. Use Desmos to verify totals and weighted means, and train your eyes to do the display reading unassisted.</p>
+      </section>
+
+      <section>
+        <h2>Why drilling here is different</h2>
+        <p>A fixed practice set teaches you that one data set. Satified's generators rebuild the values, the display, and the question angle on every load, at all three difficulty levels, so you learn to count positions and weigh groups anywhere. Each of the 1,483 questions in the bank carries an independently verified answer and explanation.</p>
+        <div class="cta-band">
+          <p class="big">New data sets, <em>every single time.</em></p>
+          <a class="btn dark" href="/study/">Start this skill free →</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Questions students ask</h2>
+        <dl class="faq">
+          <div><dt>Will the SAT ask me to calculate standard deviation?</dt><dd>No. You will never compute it from a formula. You compare it: a data set clustered tightly around its mean has a smaller standard deviation than one that is spread out. Every standard deviation question is that comparison in costume.</dd></div>
+          <div><dt>How do I find the median from a frequency table?</dt><dd>Count positions, not rows. With 50 values, the median is the average of the 25th and 26th values, so add frequencies from the top until you pass those positions. The row or bar you land in holds the median.</dd></div>
+          <div><dt>When do the mean and median disagree?</dt><dd>When the data is skewed or has outliers. A few huge values drag the mean upward while the median barely moves, which is why the SAT loves asking what happens to each measure when an outlier is removed.</dd></div>
+          <div><dt>What exactly does a boxplot show?</dt><dd>Five numbers: the minimum, the first quartile, the median, the third quartile, and the maximum. The box holds the middle 50 percent of the data, and the SAT mostly asks you to read those five values or compare two plots.</dd></div>
+          <div><dt>Why do these drills regenerate?</dt><dd>Each question is a generator, so the data set is new every time it loads. That forces you to practice the counting and comparing method itself instead of remembering that one answer was 85.6. It is free, with no account needed.</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Keep going</h2>
+        <p>Data displays return one skill later with a second variable, and the vocabulary you build here powers the inference questions too.</p>
+        <nav class="related" aria-label="Related skills">
+          <a href="/sat-math/problem-solving-data-analysis/ratios-rates-units/">Ratios, rates, and units</a>
+          <a href="/sat-math/problem-solving-data-analysis/percentages/">Percentages</a>
+          <a href="/sat-math/problem-solving-data-analysis/two-variable-data/">Two variable data</a>
+          <a href="/sat-math/problem-solving-data-analysis/probability/">Probability</a>
+          <a href="/sat-math/problem-solving-data-analysis/inference-margin-error/">Margin of error and inference</a>
+          <a href="/sat-math/problem-solving-data-analysis/statistical-claims/">Statistical claims</a>
+          <a href="/sat-math/problem-solving-data-analysis/">All of Data Analysis</a>
+        </nav>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pg-footer">
+    <div class="wrap">
+      <a class="fbrand" href="/">sat<span class="b2">ified</span></a>
+      <a href="/sat-math-practice/">Practice</a>
+      <a href="/sat-math-practice-test/">Practice test</a>
+      <a href="/sat-math/">All topics</a>
+      <a href="/about/">About</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <span>© 2026 Satified</span>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,586 +1,802 @@
-/**
- * SATIFIED LANDING — SCROLL ENGINE v4
- *
- * Fixes in this version:
- * 1. R=160 to match SVG element (was 155, caused circle displacement)
- * 2. Very slow gentle zoom throughout all phases (barely noticeable)
- * 3. Sin wave grows BOTH directions simultaneously from origin
- * 4. Last panel: no broken horizontal slide — instead nav drops down elegantly
- *    and Study button grows/glows, "Official site forthcoming" fades in below
- * 5. Full state reset on scroll-back
- * 6. More budget on satisfied section
- */
+/* ═══════════════════════════════════════════════════════════════════
+   SATIFIED — landing engine
+   Horizontal world (GSAP pinned track) · spine line · WebGL hero
+   counter · scroll-scrubbed acorn choreography.
+   All effects re-implemented from scratch.
+   ═══════════════════════════════════════════════════════════════════ */
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
-(function () {
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-  const ANIM_PX   = 2000;
-  const MOBILE_BP = 768;
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* single source of truth: the inline head script tags <html> with .vertical.
+   JS and CSS read the SAME flag, so their modes can never disagree. */
+if (!document.documentElement.classList.contains('vertical') &&
+    (matchMedia('(hover: none), (pointer: coarse)').matches || innerWidth < 761 || ('ontouchstart' in window))) {
+  document.documentElement.classList.add('vertical');
+}
+const TOUCH = document.documentElement.classList.contains('vertical');
+const HORIZONTAL = !TOUCH;   /* touch devices get a normal vertical page */
+const vw = () => window.innerWidth;
+const vh = () => window.innerHeight;
 
-  const driver      = document.getElementById('scroll-driver');
-  const track       = document.getElementById('horizontal-track');
-  const body        = document.body;
-  const svg         = document.getElementById('anim-svg');
-  const navWrap     = document.getElementById('nav-wrap');
-  const navStudyBtn = document.getElementById('nav-study-btn');
-  const forthcoming = document.getElementById('forthcoming');
-  const scrollHint  = document.getElementById('scroll-hint');
-  const xArm1       = document.getElementById('x-arm1');
-  const xArm2       = document.getElementById('x-arm2');
-  const grid        = document.getElementById('g-grid');
-  const circleEl    = document.getElementById('unit-circle');
-  const circleTrace = document.getElementById('circle-trace');
-  const terminal    = document.getElementById('terminal');
-  const labels      = document.getElementById('g-labels');
-  const axisLabels  = document.getElementById('g-axis-labels');
-  const wipe        = document.getElementById('black-wipe');
-  const revealSat   = document.getElementById('reveal-satisfied');
-  const revealYet   = document.getElementById('reveal-yet');
-  const spanSat     = document.getElementById('span-sat');
-  const satLine     = document.getElementById('sat-line');
+const $  = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 
-  const mathIds = ['me1','me2','me3','me4','me5','me6','me7','me8','me9','me10',
-                   'me11','me12','me13','me14','me15','me16','me17','me18','me19','me20'];
-  const mathEls = mathIds.map(id => document.getElementById(id));
+const track   = $('#track');
+const wrap    = $('.track-wrap');
+const header  = $('#site-header');
+const spine   = $('#spine');
 
-  const clamp    = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-  const lerp     = (a, b, t)   => a + (b - a) * t;
-  const sub      = (t, a, b)   => clamp((t - a) / (b - a), 0, 1);
-  const easeOut  = t => 1 - (1 - t) * (1 - t);
-  const easeIn   = t => t * t;
-  const easeIO   = t => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
-  const easeOut3 = t => 1 - Math.pow(1 - t, 3);
+/* ────────────────────────────────────────────────────────────────────
+   0 · CRASH TRAP — registered before anything can die. Whatever
+       happens, the visitor gets a scrollable page with content, and
+       on private networks the error prints on screen for diagnosis.
+   ──────────────────────────────────────────────────────────────────── */
+const DEV_HOST = /^(localhost|127\.|192\.168\.|10\.)/.test(location.hostname);
+function crashRecover(err) {
+  try {
+    if (document.body.dataset.crashed) return;
+    document.body.dataset.crashed = '1';
+    if (DEV_HOST && err) {
+      const d = document.createElement('div');
+      d.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#b00020;color:#fff;font:12px/1.5 monospace;padding:10px;white-space:pre-wrap;word-break:break-all';
+      d.textContent = 'JS crash: ' + ((err && (err.stack || err.message)) || err);
+      document.body.appendChild(d);
+    }
+    const L = document.getElementById('loader'); if (L) L.remove();
+    if (TOUCH) document.body.classList.add('vertical');
+    document.body.classList.add('no-gl');
+    const dc = document.getElementById('hero-counter-dom'); if (dc) dc.textContent = '1600';
+    gsap.set(['.site-header', '.hero-tag', '.hero-foot', '#hero-script'], { autoAlpha: 1, y: 0 });
+  } catch (_) {}
+}
+addEventListener('error', e => {
+  if (!document.body.dataset.entrance) crashRecover(e.error || (e.message + ' @ ' + (e.filename || '') + ':' + (e.lineno || '')));
+});
+addEventListener('unhandledrejection', e => {
+  if (!document.body.dataset.entrance) crashRecover(e.reason);
+});
+setTimeout(() => {
+  if (!document.body.dataset.entrance) {
+    try { loaderGone = true; drawCounterTex(0); drawNum(); startCounter(); } catch (err) { crashRecover(err); }
+  }
+}, 4000);
 
-  const CX = 500, CY = 300;
-  const AXIS = 490;
-  const R    = 160;  // ← matches SVG unit-circle r="160" and terminal x2=660
-  const svgNS = 'http://www.w3.org/2000/svg';
+/* ────────────────────────────────────────────────────────────────────
+   1 · ENTRANCE — black screen, the 1600 count, the tagline, then the
+       living math background and everything else fades in.
+   ──────────────────────────────────────────────────────────────────── */
+const reveal = { v: 0 };   /* 0 = pure black + number only · 1 = full scene */
+const ENTRANCE_HIDDEN = ['.site-header', '.hero-tag', '.hero-foot'];
 
-  const REF_ANGLES = [
-    [30,'30°','π/6'],[45,'45°','π/4'],[60,'60°','π/3'],[90,'90°','π/2'],
-    [120,'120°','2π/3'],[135,'135°','3π/4'],[150,'150°','5π/6'],[180,'180°','π'],
-    [210,'210°','7π/6'],[225,'225°','5π/4'],[240,'240°','4π/3'],[270,'270°','3π/2'],
-    [300,'300°','5π/3'],[315,'315°','7π/4'],[330,'330°','11π/6'],[360,'360°','2π'],
-  ];
+/* the satified wordmark loader: counts [0000] → [1600], lifts away,
+   then hands the stage to the black screen entrance */
+function runLoader() {
+  const L = document.getElementById('loader');
+  if (!L) return Promise.resolve();
+  if (REDUCED || scrollY > 60) { L.remove(); return Promise.resolve(); }
+  const count = L.querySelector('.loader-count');
+  const o = { v: 0 };
+  return new Promise(res => {
+    gsap.to(o, {
+      v: 1600, duration: .8, ease: 'power2.inOut',
+      onUpdate: () => { count.textContent = '[' + String(Math.round(o.v)).padStart(4, '0') + ']'; },
+      onComplete: () => { L.classList.add('done'); setTimeout(() => { L.remove(); res(); }, 700); }
+    });
+  });
+}
 
-  const wipeEl = document.getElementById('black-wipe');
+/* ────────────────────────────────────────────────────────────────────
+   2 · HORIZONTAL ENGINE — native vertical scroll → track translateX.
+       Works with mouse, trackpad and touch, portrait & landscape.
+   ──────────────────────────────────────────────────────────────────── */
+const dist = () => Math.max(1, track.scrollWidth - vw());
 
-  // Build ref angle SVG group
-  const gRefAngles = document.createElementNS(svgNS, 'g');
-  gRefAngles.setAttribute('opacity', '0');
-  svg.insertBefore(gRefAngles, wipeEl);
+let ready = false;   /* guards onScrollUpdate until boot() finishes (TDZ safety) */
 
-  const refEls = REF_ANGLES.map(([deg, degLbl, radLbl]) => {
-    const radA = (Number(deg) * Math.PI) / 180;
-    const dist = R + 30;
-    const lx = CX + dist * Math.cos(radA);
-    const ly = CY - dist * Math.sin(radA);
+const mainTween = HORIZONTAL ? gsap.to(track, {
+  x: () => -dist(),
+  ease: 'none',
+  scrollTrigger: {
+    trigger: wrap,
+    pin: true,
+    scrub: REDUCED ? true : 1.1,
+    start: 'top top',
+    end: () => '+=' + dist(),
+    invalidateOnRefresh: true,
+    anticipatePin: 1,
+    onUpdate: self => onScrollUpdate(self)
+  }
+}) : null;
 
-    const g = document.createElementNS(svgNS, 'g');
-    g.setAttribute('opacity', '0');
+/* panel lookup for header theme + spine geometry */
+let panels = [];
+function measurePanels() {
+  panels = $$('.panel').map(p => ({
+    el: p, left: p.offsetLeft, width: p.offsetWidth,
+    theme: p.dataset.theme || 'light', id: p.id
+  }));
+}
 
-    const tDeg = document.createElementNS(svgNS, 'text');
-    tDeg.setAttribute('x', lx.toFixed(1));
-    tDeg.setAttribute('y', ly.toFixed(1));
-    tDeg.setAttribute('text-anchor', 'middle');
-    tDeg.setAttribute('dominant-baseline', 'middle');
-    tDeg.setAttribute('font-size', '11');
-    tDeg.setAttribute('font-family', 'system-ui,sans-serif');
-    tDeg.setAttribute('font-weight', '700');
-    tDeg.setAttribute('fill', '#333');
-    tDeg.textContent = String(degLbl);
+/* ────────────────────────────────────────────────────────────────────
+   3 · SPINE LINE — hand-drawn wavy path across the whole track,
+       generated to fit the real layout. Dashed guide + solid draw-on
+       copy. Gapped across the acorn zone so nothing covers the video.
+   ──────────────────────────────────────────────────────────────────── */
+const dashPath  = $('#spine-dash');
+const solidPath = $('#spine-solid');
+const dotsGroup = $('#spine-dots');
+let solidLen = 0;
 
-    const tRad = document.createElementNS(svgNS, 'text');
-    tRad.setAttribute('x', lx.toFixed(1));
-    tRad.setAttribute('y', (ly + 14).toFixed(1));
-    tRad.setAttribute('text-anchor', 'middle');
-    tRad.setAttribute('dominant-baseline', 'middle');
-    tRad.setAttribute('font-size', '9.5');
-    tRad.setAttribute('font-family', 'system-ui,sans-serif');
-    tRad.setAttribute('font-weight', '400');
-    tRad.setAttribute('fill', '#555');
-    tRad.setAttribute('opacity', '0');
-    tRad.textContent = String(radLbl);
+/* deterministic pseudo-random for a stable hand-drawn feel */
+const wob = i => Math.sin(i * 12.9898) * .5 + Math.sin(i * 4.1414) * .5;
 
-    g.appendChild(tDeg);
-    g.appendChild(tRad);
-    gRefAngles.appendChild(g);
+function buildSpine() {
+  measurePanels();
+  const H = vh();
+  const W = track.scrollWidth;
+  spine.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  spine.setAttribute('width', W);
+  spine.setAttribute('height', H);
 
-    return { g, tDeg, tRad, deg: Number(deg), appeared: false, hit: false, settled: false };
+  const yAt = {                       /* viewport-height fractions per chapter */
+    'p-hero': .57, 'p-acorn': .57, 'p-manifesto': .94, 'p-stats': .18,
+    'p-algebra': .86, 'p-advmath': .80, 'p-psda': .86, 'p-geo': .80,
+    'p-test': .12, 'p-faq': .88, 'p-end': .55
+  };
+  const get = id => panels.find(p => p.id === id);
+
+  /* build waypoint list: [x, y] pairs; null = pen up (gap) */
+  const pts = [];
+  const hero = get('p-hero'), acorn = get('p-acorn'), end = get('p-end');
+
+  pts.push([hero.left + hero.width * .62, H * yAt['p-hero']]);
+  pts.push([hero.left + hero.width, H * (yAt['p-hero'] - .015)]);
+  /* short lead into the acorn panel, then a gap while the acorn owns the stage */
+  pts.push([acorn.left + vw() * .16, H * .57]);
+  pts.push(null);
+  pts.push([acorn.left + acorn.width - vw() * .14, H * .62]);
+  /* dive low before the manifesto text so the line never crosses the heading */
+  pts.push([get('p-manifesto').left - vw() * .01, H * .97]);
+
+  const chapters = ['p-manifesto', 'p-stats', 'p-algebra', 'p-advmath', 'p-psda', 'p-geo', 'p-test', 'p-faq'];
+  chapters.forEach((id, ci) => {
+    const p = get(id); if (!p) return;
+    const y = H * yAt[id];
+    const n = Math.max(2, Math.round(p.width / (vw() * .5)));
+    for (let i = 0; i <= n; i++) {
+      const x = p.left + (p.width * i) / n;
+      pts.push([x, y + wob(ci * 7 + i) * H * .045]);
+    }
+  });
+  pts.push([end.left + vw() * .10, H * yAt['p-end']]);
+
+  /* Catmull-Rom → cubic bézier, honouring pen-up gaps */
+  const segs = [];
+  let cur = [];
+  pts.forEach(pt => { if (pt === null) { if (cur.length) segs.push(cur); cur = []; } else cur.push(pt); });
+  if (cur.length) segs.push(cur);
+
+  const d = segs.map(seg => {
+    if (seg.length < 2) return '';
+    let s = `M ${seg[0][0].toFixed(1)} ${seg[0][1].toFixed(1)}`;
+    for (let i = 0; i < seg.length - 1; i++) {
+      const p0 = seg[Math.max(0, i - 1)], p1 = seg[i], p2 = seg[i + 1], p3 = seg[Math.min(seg.length - 1, i + 2)];
+      const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+      const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+      s += ` C ${c1[0].toFixed(1)} ${c1[1].toFixed(1)}, ${c2[0].toFixed(1)} ${c2[1].toFixed(1)}, ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+    }
+    return s;
+  }).join(' ');
+
+  dashPath.setAttribute('d', d);
+  solidPath.setAttribute('d', d);
+  solidLen = solidPath.getTotalLength();
+  solidPath.style.strokeDasharray = solidLen;
+  solidPath.style.strokeDashoffset = solidLen;
+
+  /* chapter dots on the line */
+  dotsGroup.innerHTML = '';
+  chapters.forEach(id => {
+    const p = get(id); if (!p) return;
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', p.left); c.setAttribute('cy', H * yAt[id]);
+    c.setAttribute('r', 5); c.setAttribute('class', 'spine-dot');
+    dotsGroup.appendChild(c);
+  });
+  /* gold terminals at the acorn gap */
+  [[acorn.left + vw() * .16, .57], [acorn.left + acorn.width - vw() * .14, .62]].forEach(([x, fy]) => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', x); c.setAttribute('cy', H * fy);
+    c.setAttribute('r', 6); c.setAttribute('class', 'spine-dot gold');
+    dotsGroup.appendChild(c);
+  });
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   4 · HERO — WebGL counter with liquid mouse displacement + halftone.
+   ──────────────────────────────────────────────────────────────────── */
+const glCanvas   = $('#hero-gl');
+const heroPanel  = $('#p-hero');
+const domCounter = $('#hero-counter-dom');
+const counter = { v: 0 };
+let gl = null, glProg = null, glTex = null, texCanvas = null, texCtx = null;
+let uMouseLoc, uResLoc, uTimeLoc, uRevealLoc;
+const mouse = { x: .5, y: .45, tx: .5, ty: .45 };
+let heroVisible = true, startT = performance.now();
+/* adaptive performance: degrade resolution + scene rate on slow machines */
+let perfScale = TOUCH ? .85 : 1, sceneEvery = TOUCH ? 3 : 2, texW = 0, texH = 0, loaderGone = false;
+let glTexNum = null, numCanvas = null, numCtx = null, numW = 0, numH = 0;
+
+const FRAG = `
+precision mediump float;
+uniform sampler2D uTex;
+uniform sampler2D uNum;
+uniform vec2 uMouse; uniform vec2 uRes; uniform float uTime;
+uniform float uReveal;
+
+vec2 displace(vec2 suv, vec2 p, vec2 m, vec2 asp, float t){
+  float d = distance(p, m);
+  float force = exp(-d * d * 9.0);
+  vec2 dir = (p - m) / max(d, 1e-3);
+  vec2 duv = suv - (dir * force * 0.085 * uReveal) / asp;
+  duv += vec2(sin(t * .6 + suv.y * 6.283), cos(t * .45 + suv.x * 6.283)) * 0.0035 * uReveal;
+  return vec2(duv.x, 1.0 - duv.y);
+}
+
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  vec2 asp = vec2(uRes.x / uRes.y, 1.0);
+  vec2 p = uv * asp;
+  vec2 m = uMouse * asp;
+  float d = distance(p, m);
+  float force = exp(-d * d * 9.0);
+
+  /* bead lattice — the beads ARE the display */
+  float cells = 84.0;
+  vec2 gp = p * cells;
+  vec2 id = floor(gp);
+  vec2 cuv = fract(gp) - 0.5;
+
+  /* one scene sample at the bead's centre decides how much it swells */
+  vec2 centre = (id + 0.5) / cells;         /* in p-space */
+  vec2 texC = displace(centre / asp, centre, m, asp, uTime);
+  vec4 cTex = texture2D(uTex, texC);
+  float lumC = cTex.a * max(max(cTex.r, cTex.g), cTex.b);
+
+  /* per-pixel sample keeps the content readable through the lattice */
+  vec2 texP = displace(uv, p, m, asp, uTime);
+  vec4 tex = texture2D(uTex, texP);
+  float lumP = tex.a * max(max(tex.r, tex.g), tex.b);
+
+  float r = (0.11 + lumC * 0.34 + force * 0.15) * uReveal;   /* everything but the number obeys the reveal */
+  float bead = smoothstep(r, r - 0.09, length(cuv)) * uReveal;
+
+  vec3 bg   = mix(vec3(0.0), vec3(0.040, 0.035, 0.004), uReveal);   /* pure black entrance */
+  vec3 base = vec3(0.128, 0.118, 0.082);
+  vec3 lit  = mix(base, tex.rgb, clamp(lumP * 1.9, 0.0, 1.0));
+  vec3 col  = mix(bg, lit, bead);
+
+  /* the 1600 rides its own crisp layer — solid, liquid-distorted, above the beads */
+  vec4 num = texture2D(uNum, texP);
+  col = mix(col, num.rgb, num.a);
+  gl_FragColor = vec4(col, 1.0);
+}`;
+const VERT = `attribute vec2 aPos; void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }`;
+
+function initGL() {
+  try {
+    gl = glCanvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' });
+    if (!gl) return false;
+    const sh = (type, src) => {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src); gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(s);
+      return s;
+    };
+    glProg = gl.createProgram();
+    gl.attachShader(glProg, sh(gl.VERTEX_SHADER, VERT));
+    gl.attachShader(glProg, sh(gl.FRAGMENT_SHADER, FRAG));
+    gl.linkProgram(glProg);
+    if (!gl.getProgramParameter(glProg, gl.LINK_STATUS)) throw 'link';
+    gl.useProgram(glProg);
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(glProg, 'aPos');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const mkTex = () => {
+      const t = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      return t;
+    };
+    glTex = mkTex();
+    glTexNum = mkTex();
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, glTex);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, glTexNum);
+    gl.uniform1i(gl.getUniformLocation(glProg, 'uTex'), 0);
+    gl.uniform1i(gl.getUniformLocation(glProg, 'uNum'), 1);
+    uMouseLoc = gl.getUniformLocation(glProg, 'uMouse');
+    uResLoc   = gl.getUniformLocation(glProg, 'uRes');
+    uTimeLoc  = gl.getUniformLocation(glProg, 'uTime');
+    uRevealLoc = gl.getUniformLocation(glProg, 'uReveal');
+    texCanvas = document.createElement('canvas');
+    texCtx = texCanvas.getContext('2d');
+    numCanvas = document.createElement('canvas');
+    numCtx = numCanvas.getContext('2d');
+    document.body.classList.add('has-gl');
+    return true;
+  } catch (e) { gl = null; return false; }
+}
+
+function sizeGL() {
+  if (!gl) return;
+  const dpr = Math.min(devicePixelRatio || 1, 1.5) * perfScale;
+  const tdpr = Math.min(devicePixelRatio || 1, 1) * .8 * perfScale;  /* scene layer re-uploads often */
+  const ndpr = Math.min(devicePixelRatio || 1, 1.5) * Math.max(perfScale, .8);
+  const w = heroPanel.offsetWidth, h = heroPanel.offsetHeight;
+  glCanvas.width = Math.max(2, Math.round(w * dpr));
+  glCanvas.height = Math.max(2, Math.round(h * dpr));
+  texCanvas.width = Math.max(2, Math.round(w * tdpr));
+  texCanvas.height = Math.max(2, Math.round(h * tdpr));
+  numCanvas.width = Math.max(2, Math.round(w * ndpr));
+  numCanvas.height = Math.max(2, Math.round(h * ndpr));
+  texW = 0; texH = 0; numW = 0; numH = 0;               /* force full texture respec */
+  gl.viewport(0, 0, glCanvas.width, glCanvas.height);
+  drawCounterTex(0);
+  drawNum();
+}
+
+/* crisp counter layer — only redrawn while the number changes */
+function drawNum() {
+  if (!gl) return;
+  const w = numCanvas.width, h = numCanvas.height;
+  numCtx.clearRect(0, 0, w, h);
+  const fs = Math.min(w * .33, h * .52);
+  numCtx.font = `400 ${fs}px "Instrument Serif", Georgia, serif`;
+  numCtx.textAlign = 'center';
+  numCtx.textBaseline = 'middle';
+  numCtx.fillStyle = '#E5E1D3';
+  numCtx.fillText(String(Math.round(counter.v)), w / 2, h * .47);
+  gl.activeTexture(gl.TEXTURE1);
+  gl.bindTexture(gl.TEXTURE_2D, glTexNum);
+  if (w === numW && h === numH) {
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, numCanvas);
+  } else {
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, numCanvas);
+    numW = w; numH = h;
+  }
+  gl.activeTexture(gl.TEXTURE0);
+}
+
+/* ambient math scene — everything below gets liquid-distorted by the shader */
+const EXPRS = [
+  ['sin²θ + cos²θ = 1',            .06, .13, .7],
+  ['f(x) = A·sin(Bx + C)',         .67, .10, 1.1],
+  ['∫₀¹ x² dx = ⅓',                .07, .47, .9],
+  ['tan θ = sin θ / cos θ',        .70, .60, .6],
+  ['e^iπ + 1 = 0',                 .45, .07, 1.3],
+  ['y = mx + b',                   .26, .09, .8],
+  ['a² + b² = c²',                 .90, .40, 1.0],
+  ['Δy / Δx',                      .93, .70, .75],
+  ['(x−h)² + (y−k)² = r²',         .13, .88, .65],
+  ['P(A∣B) = P(A∩B) / P(B)',       .52, .90, .85],
+  ['2π rad = 360°',                .04, .68, 1.15],
+  ['x = (−b ± √(b²−4ac)) / 2a',    .68, .84, .5]
+];
+
+function drawMathScene(c, w, h, t) {
+  const u = Math.min(w, h) / 900;
+  c.lineWidth = 5 * u;
+
+  /* sine + cosine waves along the lower band */
+  const yMid = h * .78, A = h * .05;
+  c.strokeStyle = 'rgba(150,138,95,.8)';
+  c.beginPath();
+  for (let x = 0; x <= w; x += 7) { const y = yMid + A * Math.sin(x / (w / 15) + t * 1.05); x ? c.lineTo(x, y) : c.moveTo(x, y); }
+  c.stroke();
+  c.strokeStyle = 'rgba(232,185,0,.6)';
+  c.beginPath();
+  for (let x = 0; x <= w; x += 7) { const y = yMid + A * Math.cos(x / (w / 15) + t * .8); x ? c.lineTo(x, y) : c.moveTo(x, y); }
+  c.stroke();
+
+  /* unit circle, rotating terminal side + swept arc (top right) */
+  const cx = w * .855, cy = h * .225, R = Math.min(w, h) * .1;
+  c.strokeStyle = 'rgba(150,138,95,.85)';
+  c.beginPath(); c.arc(cx, cy, R, 0, 6.2832); c.stroke();
+  c.strokeStyle = 'rgba(150,138,95,.55)';
+  c.beginPath(); c.moveTo(cx - R * 1.25, cy); c.lineTo(cx + R * 1.25, cy);
+  c.moveTo(cx, cy - R * 1.25); c.lineTo(cx, cy + R * 1.25); c.stroke();
+  const th = t * .55;
+  c.strokeStyle = 'rgba(232,185,0,.85)';
+  c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx + R * Math.cos(th), cy - R * Math.sin(th)); c.stroke();
+  c.beginPath(); c.arc(cx, cy, R * .32, -th, 0); c.stroke();
+  /* sin projection */
+  c.setLineDash([6 * u, 7 * u]);
+  c.strokeStyle = 'rgba(232,185,0,.55)';
+  c.beginPath();
+  c.moveTo(cx + R * Math.cos(th), cy - R * Math.sin(th));
+  c.lineTo(cx + R * Math.cos(th), cy);
+  c.stroke();
+  c.setLineDash([]);
+
+  /* parabola with sweeping area-under-curve (top left) */
+  const px = w * .14, py = h * .32, s2 = Math.min(w, h) * .15;
+  const sweep = (Math.sin(t * .5) + 1) / 2;
+  c.strokeStyle = 'rgba(150,138,95,.8)';
+  c.beginPath();
+  for (let i = 0; i <= 40; i++) { const X = -1 + 2 * i / 40; const sx = px + X * s2, sy = py - X * X * s2 * .9; i ? c.lineTo(sx, sy) : c.moveTo(sx, sy); }
+  c.stroke();
+  c.strokeStyle = 'rgba(150,138,95,.5)';
+  c.beginPath(); c.moveTo(px - s2 * 1.15, py); c.lineTo(px + s2 * 1.15, py); c.stroke();
+  const xe = -1 + 2 * sweep;
+  c.beginPath(); c.moveTo(px - s2, py);
+  for (let i = 0; i <= 30; i++) { const X = -1 + (xe + 1) * i / 30; c.lineTo(px + X * s2, py - X * X * s2 * .9); }
+  c.lineTo(px + xe * s2, py); c.closePath();
+  c.fillStyle = 'rgba(200,150,90,.45)'; c.fill();
+
+  /* drifting formulas, breathing in and out — sized to read through the beads */
+  c.textAlign = 'left'; c.textBaseline = 'middle';
+  EXPRS.forEach(([txt, fx, fy, sp], i) => {
+    const a = .3 + .35 * (0.5 + 0.5 * Math.sin(t * sp + i * 1.7));
+    c.font = `500 ${(i % 3 === 0 ? 30 : 25) * u}px "DM Mono", monospace`;
+    c.fillStyle = i % 4 === 0 ? `rgba(232,185,0,${a})` : `rgba(205,195,155,${a})`;
+    c.fillText(txt, fx * w, fy * h + Math.sin(t * .35 + i) * 6 * u);
   });
 
-  // Sin wave — grows both directions from origin simultaneously
-  const sinWavePath = document.createElementNS(svgNS, 'path');
-  sinWavePath.setAttribute('fill', 'none');
-  sinWavePath.setAttribute('stroke', '#f5c518');
-  sinWavePath.setAttribute('stroke-width', '1.5');
-  sinWavePath.setAttribute('opacity', '0');
-  svg.insertBefore(sinWavePath, wipeEl);
+  /* numbers relentlessly counting up */
+  c.font = `500 ${22 * u}px "DM Mono", monospace`;
+  c.fillStyle = 'rgba(205,195,155,.6)';
+  c.fillText('n = ' + String(Math.floor((t * 61) % 10000)).padStart(4, '0'), w * .055, h * .30);
+  c.fillText('Σ = ' + String(Math.floor(200 + (t * 43) % 600)), w * .885, h * .56);
+  c.fillStyle = 'rgba(232,185,0,.55)';
+  c.fillText('score → ' + String(Math.floor((t * 97) % 1601)).padStart(4, ' '), w * .075, h * .62);
+}
 
-  // Trig readout
-  const gTrigRead = document.createElementNS(svgNS, 'g');
-  gTrigRead.setAttribute('opacity', '0');
-  gTrigRead.setAttribute('font-family', 'system-ui,sans-serif');
-  gTrigRead.setAttribute('font-size', '10');
-  svg.insertBefore(gTrigRead, wipeEl);
-
-  const sinReadEl = document.createElementNS(svgNS, 'text');
-  sinReadEl.setAttribute('fill', '#f5c518');
-  sinReadEl.setAttribute('font-weight', '700');
-  gTrigRead.appendChild(sinReadEl);
-
-  const cosReadEl = document.createElementNS(svgNS, 'text');
-  cosReadEl.setAttribute('fill', '#9ee5fa');
-  cosReadEl.setAttribute('font-weight', '700');
-  gTrigRead.appendChild(cosReadEl);
-
-  // Supplemental arc (phase 3)
-  const suppArc = document.createElementNS(svgNS, 'path');
-  suppArc.setAttribute('fill', 'none');
-  suppArc.setAttribute('stroke', '#444');
-  suppArc.setAttribute('stroke-width', '1.2');
-  suppArc.setAttribute('opacity', '0');
-  svg.insertBefore(suppArc, wipeEl);
-
-  function setLine(el, x1, y1, x2, y2) {
-    el.setAttribute('x1', x1); el.setAttribute('y1', y1);
-    el.setAttribute('x2', x2); el.setAttribute('y2', y2);
+function drawCounterTex(t) {
+  if (!gl) return;
+  const w = texCanvas.width, h = texCanvas.height;
+  texCtx.clearRect(0, 0, w, h);
+  drawMathScene(texCtx, w, h, t || 0);
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, glTex);
+  if (w === texW && h === texH) {
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, texCanvas);
+  } else {
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texCanvas);
+    texW = w; texH = h;
   }
+}
 
-  function arcCCW(a0, a1, r) {
-    const span = a1 - a0;
-    if (Math.abs(span) < 0.001) return '';
-    const x1 = CX + r * Math.cos(a0), y1 = CY - r * Math.sin(a0);
-    const x2 = CX + r * Math.cos(a1), y2 = CY - r * Math.sin(a1);
-    const large = Math.abs(span) > Math.PI ? 1 : 0;
-    return `M${x1.toFixed(2)} ${y1.toFixed(2)} A${r.toFixed(2)} ${r.toFixed(2)} 0 ${large} 0 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
-  }
+let frameN = 0, lastFrameT = 0, ftAccum = 0, ftSamples = 0, degraded = 0;
+function renderGL(ts) {
+  requestAnimationFrame(renderGL);
+  if (!gl || !heroVisible || !loaderGone) return;
 
-  function fullCircle(r) {
-    // Two semicircles to avoid SVG "zero arc" degenerate case
-    const top = CX + r;
-    const bot = CX + r - 0.01;
-    return `M${top} ${CY} A${r} ${r} 0 1 0 ${bot.toFixed(2)} ${CY}`;
-  }
-
-  // Sin wave that grows both left AND right from origin simultaneously
-  // Ends exactly at CX±R (where the terminal side meets the x-axis at 0° / 360°)
-  function buildSinWaveBidir(angle) {
-    if (angle < 0.01) return '';
-    // Spread grows from 0 to exactly R as angle goes 0→2π
-    const spread = angle * R / (2 * Math.PI);
-    const steps = Math.max(8, Math.ceil(spread / 1.5));
-    let rightD = '', leftD = '';
-
-    for (let i = 0; i <= steps; i++) {
-      const frac = i / steps;
-      // Right side: maps frac→x in [CX, CX+spread], sin completes exactly one half-cycle
-      const rwx = CX + frac * spread;
-      const rwy = CY - Math.sin(angle * frac) * (R * 0.28);
-      rightD += i === 0
-        ? `M${rwx.toFixed(2)} ${rwy.toFixed(2)}`
-        : ` L${rwx.toFixed(2)} ${rwy.toFixed(2)}`;
-
-      // Left side: negative x mirror
-      const lwx = CX - frac * spread;
-      const lwy = CY - Math.sin(-(angle * frac)) * (R * 0.28);
-      leftD += i === 0
-        ? `M${lwx.toFixed(2)} ${lwy.toFixed(2)}`
-        : ` L${lwx.toFixed(2)} ${lwy.toFixed(2)}`;
+  /* frame-time watchdog: two-stage degrade on weak GPUs */
+  if (lastFrameT) { ftAccum += ts - lastFrameT; ftSamples++; }
+  lastFrameT = ts;
+  if (ftSamples >= 60) {
+    const avg = ftAccum / ftSamples; ftAccum = 0; ftSamples = 0;
+    if (avg > 36 && degraded < 2) {
+      degraded++; sceneEvery += 2; perfScale *= .68;
+      sizeGL();
     }
-
-    return rightD + ' ' + leftD;
   }
 
-  let isMobile = window.innerWidth <= MOBILE_BP;
-  let ticking  = false;
-  let revState = { sat: false, yet: false, yellow: false, navDrop: false };
+  frameN++;
+  const tNow = (performance.now() - startT) / 1000;
+  if (!REDUCED && frameN % sceneEvery === 0) drawCounterTex(tNow);   /* living math scene */
+  mouse.x += (mouse.tx - mouse.x) * .075;
+  mouse.y += (mouse.ty - mouse.y) * .075;
+  gl.uniform2f(uMouseLoc, mouse.x, 1 - mouse.y);
+  gl.uniform2f(uResLoc, glCanvas.width, glCanvas.height);
+  gl.uniform1f(uTimeLoc, REDUCED ? 0 : tNow);
+  gl.uniform1f(uRevealLoc, REDUCED ? 1 : reveal.v);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
 
-  function resetRefAngles() {
-    refEls.forEach(r => {
-      r.appeared = false; r.hit = false; r.settled = false;
-      r.g.setAttribute('opacity', '0');
-      r.tDeg.setAttribute('fill', '#333');
-      r.tRad.setAttribute('opacity', '0');
-      r.tRad.setAttribute('fill', '#555');
-    });
+let entranceStarted = false;
+function startCounter() {
+  if (entranceStarted) return;
+  entranceStarted = true;
+  document.body.dataset.entrance = '1';   /* tells the crash trap all is well */
+  const useGL = !!gl;
+  /* skip the cinematic when reduced motion is set or the page restored mid-scroll */
+  if (REDUCED || scrollY > 60) {
+    counter.v = 1600; reveal.v = 1;
+    if (useGL) drawNum(); else domCounter.textContent = '1600';
+    gsap.set(['#hero-script', ...ENTRANCE_HIDDEN], { autoAlpha: 1, y: 0 });
+    return;
   }
-
-  let labOp = 0;
-  let introComplete = false; // set true once X draw + nav drop finishes
-
-  // ── X ARM GEOMETRY ──────────────────────────────────────────────────────────
-  // Arm1: top-left (486,286) → bottom-right (514,314)
-  // Arm2: top-right (514,286) → bottom-left (486,314)
-  // Length = sqrt(28²+28²) ≈ 39.6
-  const ARM_LEN = Math.sqrt(28 * 28 + 28 * 28);
-
-  function runIntroAnimation() {
-    // ── 1. Nav starts hidden above screen, drops in after short delay ─────────
-    navWrap.style.transition = 'none';
-    navWrap.style.opacity    = '0';
-    navWrap.style.transform  = 'translateX(-50%) translateY(-48px)';
-
-    // Scroll hint also starts hidden
-    if (scrollHint) {
-      scrollHint.classList.remove('visible', 'hidden');
+  /* 1 · black screen, the number counts to 1600 */
+  gsap.to(counter, {
+    v: 1600, duration: 2, ease: 'power3.out',
+    onUpdate: () => { if (gl) drawNum(); else domCounter.textContent = String(Math.round(counter.v)); },
+    onComplete: () => {
+      /* 2 · the tagline arrives */
+      gsap.fromTo('#hero-script', { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: .9, ease: 'power2.out' });
+      /* 3 · a beat later, the living math background and everything else */
+      gsap.delayedCall(.7, () => {
+        gsap.to(reveal, { v: 1, duration: 1.6, ease: 'power2.inOut' });
+        gsap.to(ENTRANCE_HIDDEN, { autoAlpha: 1, y: 0, duration: 1, ease: 'power2.out', stagger: .12 });
+      });
     }
+  });
+}
 
-    setTimeout(() => {
-      navWrap.style.transition = 'opacity 0.7s ease, transform 0.7s cubic-bezier(0.34,1.56,0.64,1)';
-      navWrap.style.opacity    = '1';
-      navWrap.style.transform  = 'translateX(-50%) translateY(0)';
-    }, 200);
+/* pointermove covers mouse AND touch; passive, so it can never block
+   scrolling. On touch, the browser scrolls natively (touch-action pan-y)
+   while these events keep the beads reacting under the finger. */
+addEventListener('pointermove', e => {
+  mouse.tx = e.clientX / vw();
+  mouse.ty = e.clientY / vh();
+}, { passive: true });
 
-    // ── 2. X arms: arm1 draws first (top-left → bottom-right) ────────────────
-    //    at halfway point, arm2 starts (bottom-left → top-right direction,
-    //    but visually from bottom-left to top-right of its own line)
-    const ARM_DUR  = 600;  // ms each arm takes to draw
-    const ARM2_LAG = 300;  // ms after arm1 starts that arm2 begins
+/* ────────────────────────────────────────────────────────────────────
+   5 · ACORN — fully-buffered scroll scrub + scale/drift choreography.
+   ──────────────────────────────────────────────────────────────────── */
+const acornPanel = $('#p-acorn');
+const stage      = $('#acorn-stage');
+const scaleWrap  = $('#acorn-scale');
+const video      = $('#acorn-video');
+let vidDuration  = 8.4, lastSeek = -1;
+let prTarget = 0, prSmooth = 0;
 
-    // Set up dasharray so arms are invisible initially
-    [xArm1, xArm2].forEach(el => {
-      el.setAttribute('stroke-dasharray', ARM_LEN.toFixed(2));
-      el.setAttribute('stroke-dashoffset', ARM_LEN.toFixed(2));
-      el.style.transition = 'none';
-    });
+const setStageX = gsap.quickSetter(stage, 'x', 'px');
+/* the acorn itself never moves or scales: pure playback on scroll.
+   the only choreography is the headline reveal at the shatter. */
+const choreo = gsap.timeline({ paused: true, defaults: { ease: 'none' } });
+choreo
+  .fromTo('#crack-headline', { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: .1, ease: 'power2.out' }, .855)
+  .to({}, { duration: .045 }, .955);   /* pad timeline to full 0..1 progress range */
 
-    // Force reflow so dashoffset takes effect before transition starts
-    void xArm1.getBoundingClientRect();
+function loadAcorn() {
+  const small = matchMedia('(max-width:760px)').matches ||
+                (navigator.connection && navigator.connection.saveData);
+  const src = small ? '/media/acorn-640-i60.mp4' : '/media/acorn-960-i60.mp4';
+  /* show the acorn instantly by streaming… */
+  video.src = src;
+  video.addEventListener('loadedmetadata', () => { vidDuration = video.duration; }, { once: true });
+  video.load();
+  /* …then swap to a fully-buffered blob for gapless scrubbing */
+  fetch(src)
+    .then(r => r.blob())
+    .then(b => {
+      const keep = video.currentTime;
+      const url = URL.createObjectURL(b);
+      video.addEventListener('loadedmetadata', () => {
+        vidDuration = video.duration;
+        video.currentTime = keep;
+        lastSeek = keep;
+      }, { once: true });
+      video.src = url;
+      video.load();
+    })
+    .catch(() => {});
+}
 
-    // Arm1 draws: dashoffset goes from ARM_LEN → 0
-    setTimeout(() => {
-      xArm1.style.transition = `stroke-dashoffset ${ARM_DUR}ms cubic-bezier(0.4,0,0.2,1)`;
-      xArm1.setAttribute('stroke-dashoffset', '0');
-    }, 400); // slight delay before first arm starts
+function updateAcorn(trackX) {
+  const pl = acornPanel.offsetLeft, pw = acornPanel.offsetWidth;
+  const range = pw - vw();
+  const raw = -trackX - pl;
+  const x = Math.max(0, Math.min(range, raw));
+  setStageX(x);
+  prTarget = range > 0 ? x / range : 0;
+}
 
-    // Arm2 draws: starts halfway through arm1
-    setTimeout(() => {
-      xArm2.style.transition = `stroke-dashoffset ${ARM_DUR}ms cubic-bezier(0.4,0,0.2,1)`;
-      xArm2.setAttribute('stroke-dashoffset', '0');
-    }, 400 + ARM2_LAG);
+/* one smoothed progress value drives BOTH the video seek and the
+   scale/drift choreography — butter over raw scroll ticks */
+/* on phones the three story notes alternate top / bottom / top around
+   the pinned acorn, each owning a generous slice of the section so text
+   is on screen nearly the whole ride. Note 3 exits before the crack
+   headline reveals at .855. */
+const NOTE_WINDOWS = [[.02, .32], [.34, .60], [.62, .82]];
+const noteEls = $$('.acorn-note');
 
-    // After both arms finish, mark intro complete and clear dasharray
-    // so scroll-driven rendering can take over cleanly
-    const introDone = 400 + ARM2_LAG + ARM_DUR + 50;
-    setTimeout(() => {
-      // Remove dasharray so the lines render normally for scroll phase
-      xArm1.style.transition = '';
-      xArm2.style.transition = '';
-      xArm1.removeAttribute('stroke-dasharray');
-      xArm1.removeAttribute('stroke-dashoffset');
-      xArm2.removeAttribute('stroke-dasharray');
-      xArm2.removeAttribute('stroke-dashoffset');
-      introComplete = true;
-
-      // Show scroll hint after X finishes
-      if (scrollHint) scrollHint.classList.add('visible');
-    }, introDone);
+gsap.ticker.add(() => {
+  if (!ready) return;
+  prSmooth += (prTarget - prSmooth) * (REDUCED ? 1 : .12);
+  if (Math.abs(prTarget - prSmooth) < .0004) prSmooth = prTarget;
+  if (video.readyState >= 2 && !video.seeking) {   /* never queue seeks — that's what causes chop */
+    const t = prSmooth * Math.max(0, vidDuration - .05);
+    if (Math.abs(t - lastSeek) > (TOUCH ? 1 / 30 : 1 / 61)) { video.currentTime = t; lastSeek = t; }
   }
+  choreo.progress(prSmooth);
 
-  function setup(isResize = false) {
-    isMobile = window.innerWidth <= MOBILE_BP;
-    driver.style.height = (ANIM_PX + window.innerHeight) + 'px';
-
-    setLine(xArm1, CX-14, CY-14, CX+14, CY+14);
-    setLine(xArm2, CX+14, CY-14, CX-14, CY+14);
-    xArm1.setAttribute('opacity', '1');
-    xArm2.setAttribute('opacity', '1');
-    xArm1.setAttribute('stroke-width', '5');
-    xArm2.setAttribute('stroke-width', '5');
-
-    circleEl.setAttribute('opacity', '0');
-    circleEl.setAttribute('stroke-dashoffset', '1005');
-    circleTrace.setAttribute('d', '');
-    circleTrace.setAttribute('opacity', '0');
-    suppArc.setAttribute('d', '');
-    suppArc.setAttribute('opacity', '0');
-    terminal.setAttribute('opacity', '0');
-    grid.setAttribute('opacity', '0');
-    labels.setAttribute('opacity', '0');
-    axisLabels.setAttribute('opacity', '0');
-    mathEls.forEach(el => el && el.setAttribute('opacity', '0'));
-    gRefAngles.setAttribute('opacity', '0');
-    sinWavePath.setAttribute('d', '');
-    sinWavePath.setAttribute('opacity', '0');
-    gTrigRead.setAttribute('opacity', '0');
-    wipe.setAttribute('r', '0');
-    svg.style.opacity = '1';
-    svg.style.transform = 'scale(1)';
-    svg.style.transformOrigin = `${(CX/1000*100).toFixed(2)}% ${(CY/600*100).toFixed(2)}%`;
-    revealSat.classList.remove('visible');
-    revealYet.classList.remove('visible');
-    spanSat.classList.remove('yellow');
-    satLine.style.width = '0';
-
-    // Reset nav to base state
-    if (navWrap) {
-      navWrap.classList.remove('nav-drop', 'nav-hidden');
-      navWrap.style.transition = '';
-      navWrap.style.opacity    = '';
-      navWrap.style.transform  = '';
-    }
-    if (navStudyBtn) navStudyBtn.classList.remove('nav-study-grow');
-    if (forthcoming)  forthcoming.classList.remove('visible');
-    revState = { sat: false, yet: false, yellow: false, navDrop: false };
-    resetRefAngles();
-    body.classList.remove('is-dark');
-
-    if (!isResize) {
-      introComplete = false;
-      scrollHintHidden = false;
-      runIntroAnimation();
-    }
-
-    render();
-  }
-
-  function render() {
-    const maxScroll = parseFloat(driver.style.height) - window.innerHeight;
-    const p = clamp(window.scrollY / maxScroll, 0, 1);
-
-    // ── ZOOM ─────────────────────────────────────────────────────────────────
-    // Phases 1+2 (p 0–0.58): barely perceptible 1.0→1.12x whisper zoom
-    // Phase 3 (p 0.58–0.74): smooth zoom-in 1.12→9x into center of circle as wipe expands
-    let zoom;
-    if (p <= 0.58) {
-      zoom = lerp(1.0, 1.12, easeOut(sub(p, 0, 0.58)));
-    } else if (p <= 0.74) {
-      zoom = lerp(1.12, 9, easeIn(sub(p, 0.58, 0.74)));
-    } else {
-      zoom = 9;
-    }
-    svg.style.transform = `scale(${zoom})`;
-
-    // Hide SVG once wipe completes
-    const wipeProgress = sub(p, 0.78, 0.88);
-    svg.style.opacity = wipeProgress > 0.9
-      ? String(Math.max(0, 1 - (wipeProgress - 0.9) * 10))
-      : '1';
-
-    // ── PHASE 1 (p 0.01–0.22): X → + axes ───────────────────────────────────
-    const p1  = sub(p, 0.01, 0.22);
-    const xfm = easeIO(p1);
-    setLine(xArm1, lerp(CX-14,CX-AXIS,xfm), lerp(CY-14,CY,xfm), lerp(CX+14,CX+AXIS,xfm), lerp(CY+14,CY,xfm));
-    setLine(xArm2, lerp(CX+14,CX,xfm), lerp(CY-14,CY-AXIS,xfm), lerp(CX-14,CX,xfm), lerp(CY+14,CY+AXIS,xfm));
-    xArm1.setAttribute('stroke-width', lerp(5, 2, xfm));
-    xArm2.setAttribute('stroke-width', lerp(5, 2, xfm));
-
-    grid.setAttribute('opacity', easeOut(sub(p, 0.10, 0.30)) * 0.6);
-    labOp = easeOut(sub(p, 0.18, 0.30));
-    labels.setAttribute('opacity', labOp);
-    axisLabels.setAttribute('opacity', labOp);
-
-    // ── PHASE 2 (p 0.18–0.58): terminal rotates one full revolution ──────────
-    const p2 = sub(p, 0.18, 0.58);
-    if (p2 > 0 && p2 <= 1.0) {
-      // Only Phase 2 logic while revolution is strictly in progress
-      terminal.setAttribute('opacity', Math.min(1, p2 * 8));
-      const angle = p2 * (2 * Math.PI); // 0 → 2π
-      const tx = CX + R * Math.cos(angle);
-      const ty = CY - R * Math.sin(angle);
-      setLine(terminal, CX, CY, tx, ty);
-
-      // Switch to real SVG circle element at completion — no path displacement possible
-      if (p2 >= 0.999) {
-        circleTrace.setAttribute('opacity', '0');
-        circleTrace.setAttribute('d', '');
-        circleEl.setAttribute('opacity', '1');
-        circleEl.setAttribute('stroke-dashoffset', '0');
-      } else {
-        circleEl.setAttribute('opacity', '0');
-        circleTrace.setAttribute('opacity', Math.min(1, p2 * 5));
-        if (angle < 0.015) {
-          circleTrace.setAttribute('d', '');
-        } else {
-          circleTrace.setAttribute('d', arcCCW(0, angle, R));
-        }
+  if (TOUCH) {
+    for (let i = 0; i < noteEls.length; i++) {
+      const w = NOTE_WINDOWS[i]; if (!w) break;
+      let o = 0;
+      if (prSmooth > w[0] && prSmooth < w[1]) {
+        o = Math.min(1, (prSmooth - w[0]) / .045, (w[1] - prSmooth) / .045);
       }
+      noteEls[i].style.opacity = o.toFixed(3);
+      noteEls[i].style.visibility = o > .01 ? 'visible' : 'hidden';
+    }
+  }
+});
 
-      // Reference angles
-      gRefAngles.setAttribute('opacity', '1');
-      const angleDeg = (angle / Math.PI) * 180;
+/* ────────────────────────────────────────────────────────────────────
+   6 · PER-TICK UPDATE — header theme, spine draw, acorn.
+   ──────────────────────────────────────────────────────────────────── */
+function onScrollUpdate(self) {
+  if (!ready) return;
+  const trackX = gsap.getProperty(track, 'x');
 
-      refEls.forEach(ref => {
-        if (angleDeg < ref.deg - 25) {
-          if (ref.appeared) {
-            ref.appeared = false; ref.hit = false; ref.settled = false;
-            ref.g.setAttribute('opacity', '0');
-            ref.tDeg.setAttribute('fill', '#333');
-            ref.tRad.setAttribute('opacity', '0');
-            ref.tRad.setAttribute('fill', '#555');
-          }
-          return;
-        }
-        if (!ref.appeared && ref.deg - angleDeg > 0 && ref.deg - angleDeg <= 20) {
-          ref.appeared = true;
-          ref.g.setAttribute('opacity', '1');
-        }
-        if (ref.appeared) {
-          if (!ref.hit && Math.abs(angleDeg - ref.deg) <= 5) {
-            ref.hit = true;
-            ref.tDeg.setAttribute('fill', '#f5c518');
-            ref.tRad.setAttribute('opacity', '1');
-            ref.tRad.setAttribute('fill', '#f5c518');
-          }
-          if (ref.hit && !ref.settled && angleDeg > ref.deg + 8) {
-            ref.settled = true;
-            ref.tDeg.setAttribute('fill', '#222');
-            ref.tRad.setAttribute('fill', '#444');
-          }
+  /* header theme: which panel sits under the header logo */
+  const probe = -trackX + 60;
+  let theme = 'light';
+  for (const p of panels) if (probe >= p.left && probe < p.left + p.width) { theme = p.theme; break; }
+  header.classList.toggle('on-dark', theme === 'dark');
+
+  /* solid spine draws itself just ahead of the viewport centre */
+  if (solidLen) {
+    const lead = Math.min(1, self.progress * 1.12);
+    solidPath.style.strokeDashoffset = solidLen * (1 - lead);
+  }
+
+  heroVisible = -trackX < vw() * 1.2;
+  updateAcorn(trackX);
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   7 · PANEL CONTENT REVEALS (containerAnimation triggers)
+   ──────────────────────────────────────────────────────────────────── */
+function buildReveals() {
+  if (REDUCED) return;
+  const sets = [
+    ['#p-manifesto', ['.eyebrow', '.manifesto-h', '.manifesto-cols p', '.manifesto-sig']],
+    ['#p-stats',     ['.stats-giant', '.stats-list li', '.stats-note']],
+    ['#p-algebra',   ['.eyebrow', '.domain-h', '.domain-skills li', '.domain-cta']],
+    ['#p-advmath',   ['.eyebrow', '.domain-h', '.domain-skills li', '.domain-cta']],
+    ['#p-psda',      ['.eyebrow', '.domain-h', '.domain-skills li', '.domain-cta']],
+    ['#p-geo',       ['.eyebrow', '.domain-h', '.domain-skills li', '.domain-cta']],
+    ['#p-test',      ['.eyebrow', '.test-h', '.test-copy', '.test-chips li', '.test-cta']],
+    ['#p-faq',       ['.eyebrow', '.faq-h', '.faq-item']],
+    ['#p-end',       ['.end-h', '.end-cta']]
+  ];
+  sets.forEach(([panelSel, parts]) => {
+    const panel = $(panelSel); if (!panel) return;
+    const targets = parts.flatMap(sel => $$(sel, panel));
+    if (!targets.length) return;
+    gsap.fromTo(targets,
+      { autoAlpha: 0, y: 28 },
+      {
+        autoAlpha: 1, y: 0, duration: .85, ease: 'power3.out', stagger: .06,
+        scrollTrigger: {
+          trigger: panel,
+          containerAnimation: HORIZONTAL ? mainTween : undefined,
+          start: HORIZONTAL ? 'left 78%' : 'top 78%',
+          toggleActions: 'play none none none'
         }
       });
+  });
+}
 
-      // Sin wave — bidirectional from origin, locks at x-axis when angle = 2π
-      sinWavePath.setAttribute('opacity', Math.min(1, Math.max(0, (p2 - 0.06) * 5)));
-      sinWavePath.setAttribute('d', buildSinWaveBidir(angle));
-
-      // Trig readout near terminal tip
-      if (p2 > 0.10) {
-        gTrigRead.setAttribute('opacity', Math.min(1, (p2 - 0.10) * 6));
-        sinReadEl.setAttribute('x', (tx + 14).toFixed(1));
-        sinReadEl.setAttribute('y', ((CY + ty) / 2).toFixed(1));
-        sinReadEl.textContent = `sin=${Math.sin(angle).toFixed(3)}`;
-        cosReadEl.setAttribute('x', ((CX + tx) / 2).toFixed(1));
-        cosReadEl.setAttribute('y', (CY + 16).toFixed(1));
-        cosReadEl.textContent = `cos=${Math.cos(angle).toFixed(3)}`;
-      } else {
-        gTrigRead.setAttribute('opacity', '0');
-      }
-
-    } else {
-      terminal.setAttribute('opacity', '0');
-      circleTrace.setAttribute('d', '');
-      circleTrace.setAttribute('opacity', '0');
-      circleEl.setAttribute('opacity', '0');
-      sinWavePath.setAttribute('opacity', '0');
-      sinWavePath.setAttribute('d', '');
-      gTrigRead.setAttribute('opacity', '0');
-      gRefAngles.setAttribute('opacity', '0');
-      resetRefAngles();
+/* stats panel: 1,483 counts itself up on entry */
+function buildStatsCounter() {
+  const el = $('#stats-num');
+  if (!el || REDUCED) return;
+  const obj = { v: 0 };
+  ScrollTrigger.create({
+    trigger: '#p-stats',
+    containerAnimation: HORIZONTAL ? mainTween : undefined,
+    start: HORIZONTAL ? 'left 80%' : 'top 80%',
+    once: true,
+    onEnter: () => {
+      el.style.minWidth = el.offsetWidth + 'px';   /* no layout shift while counting */
+      gsap.to(obj, {
+        v: 1483, duration: 1.9, ease: 'power3.out',
+        onUpdate: () => { el.textContent = Math.round(obj.v).toLocaleString('en-US'); }
+      });
     }
+  });
+}
 
-    // ── PHASE 3 (p 0.58–0.74): hold completed state + zoom into darkness ──────
-    // Terminal stays on x-axis, circleEl is the guaranteed-centered circle.
-    // Wipe starts immediately at p=0.58 — same moment zoom accelerates —
-    // so it feels like rushing into the dark interior of the circle.
-    const p3 = sub(p, 0.58, 0.74);
-    if (p3 > 0) {
-      // Terminal locked at positive x-axis
-      setLine(terminal, CX, CY, CX + R, CY);
-      terminal.setAttribute('opacity', String(Math.max(0, 1 - easeIn(sub(p3, 0.6, 1.0)))));
-
-      // Use real SVG circle element — stays perfectly centered no matter what
-      circleTrace.setAttribute('opacity', '0');
-      circleTrace.setAttribute('d', '');
-      circleEl.setAttribute('opacity', '1');
-      circleEl.setAttribute('stroke-dashoffset', '0');
-
-      // Sin wave fades out as zoom rushes in
-      sinWavePath.setAttribute('d', buildSinWaveBidir(2 * Math.PI));
-      sinWavePath.setAttribute('opacity', String(Math.max(0, 1 - easeIn(sub(p3, 0.2, 0.7)))));
-      gTrigRead.setAttribute('opacity', '0');
-
-      // Ref angles and labels fade out quickly
-      const gentleFade = Math.max(0, 1 - easeIn(p3 * 1.4));
-      gRefAngles.setAttribute('opacity', String(gentleFade));
-      labels.setAttribute('opacity', String(gentleFade * labOp));
-      axisLabels.setAttribute('opacity', String(gentleFade * labOp));
-
-      mathEls.forEach(el => el && el.setAttribute('opacity', '0'));
-      suppArc.setAttribute('opacity', '0');
-      suppArc.setAttribute('d', '');
-    } else if (p < 0.58) {
-      suppArc.setAttribute('opacity', '0');
-      suppArc.setAttribute('d', '');
-      mathEls.forEach(el => el && el.setAttribute('opacity', '0'));
-    }
-
-    // ── PHASE 4 (p 0.58–0.86): black wipe grows with zoom — slowed down ────────
-    // Starts at the same moment as zoom but grows gently so it doesn't rush
-    wipe.setAttribute('r', String(easeIn(sub(p, 0.58, 0.86)) * 950));
-    if (p > 0.60) body.classList.add('is-dark');
-    else          body.classList.remove('is-dark');
-
-    // ── PHASE 5 (p 0.80–0.96): "satified yet?" reveal ───────────────────────
-    if (p >= 0.80) { if (!revState.sat) { revState.sat=true; revealSat.classList.add('visible'); } }
-    else           { if (revState.sat)  { revState.sat=false; revealSat.classList.remove('visible'); } }
-    if (p >= 0.84) { if (!revState.yet) { revState.yet=true; revealYet.classList.add('visible'); } }
-    else           { if (revState.yet)  { revState.yet=false; revealYet.classList.remove('visible'); } }
-    if (p >= 0.88) {
-      if (!revState.yellow) {
-        revState.yellow = true;
-        spanSat.classList.add('yellow');
-        const ww = revealSat.getBoundingClientRect().width;
-        const sw = spanSat.getBoundingClientRect().width;
-        satLine.style.width = ww > 0 ? ((sw/ww)*100).toFixed(1)+'%' : '38%';
-      }
-    } else {
-      if (revState.yellow) {
-        revState.yellow = false;
-        spanSat.classList.remove('yellow');
-        satLine.style.width = '0';
-      }
-    }
-
-    // ── PHASE 6 (p 0.94–1.00): Study grows + forthcoming appears ─────────────
-    // Nav is always visible (it dropped in on load); just grow the Study button
-    if (p >= 0.95) {
-      if (!revState.navDrop) {
-        revState.navDrop = true;
-        if (navStudyBtn) navStudyBtn.classList.add('nav-study-grow');
-        if (forthcoming)  forthcoming.classList.add('visible');
-      }
-    } else {
-      if (revState.navDrop) {
-        revState.navDrop = false;
-        if (navStudyBtn) navStudyBtn.classList.remove('nav-study-grow');
-        if (forthcoming)  forthcoming.classList.remove('visible');
-      }
-    }
-
-    ticking = false;
+/* ────────────────────────────────────────────────────────────────────
+   8 · NAV JUMPS
+   ──────────────────────────────────────────────────────────────────── */
+function jumpTo(id) {
+  const el = document.getElementById(id); if (!el) return;
+  if (!HORIZONTAL) {
+    gsap.to(window, { scrollTo: el.offsetTop, duration: REDUCED ? 0 : 1.1, ease: 'power3.inOut' });
+    return;
   }
+  const p = panels.find(x => x.id === id); if (!p) return;
+  const st = mainTween.scrollTrigger;
+  const target = st.start + (p.left / dist()) * (st.end - st.start);
+  gsap.to(window, { scrollTo: Math.min(target, st.end), duration: REDUCED ? 0 : 1.4, ease: 'power3.inOut' });
+}
+$$('.nav-jump').forEach(b => b.addEventListener('click', () => jumpTo('p-' + b.dataset.jump)));
 
-  let scrollHintHidden = false;
-  window.addEventListener('scroll', () => {
-    if (!scrollHintHidden && window.scrollY > 10) {
-      scrollHintHidden = true;
-      if (scrollHint) {
-        scrollHint.classList.remove('visible');
-        scrollHint.classList.add('hidden');
-      }
-    }
-    if (!ticking) { requestAnimationFrame(render); ticking = true; }
-  }, { passive: true });
+/* ────────────────────────────────────────────────────────────────────
+   9 · FULL SITE MENU (burger)
+   ──────────────────────────────────────────────────────────────────── */
+const burger = $('#burger');
+const menuOverlay = $('#menu-overlay');
+function setMenu(open) {
+  document.body.classList.toggle('menu-open', open);
+  if (burger) burger.setAttribute('aria-expanded', String(open));
+  if (menuOverlay) menuOverlay.setAttribute('aria-hidden', String(!open));
+}
+if (burger) {
+  burger.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+  addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+}
 
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => setup(true), 100);
-  }, { passive: true });
+/* ────────────────────────────────────────────────────────────────────
+   BOOT
+   ──────────────────────────────────────────────────────────────────── */
+/* vertical (touch) mode: normal page scroll, sticky acorn stage,
+   per panel header theming, no spine, no pin */
+function setupVertical() {
+  document.body.classList.add('vertical');
+  measurePanels();
+  ScrollTrigger.create({
+    trigger: acornPanel, start: 'top top', end: 'bottom bottom',
+    onUpdate: s => { prTarget = s.progress; }
+  });
+  panels.forEach(p => ScrollTrigger.create({
+    trigger: p.el, start: 'top 72px', end: 'bottom 72px',
+    onToggle: self => { if (self.isActive) header.classList.toggle('on-dark', p.theme === 'dark'); }
+  }));
+  addEventListener('scroll', () => { heroVisible = scrollY < vh() * 1.2; }, { passive: true });
+}
 
-  // ── INFO TOOLTIP CLICK TOGGLE ─────────────────────────────────────────────
-  const infoBtn     = document.getElementById('nav-info-btn');
-  const infoTooltip = document.getElementById('nav-tooltip');
-  const infoWrap    = document.getElementById('nav-info-wrap');
+function boot() {
+  /* entrance: hide everything except the counter before first paint */
+  if (!REDUCED) gsap.set([...ENTRANCE_HIDDEN, '#hero-script'], { autoAlpha: 0, y: 8 });
+  const glOK = initGL();
+  if (!glOK) document.body.classList.add('no-gl');   /* DOM counter takes over */
+  /* recover gracefully if the GPU resets (window moves between displays, driver hiccups) */
+  glCanvas.addEventListener('webglcontextlost', e => {
+    e.preventDefault(); gl = null;
+    document.body.classList.add('no-gl');
+    domCounter.textContent = String(Math.round(counter.v));
+  });
+  glCanvas.addEventListener('webglcontextrestored', () => {
+    if (initGL()) { document.body.classList.remove('no-gl'); sizeGL(); drawNum(); }
+  });
+  loadAcorn();
+  if (HORIZONTAL) buildSpine(); else setupVertical();
+  sizeGL();
+  buildReveals();
+  buildStatsCounter();
+  ScrollTrigger.addEventListener('refreshInit', () => { if (HORIZONTAL) buildSpine(); sizeGL(); });
+  ready = true;
+  ScrollTrigger.refresh();
+  if (glOK) renderGL();
 
-  if (infoBtn && infoTooltip) {
-    infoBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isOpen = infoWrap.classList.toggle('tooltip-open');
-      infoBtn.setAttribute('aria-expanded', String(isOpen));
-      infoTooltip.setAttribute('aria-hidden', String(!isOpen));
-    });
-    // Close when clicking anywhere outside
-    document.addEventListener('click', (e) => {
-      if (!infoWrap.contains(e.target)) {
-        infoWrap.classList.remove('tooltip-open');
-        infoBtn.setAttribute('aria-expanded', 'false');
-        infoTooltip.setAttribute('aria-hidden', 'true');
-      }
-    });
-  }
+  const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  Promise.race([fontsReady, new Promise(r => setTimeout(r, 1200))]).then(() => {
+    drawCounterTex(0);
+    drawNum();
+    loaderGone = true;
+    runLoader().then(startCounter);
+  });
+}
 
-  setup();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => { try { boot(); } catch (err) { crashRecover(err); } });
+} else {
+  try { boot(); } catch (err) { crashRecover(err); }
+}
 
-})();
+/* re-measure once webfonts + all assets have settled the layout */
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => ScrollTrigger.refresh());
+}
+addEventListener('load', () => ScrollTrigger.refresh());
+
+/* orientation changes re-measure everything */
+addEventListener('orientationchange', () => setTimeout(() => ScrollTrigger.refresh(), 350));
+
