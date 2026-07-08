@@ -38,6 +38,7 @@
 @font-face{font-family:'Instrument Sans';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/instrument-sans-latin-500-normal.woff2') format('woff2')}
 @font-face{font-family:'DM Mono';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/dm-mono-latin-400-normal.woff2') format('woff2')}
 @font-face{font-family:'DM Mono';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/dm-mono-latin-500-normal.woff2') format('woff2')}
+@font-face{font-family:'Ballet';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/ballet-latin-400-normal.woff2') format('woff2')}
 
 /* ── 01 · TOKENS ──────────────────────────────────────────────────────────── */
 /* Shape rule: controls and chips 2px · sheets, cards, menus 8px · round icon
@@ -202,7 +203,7 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:2px 0}
   display:inline-flex;align-items:baseline;
   transition:opacity .2s ease;
 }
-.brand em{font-style:italic;color:var(--gold)}
+.brand em{font-family:'Ballet',cursive;font-style:normal;color:var(--gold);font-size:.96em;margin-left:.04em}
 .brand:hover{opacity:.82}
 
 /* right cluster · .theme-corner kept as the container hook */
