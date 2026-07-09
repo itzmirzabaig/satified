@@ -16,6 +16,11 @@
   var state = { messages: [], stem: null, busy: false, notedEmpty: false };
   var ts = { scriptRequested: false, widget: null, token: null, waiters: [], timer: null };
 
+  /* GA4 event helper: silently no-ops if analytics is blocked or absent */
+  function track(name, params) {
+    try { if (window.gtag) window.gtag('event', name, params || {}); } catch (err) {}
+  }
+
   /* string helpers */
 
   function trimText(s) {
@@ -67,6 +72,35 @@
     if (t && t.parentNode) t.parentNode.removeChild(t);
   }
 
+  /* thumbs up / down under a tutor reply, one vote each, feeds GA4 */
+  function addFeedback(c) {
+    var row = document.createElement('div');
+    row.className = 'tutor-feedback';
+    row.style.cssText = 'display:flex;gap:10px;align-items:center;margin:2px 0 12px 2px';
+    var up = document.createElement('button');
+    var down = document.createElement('button');
+    up.type = down.type = 'button';
+    up.className = down.className = 'tutor-fb';
+    up.setAttribute('aria-label', 'This explanation helped');
+    down.setAttribute('aria-label', 'This explanation did not help');
+    up.innerHTML = '&#128077;';
+    down.innerHTML = '&#128078;';
+    var base = 'background:none;border:0;cursor:pointer;font-size:15px;line-height:1;padding:2px 4px;opacity:.5;transition:opacity .2s';
+    up.style.cssText = down.style.cssText = base;
+    function vote(name, chosen) {
+      track(name, { skill: (c && c.skill) || '', difficulty: (c && c.difficulty) || '' });
+      up.disabled = down.disabled = true;
+      up.style.cursor = down.style.cursor = 'default';
+      chosen.style.opacity = '1';
+    }
+    up.addEventListener('click', function () { vote('tutor_answer_helpful', up); });
+    down.addEventListener('click', function () { vote('tutor_answer_unhelpful', down); });
+    row.appendChild(up);
+    row.appendChild(down);
+    els.list.appendChild(row);
+    els.list.scrollTop = els.list.scrollHeight;
+  }
+
   /* question context */
 
   function currentContext() {
@@ -103,6 +137,7 @@
     els.panel.setAttribute('aria-hidden', 'false');
     els.btn.setAttribute('aria-expanded', 'true');
     var c = syncContext();
+    track('tutor_opened', { skill: (c && c.skill) || '', difficulty: (c && c.difficulty) || '' });
     if (!c && !state.notedEmpty) {
       state.notedEmpty = true;
       appendMessage('sys', 'Open a question first, then ask me anything about it.');
@@ -213,6 +248,7 @@
     autoGrow();
     state.messages.push({ role: 'user', content: text });
     appendMessage('user', text);
+    track('tutor_question_asked', { skill: (c && c.skill) || '', difficulty: (c && c.difficulty) || '', char_count: text.length });
     setBusy(true);
     showTyping();
     getToken(function (token) { postMessages(c, token); });
@@ -248,6 +284,8 @@
       if (r.ok && r.data && r.data.reply) {
         state.messages.push({ role: 'assistant', content: String(r.data.reply) });
         appendMessage('assistant', String(r.data.reply));
+        addFeedback(c);
+        track('tutor_answer_rendered', { skill: (c && c.skill) || '', difficulty: (c && c.difficulty) || '' });
       } else if (r.status === 429) {
         appendMessage('sys', 'You are asking faster than the tutor can think. Give it a minute.');
       } else {

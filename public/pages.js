@@ -1,3 +1,31 @@
+/* Google Analytics 4, loaded here so every static page gets it from one file. */
+(function () {
+  var ID = 'G-HZ19REXM8B';
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ID;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', ID);
+  /* Count clicks from these SEO pages into the study app. */
+  document.addEventListener('click', function (e) {
+    var a = (e.target && e.target.closest) ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    if (href === '/study/' || href.indexOf('/study/') === 0) {
+      try {
+        gtag('event', 'tutor_cta_clicked', {
+          source_page: location.pathname,
+          cta_text: (a.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 60),
+          destination: href
+        });
+      } catch (err) {}
+    }
+  }, true);
+})();
+
 /* Satified static pages: scroll reveal animations. Tiny, dependency free. */
 (function () {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
