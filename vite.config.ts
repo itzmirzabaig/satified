@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
+import { copyFileSync, mkdirSync } from 'fs'
 
 export default defineConfig({
   plugins: [
@@ -17,6 +18,16 @@ export default defineConfig({
           }
           next()
         })
+      },
+    },
+    {
+      // build only: study/tutor.js is a classic script (no module type), and
+      // Vite bundles module scripts only, so ship it verbatim into dist/study
+      name: 'copyStudyTutor',
+      apply: 'build',
+      closeBundle() {
+        mkdirSync(resolve(__dirname, 'dist/study'), { recursive: true })
+        copyFileSync(resolve(__dirname, 'study/tutor.js'), resolve(__dirname, 'dist/study/tutor.js'))
       },
     },
   ],

@@ -589,34 +589,26 @@ body.light-mode .flip-card-back{box-shadow:0 26px 56px -38px rgba(51,44,20,.42)}
 }
 .FeedbackButton:active{transform:scale(.97)}
 
-/* regenerate: hairline coin that unfurls into a gold pill on hover */
+/* regenerate: fixed size circular icon button; the icon spins once per click */
 .btn-regen{
   width:38px;height:38px;border-radius:999px;
   background:transparent;
   border:1px solid var(--hairline-strong);
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;overflow:hidden;position:relative;flex-shrink:0;
-  transition:width .3s var(--ease-out),background-color .25s ease,border-color .25s ease;
+  transition:background-color .25s ease,border-color .25s ease;
 }
-.btn-regen svg{width:15px;height:15px;transition:opacity .2s ease,width .3s var(--ease-out)}
+.btn-regen svg{width:15px;height:15px}
 .btn-regen svg path{fill:var(--muted);transition:fill .2s ease}
-.btn-regen:hover{width:124px;background:var(--gold);border-color:var(--gold)}
-.btn-regen::before{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  content:"Regenerate";color:var(--night);
-  font-family:var(--f-mono);font-weight:500;font-size:2px;
-  letter-spacing:.12em;text-transform:uppercase;
-  opacity:0;white-space:nowrap;
-  transition:font-size .3s var(--ease-out),opacity .25s ease;
+.btn-regen:hover{border-color:var(--gold)}
+.btn-regen:hover svg path{fill:var(--gold)}
+/* JS adds .regen-clicked on click; the icon makes one full turn */
+.btn-regen.regen-clicked svg{animation:regen-spin .5s ease}
+@keyframes regen-spin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
 }
-.btn-regen:hover::before{font-size:10px;opacity:1}
-.btn-regen:hover svg{opacity:0;width:0}
-/* after a click, hovering stays collapsed until pointer leaves (JS toggles) */
-.btn-regen.regen-clicked:hover{width:38px;border-radius:999px;background:transparent;border-color:var(--hairline-strong)}
-.btn-regen.regen-clicked:hover svg{opacity:1;width:15px}
-.btn-regen.regen-clicked:hover::before{font-size:2px;opacity:0}
-.btn-regen:not(.regen-clicked):hover{transform:translateY(-1px)}
-.btn-regen:active{transform:scale(.95) !important}
+.btn-regen:active{transform:scale(.95)}
 
 /* ── 11 · QUESTION BODY ───────────────────────────────────────────────────── */
 .question-text{font-size:16px;color:var(--text);line-height:1.72;margin-bottom:20px}
@@ -1788,14 +1780,10 @@ body.light-mode .pt-result-card-status[style*="#e74c3c"]{color:var(--err-ink) !i
     text-align:center;
   }
 
-  /* touch devices: freeze hover effects that animate layout (width, text
-     spacing). Taps still get their press feedback via :active. */
-  .btn-regen,.btn-regen:hover{
-    width:38px;background:transparent;border-color:var(--hairline-strong);
-  }
-  .btn-regen:not(.regen-clicked):hover{transform:none}
-  .btn-regen:hover svg{opacity:1;width:15px}
-  .btn-regen:hover::before{font-size:2px;opacity:0}
+  /* touch devices: freeze hover recoloring and hover effects that animate
+     text spacing. Taps still get their press feedback via :active. */
+  .btn-regen:hover{border-color:var(--hairline-strong)}
+  .btn-regen:hover svg path{fill:var(--muted)}
   .FeedbackButton,.btn-action,.pt-begin-btn,.pt-launch-btn,.pt-nav-btn{
     transition:background-color .2s ease,border-color .2s ease,color .2s ease;
   }
@@ -1830,6 +1818,7 @@ body.light-mode .pt-result-card-status[style*="#e74c3c"]{color:var(--err-ink) !i
 /* ── 19 · REDUCED MOTION ──────────────────────────────────────────────────── */
 @media (prefers-reduced-motion:reduce){
   .slide-in-left,.slide-in-right{animation:none}
+  .btn-regen.regen-clicked svg{animation:none}
   .flip-card-inner{transition:none}
   .spinner > div{animation:none;opacity:0}
   .spinner div:nth-of-type(1){opacity:.7;transform:scale(1)}
@@ -1843,4 +1832,206 @@ body.light-mode .pt-result-card-status[style*="#e74c3c"]{color:var(--err-ink) !i
   .FeedbackButton,.btn-action,.pt-begin-btn,.pt-launch-btn{transition:background-color .2s ease,border-color .2s ease,color .2s ease}
   .toggle{transition:background .3s ease}
   .calc-toggle-btn,.calc-toggle-btn:active{transition:none}
+}
+
+/*
+   20 · TUTOR
+   Ask the tutor: a toolbar key plus a slide in coach panel. Same language as
+   the rest of the shell: mono keys, hairline borders, one gold accent, sheet
+   surfaces per theme. Desktop: right hand drawer under the toolbar. Mobile:
+   bottom sheet above the sticky nav. Injected by study/tutor.js.
+*/
+
+/* toolbar key, mirrors .pt-launch-btn */
+.tutor-btn{
+  height:32px;padding:0 15px;
+  background:transparent;
+  border:1px solid var(--hairline-strong);border-radius:2px;
+  color:var(--text);cursor:pointer;
+  font-family:var(--f-mono);font-weight:500;font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;
+  white-space:nowrap;
+  transition:background-color .2s ease,border-color .2s ease,color .2s ease,letter-spacing .3s var(--ease-out);
+}
+.tutor-btn:hover{
+  background:var(--gold);border-color:var(--gold);color:var(--night);
+  letter-spacing:.17em;
+}
+.tutor-btn:active{transform:scale(.97)}
+
+/* the panel: a sheet pinned under the toolbar, slides in from the right */
+#tutor-panel{
+  position:fixed;top:var(--topbar-h,56px);right:0;bottom:0;
+  width:min(420px,92vw);
+  z-index:1050;
+  display:flex;flex-direction:column;
+  background:var(--surface);
+  border-left:1px solid var(--hairline-strong);
+  box-shadow:var(--shadow-float);
+  transform:translateX(100%);
+  visibility:hidden;
+  transition:transform .35s var(--ease),visibility 0s linear .35s;
+}
+#tutor-panel.open{
+  transform:translateX(0);
+  visibility:visible;
+  transition:transform .35s var(--ease);
+}
+
+/* header row: serif title, mono close key */
+.tutor-head{
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 18px 12px;
+  border-bottom:1px solid var(--hairline);
+}
+.tutor-title{
+  font-family:var(--f-serif);font-weight:400;font-size:22px;
+  line-height:1;letter-spacing:.005em;color:var(--text);
+}
+.tutor-close{
+  width:28px;height:28px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;
+  border:1px solid var(--hairline-strong);border-radius:2px;
+  color:var(--muted);cursor:pointer;
+  font-family:var(--f-mono);font-size:12px;line-height:1;
+  transition:background-color .2s ease,border-color .2s ease,color .2s ease;
+}
+.tutor-close:hover{background:var(--gold);border-color:var(--gold);color:var(--night)}
+
+/* which question the thread is about */
+.tutor-context{
+  flex-shrink:0;
+  padding:8px 18px;
+  border-bottom:1px solid var(--hairline);
+  font-family:var(--f-mono);font-weight:400;font-size:10px;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* scrolling thread */
+.tutor-messages{
+  flex:1;min-height:0;overflow-y:auto;
+  display:flex;flex-direction:column;gap:10px;
+  padding:16px 16px 12px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--scroll-thumb) transparent;
+}
+.tutor-messages::-webkit-scrollbar{width:6px}
+.tutor-messages::-webkit-scrollbar-track{background:transparent}
+.tutor-messages::-webkit-scrollbar-thumb{background-color:var(--scroll-thumb);border-radius:3px}
+
+#tutor-panel .tutor-msg{
+  max-width:85%;
+  padding:10px 13px;
+  border-radius:8px;
+  font-size:.92rem;line-height:1.6;
+  overflow-wrap:break-word;
+}
+#tutor-panel .tutor-msg.user{
+  align-self:flex-end;
+  background:var(--accent-soft);
+  border:1px solid rgba(232,185,0,.4);
+  color:var(--text);
+}
+#tutor-panel .tutor-msg.assistant{
+  align-self:flex-start;
+  background:var(--field);
+  border:1px solid var(--hairline);
+  color:var(--text);
+}
+#tutor-panel .tutor-msg.sys{
+  align-self:center;
+  max-width:96%;
+  padding:2px 6px;
+  background:transparent;border:0;border-radius:0;
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;
+  color:var(--muted);text-align:center;
+}
+
+/* typing indicator: three quiet dots, opacity and transform only */
+.tutor-typing{
+  align-self:flex-start;
+  display:flex;gap:5px;align-items:center;
+  padding:13px 14px;
+  background:var(--field);
+  border:1px solid var(--hairline);border-radius:8px;
+}
+.tutor-typing span{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--muted);
+  opacity:.3;
+  animation:tutor-dot 1.1s var(--ease-out) infinite;
+}
+.tutor-typing span:nth-child(2){animation-delay:.18s}
+.tutor-typing span:nth-child(3){animation-delay:.36s}
+@keyframes tutor-dot{
+  0%,100%{opacity:.25;transform:scale(1)}
+  40%{opacity:1;transform:scale(1.3)}
+}
+
+/* composer pinned at the bottom */
+.tutor-compose{
+  flex-shrink:0;
+  display:flex;align-items:flex-end;gap:8px;
+  padding:12px 14px;
+  border-top:1px solid var(--hairline);
+  background:var(--surface);
+}
+.tutor-input{
+  flex:1;min-width:0;
+  min-height:40px;max-height:120px;resize:none;
+  padding:10px 12px;
+  border:1px solid var(--hairline-strong);border-radius:2px;
+  background:var(--field);color:var(--text);
+  font-family:var(--f-sans);font-size:.92rem;line-height:1.45;
+  outline:none;
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+.tutor-input::placeholder{color:var(--muted)}
+.tutor-input:focus{border-color:var(--focus);box-shadow:0 0 0 3px var(--accent-soft)}
+.tutor-send{
+  flex-shrink:0;height:40px;padding:0 16px;
+  background:transparent;
+  border:1px solid var(--hairline-strong);border-radius:2px;
+  color:var(--text);cursor:pointer;
+  font-family:var(--f-mono);font-weight:500;font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;
+  transition:background-color .2s ease,border-color .2s ease,color .2s ease;
+}
+.tutor-send:hover:not(:disabled){background:var(--gold);border-color:var(--gold);color:var(--night)}
+.tutor-send:disabled{opacity:.4;cursor:wait}
+
+/* mobile: keep the key on the toolbar, turn the panel into a bottom sheet.
+   The corner is display none at this width, so pin it back to the right edge
+   and hide its other children; only the tutor key stays. */
+@media (max-width:640px){
+  .theme-corner{
+    display:flex;position:absolute;right:12px;top:0;height:100%;gap:0;
+  }
+  .theme-corner > :not(#tutor-btn){display:none}
+  .tutor-btn{height:28px;padding:0 11px;font-size:9px}
+  .tutor-btn:hover{letter-spacing:.14em}
+
+  #tutor-panel{
+    top:auto;left:0;right:0;bottom:0;
+    width:auto;
+    height:70vh;height:70dvh;
+    border-left:0;border-top:1px solid var(--hairline-strong);
+    border-radius:8px 8px 0 0;
+    transform:translateY(100%);
+  }
+  #tutor-panel.open{transform:translateY(0)}
+  .tutor-compose{padding-bottom:max(12px,env(safe-area-inset-bottom))}
+}
+
+/* reduced motion: no slide, no pulsing */
+@media (prefers-reduced-motion:reduce){
+  #tutor-panel,#tutor-panel.open{transition:none}
+  .tutor-typing span{animation:none;opacity:.7}
+  .tutor-btn,.tutor-send,.tutor-close{transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+  .tutor-btn:hover{letter-spacing:.14em}
+  .tutor-btn:active{transform:none}
 }

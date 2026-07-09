@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khan Academy SAT Math Alternative | Satified</title>
+  <meta name="description" content="An honest Khan Academy alternative for SAT Math: Satified is not a course, it is a free drilling engine at real test difficulty. For most students, use both.">
+  <link rel="canonical" href="https://satified.org/compare/khan-academy-sat-math-alternative/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Satified">
+  <meta property="og:title" content="Khan Academy SAT Math Alternative | Satified">
+  <meta property="og:description" content="Khan Academy teaches concepts brilliantly. Satified drills them at real digital SAT difficulty with regenerating questions. Most students should use both.">
+  <meta property="og:url" content="https://satified.org/compare/khan-academy-sat-math-alternative/">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/pages.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://satified.org/" },
+          { "@type": "ListItem", "position": 2, "name": "Khan Academy alternative", "item": "https://satified.org/compare/khan-academy-sat-math-alternative/" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Is Satified a replacement for Khan Academy?", "acceptedAnswer": { "@type": "Answer", "text": "For most students, no. Khan Academy teaches concepts and Satified drills them, which are different jobs. It only works as a full replacement if your concepts are already solid and all you need is unlimited practice volume at real difficulty." } },
+          { "@type": "Question", "name": "Is Khan Academy enough on its own for SAT Math?", "acceptedAnswer": { "@type": "Answer", "text": "Plenty of students have scored well using Khan Academy alone, especially for building concepts. The gap students most often report is drilling volume at the medium and hard tiers, and that is exactly the gap a regenerating question bank fills." } },
+          { "@type": "Question", "name": "Which should a 700 plus student prioritize?", "acceptedAnswer": { "@type": "Answer", "text": "At that level the bottleneck is rarely concepts, so drilling takes priority: hard tier practice and full adaptive simulations. Keep Khan Academy within reach for the moments a specific topic needs reteaching." } },
+          { "@type": "Question", "name": "Are both really free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Khan Academy is a nonprofit and free. Satified is a one student project with no account, no ads, and no paid tier, so the choice between them never involves money." } }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="pg-header">
+      <a class="brand" href="/"><span class="b1">sat</span><span class="b2">ified</span></a>
+      <nav class="pg-nav" aria-label="Main">
+        <a href="/sat-math-practice/" class="hide-m">Practice</a>
+        <a href="/sat-math-practice-test/" class="hide-m">Practice test</a>
+        <a href="/faq/" class="hide-m">FAQ</a>
+        <a class="cta" href="/study/">Study →</a>
+      </nav>
+    </header>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>Khan Academy alternative
+    </nav>
+
+    <main>
+      <div class="pg-hero">
+        <p class="eyebrow">Compare · The honest version</p>
+        <h1>A Khan Academy SAT Math <span class="accent">Alternative</span></h1>
+        <p class="lede">If you searched for this, here is the honest first answer: Khan Academy is genuinely good and you probably should not abandon it. Satified does a different job. It is not a course; it is a drilling engine at real digital SAT difficulty. Most students end up wanting both.</p>
+        <ul class="facts">
+          <li>Khan: full course with lessons</li>
+          <li>Satified: pure drilling engine</li>
+          <li>Khan: official College Board partner</li>
+          <li>Satified: 1,483 regenerating questions</li>
+          <li>Both: completely free</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn dark" href="/study/">Try the drills free →</a>
+          <a class="btn" href="/sat-math-practice/">See all practice</a>
+        </div>
+      </div>
+
+      <section>
+        <h2>What Khan Academy does well</h2>
+        <p>Khan Academy teaches. Videos, worked lessons, a structured path through every SAT Math topic, and progress tracking, all free from a nonprofit. It is also the College Board's official practice partner, which gives its SAT material an alignment nobody else can claim.</p>
+        <p>If a concept is missing, a lesson platform is the right tool for the job. No amount of drilling fixes not knowing how exponent rules work; a ten minute video does.</p>
+      </section>
+
+      <section>
+        <h2>What Satified does differently</h2>
+        <p>Satified is not a course and does not pretend to be one. It is 1,483 question generators organized by the digital SAT's own taxonomy of 4 domains and 19 skills, tiered easy, medium, and hard, plus adaptive practice tests that copy the real two module structure with built in Desmos. Every answer, figure, and explanation has been independently verified.</p>
+        <p>A common complaint about practice tools in general is that their questions feel gentler than the real thing. Satified is calibrated hardest where it counts, at the medium and hard tiers where scores actually move. And because every question regenerates with fresh numbers, the bank never runs out and never gets memorized.</p>
+      </section>
+
+      <section>
+        <h2>The honest answer is both</h2>
+        <p>Learn on Khan Academy, drill on Satified. When a lesson clicks, come drill the matching skill until the generator stops surprising you, then go learn the next thing. The two loops feed each other, and since both are free, the usual tradeoff between tools simply does not exist here.</p>
+        <p>The only students who can treat Satified as a full alternative are the ones who already know the concepts and are purely short on volume: they need reps at real difficulty, not another explanation of slope.</p>
+        <div class="cta-band">
+          <p class="big">Keep Khan. <em>Add drills.</em></p>
+          <a class="btn dark" href="/study/">Start drilling free →</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Questions students ask</h2>
+        <dl class="faq">
+          <div><dt>Is Satified a replacement for Khan Academy?</dt><dd>For most students, no. Khan Academy teaches concepts and Satified drills them, which are different jobs. It only works as a full replacement if your concepts are already solid and all you need is unlimited practice volume at real difficulty.</dd></div>
+          <div><dt>Is Khan Academy enough on its own for SAT Math?</dt><dd>Plenty of students have scored well using Khan Academy alone, especially for building concepts. The gap students most often report is drilling volume at the medium and hard tiers, and that is exactly the gap a regenerating question bank fills.</dd></div>
+          <div><dt>Which should a 700 plus student prioritize?</dt><dd>At that level the bottleneck is rarely concepts, so drilling takes priority: hard tier practice and full adaptive simulations. Keep Khan Academy within reach for the moments a specific topic needs reteaching.</dd></div>
+          <div><dt>Are both really free?</dt><dd>Yes. Khan Academy is a nonprofit and free. Satified is a one student project with no account, no ads, and no paid tier, so the choice between them never involves money.</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Keep going</h2>
+        <p>More comparisons, and the fastest way to judge for yourself.</p>
+        <nav class="related" aria-label="Related pages">
+          <a href="/compare/khan-academy-vs-uworld-sat/">Khan Academy vs UWorld</a>
+          <a href="/compare/uworld-sat-alternative/">A free UWorld alternative</a>
+          <a href="/sat-math-practice-test/">Full practice test</a>
+          <a href="/about/">About Satified</a>
+        </nav>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pg-footer">
+    <div class="wrap">
+      <a class="fbrand" href="/">sat<span class="b2">ified</span></a>
+      <a href="/sat-math-practice/">Practice</a>
+      <a href="/sat-math-practice-test/">Practice test</a>
+      <a href="/sat-math/">All topics</a>
+      <a href="/about/">About</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <span>© 2026 Satified</span>
+    </div>
+  </footer>
+</body>
+</html>

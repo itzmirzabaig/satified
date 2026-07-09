@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAT Math Topics and Practice | Satified</title>
+  <meta name="description" content="How the digital SAT Math section works: two adaptive modules, four domains, nineteen skills, and free regenerating practice for every topic on the test.">
+  <link rel="canonical" href="https://satified.org/sat-math/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Satified">
+  <meta property="og:title" content="SAT Math Topics and Practice | Satified">
+  <meta property="og:description" content="Two adaptive modules, four domains, nineteen skills. The complete map of digital SAT Math, with free regenerating practice for each topic.">
+  <meta property="og:url" content="https://satified.org/sat-math/">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/pages.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://satified.org/" },
+          { "@type": "ListItem", "position": 2, "name": "SAT Math", "item": "https://satified.org/sat-math/" }
+        ]
+      },
+      {
+        "@type": "LearningResource",
+        "name": "SAT Math Topics and Practice",
+        "description": "A complete map of the digital SAT Math section: four domains, nineteen skills, the adaptive module structure, and free regenerating practice for every topic.",
+        "url": "https://satified.org/sat-math/",
+        "learningResourceType": "Study guide",
+        "educationalLevel": "High school",
+        "teaches": "Structure and topics of the digital SAT Math section",
+        "isAccessibleForFree": true,
+        "provider": { "@type": "Organization", "name": "Satified", "url": "https://satified.org/" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "How long is SAT Math and how many questions?", "acceptedAnswer": { "@type": "Answer", "text": "70 minutes for 44 questions, split into two modules of 22 questions and 35 minutes each. You take it right after the Reading and Writing section." } },
+          { "@type": "Question", "name": "What does adaptive actually mean here?", "acceptedAnswer": { "@type": "Answer", "text": "Module 1 is the same mix for everyone. The app scores it immediately and routes you to one of two second modules. Do well and Module 2 gets harder while the whole 200 to 800 range stays reachable; otherwise you get a gentler module with a capped ceiling." } },
+          { "@type": "Question", "name": "Can I use a calculator on every question?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The digital SAT allows a calculator for the entire Math section and embeds Desmos directly in the app. Satified gives you the identical calculator so the habit transfers." } },
+          { "@type": "Question", "name": "What score range does the Math section use?", "acceptedAnswer": { "@type": "Answer", "text": "It reports 200 to 800, which is half of your 1600 composite. Wrong answers cost nothing beyond the missed points, so never leave a question blank." } }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="pg-header">
+      <a class="brand" href="/"><span class="b1">sat</span><span class="b2">ified</span></a>
+      <nav class="pg-nav" aria-label="Main">
+        <a href="/sat-math-practice/" class="hide-m">Practice</a>
+        <a href="/sat-math-practice-test/" class="hide-m">Practice test</a>
+        <a href="/faq/" class="hide-m">FAQ</a>
+        <a class="cta" href="/study/">Study →</a>
+      </nav>
+    </header>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>SAT Math
+    </nav>
+
+    <main>
+      <div class="pg-hero">
+        <p class="eyebrow">Digital SAT · Math section</p>
+        <h1>SAT Math <span class="accent">Topics</span> and Practice</h1>
+        <p class="lede">The Math half of the digital SAT runs as two adaptive modules of 22 questions, 35 minutes each, and lands on a 200 to 800 score. This page maps everything the section tests: four domains, nineteen skills, and free regenerating practice for each one.</p>
+        <ul class="facts">
+          <li>2 adaptive modules</li>
+          <li>22 questions per module</li>
+          <li>35 minutes per module</li>
+          <li>Scored 200 to 800</li>
+          <li>Calculator allowed throughout</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn dark" href="/study/">Practice every topic free →</a>
+          <a class="btn" href="/sat-math-practice/">Why practice on Satified</a>
+        </div>
+      </div>
+
+      <section>
+        <h2>How the Math section works</h2>
+        <p>You get 44 questions in two sittings of 22. Module 1 mixes easy and medium questions for everyone. The app grades it on the spot, and your result decides which Module 2 you receive: a harder set that keeps the full 200 to 800 range open, or an easier set that caps the score you can reach.</p>
+        <p>Timing is 35 minutes per module, 70 in total, which averages about 95 seconds per question. A calculator is allowed the entire time, and the Desmos graphing calculator is built into the testing app itself, the same one Satified embeds. Most questions are multiple choice with four options; about a quarter ask you to type the answer yourself.</p>
+      </section>
+
+      <section>
+        <h2>Four domains, nineteen skills</h2>
+        <p>College Board draws every SAT Math question from four official domains, and their weights barely move from test to test, so your study plan should be weighted the same way. Every card below opens focused, regenerating practice for one skill.</p>
+      </section>
+
+      <section>
+        <h2>Algebra: about 35% of the test</h2>
+        <p>The heart of the section, roughly 15 of your 44 questions, all of it linear. If you want the fastest score gains, they are here. Start with the <a href="/sat-math/algebra/">SAT Algebra practice hub</a> for the full picture.</p>
+        <div class="grid-links">
+          <a href="/sat-math/algebra/linear-equations-one-variable/">
+            <p class="k">Skill 1 of 5</p>
+            <h3>Linear equations in one variable</h3>
+            <p>One unknown on both sides of an equals sign, plus the special cases with no solution or infinitely many.</p>
+          </a>
+          <a href="/sat-math/algebra/linear-equations-two-variables/">
+            <p class="k">Skill 2 of 5</p>
+            <h3>Linear equations in two variables</h3>
+            <p>Lines in context: build the equation from a story and read slope and intercepts as real quantities.</p>
+          </a>
+          <a href="/sat-math/algebra/linear-functions/">
+            <p class="k">Skill 3 of 5</p>
+            <h3>Linear functions</h3>
+            <p>Work with f(x) = mx + b across tables, graphs, and word problems, and interpret m and b.</p>
+          </a>
+          <a href="/sat-math/algebra/linear-inequalities/">
+            <p class="k">Skill 4 of 5</p>
+            <h3>Linear inequalities</h3>
+            <p>Solve inequalities in one and two variables, flip the sign correctly, and pick the right shaded region.</p>
+          </a>
+          <a href="/sat-math/algebra/systems-of-equations/">
+            <p class="k">Skill 5 of 5</p>
+            <h3>Systems of two linear equations</h3>
+            <p>Find where two lines cross, or reason about how many solutions the pair has without solving.</p>
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Advanced Math: about 35% of the test</h2>
+        <p>Quadratics, exponentials, polynomials, and radical expressions, roughly 15 questions per test. The hard second module leans on this domain heavily, so it effectively gates scores above 700. The <a href="/sat-math/advanced-math/">SAT Advanced Math practice hub</a> breaks down why.</p>
+        <div class="grid-links">
+          <a href="/sat-math/advanced-math/equivalent-expressions/">
+            <p class="k">Skill 1 of 3</p>
+            <h3>Equivalent expressions</h3>
+            <p>Factor, expand, and rewrite algebraic expressions until you can spot two forms of the same thing.</p>
+          </a>
+          <a href="/sat-math/advanced-math/nonlinear-equations/">
+            <p class="k">Skill 2 of 3</p>
+            <h3>Nonlinear equations and systems</h3>
+            <p>Solve quadratic, radical, rational, and absolute value equations, and systems where a line meets a curve.</p>
+          </a>
+          <a href="/sat-math/advanced-math/nonlinear-functions/">
+            <p class="k">Skill 3 of 3</p>
+            <h3>Nonlinear functions</h3>
+            <p>Parabolas and exponential models: vertices, intercepts, growth factors, and transformations.</p>
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Problem Solving and Data Analysis: about 15% of the test</h2>
+        <p>The reading heavy domain: around 7 questions built from tables, charts, and long word problems. The arithmetic is friendly; the setups are not. Details live at the <a href="/sat-math/problem-solving-data-analysis/">Problem Solving and Data Analysis hub</a>.</p>
+        <div class="grid-links">
+          <a href="/sat-math/problem-solving-data-analysis/ratios-rates-units/">
+            <p class="k">Skill 1 of 7</p>
+            <h3>Ratios, rates, and units</h3>
+            <p>Proportional reasoning, rate comparisons, and unit conversions that hide inside word problems.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/percentages/">
+            <p class="k">Skill 2 of 7</p>
+            <h3>Percentages</h3>
+            <p>Percent of a number, percent change, and reverse questions that ask for the original amount.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/one-variable-data/">
+            <p class="k">Skill 3 of 7</p>
+            <h3>One variable data</h3>
+            <p>Mean, median, range, and standard deviation, read from lists, dot plots, and histograms.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/two-variable-data/">
+            <p class="k">Skill 4 of 7</p>
+            <h3>Two variable data</h3>
+            <p>Scatterplots and lines of best fit, and what a fitted slope says about the two quantities.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/probability/">
+            <p class="k">Skill 5 of 7</p>
+            <h3>Probability</h3>
+            <p>Probabilities from frequency tables and counts, including conditional questions.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/inference-margin-error/">
+            <p class="k">Skill 6 of 7</p>
+            <h3>Inference and margin of error</h3>
+            <p>What a sample estimate lets you conclude about a population, and how sure you get to be.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/statistical-claims/">
+            <p class="k">Skill 7 of 7</p>
+            <h3>Statistical claims</h3>
+            <p>Sampling methods, experiments versus observation, and which conclusions a design supports.</p>
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Geometry and Trigonometry: about 15% of the test</h2>
+        <p>Tied for the smallest domain, about 7 questions, usually placed late in each module. A reference sheet supplies the formulas, but recognizing which one applies is on you. See the <a href="/sat-math/geometry-trigonometry/">Geometry and Trigonometry hub</a> for the patterns.</p>
+        <div class="grid-links">
+          <a href="/sat-math/geometry-trigonometry/area-volume/">
+            <p class="k">Skill 1 of 4</p>
+            <h3>Area and volume</h3>
+            <p>Areas, surfaces, and volumes, including composite figures built from simple ones.</p>
+          </a>
+          <a href="/sat-math/geometry-trigonometry/lines-angles-triangles/">
+            <p class="k">Skill 2 of 4</p>
+            <h3>Lines, angles, and triangles</h3>
+            <p>Angle relationships from parallel lines, triangle angle sums, congruence, and similarity.</p>
+          </a>
+          <a href="/sat-math/geometry-trigonometry/right-triangles-trigonometry/">
+            <p class="k">Skill 3 of 4</p>
+            <h3>Right triangles and trigonometry</h3>
+            <p>The Pythagorean theorem, sine, cosine, and tangent, and the special right triangles.</p>
+          </a>
+          <a href="/sat-math/geometry-trigonometry/circles/">
+            <p class="k">Skill 4 of 4</p>
+            <h3>Circles</h3>
+            <p>Circle equations in the plane, arc length, sector area, and inscribed angles.</p>
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <h2>SAT Math section FAQ</h2>
+        <dl class="faq">
+          <div><dt>How long is SAT Math and how many questions?</dt><dd>70 minutes for 44 questions, split into two modules of 22 questions and 35 minutes each. You take it right after the Reading and Writing section.</dd></div>
+          <div><dt>What does adaptive actually mean here?</dt><dd>Module 1 is the same mix for everyone. The app scores it immediately and routes you to one of two second modules. Do well and Module 2 gets harder while the whole 200 to 800 range stays reachable; otherwise you get a gentler module with a capped ceiling.</dd></div>
+          <div><dt>Can I use a calculator on every question?</dt><dd>Yes. The digital SAT allows a calculator for the entire Math section and embeds Desmos directly in the app. Satified gives you the identical calculator so the habit transfers.</dd></div>
+          <div><dt>What score range does the Math section use?</dt><dd>It reports 200 to 800, which is half of your 1600 composite. Wrong answers cost nothing beyond the missed points, so never leave a question blank.</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Put the map to work</h2>
+        <p>Reading about the section will not move your score; reps will. Pick a domain, or open the study app and let the filters do it.</p>
+        <nav class="related" aria-label="Related pages">
+          <a href="/sat-math-practice/">Why practice here</a>
+          <a href="/sat-math-practice-test/">Adaptive practice test</a>
+          <a href="/sat-math/algebra/">Algebra</a>
+          <a href="/sat-math/advanced-math/">Advanced Math</a>
+          <a href="/sat-math/problem-solving-data-analysis/">Problem Solving and Data Analysis</a>
+          <a href="/sat-math/geometry-trigonometry/">Geometry and Trigonometry</a>
+          <a href="/study/">Start studying</a>
+        </nav>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pg-footer">
+    <div class="wrap">
+      <a class="fbrand" href="/">sat<span class="b2">ified</span></a>
+      <a href="/sat-math-practice/">Practice</a>
+      <a href="/sat-math-practice-test/">Practice test</a>
+      <a href="/sat-math/">All topics</a>
+      <a href="/about/">About</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <span>© 2026 Satified</span>
+    </div>
+  </footer>
+</body>
+</html>

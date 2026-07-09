@@ -1,0 +1,29 @@
+# Satified
+
+> Satified is a free SAT Math practice platform with 1,483 procedurally generated questions, adaptive practice tests, a built in Desmos calculator, and a free AI tutor. No account, no ads, no paywall.
+
+Satified is a one student project created by Mirza N. Baig to help students, especially in the US Virgin Islands, raise their SAT Math scores at no cost. Every question regenerates with fresh numbers and is organized by the College Board's four domains and nineteen skills. The AI tutor gives hint first, step by step help and is anchored to each question's verified correct answer, so it does not assert a different final answer than the one the question is looking for.
+
+Key facts: Satified is free. No account is required. There are 1,483 generated SAT Math questions. Desmos is built in. The AI tutor uses Google Gemini 2.5 Flash with automatic failover to other free models.
+
+## Core
+- [Study app](https://satified.org/study/): the free practice app with the AI tutor and built in Desmos.
+- [SAT Math practice hub](https://satified.org/sat-math-practice/): all practice, organized by domain, skill, and difficulty.
+- [Full adaptive practice test](https://satified.org/sat-math-practice-test/): two modules, 44 questions, real adaptive routing.
+- [AI SAT Math tutor](https://satified.org/ai-sat-math-tutor/): free step by step help, anchored to verified answers, no account.
+- [SAT score calculator](https://satified.org/sat-score-calculator/): estimate a scaled Math score from a raw score.
+
+## Topics
+- [All SAT Math topics](https://satified.org/sat-math/)
+- [Algebra](https://satified.org/sat-math/algebra/)
+- [Advanced Math](https://satified.org/sat-math/advanced-math/)
+- [Problem Solving and Data Analysis](https://satified.org/sat-math/problem-solving-data-analysis/)
+- [Geometry and Trigonometry](https://satified.org/sat-math/geometry-trigonometry/)
+
+## Guides
+- [Blog](https://satified.org/blog/): sourced guides on SAT Math practice, scoring, and test structure.
+- [PSAT Math practice](https://satified.org/psat-math-practice/): the digital PSAT Math section and how SAT practice prepares for it.
+
+## About
+- [Creator](https://satified.org/creator/): Mirza N. Baig, 2026 Charlotte Amalie High School valedictorian and pre medical student.
+- [About Satified](https://satified.org/about/): what the project is and why it exists.

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Easy SAT Math Practice, Free Questions | Satified</title>
+  <meta name="description" content="Free easy SAT math practice for speed, accuracy, and confidence on the opening questions of each module. Clean up the careless errors that cost real points.">
+  <link rel="canonical" href="https://satified.org/sat-math/easy-questions/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Satified">
+  <meta property="og:title" content="Easy SAT Math Practice, Free Questions | Satified">
+  <meta property="og:description" content="Easy SAT math drills for speed, accuracy, and confidence on the opening questions of each module. Free, regenerating, no account.">
+  <meta property="og:url" content="https://satified.org/sat-math/easy-questions/">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/pages.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://satified.org/" },
+          { "@type": "ListItem", "position": 2, "name": "SAT Math", "item": "https://satified.org/sat-math/" },
+          { "@type": "ListItem", "position": 3, "name": "Easy practice", "item": "https://satified.org/sat-math/easy-questions/" }
+        ]
+      },
+      {
+        "@type": "LearningResource",
+        "name": "Easy SAT Math Practice",
+        "description": "Free easy difficulty SAT Math practice for building speed, accuracy, and confidence on the opening stretch of each module.",
+        "url": "https://satified.org/sat-math/easy-questions/",
+        "learningResourceType": "Practice problems",
+        "educationalLevel": "High school",
+        "teaches": "Easy difficulty questions across the four digital SAT Math domains",
+        "isAccessibleForFree": true,
+        "provider": { "@type": "Organization", "name": "Satified", "url": "https://satified.org/" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Why practice easy questions at all?", "acceptedAnswer": { "@type": "Answer", "text": "Because every question is worth the same point, and easy misses in module 1 can route you into the easier module 2, which caps your ceiling. Easy drills are how the points you already deserve become points you actually get." } },
+          { "@type": "Question", "name": "How fast should easy questions go?", "acceptedAnswer": { "@type": "Answer", "text": "The section averages about 95 seconds per question, and easy ones should finish comfortably under a minute. The saved time is not a bonus; it is the budget the final questions of each module get paid from." } },
+          { "@type": "Question", "name": "Do easy mistakes really change my score?", "acceptedAnswer": { "@type": "Answer", "text": "More than any other mistake. They cost the same point a hard question is worth, and in module 1 they also influence routing: enough easy misses and the test hands you the easier module 2, which tops out below the highest scores." } },
+          { "@type": "Question", "name": "Do these drills regenerate too?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every easy drill is a generator with fresh numbers each time, so you cannot memorize your way through a streak. Free, no account, no ads." } }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="pg-header">
+      <a class="brand" href="/"><span class="b1">sat</span><span class="b2">ified</span></a>
+      <nav class="pg-nav" aria-label="Main">
+        <a href="/sat-math-practice/" class="hide-m">Practice</a>
+        <a href="/sat-math-practice-test/" class="hide-m">Practice test</a>
+        <a href="/faq/" class="hide-m">FAQ</a>
+        <a class="cta" href="/study/">Study →</a>
+      </nav>
+    </header>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span><a href="/sat-math/">SAT Math</a><span>/</span>Easy practice
+    </nav>
+
+    <main>
+      <div class="pg-hero">
+        <p class="eyebrow">SAT Math · Easy tier</p>
+        <h1>Easy SAT Math <span class="accent">Practice</span></h1>
+        <p class="lede">The first ten questions of each module set your pace, your nerves, and a surprising share of your score. Easy practice is not about learning math you do not know; it is about making the math you do know fast, clean, and boring.</p>
+        <ul class="facts">
+          <li>Difficulty: easy</li>
+          <li>Focus: the opening ten</li>
+          <li>Goal: speed with accuracy</li>
+          <li>Regenerates forever</li>
+          <li>Free, no account</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn dark" href="/study/">Drill easy questions free →</a>
+          <a class="btn" href="/sat-math/medium-questions/">Move up to medium</a>
+        </div>
+      </div>
+
+      <section>
+        <h2>Why easy questions deserve real practice</h2>
+        <p>Every question on the digital SAT is worth the same, so a dropped easy point costs exactly what a dropped hard point costs, and it stings more because it was already yours. On an adaptive test the damage doubles: easy misses in module 1 can route you into the easier module 2, which caps your ceiling before you ever meet a hard question.</p>
+        <p>Confidence is the quieter reason. Opening a module with ten clean, quick answers changes how the rest of it feels. Opening with a silly miss you caught two questions too late does the opposite.</p>
+      </section>
+
+      <section>
+        <h2>Speed and accuracy on the first ten</h2>
+        <p>The math gives you about 95 seconds per question on average, but you should not spend it evenly. The opening stretch is where time gets banked: comfortable easy questions should close in well under a minute, and the surplus belongs to the closers, where you will genuinely need it.</p>
+        <p>Speed without accuracy is just faster losing, though. The drill goal here is a streak: ten easy questions, zero misses, again and again, until quick and clean stop being separate goals and become one habit.</p>
+      </section>
+
+      <section>
+        <h2>The careless error list</h2>
+        <ul class="traps">
+          <li><strong>Solving for x when the question wants 2x + 1.</strong> The algebra was fine; the final sentence got skipped. Reread what is actually being asked before you commit an answer.</li>
+          <li><strong>Sign slips in one step solves.</strong> Moving a term across the equals sign is where easy points die. Slow down exactly one beat on every negative.</li>
+          <li><strong>Unit and label misreads.</strong> Minutes versus hours, dollars versus cents, per week versus per month. When an easy question has a trap, it is usually hiding in the units.</li>
+          <li><strong>Keying errors in Desmos.</strong> A wrong number typed into the calculator produces a confident wrong answer. For one step arithmetic, your head is often both safer and faster.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Where to start drilling</h2>
+        <p>Easy questions appear in all four domains, but the fastest wins usually come from two of them, where the most common easy patterns live: one step solves, ratios, percentages, and reading a value off a chart.</p>
+        <div class="grid-links">
+          <a href="/sat-math/algebra/">
+            <p class="k">About 35% of the test</p>
+            <h3>Algebra</h3>
+            <p>One step and two step linear solves, the bread and butter of every opening stretch. Make these feel like arithmetic.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/">
+            <p class="k">About 15% of the test</p>
+            <h3>Problem Solving and Data Analysis</h3>
+            <p>Ratios, percentages, and chart reading: short questions where the only threat is a misread label.</p>
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <div class="cta-band">
+          <p class="big">Ten for ten, <em>every time.</em></p>
+          <a class="btn dark" href="/study/">Start easy drills free →</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Questions students ask</h2>
+        <dl class="faq">
+          <div><dt>Why practice easy questions at all?</dt><dd>Because every question is worth the same point, and easy misses in module 1 can route you into the easier module 2, which caps your ceiling. Easy drills are how the points you already deserve become points you actually get.</dd></div>
+          <div><dt>How fast should easy questions go?</dt><dd>The section averages about 95 seconds per question, and easy ones should finish comfortably under a minute. The saved time is not a bonus; it is the budget the final questions of each module get paid from.</dd></div>
+          <div><dt>Do easy mistakes really change my score?</dt><dd>More than any other mistake. They cost the same point a hard question is worth, and in module 1 they also influence routing: enough easy misses and the test hands you the easier module 2, which tops out below the highest scores.</dd></div>
+          <div><dt>Do these drills regenerate too?</dt><dd>Yes. Every easy drill is a generator with fresh numbers each time, so you cannot memorize your way through a streak. Free, no account, no ads.</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Keep going</h2>
+        <p>Once ten for ten feels routine, the medium tier is where your score starts moving.</p>
+        <nav class="related" aria-label="Related pages">
+          <a href="/sat-math/medium-questions/">Medium questions</a>
+          <a href="/sat-math/hard-questions/">Hard questions</a>
+          <a href="/sat-math-practice-test/">Full practice test</a>
+          <a href="/sat-math/">All topics</a>
+        </nav>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pg-footer">
+    <div class="wrap">
+      <a class="fbrand" href="/">sat<span class="b2">ified</span></a>
+      <a href="/sat-math-practice/">Practice</a>
+      <a href="/sat-math-practice-test/">Practice test</a>
+      <a href="/sat-math/">All topics</a>
+      <a href="/about/">About</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <span>© 2026 Satified</span>
+    </div>
+  </footer>
+</body>
+</html>

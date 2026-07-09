@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Digital SAT Math Practice Test | Satified</title>
+  <meta name="description" content="Take a free adaptive digital SAT Math practice test: two modules of 22 questions, 35 minutes each, built in Desmos, scored 200 to 800, full explanations after.">
+  <link rel="canonical" href="https://satified.org/sat-math-practice-test/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Satified">
+  <meta property="og:title" content="Free Digital SAT Math Practice Test | Satified">
+  <meta property="og:description" content="A full adaptive simulation of the digital SAT Math section: two modules of 22 questions, 35 minutes each, built in Desmos, scored 200 to 800.">
+  <meta property="og:url" content="https://satified.org/sat-math-practice-test/">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/pages.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://satified.org/" },
+          { "@type": "ListItem", "position": 2, "name": "Practice test", "item": "https://satified.org/sat-math-practice-test/" }
+        ]
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Satified SAT Math Practice Test",
+        "url": "https://satified.org/study/",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Web",
+        "description": "A free adaptive simulation of the digital SAT Math section: two modules of 22 questions, 35 minutes each, with the built in Desmos calculator, scoring on the 200 to 800 scale, and full explanations after.",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "featureList": "Adaptive module routing, optional adaptive toggle, built in Desmos calculator, 200 to 800 score estimate, full worked explanations",
+        "publisher": { "@type": "Organization", "name": "Satified", "url": "https://satified.org/" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "How long is the practice test?", "acceptedAnswer": { "@type": "Answer", "text": "Two modules of 22 questions at 35 minutes each, so 70 minutes of testing for 44 questions. With the score screen and review, plan for about 75 minutes end to end." } },
+          { "@type": "Question", "name": "Is the score accurate?", "acceptedAnswer": { "@type": "Answer", "text": "It is an honest estimate on the real 200 to 800 scale, using the same adaptive logic as the real section. Treat any practice score as a range rather than a promise, and use official Bluebook tests as your final calibration." } },
+          { "@type": "Question", "name": "Can I really retake it endlessly?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every question is a generator, so each administration is built fresh. There is no fixed pool to exhaust and no recycled questions to accidentally memorize." } },
+          { "@type": "Question", "name": "Is it scored like the real test?", "acceptedAnswer": { "@type": "Answer", "text": "The scale is the same 200 to 800 and the structure is the same: reaching the harder module 2 keeps the top scores available, while the easier module 2 tops out lower." } },
+          { "@type": "Question", "name": "Is it free?", "acceptedAnswer": { "@type": "Answer", "text": "Completely. No account, no ads, no paywall, and no limit on retakes." } }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="pg-header">
+      <a class="brand" href="/"><span class="b1">sat</span><span class="b2">ified</span></a>
+      <nav class="pg-nav" aria-label="Main">
+        <a href="/sat-math-practice/" class="hide-m">Practice</a>
+        <a href="/sat-math-practice-test/" class="hide-m">Practice test</a>
+        <a href="/faq/" class="hide-m">FAQ</a>
+        <a class="cta" href="/study/">Study →</a>
+      </nav>
+    </header>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>Practice test
+    </nav>
+
+    <main>
+      <div class="pg-hero">
+        <p class="eyebrow">Full simulation · Adaptive</p>
+        <h1>Free Digital SAT Math <span class="accent">Practice Test</span></h1>
+        <p class="lede">This is a full simulation of the digital SAT Math section: two modules of 22 questions, 35 minutes each, adaptive routing in between, the built in Desmos calculator, and a score on the 200 to 800 scale when you finish. Every administration is generated fresh, so you can never run out of retakes.</p>
+        <ul class="facts">
+          <li>2 modules · 22 questions each</li>
+          <li>35 minutes per module</li>
+          <li>Scored 200 to 800</li>
+          <li>Desmos built in</li>
+          <li>Free, no account</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn dark" href="/study/">Take the practice test →</a>
+          <a class="btn" href="/sat-math/">Drill single skills instead</a>
+        </div>
+      </div>
+
+      <section>
+        <h2>Exactly how the simulation works</h2>
+        <p>The test copies the structure of the real digital SAT Math section move for move. Here is the whole flow, with no surprises saved for later.</p>
+        <div class="patterns">
+          <article class="pattern">
+            <p class="k">Step 01</p>
+            <h3>Module 1 is the same for everyone</h3>
+            <p>You get 22 questions spanning all four domains, mixed in difficulty, with 35 minutes on the clock. This module is the audition for module 2.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Step 02</p>
+            <h3>Your performance routes module 2</h3>
+            <p>Do well and the second module comes back harder. Struggle and it comes back easier. Either way it is another 22 questions in 35 minutes.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Step 03</p>
+            <h3>Adaptive is a toggle</h3>
+            <p>Routing is on by default because that is how the real test behaves. Turn it off if you want to face a specific module 2 difficulty on purpose.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Step 04</p>
+            <h3>Desmos rides along</h3>
+            <p>The same graphing calculator the real test builds in is available on every question, so your calculator habits transfer exactly.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Step 05</p>
+            <h3>You get a score from 200 to 800</h3>
+            <p>When the second module closes, your performance across both modules becomes a section score on the real scale.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Step 06</p>
+            <h3>Then, full explanations</h3>
+            <p>Every question you saw gets a complete worked explanation afterward, including the ones you got right for the wrong reason.</p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>How adaptive routing decides your score ceiling</h2>
+        <p>The adaptive structure means module 1 is worth more than it looks. Land in the harder module 2 and the full scale stays open, all the way to 800. Land in the easier module 2 and your ceiling drops: the easier path simply cannot reach the top of the scale, no matter how perfectly you finish it.</p>
+        <p>That has a practical consequence: protecting easy and medium points in module 1 is the single highest leverage habit on this test. A careless slip in the first ten minutes can quietly close the door on the score you are actually capable of.</p>
+        <p>Satified applies the same logic, so a strong first module here feels exactly like a strong first module on test day, and the score you get reflects the path you earned.</p>
+      </section>
+
+      <section>
+        <h2>How it compares to Bluebook</h2>
+        <p>Bluebook, the College Board's testing app, is the gold standard for full practice because its questions are official. The catch is supply: there is a fixed set of practice tests, and serious students exhaust them, often weeks before test day.</p>
+        <p>Satified copies Bluebook's math structure exactly: two modules of 22 questions, 35 minutes each, adaptive routing, built in Desmos. The difference is that every administration is assembled fresh from 1,483 question generators, so your fifth retake is as new as your first.</p>
+        <p>The honest play is to use both. Save the official Bluebook tests as calibration milestones, and take a Satified test whenever you want another full rep in between. Satified is an independent project and is not affiliated with the College Board.</p>
+      </section>
+
+      <section>
+        <h2>Tips for test day</h2>
+        <ul class="traps">
+          <li><strong>Bank time early.</strong> The opening questions should run well under the average of about 95 seconds each. Every spare second lands where you need it most, at the end of the module.</li>
+          <li><strong>Flag and move.</strong> One stubborn question can eat three others. Mark it, finish your pass through the module, then come back with whatever time is left.</li>
+          <li><strong>Decide Desmos per question.</strong> Graphing wins on intersections and systems, and wastes time on interpretation questions. Practicing that decision is half of what a simulation is for.</li>
+          <li><strong>Do not diagnose module 2.</strong> Students burn focus trying to guess whether they got the harder module. You cannot reliably tell, and the answer changes nothing about how you should play it.</li>
+        </ul>
+      </section>
+
+      <section>
+        <div class="cta-band">
+          <p class="big">44 questions, 70 minutes, <em>fresh every time.</em></p>
+          <a class="btn dark" href="/study/">Start the practice test →</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Questions before you start</h2>
+        <dl class="faq">
+          <div><dt>How long is the practice test?</dt><dd>Two modules of 22 questions at 35 minutes each, so 70 minutes of testing for 44 questions. With the score screen and review, plan for about 75 minutes end to end.</dd></div>
+          <div><dt>Is the score accurate?</dt><dd>It is an honest estimate on the real 200 to 800 scale, using the same adaptive logic as the real section. Treat any practice score as a range rather than a promise, and use official Bluebook tests as your final calibration.</dd></div>
+          <div><dt>Can I really retake it endlessly?</dt><dd>Yes. Every question is a generator, so each administration is built fresh. There is no fixed pool to exhaust and no recycled questions to accidentally memorize.</dd></div>
+          <div><dt>Is it scored like the real test?</dt><dd>The scale is the same 200 to 800 and the structure is the same: reaching the harder module 2 keeps the top scores available, while the easier module 2 tops out lower.</dd></div>
+          <div><dt>Is it free?</dt><dd>Completely. No account, no ads, no paywall, and no limit on retakes.</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Keep going</h2>
+        <p>Full tests measure. Targeted drills fix what the measurement finds.</p>
+        <nav class="related" aria-label="Related pages">
+          <a href="/sat-math/hard-questions/">Hard questions</a>
+          <a href="/sat-math/medium-questions/">Medium questions</a>
+          <a href="/sat-math/easy-questions/">Easy practice</a>
+          <a href="/sat-math/">All topics</a>
+        </nav>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pg-footer">
+    <div class="wrap">
+      <a class="fbrand" href="/">sat<span class="b2">ified</span></a>
+      <a href="/sat-math-practice/">Practice</a>
+      <a href="/sat-math-practice-test/">Practice test</a>
+      <a href="/sat-math/">All topics</a>
+      <a href="/about/">About</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <span>© 2026 Satified</span>
+    </div>
+  </footer>
+</body>
+</html>

@@ -61,6 +61,19 @@ const FOLDER_META: Record<string, { difficulty: string; domain: string; skill: s
   'Final_SAT_Medium_ProblemSolvingAndDataAnalysis_TwoVariableDataModelsAndScatterplots_Template': { difficulty: 'Medium', domain: 'Problem Solving And Data Analysis', skill: 'Two-Variable Data Models And Scatterplots' },
 };
 
+// Generators in these question files return options: [] and render as student
+// produced response (fill in) questions rather than multiple choice. Question
+// numbers are unique across every template folder, so the number alone
+// identifies the file. 357 of the 1483 templates, roughly 24 percent.
+const SPR_QUESTIONS = new Set<number>([
+  47,52,55,56,57,60,66,81,88,90,91,93,112,113,114,120,121,125,127,135,136,137,140,145,149,153,157,159,163,169,177,179,187,196,204,213,214,231,239,242,245,250,252,264,270,292,300,307,311,325,327,330,333,336,346,407,409,419,455,480,483,485,486,490,499,501,507,508,509,514,535,540,558,567,573,574,592,597,603,605,610,628,629,634,635,639,643,649,654,660,666,671,673,674,676,678,679,685,699,702,703,705,706,710,711,715,717,720,723,726,732,736,745,749,750,756,759,762,764,765,767,774,781,799,800,801,806,819,822,827,832,834,838,839,841,843,848,859,867,868,872,877,879,887,888,907,913,917,920,921,925,926,930,931,932,937,939,943,948,949,951,952,954,955,956,962,968,969,973,975,977,978,979,980,982,984,986,988,989,991,1004,1007,1009,1014,1019,1020,1021,1025,1029,1030,1036,1039,1041,1043,1047,1048,1055,1063,1064,1065,1068,1069,1070,1071,1073,1074,1075,1076,1077,1079,1084,1086,1088,1090,1091,1103,1107,1108,1110,1111,1113,1117,1118,1120,1121,1124,1126,1134,1135,1139,1141,1142,1147,1149,1151,1159,1160,1163,1164,1165,1168,1171,1172,1175,1177,1178,1182,1183,1189,1190,1193,1195,1197,1198,1199,1200,1210,1215,1219,1230,1231,1232,1234,1241,1242,1244,1245,1250,1251,1253,1257,1258,1259,1260,1263,1264,1265,1267,1271,1279,1282,1283,1285,1286,1293,1297,1303,1304,1311,1314,1318,1320,1322,1324,1326,1327,1328,1329,1332,1334,1336,1337,1338,1339,1341,1344,1347,1348,1349,1353,1356,1358,1359,1361,1363,1365,1366,1368,1369,1382,1385,1390,1391,1392,1393,1399,1400,1403,1404,1406,1408,1409,1412,1413,1414,1415,1416,1418,1424,1425,1427,1429,1434,1436,1437,1440,1442,1449,1453,1458,1461,1463,1464,1468,1480,1482,1483,
+]);
+
+const isSprPath = (p: string): boolean => {
+  const m = /question_(\d+)\.ts$/.exec(p);
+  return m !== null && SPR_QUESTIONS.has(Number(m[1]));
+};
+
 const isGraphCode = (s: string) =>
   ['<Plot','<Circle','<Polygon','<Point','<Mafs','Math.pow','Math.sin','Math.cos']
     .some(k => s.includes(k));
@@ -450,6 +463,11 @@ class QuestionTester {
     } catch { this.showError('Failed to load — try Next or Regenerate.'); return; }
     this.renderQuestion();
     this.typeset();
+    // Tutor context: published for study/tutor.js (the Ask the tutor panel)
+    const td = this.currentData!, tCi = isFillIn(td) ? null : resolveCorrect(td.correctAnswer, td.options);
+    const tCtx: any = { stem: String(td.questionText || ''), options: tCi === null ? [] : td.options.map(getOptText), correct: tCi === null ? String(td.correctAnswer) : String.fromCharCode(65 + tCi) + '. ' + getOptText(td.options[tCi]), explanation: String(td.explanation || ''), skill: entry.skill, difficulty: entry.difficulty, figure: undefined as string | undefined };
+    (window as any).__tutorContext = tCtx;
+    setTimeout(() => { const fig = this.qContent.querySelector('.figure svg') || this.qContent.querySelector('.figure table'); if (fig) tCtx.figure = (fig as Element).outerHTML.slice(0, 8000); }, 1200);
     // Slide the card in from the correct direction
     if (dir !== 0) {
       const slideClass = dir > 0 ? 'slide-in-right' : 'slide-in-left';
@@ -582,6 +600,12 @@ class QuestionTester {
       regenCooldown = true;
       regenBtn.classList.add('regen-clicked');
       this.loadAndRender();
+      // the card rebuilds synchronously, so spin the freshly rendered button
+      const freshBtn = document.getElementById('regenerate-btn');
+      if (freshBtn) {
+        freshBtn.classList.add('regen-clicked');
+        setTimeout(() => freshBtn.classList.remove('regen-clicked'), 550);
+      }
     });
     regenBtn.addEventListener('mouseleave', () => { regenCooldown = false; regenBtn.classList.remove('regen-clicked'); });
     regenBtn.addEventListener('mouseenter', () => { if (regenCooldown) regenBtn.classList.add('regen-clicked'); });
@@ -876,12 +900,13 @@ interface PTQuestion {
   submitted: boolean;
 }
 
-// Domain+skill targets per module (22 questions):
-// Algebra:8, AdvMath:7, PSDA:4, Geo:3
+// Domain targets per module (22 questions), tracking the College Board
+// weighting of roughly 35/35/15/15 across the four content domains:
+// Algebra:8, AdvMath:8, PSDA:3, Geo:3
 const PT_DOMAIN_COUNTS: Record<string,number> = {
   'Algebra': 8,
-  'Advanced Math': 7,
-  'Problem Solving And Data Analysis': 4,
+  'Advanced Math': 8,
+  'Problem Solving And Data Analysis': 3,
   'Geometry And Trigonometry': 3,
 };
 
@@ -894,6 +919,7 @@ function buildModuleQuestions(
   allIndex: QEntry[],
   allModules: Record<string,(()=>Promise<any>)>,
   difficulties: {diff: 'Easy'|'Medium'|'Hard', count: number}[],
+  excludePaths?: Set<string>,
 ): PTQuestion[] {
   // Build a pool grouped by difficulty+domain
   const pool: Record<string, QEntry[]> = {};
@@ -915,13 +941,14 @@ function buildModuleQuestions(
 
   const questions: PTQuestion[] = [];
   const usedPaths = new Set<string>();
+  const avoidPaths = excludePaths ?? new Set<string>();
 
   // Build per difficulty, then distribute by domain
   for (const { diff, count } of difficulties) {
     const domainEntries: Record<string,QEntry[]> = {};
     for (const [domain, target] of Object.entries(PT_DOMAIN_COUNTS)) {
       const key = `${diff}::${domain}`;
-      domainEntries[domain] = shuffle(pool[key] || []).filter(e => !usedPaths.has(e.path));
+      domainEntries[domain] = shuffle(pool[key] || []).filter(e => !usedPaths.has(e.path) && !avoidPaths.has(e.path));
     }
 
     // Allocate proportionally to domain targets
@@ -943,7 +970,16 @@ function buildModuleQuestions(
 
     for (const domain of domains) {
       let need = domainAlloc[domain];
-      const available = domainEntries[domain];
+      let available = domainEntries[domain];
+      if (available.length < need && avoidPaths.size > 0) {
+        // This bucket has too few templates left after excluding the other
+        // module. Refill from those exclusions rather than shorting the
+        // module; generators draw fresh numbers, so a repeated template
+        // still renders with new values.
+        const poolKey = `${diff}::${domain}`;
+        const extras = shuffle(pool[poolKey] || []).filter(e => avoidPaths.has(e.path) && !usedPaths.has(e.path));
+        available = available.concat(extras);
+      }
       for (let i = 0; i < Math.min(need, available.length); i++) {
         usedPaths.add(available[i].path);
         questions.push({
@@ -959,6 +995,49 @@ function buildModuleQuestions(
         });
       }
     }
+  }
+
+  // SPR quota: the real digital SAT places 5 or 6 student produced response
+  // (fill in) questions in each 22 question module, about a quarter of it.
+  // Repair the selection by swapping questions for unused candidates of the
+  // other answer type from the same difficulty and domain bucket, so the
+  // difficulty mix and the domain counts stay unchanged. Iterations are capped
+  // so thin buckets cannot loop forever; the best achievable count is kept.
+  const SPR_MIN = 5;
+  const SPR_MAX = 6;
+  for (let iter = 0; iter < 30; iter++) {
+    const cur = questions.reduce((n, q) => n + (isSprPath(q.path) ? 1 : 0), 0);
+    if (cur >= SPR_MIN && cur <= SPR_MAX) break;
+    const wantSpr = cur < SPR_MIN;
+    let swapped = false;
+    for (const qi of shuffle(questions.map((_, i) => i))) {
+      const q = questions[qi];
+      if (isSprPath(q.path) === wantSpr) continue;
+      const bucket = pool[`${q.difficulty}::${q.domain}`] || [];
+      let cands = bucket.filter(e =>
+        isSprPath(e.path) === wantSpr && !usedPaths.has(e.path) && !avoidPaths.has(e.path));
+      if (cands.length === 0 && avoidPaths.size > 0) {
+        cands = bucket.filter(e => isSprPath(e.path) === wantSpr && !usedPaths.has(e.path));
+      }
+      if (cands.length === 0) continue;
+      const pick = shuffle(cands)[0];
+      usedPaths.delete(q.path);
+      usedPaths.add(pick.path);
+      questions[qi] = {
+        path: pick.path,
+        folder: pick.folder,
+        difficulty: pick.difficulty as 'Easy'|'Medium'|'Hard',
+        domain: pick.domain,
+        skill: pick.skill,
+        data: null,
+        selectedOpt: null,
+        userInput: '',
+        submitted: false,
+      };
+      swapped = true;
+      break;
+    }
+    if (!swapped) break;
   }
 
   // Shuffle the final list so domains/skills are interleaved nicely
@@ -1326,6 +1405,12 @@ class PracticeTestEngine {
 
     document.getElementById('pt-q-content')!.innerHTML = h;
 
+    // Tutor context: published for study/tutor.js (the Ask the tutor panel)
+    const tCi = fillIn ? null : resolveCorrect(d.correctAnswer, d.options);
+    const tCtx: any = { stem: String(d.questionText || ''), options: tCi === null ? [] : d.options.map(getOptText), correct: tCi === null ? String(d.correctAnswer) : String.fromCharCode(65 + tCi) + '. ' + getOptText(d.options[tCi]), explanation: String(d.explanation || ''), skill: q.skill, difficulty: q.difficulty, figure: undefined as string | undefined };
+    (window as any).__tutorContext = tCtx;
+    setTimeout(() => { const fig = document.querySelector('#pt-q-content .figure svg') || document.querySelector('#pt-q-content .figure table'); if (fig) tCtx.figure = (fig as Element).outerHTML.slice(0, 8000); }, 1200);
+
     // Wire up fill-in
     if (fillIn) {
       const inp = document.getElementById('pt-fill-input') as HTMLInputElement;
@@ -1409,16 +1494,18 @@ class PracticeTestEngine {
   }
 
   private startModule2() {
+    // Never repeat a module 1 template inside module 2 of the same test
+    const mod1Paths = new Set(this.module1.map(q => q.path));
     if (this.adaptive) {
       const mod1Score = this.calcModuleScore(this.module1);
       const hardPath = mod1Score / (18*10+4*20) >= 0.57;
       this.module2 = hardPath
-        ? buildModuleQuestions(this.allIndex, this.allModules, [{ diff: 'Medium', count: 12 }, { diff: 'Hard', count: 10 }])
-        : buildModuleQuestions(this.allIndex, this.allModules, [{ diff: 'Easy', count: 16 }, { diff: 'Medium', count: 6 }]);
+        ? buildModuleQuestions(this.allIndex, this.allModules, [{ diff: 'Medium', count: 12 }, { diff: 'Hard', count: 10 }], mod1Paths)
+        : buildModuleQuestions(this.allIndex, this.allModules, [{ diff: 'Easy', count: 16 }, { diff: 'Medium', count: 6 }], mod1Paths);
     } else {
       this.module2 = buildModuleQuestions(this.allIndex, this.allModules, [
         { diff: 'Easy', count: 7 }, { diff: 'Medium', count: 9 }, { diff: 'Hard', count: 6 },
-      ]);
+      ], mod1Paths);
     }
     this.currentModule = 2;
     this.cursor = 0;

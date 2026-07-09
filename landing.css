@@ -124,7 +124,7 @@ body{
 /* burger + full site menu */
 .burger-btn{
   background:none;border:0;cursor:pointer;padding:10px 4px;margin-left:6px;
-  display:flex;flex-direction:column;gap:6px;
+  color:inherit;display:flex;flex-direction:column;gap:6px;
 }
 .burger-btn span{display:block;width:24px;height:1.6px;background:currentColor;transition:transform .4s var(--ease)}
 body.menu-open .burger-btn span:first-child{transform:translateY(3.8px) rotate(45deg)}

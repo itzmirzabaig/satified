@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Satified</title>
+  <meta name="description" content="Satified is free SAT Math practice built by one student, Mirza N. Baig: 1,483 regenerating questions at real difficulty, verified answers, no account, no ads.">
+  <link rel="canonical" href="https://satified.org/about/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Satified">
+  <meta property="og:title" content="About Satified">
+  <meta property="og:description" content="Built by one student because real SAT Math difficulty should not cost money: 1,483 regenerating questions, verified answers, no account, no ads.">
+  <meta property="og:url" content="https://satified.org/about/">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/pages.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://satified.org/" },
+          { "@type": "ListItem", "position": 2, "name": "About", "item": "https://satified.org/about/" }
+        ]
+      },
+      {
+        "@type": "AboutPage",
+        "name": "About Satified",
+        "url": "https://satified.org/about/",
+        "description": "The story behind Satified: free SAT Math practice built by one student, with 1,483 regenerating questions and independently verified answers.",
+        "mainEntity": { "@id": "https://satified.org/#org" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://satified.org/#org",
+        "name": "Satified",
+        "url": "https://satified.org/",
+        "description": "Free SAT Math practice with 1,483 regenerating questions at real digital SAT difficulty, adaptive practice tests, built in Desmos, and independently verified explanations.",
+        "founder": { "@type": "Person", "name": "Mirza N. Baig" },
+        "email": "bmirza113@gmail.com"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="pg-header">
+      <a class="brand" href="/"><span class="b1">sat</span><span class="b2">ified</span></a>
+      <nav class="pg-nav" aria-label="Main">
+        <a href="/sat-math-practice/" class="hide-m">Practice</a>
+        <a href="/sat-math-practice-test/" class="hide-m">Practice test</a>
+        <a href="/faq/" class="hide-m">FAQ</a>
+        <a class="cta" href="/study/">Study →</a>
+      </nav>
+    </header>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>About
+    </nav>
+
+    <main>
+      <div class="pg-hero">
+        <p class="eyebrow">The story</p>
+        <h1>About <span class="accent">Satified</span></h1>
+        <p class="lede">Satified is a free SAT Math practice site built by one student. No company behind it, no funnel, no growth team: just a question bank built carefully because the existing options kept missing the mark.</p>
+        <ul class="facts">
+          <li>Built by one student</li>
+          <li>1,483 verified questions</li>
+          <li>19 skills, 4 domains</li>
+          <li>Free, no account, no ads</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn dark" href="/study/">See it for yourself →</a>
+          <a class="btn" href="/faq/">Read the FAQ</a>
+        </div>
+      </div>
+
+      <section>
+        <h2>Why it exists</h2>
+        <p>My name is Mirza N. Baig. While preparing for the digital SAT, I kept hitting the same wall: practice platforms whose questions did not feel like the test. Easy questions dressed up as hard ones, hard questions testing tricks the SAT never actually uses, difficulty labels that seemed guessed. The platforms that did match the real thing, especially at medium and hard, had one feature in common: a price.</p>
+        <p>So I built the tool I wanted. Real digital SAT difficulty, sharpest exactly where scores are decided, at the medium and hard tiers, and free.</p>
+      </section>
+
+      <section>
+        <h2>Every question is a generator</h2>
+        <p>A static question dies the second time you see it: you remember the answer and learn nothing. Every question on Satified is a generator, so each time it loads it rebuilds with fresh numbers, a fresh context, and reshuffled choices. The pattern is the thing you master, because the pattern is the only thing that survives regeneration.</p>
+        <p>That mirrors what the SAT itself does. It never repeats a question at you; it repeats patterns. Practicing on generators trains for exactly that.</p>
+      </section>
+
+      <section>
+        <h2>Verified, question by question</h2>
+        <p>The bank holds 1,483 questions across the digital SAT's 4 domains and 19 skills. Every answer, every figure, and every explanation has been independently verified, checked separately from the code that generates it. A practice question with a wrong key teaches wrong math, so this was the slowest part of building the site and the least skippable.</p>
+      </section>
+
+      <section>
+        <h2>Free, with nothing attached</h2>
+        <p>No account, no ads, no premium tier, no email capture. A student built this for students, and the whole point was removing the wall between you and honest practice. If it helps you score what you are capable of, that is the transaction.</p>
+      </section>
+
+      <section>
+        <h2>Say hi</h2>
+        <p>Questions, bug reports, a score you are proud of: all welcome, and everything gets read.</p>
+        <div class="cta-row">
+          <a class="btn dark" href="mailto:bmirza113@gmail.com">Say hi →</a>
+          <a class="btn" href="/study/">Or just start practicing</a>
+        </div>
+      </section>
+
+      <p class="note">SAT is a registered trademark of the College Board, which is not affiliated with and does not endorse this site.</p>
+    </main>
+  </div>
+
+  <footer class="pg-footer">
+    <div class="wrap">
+      <a class="fbrand" href="/">sat<span class="b2">ified</span></a>
+      <a href="/sat-math-practice/">Practice</a>
+      <a href="/sat-math-practice-test/">Practice test</a>
+      <a href="/sat-math/">All topics</a>
+      <a href="/about/">About</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <span>© 2026 Satified</span>
+    </div>
+  </footer>
+</body>
+</html>

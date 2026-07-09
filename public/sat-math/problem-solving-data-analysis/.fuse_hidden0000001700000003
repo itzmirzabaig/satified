@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAT Problem Solving and Data Analysis Practice | Satified</title>
+  <meta name="description" content="Free SAT practice for the reading heavy domain: ratios, percentages, data, probability, and inference, with regenerating questions and verified answers.">
+  <link rel="canonical" href="https://satified.org/sat-math/problem-solving-data-analysis/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Satified">
+  <meta property="og:title" content="SAT Problem Solving and Data Analysis Practice | Satified">
+  <meta property="og:description" content="Seven skills, endless word problems: ratios, percentages, statistics, probability, and inference, drilled with free regenerating SAT questions.">
+  <meta property="og:url" content="https://satified.org/sat-math/problem-solving-data-analysis/">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/pages.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://satified.org/" },
+          { "@type": "ListItem", "position": 2, "name": "SAT Math", "item": "https://satified.org/sat-math/" },
+          { "@type": "ListItem", "position": 3, "name": "Problem Solving and Data Analysis", "item": "https://satified.org/sat-math/problem-solving-data-analysis/" }
+        ]
+      },
+      {
+        "@type": "LearningResource",
+        "name": "SAT Problem Solving and Data Analysis Practice",
+        "description": "Free practice for ratios, percentages, statistics, probability, and inference on the digital SAT, with regenerating questions and verified explanations.",
+        "url": "https://satified.org/sat-math/problem-solving-data-analysis/",
+        "learningResourceType": "Practice problems",
+        "educationalLevel": "High school",
+        "teaches": "Problem Solving and Data Analysis on the digital SAT Math section",
+        "isAccessibleForFree": true,
+        "provider": { "@type": "Organization", "name": "Satified", "url": "https://satified.org/" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "How many questions does this domain get?", "acceptedAnswer": { "@type": "Answer", "text": "About 15 percent of the section, which is usually around 7 of the 44 questions, spread through both modules." } },
+          { "@type": "Question", "name": "Why does everyone call it the reading domain?", "acceptedAnswer": { "@type": "Answer", "text": "Its prompts are the longest in SAT Math and most of its traps are verbal: a swapped base, a missed condition, a sample treated as a population. The arithmetic underneath is usually a single proportion or division." } },
+          { "@type": "Question", "name": "Do I need to have taken a statistics class?", "acceptedAnswer": { "@type": "Answer", "text": "No. The domain stays descriptive: centers, spreads, plots, simple probability, and the logic of sampling. Everything it expects can be built through practice rather than coursework." } },
+          { "@type": "Question", "name": "How does Desmos help on data questions?", "acceptedAnswer": { "@type": "Answer", "text": "Use it as a fast and reliable calculator for the final computation. It cannot read the table or choose the base for you, and those two moves are where these questions are actually decided." } }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="pg-header">
+      <a class="brand" href="/"><span class="b1">sat</span><span class="b2">ified</span></a>
+      <nav class="pg-nav" aria-label="Main">
+        <a href="/sat-math-practice/" class="hide-m">Practice</a>
+        <a href="/sat-math-practice-test/" class="hide-m">Practice test</a>
+        <a href="/faq/" class="hide-m">FAQ</a>
+        <a class="cta" href="/study/">Study →</a>
+      </nav>
+    </header>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span><a href="/sat-math/">SAT Math</a><span>/</span>Problem Solving and Data Analysis
+    </nav>
+
+    <main>
+      <div class="pg-hero">
+        <p class="eyebrow">SAT Math · Domain 3 of 4</p>
+        <h1>SAT Problem Solving and <span class="accent">Data</span> Analysis Practice</h1>
+        <p class="lede">This is the domain that reads like the other half of the SAT: paragraphs, tables, charts, and surveys, with about 15 percent of the Math section riding on them. The calculations are rarely hard. The reading is where points quietly disappear.</p>
+        <ul class="facts">
+          <li>About 15% of SAT Math</li>
+          <li>Around 7 of 44 questions</li>
+          <li>7 skills</li>
+          <li>Heaviest on reading</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn dark" href="/study/">Drill data questions free →</a>
+          <a class="btn" href="/sat-math/">See every domain</a>
+        </div>
+      </div>
+
+      <section>
+        <h2>What this domain covers</h2>
+        <p>Seven skills share the space: ratios and rates, percentages, statistics for one variable, statistics for two variables, probability, inference with margins of error, and the evaluation of statistical claims. Almost every question arrives wrapped in a scenario: a survey of commuters, a table of test results, a graph of rainfall.</p>
+        <p>That wrapping is the real exam. The SAT is checking whether you can pull the relevant numbers out of a paragraph, choose the operation the situation demands, and refuse the answer choice built on a misreading.</p>
+      </section>
+
+      <section>
+        <h2>Why the reading matters more than the math</h2>
+        <p>Wrong answers here rarely come from broken arithmetic. They come from taking a percent of the wrong base, conditioning a probability on the wrong row of a table, or answering about the sample when the question asked about the population. One careful read beats solving twice, and the answer choices are engineered to punish anyone who skims.</p>
+      </section>
+
+      <section>
+        <h2>The seven data skills</h2>
+        <div class="grid-links">
+          <a href="/sat-math/problem-solving-data-analysis/ratios-rates-units/">
+            <p class="k">Skill 1 of 7</p>
+            <h3>Ratios, rates, and units</h3>
+            <p>Build the proportion the story implies, compare rates, and chain unit conversions cleanly.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/percentages/">
+            <p class="k">Skill 2 of 7</p>
+            <h3>Percentages</h3>
+            <p>Handle increase, decrease, and combined changes, and recover the original value after a change.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/one-variable-data/">
+            <p class="k">Skill 3 of 7</p>
+            <h3>One variable data</h3>
+            <p>Read dot plots, histograms, and box plots, and know which statistics an outlier can drag.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/two-variable-data/">
+            <p class="k">Skill 4 of 7</p>
+            <h3>Two variable data</h3>
+            <p>Work with scatterplots and fitted lines, and separate what the data shows from what it suggests.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/probability/">
+            <p class="k">Skill 5 of 7</p>
+            <h3>Probability</h3>
+            <p>Turn frequency tables into probabilities, especially when a condition narrows the table.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/inference-margin-error/">
+            <p class="k">Skill 6 of 7</p>
+            <h3>Inference and margin of error</h3>
+            <p>Estimate population values from samples and read margins of error honestly.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/statistical-claims/">
+            <p class="k">Skill 7 of 7</p>
+            <h3>Statistical claims</h3>
+            <p>Judge sampling methods and study designs, and tell association apart from causation.</p>
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <h2>How to practice it</h2>
+        <p>Filter the study app to this domain and treat every prompt as a comprehension exercise first: name the base, the condition, and the unit before touching any numbers. Regenerating questions help in a particular way here, because the surface story keeps changing while the underlying setup repeats, which trains you to see through the wrapping.</p>
+        <div class="cta-band">
+          <p class="big">Read it right and the math is the easy part.</p>
+          <a class="btn dark" href="/study/">Practice data skills →</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Data analysis on the SAT, answered</h2>
+        <dl class="faq">
+          <div><dt>How many questions does this domain get?</dt><dd>About 15 percent of the section, which is usually around 7 of the 44 questions, spread through both modules.</dd></div>
+          <div><dt>Why does everyone call it the reading domain?</dt><dd>Its prompts are the longest in SAT Math and most of its traps are verbal: a swapped base, a missed condition, a sample treated as a population. The arithmetic underneath is usually a single proportion or division.</dd></div>
+          <div><dt>Do I need to have taken a statistics class?</dt><dd>No. The domain stays descriptive: centers, spreads, plots, simple probability, and the logic of sampling. Everything it expects can be built through practice rather than coursework.</dd></div>
+          <div><dt>How does Desmos help on data questions?</dt><dd>Use it as a fast and reliable calculator for the final computation. It cannot read the table or choose the base for you, and those two moves are where these questions are actually decided.</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <h2>More ways in</h2>
+        <p>Percentages and ratios also power plenty of questions filed under other domains, so this work pays twice.</p>
+        <nav class="related" aria-label="Related pages">
+          <a href="/sat-math/">All SAT Math topics</a>
+          <a href="/sat-math/algebra/">Algebra</a>
+          <a href="/sat-math/advanced-math/">Advanced Math</a>
+          <a href="/sat-math/geometry-trigonometry/">Geometry and Trigonometry</a>
+          <a href="/sat-math-practice/">Why practice here</a>
+          <a href="/study/">Start studying</a>
+        </nav>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pg-footer">
+    <div class="wrap">
+      <a class="fbrand" href="/">sat<span class="b2">ified</span></a>
+      <a href="/sat-math-practice/">Practice</a>
+      <a href="/sat-math-practice-test/">Practice test</a>
+      <a href="/sat-math/">All topics</a>
+      <a href="/blog/">Blog</a>
+      <a href="/ai-sat-math-tutor/">AI tutor</a>
+      <a href="/creator/">Creator</a>
+      <a href="/about/">About</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <span>© 2026 Satified</span>
+    </div>
+  </footer>
+</body>
+</html>

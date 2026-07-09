@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free SAT Math Practice Questions | Satified</title>
+  <meta name="description" content="1,483 free SAT Math practice questions at real digital SAT difficulty. Each one regenerates with fresh numbers, every answer is verified, no account needed.">
+  <link rel="canonical" href="https://satified.org/sat-math-practice/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Satified">
+  <meta property="og:title" content="Free SAT Math Practice Questions | Satified">
+  <meta property="og:description" content="1,483 free SAT Math questions that regenerate with fresh numbers. Verified answers, adaptive practice tests, Desmos built in, no account.">
+  <meta property="og:url" content="https://satified.org/sat-math-practice/">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/pages.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://satified.org/" },
+          { "@type": "ListItem", "position": 2, "name": "SAT Math Practice", "item": "https://satified.org/sat-math-practice/" }
+        ]
+      },
+      {
+        "@type": "LearningResource",
+        "name": "Free SAT Math Practice Questions",
+        "description": "1,483 free SAT Math practice questions that regenerate with fresh numbers, with verified answers, worked explanations, and adaptive practice tests.",
+        "url": "https://satified.org/sat-math-practice/",
+        "learningResourceType": "Practice problems",
+        "educationalLevel": "High school",
+        "teaches": "The digital SAT Math section",
+        "isAccessibleForFree": true,
+        "provider": { "@type": "Organization", "name": "Satified", "url": "https://satified.org/" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Is Satified actually free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, completely. All 1,483 questions, the adaptive practice tests, the explanations, and the Desmos calculator cost nothing. There is no paywall, no trial, and no ad." } },
+          { "@type": "Question", "name": "How many practice questions are there?", "acceptedAnswer": { "@type": "Answer", "text": "There are 1,483 distinct questions, but each one regenerates with new numbers and contexts every time it loads, so the effective supply does not run out." } },
+          { "@type": "Question", "name": "Does the practice match the real digital SAT?", "acceptedAnswer": { "@type": "Answer", "text": "The questions follow the digital SAT blueprint: the same four domains, the same nineteen skills, the same difficulty tiers, and the same calculator policy, with Desmos available on every question." } },
+          { "@type": "Question", "name": "Do I need to create an account?", "acceptedAnswer": { "@type": "Answer", "text": "No. There is nothing to sign up for and no email to hand over. Open the study page and the first question is seconds away." } },
+          { "@type": "Question", "name": "How is this different from question banks that repeat?", "acceptedAnswer": { "@type": "Answer", "text": "A static bank teaches you its own answer key over time. Because Satified rebuilds every question with fresh values, a repeat visit is a genuinely new problem, and your accuracy reflects skill instead of memory." } }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="pg-header">
+      <a class="brand" href="/"><span class="b1">sat</span><span class="b2">ified</span></a>
+      <nav class="pg-nav" aria-label="Main">
+        <a href="/sat-math-practice/" class="hide-m">Practice</a>
+        <a href="/sat-math-practice-test/" class="hide-m">Practice test</a>
+        <a href="/faq/" class="hide-m">FAQ</a>
+        <a class="cta" href="/study/">Study →</a>
+      </nav>
+    </header>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>SAT Math Practice
+    </nav>
+
+    <main>
+      <div class="pg-hero">
+        <p class="eyebrow">1,483 questions · Free forever</p>
+        <h1>Free SAT Math <span class="accent">Practice</span> Questions</h1>
+        <p class="lede">Satified gives you 1,483 SAT Math questions written at real digital SAT difficulty, with verified answers and clear explanations. Every question is a generator: open it again and it returns with fresh numbers, so the bank never goes stale and neither do you.</p>
+        <ul class="facts">
+          <li>1,483 questions</li>
+          <li>Every answer verified</li>
+          <li>Filter by domain, skill, difficulty</li>
+          <li>Desmos built in</li>
+          <li>No account, no cost</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn dark" href="/study/">Start practicing free →</a>
+          <a class="btn" href="/sat-math-practice-test/">Take a practice test</a>
+        </div>
+      </div>
+
+      <section>
+        <h2>What Satified is</h2>
+        <p>Satified is a free practice site for the Math half of the digital SAT. The bank holds 1,483 questions spread across all four domains and all nineteen tested skills, each written to the difficulty bands the real exam uses, from the easy openers of Module 1 to the problems that close the hard second module.</p>
+        <p>You can filter the whole bank by domain, by individual skill, or by difficulty, so a session can be as broad as mixed review or as narrow as hard probability only. Every question ships with a verified answer and a worked explanation, and the same Desmos calculator that appears on test day sits one click away.</p>
+      </section>
+
+      <section>
+        <h2>Why regeneration beats a static list</h2>
+        <p>Most free SAT resources are fixed lists. Work through one twice and your score starts lying to you, because you are recognizing answers instead of producing them. Satified questions are generators, and that changes what practice does to your brain.</p>
+        <div class="patterns">
+          <article class="pattern">
+            <p class="k">Step 01</p>
+            <h3>You answer a question</h3>
+            <p>A percentages question asks about a $40 sweater marked up 15 percent. You work it, check the explanation, and move on.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Step 02</p>
+            <h3>It comes back different</h3>
+            <p>Load the skill again and the sweater is a $62 jacket at 20 percent, with the answer choices rebuilt and reshuffled.</p>
+          </article>
+          <article class="pattern">
+            <p class="k">Step 03</p>
+            <h3>The method is what remains</h3>
+            <p>You cannot memorize a moving target. What sticks is the setup, which is the only thing the real test rewards.</p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>Pick a domain and drill it</h2>
+        <p>The digital SAT draws every Math question from four domains. Each hub below explains its domain and links focused practice for every skill inside it.</p>
+        <div class="grid-links">
+          <a href="/sat-math/algebra/">
+            <p class="k">About 35% of the test</p>
+            <h3>Algebra</h3>
+            <p>Linear equations, linear functions, inequalities, and systems: roughly tied with Advanced Math for the biggest slice of your Math score.</p>
+          </a>
+          <a href="/sat-math/advanced-math/">
+            <p class="k">About 35% of the test</p>
+            <h3>Advanced Math</h3>
+            <p>Quadratics, exponentials, and expression rewriting, the domain that decides who sees the hard module.</p>
+          </a>
+          <a href="/sat-math/problem-solving-data-analysis/">
+            <p class="k">About 15% of the test</p>
+            <h3>Problem Solving and Data Analysis</h3>
+            <p>Ratios, percentages, data, and probability, tested through dense word problems and charts.</p>
+          </a>
+          <a href="/sat-math/geometry-trigonometry/">
+            <p class="k">About 15% of the test</p>
+            <h3>Geometry and Trigonometry</h3>
+            <p>Angles, triangles, circles, and right triangle trig: tied for the smallest domain and the quickest points to secure.</p>
+          </a>
+          <a href="/sat-math/">
+            <p class="k">The full map</p>
+            <h3>All SAT Math topics</h3>
+            <p>One page that maps the whole section, with every skill and its share of the test.</p>
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Practice the way the test actually runs</h2>
+        <p>When you want the full dress rehearsal, Satified builds an adaptive practice test: two modules of 22 questions, 35 minutes each, with your Module 1 performance deciding whether Module 2 turns hard, exactly like the real thing. You finish with a score on the 200 to 800 scale.</p>
+        <div class="cta-band">
+          <p class="big">Sit the full test, adaptive routing and all.</p>
+          <a class="btn dark" href="/sat-math-practice-test/">Open the practice test →</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Questions before you start</h2>
+        <dl class="faq">
+          <div><dt>Is Satified actually free?</dt><dd>Yes, completely. All 1,483 questions, the adaptive practice tests, the explanations, and the Desmos calculator cost nothing. There is no paywall, no trial, and no ad.</dd></div>
+          <div><dt>How many practice questions are there?</dt><dd>There are 1,483 distinct questions, but each one regenerates with new numbers and contexts every time it loads, so the effective supply does not run out.</dd></div>
+          <div><dt>Does the practice match the real digital SAT?</dt><dd>The questions follow the digital SAT blueprint: the same four domains, the same nineteen skills, the same difficulty tiers, and the same calculator policy, with Desmos available on every question.</dd></div>
+          <div><dt>Do I need to create an account?</dt><dd>No. There is nothing to sign up for and no email to hand over. Open the study page and the first question is seconds away.</dd></div>
+          <div><dt>How is this different from question banks that repeat?</dt><dd>A static bank teaches you its own answer key over time. Because Satified rebuilds every question with fresh values, a repeat visit is a genuinely new problem, and your accuracy reflects skill instead of memory.</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Where to next</h2>
+        <p>Browse the section map, sit a scored test, or jump straight into a drill.</p>
+        <nav class="related" aria-label="Related pages">
+          <a href="/sat-math/">All SAT Math topics</a>
+          <a href="/sat-math-practice-test/">Adaptive practice test</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/study/">Start studying</a>
+        </nav>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pg-footer">
+    <div class="wrap">
+      <a class="fbrand" href="/">sat<span class="b2">ified</span></a>
+      <a href="/sat-math-practice/">Practice</a>
+      <a href="/sat-math-practice-test/">Practice test</a>
+      <a href="/sat-math/">All topics</a>
+      <a href="/about/">About</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <span>© 2026 Satified</span>
+    </div>
+  </footer>
+</body>
+</html>
