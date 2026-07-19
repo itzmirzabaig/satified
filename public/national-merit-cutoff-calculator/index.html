@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>National Merit Cutoff Calculator | Satified</title>
+  <meta name="description" content="Calculate your PSAT/NMSQT National Merit Selection Index from your Reading, Writing, and Math scores, and see how it compares to Commended and Semifinalist cutoffs.">
+  <link rel="canonical" href="https://satified.org/national-merit-cutoff-calculator/">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0A0901">
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Satified">
+  <meta property="og:title" content="National Merit Cutoff Calculator | Satified">
+  <meta property="og:description" content="Turn your PSAT/NMSQT scores into a National Merit Selection Index and see it against Commended and Semifinalist cutoffs.">
+  <meta property="og:url" content="https://satified.org/national-merit-cutoff-calculator/">
+  <meta property="og:image" content="https://satified.org/media/og-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/pages.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://satified.org/" },
+          { "@type": "ListItem", "position": 2, "name": "National Merit cutoff calculator", "item": "https://satified.org/national-merit-cutoff-calculator/" }
+        ]
+      },
+      {
+        "@type": "WebApplication",
+        "name": "National Merit Selection Index Calculator",
+        "url": "https://satified.org/national-merit-cutoff-calculator/",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Web browser",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "description": "Calculates the PSAT/NMSQT National Merit Selection Index from section scores and compares it to Commended and Semifinalist cutoff ranges.",
+        "provider": { "@type": "Organization", "name": "Satified", "url": "https://satified.org/" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "What is the National Merit Selection Index?", "acceptedAnswer": { "@type": "Answer", "text": "It is two times your PSAT Reading and Writing score plus your Math score, divided by 10. It ranges from 48 to 228, and it is what National Merit uses, not your total PSAT score." } },
+          { "@type": "Question", "name": "What is the Commended Student cutoff?", "acceptedAnswer": { "@type": "Answer", "text": "In recent years it has landed around 207 to 209 nationally. It is a single national number set each year, and students at or above it who are not Semifinalists are usually named Commended." } },
+          { "@type": "Question", "name": "What Selection Index do I need to be a Semifinalist?", "acceptedAnswer": { "@type": "Answer", "text": "It depends on your state. Recent state cutoffs have run from about 207 in the lowest states to about 225 in the highest, and they change every year." } },
+          { "@type": "Question", "name": "Does Math or Reading and Writing matter more for National Merit?", "acceptedAnswer": { "@type": "Answer", "text": "Reading and Writing counts twice in the index and Math counts once, so a Reading and Writing gain moves the index more per point. Math is still often where the fastest available points are." } },
+          { "@type": "Question", "name": "Are these National Merit cutoffs official?", "acceptedAnswer": { "@type": "Answer", "text": "No. State cutoffs are reported estimates from prep industry trackers and vary year to year. Use them as a guide and confirm with official National Merit Scholarship Corporation sources." } }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="pg-header">
+      <a class="brand" href="/"><span class="b1">sat</span><span class="b2">ified</span></a>
+      <nav class="pg-nav" aria-label="Main">
+        <a href="/sat-math-practice/" class="hide-m">Practice</a>
+        <a href="/sat-math-practice-test/" class="hide-m">Practice test</a>
+        <a href="/blog/" class="hide-m">Blog</a>
+        <a class="cta" href="/study/">Study →</a>
+      </nav>
+    </header>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>National Merit cutoff calculator
+    </nav>
+
+    <main>
+      <div class="pg-hero">
+        <p class="eyebrow">Free tool</p>
+        <h1>National Merit Cutoff <span class="accent">Calculator</span></h1>
+        <p class="lede">National Merit does not use your total PSAT score. It uses the Selection Index: two times your Reading and Writing score plus your Math score, divided by 10. Enter your section scores to get your index and see how it compares to the Commended and Semifinalist cutoffs.</p>
+      </div>
+
+      <div class="post-body">
+      <section>
+        <div class="factbox">
+          <p class="k">Selection Index calculator</p>
+          <div style="display:flex;flex-wrap:wrap;gap:16px;margin:.6rem 0 1rem">
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--ink-soft)">Reading and Writing score (160 to 760)
+              <input id="rw" type="number" min="160" max="760" step="10" value="700" style="font-family:var(--mono);font-size:1rem;padding:.5em .6em;border:1px solid rgba(51,47,34,.3);border-radius:6px;background:var(--paper);color:var(--ink);width:150px">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--ink-soft)">Math score (160 to 760)
+              <input id="m" type="number" min="160" max="760" step="10" value="720" style="font-family:var(--mono);font-size:1rem;padding:.5em .6em;border:1px solid rgba(51,47,34,.3);border-radius:6px;background:var(--paper);color:var(--ink);width:150px">
+            </label>
+          </div>
+          <p style="margin:.2rem 0"><span style="font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)">Your Selection Index</span></p>
+          <p style="font-family:var(--serif);font-size:clamp(2.4rem,7vw,3.4rem);line-height:1;margin:.1em 0 .4em"><span id="si">212</span></p>
+          <p id="simsg" style="color:var(--ink-soft);font-size:.95rem;max-width:70ch"></p>
+        </div>
+        <p class="note">The index runs from 48 to 228. Reading and Writing is doubled, so it moves your index twice as fast as Math does, point for point.</p>
+      </section>
+
+      <section>
+        <h2>How the National Merit cutoff works</h2>
+        <p>The PSAT/NMSQT is the entry point to the National Merit Scholarship Program, which is run by the National Merit Scholarship Corporation, an independent organization. About 1.5 million students enter, and roughly the top 50,000 by Selection Index are recognized. Of those, around 34,000 are named Commended Students and about 16,000 become Semifinalists.</p>
+        <p>There are two thresholds to know:</p>
+        <ul>
+          <li><strong>Commended:</strong> a single national number, recently around 207 to 209. Students at or above it who do not make Semifinalist are usually named Commended.</li>
+          <li><strong>Semifinalist:</strong> set separately for each state, so the bar in a high scoring state is much higher than in a low scoring one. Recent state cutoffs have run from about 207 to about 225.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Recent state Semifinalist cutoffs</h2>
+        <p>These are reported estimates for a recent class, gathered by prep industry trackers. They are not official, and they move every year, so treat them as a rough guide, not a promise.</p>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <caption>Reported Semifinalist Selection Index estimates for a recent class. Not official. Cutoffs change annually.</caption>
+            <thead><tr><th>State</th><th>Reported Semifinalist cutoff (estimate)</th></tr></thead>
+            <tbody>
+              <tr><td>Massachusetts</td><td>about 225</td></tr>
+              <tr><td>New Jersey</td><td>about 225</td></tr>
+              <tr><td>California</td><td>about 224</td></tr>
+              <tr><td>Washington</td><td>about 224</td></tr>
+              <tr><td>Oregon</td><td>about 219</td></tr>
+              <tr><td>Arizona</td><td>about 218</td></tr>
+              <tr><td>Nevada</td><td>about 214</td></tr>
+              <tr><td>Lower cutoff states, such as New Mexico and North Dakota</td><td>about 209 to 210</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>For your exact state and the current year, check the National Merit Scholarship Corporation and the well known prep trackers that publish confirmed cutoffs each fall.</p>
+      </section>
+
+      <section>
+        <h2>If you are near the cutoff, Math is often the fastest lever</h2>
+        <p>Selection Index points are the whole game, and Math is frequently where they are easiest to find, because SAT and PSAT Math reward pattern recognition that responds quickly to focused practice. Since the PSAT and SAT Math sections are nearly identical, the same drilling works for both. If you are within a few points of your state cutoff, a targeted Math push before your next PSAT can be the difference.</p>
+        <div class="cta-band">
+          <p class="big">A few points from the cutoff? <em>Drill Math.</em></p>
+          <a class="btn dark" href="/study/">Practice SAT and PSAT Math free →</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Questions students ask</h2>
+        <dl class="faq">
+          <div><dt>What is the National Merit Selection Index?</dt><dd>It is two times your PSAT Reading and Writing score plus your Math score, divided by 10. It ranges from 48 to 228, and it is what National Merit uses, not your total PSAT score.</dd></div>
+          <div><dt>What is the Commended Student cutoff?</dt><dd>In recent years it has landed around 207 to 209 nationally. It is a single national number set each year, and students at or above it who are not Semifinalists are usually named Commended.</dd></div>
+          <div><dt>What Selection Index do I need to be a Semifinalist?</dt><dd>It depends on your state. Recent state cutoffs have run from about 207 in the lowest states to about 225 in the highest, and they change every year.</dd></div>
+          <div><dt>Does Math or Reading and Writing matter more for National Merit?</dt><dd>Reading and Writing counts twice in the index and Math counts once, so a Reading and Writing gain moves the index more per point. Math is still often where the fastest available points are.</dd></div>
+          <div><dt>Are these National Merit cutoffs official?</dt><dd>No. State cutoffs are reported estimates from prep industry trackers and vary year to year. Use them as a guide and confirm with official National Merit Scholarship Corporation sources.</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Keep going</h2>
+        <nav class="related" aria-label="Related pages">
+          <a href="/psat-math-practice/">PSAT math practice</a>
+          <a href="/psat-vs-sat-math/">PSAT vs SAT math</a>
+          <a href="/study/">Practice free</a>
+          <a href="/sat-score-calculator/">SAT score calculator</a>
+        </nav>
+      </section>
+
+      <p class="src-note">The Selection Index formula and the general Commended and Semifinalist structure follow PSAT/NMSQT documentation. State cutoff figures are reported estimates for a recent class from prep industry trackers, are not official, and change every year. Confirm current numbers with the National Merit Scholarship Corporation.</p>
+      </div>
+    </main>
+  </div>
+
+  <footer class="pg-footer">
+    <div class="wrap">
+      <a class="fbrand" href="/">sat<span class="b2">ified</span></a>
+      <a href="/sat-math-practice/">Practice</a>
+      <a href="/sat-math-practice-test/">Practice test</a>
+      <a href="/sat-math/">All topics</a>
+      <a href="/blog/">Blog</a>
+      <a href="/ai-sat-math-tutor/">AI tutor</a>
+      <a href="/about/">About</a>
+      <a href="/creator/">Creator</a>
+      <span>© 2026 Satified</span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var rw = document.getElementById('rw');
+      var m = document.getElementById('m');
+      var siEl = document.getElementById('si');
+      var msgEl = document.getElementById('simsg');
+      function clampScore(v) {
+        v = Math.round(v / 10) * 10;
+        return Math.max(160, Math.min(760, v));
+      }
+      function calc() {
+        var r = parseInt(rw.value, 10);
+        var a = parseInt(m.value, 10);
+        if (isNaN(r) || isNaN(a)) { siEl.textContent = '--'; msgEl.textContent = 'Enter both section scores to see your index.'; return; }
+        r = clampScore(r); a = clampScore(a);
+        var si = Math.round((2 * r + a) / 10);
+        siEl.textContent = si;
+        var msg;
+        if (si >= 223) msg = 'Strong index. It clears the Commended level and is competitive for Semifinalist even in the highest cutoff states, which top out around 224 to 225.';
+        else if (si >= 210) msg = 'This clears the typical Commended level of about 207 to 209, and is at or above the Semifinalist cutoff in many states, though not the highest scoring ones. State cutoffs run from about 207 to 225.';
+        else if (si >= 207) msg = 'This sits right around the Commended cutoff of about 207 to 209. Whether it reaches Semifinalist depends heavily on your state.';
+        else msg = 'This is below the typical Commended level of about 207 to 209. Closing the gap is very doable, and Math is often the fastest place to find the points.';
+        msgEl.textContent = msg;
+      }
+      rw.addEventListener('input', calc);
+      m.addEventListener('input', calc);
+      rw.addEventListener('blur', function () { rw.value = clampScore(parseInt(rw.value, 10) || 160); calc(); });
+      m.addEventListener('blur', function () { m.value = clampScore(parseInt(m.value, 10) || 160); calc(); });
+      calc();
+    })();
+  </script>
+</body>
+</html>
