@@ -46,7 +46,6 @@ function crashRecover(err) {
       d.textContent = 'JS crash: ' + ((err && (err.stack || err.message)) || err);
       document.body.appendChild(d);
     }
-    const L = document.getElementById('loader'); if (L) L.remove();
     if (TOUCH) document.body.classList.add('vertical');
     document.body.classList.add('no-gl');
     const dc = document.getElementById('hero-counter-dom'); if (dc) dc.textContent = '1600';
@@ -61,7 +60,7 @@ addEventListener('unhandledrejection', e => {
 });
 setTimeout(() => {
   if (!document.body.dataset.entrance) {
-    try { loaderGone = true; drawCounterTex(0); drawNum(); startCounter(); } catch (err) { crashRecover(err); }
+    try { introReady = true; drawCounterTex(0); drawNum(); startCounter(); } catch (err) { crashRecover(err); }
   }
 }, 4000);
 
@@ -71,23 +70,6 @@ setTimeout(() => {
    ──────────────────────────────────────────────────────────────────── */
 const reveal = { v: 0 };   /* 0 = pure black + number only · 1 = full scene */
 const ENTRANCE_HIDDEN = ['.site-header', '.hero-tag', '.hero-foot'];
-
-/* the satified wordmark loader: counts [0000] → [1600], lifts away,
-   then hands the stage to the black screen entrance */
-function runLoader() {
-  const L = document.getElementById('loader');
-  if (!L) return Promise.resolve();
-  if (REDUCED || scrollY > 60) { L.remove(); return Promise.resolve(); }
-  const count = L.querySelector('.loader-count');
-  const o = { v: 0 };
-  return new Promise(res => {
-    gsap.to(o, {
-      v: 1600, duration: .8, ease: 'power2.inOut',
-      onUpdate: () => { count.textContent = '[' + String(Math.round(o.v)).padStart(4, '0') + ']'; },
-      onComplete: () => { L.classList.add('done'); setTimeout(() => { L.remove(); res(); }, 700); }
-    });
-  });
-}
 
 /* ────────────────────────────────────────────────────────────────────
    2 · HORIZONTAL ENGINE — native vertical scroll → track translateX.
@@ -228,7 +210,7 @@ let uMouseLoc, uResLoc, uTimeLoc, uRevealLoc;
 const mouse = { x: .5, y: .45, tx: .5, ty: .45 };
 let heroVisible = true, startT = performance.now();
 /* adaptive performance: degrade resolution + scene rate on slow machines */
-let perfScale = TOUCH ? .85 : 1, sceneEvery = TOUCH ? 3 : 2, texW = 0, texH = 0, loaderGone = false;
+let perfScale = TOUCH ? .85 : 1, sceneEvery = TOUCH ? 3 : 2, texW = 0, texH = 0, introReady = false;
 let glTexNum = null, numCanvas = null, numCtx = null, numW = 0, numH = 0;
 
 const FRAG = `
@@ -479,7 +461,7 @@ function drawCounterTex(t) {
 let frameN = 0, lastFrameT = 0, ftAccum = 0, ftSamples = 0, degraded = 0;
 function renderGL(ts) {
   requestAnimationFrame(renderGL);
-  if (!gl || !heroVisible || !loaderGone) return;
+  if (!gl || !heroVisible || !introReady) return;
 
   /* frame-time watchdog: two-stage degrade on weak GPUs */
   if (lastFrameT) { ftAccum += ts - lastFrameT; ftSamples++; }
@@ -780,8 +762,8 @@ function boot() {
   Promise.race([fontsReady, new Promise(r => setTimeout(r, 1200))]).then(() => {
     drawCounterTex(0);
     drawNum();
-    loaderGone = true;
-    runLoader().then(startCounter);
+    introReady = true;
+    startCounter();
   });
 }
 
