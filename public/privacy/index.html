@@ -8,7 +8,7 @@
   <link rel="canonical" href="https://satified.org/privacy/">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#E5E3DC">
-  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml">
   <style>
     @font-face{
       font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;
@@ -46,6 +46,34 @@
       color:#332F22;text-decoration:none;
     }
     .brand em{font-family:'Ballet',cursive;font-style:normal;color:#E8B900;font-size:.96em}
+    /* gold ribbon mark, masked by its own silhouette so the hover sweep is
+       clipped to the ribbon rather than to its bounding box */
+    .brand-mark{
+      display:inline-block;position:relative;
+      width:1.04em;height:1.04em;margin-right:.26em;vertical-align:-.17em;
+      background:url('/logo-mark.png') center/contain no-repeat;
+      -webkit-mask:url('/logo-mark.png') center/contain no-repeat;
+      mask:url('/logo-mark.png') center/contain no-repeat;
+    }
+    .brand-mark::after{
+      content:'';position:absolute;
+      top:-35%;bottom:-35%;left:-90%;width:38%;
+      background:linear-gradient(90deg,rgba(255,255,255,0) 25%,rgba(255,255,255,.9) 50%,rgba(255,255,255,0) 75%);
+      transform:translateX(0) rotate(18deg);
+      opacity:0;
+    }
+    .brand:hover .brand-mark::after,
+    .brand:focus-visible .brand-mark::after{animation:brand-gleam .9s ease-out}
+    @keyframes brand-gleam{
+      0%{opacity:0;transform:translateX(0) rotate(18deg)}
+      15%{opacity:1}
+      85%{opacity:1}
+      100%{opacity:0;transform:translateX(580%) rotate(18deg)}
+    }
+    @media (prefers-reduced-motion:reduce){
+      .brand:hover .brand-mark::after,
+      .brand:focus-visible .brand-mark::after{animation:none}
+    }
     .backlink{
       font-family:'DM Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
       font-size:.72rem;letter-spacing:.08em;
@@ -110,7 +138,7 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/">sat<em>ified</em></a>
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>sat<em>ified</em></a>
     <a class="backlink" href="/">[BACK &rarr;]</a>
   </header>
 

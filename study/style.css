@@ -206,6 +206,36 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:2px 0}
 .brand em{font-family:'Ballet',cursive;font-style:normal;color:var(--gold);font-size:.96em;margin-left:.04em}
 .brand:hover{opacity:.82}
 
+/* the gold ribbon mark. It is masked by its own silhouette so the specular
+   sweep below is clipped to the ribbon rather than to its bounding box.
+   .brand is a baseline flex row here, so the mark centres itself instead. */
+.brand-mark{
+  flex:none;align-self:center;position:relative;
+  width:1.04em;height:1.04em;margin-right:.26em;
+  background:url('/logo-mark.png') center/contain no-repeat;
+  -webkit-mask:url('/logo-mark.png') center/contain no-repeat;
+  mask:url('/logo-mark.png') center/contain no-repeat;
+}
+.brand-mark::after{
+  content:'';position:absolute;
+  top:-35%;bottom:-35%;left:-90%;width:38%;
+  background:linear-gradient(90deg,rgba(255,255,255,0) 25%,rgba(255,255,255,.9) 50%,rgba(255,255,255,0) 75%);
+  transform:translateX(0) rotate(18deg);
+  opacity:0;
+}
+.brand:hover .brand-mark::after,
+.brand:focus-visible .brand-mark::after{animation:brand-gleam .9s ease-out}
+@keyframes brand-gleam{
+  0%{opacity:0;transform:translateX(0) rotate(18deg)}
+  15%{opacity:1}
+  85%{opacity:1}
+  100%{opacity:0;transform:translateX(580%) rotate(18deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .brand:hover .brand-mark::after,
+  .brand:focus-visible .brand-mark::after{animation:none}
+}
+
 /* right cluster · .theme-corner kept as the container hook */
 .theme-corner{display:flex;align-items:center;gap:16px}
 
