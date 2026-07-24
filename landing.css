@@ -226,44 +226,6 @@ body.menu-open{overflow:hidden}
 .hs-arrow{display:inline-block;animation:nudge 1.6s var(--ease) infinite alternate}
 @keyframes nudge{from{transform:translateX(-2px)}to{transform:translateX(4px)}}
 
-/* ═ ACORN ══════════════════════════════════════════════════════════ */
-.p-acorn{width:340vw;background:#FDFDFD}
-.p-acorn::before,.p-acorn::after{content:"";position:absolute;top:0;bottom:0;width:14vw;z-index:1;pointer-events:none}
-.p-acorn::before{left:0;background:linear-gradient(90deg,var(--paper),#FDFDFD)}
-.p-acorn::after{right:0;background:linear-gradient(90deg,#FDFDFD,var(--paper))}
-.acorn-stage{
-  position:absolute;top:0;left:0;width:100vw;height:100dvh;z-index:1;   /* all the way back — text rides above */
-  display:flex;align-items:center;justify-content:center;
-  will-change:transform;
-}
-.acorn-scale{
-  position:relative;
-  width:min(74dvh,88vw);height:min(74dvh,88vw);
-  will-change:transform;transform:translateZ(0);
-}
-.acorn-scale::after{
-  content:"";position:absolute;inset:-3px;pointer-events:none;
-  box-shadow:
-    inset 0 0 min(10vw,110px) min(7vw,80px) #FDFDFD,                  /* white vignette hides the video border */
-    inset calc(min(4vw,48px)*-1) 0 min(9vw,96px) min(3vw,36px) #FDFDFD;  /* extra feather on the right edge */
-}
-#acorn-video{
-  display:block;width:100%;height:100%;
-  transform:translateZ(0);   /* no blend mode: the stage is the same white as the footage */
-}
-.crack-headline{position:absolute;top:6%;left:50%;transform:translateX(-50%);text-align:center;opacity:0;width:max-content;max-width:96vw}
-.crack-eyebrow{font-family:var(--f-serif);font-style:italic;font-size:clamp(1rem,1.5vw,1.4rem);letter-spacing:.05em;color:var(--bronze);margin-bottom:.35em}
-.crack-h{font-size:clamp(2.7rem,8.5vw,8rem);line-height:.95;letter-spacing:-.03em;white-space:nowrap}
-.crack-c{color:var(--bronze);font-size:1.04em;margin-right:.22em;display:inline-block;transform:translateY(.04em)}
-.crack-dot{color:var(--gold)}
-.acorn-note{position:absolute;z-index:3;max-width:34ch}
-.acorn-note .an-big{font-size:clamp(1.7rem,3vw,2.7rem);line-height:1.12;letter-spacing:-.01em;color:var(--ink)}
-.acorn-note .an-big em{font-style:italic;color:var(--bronze)}
-.acorn-note .an-sub{margin-top:.7em;font-size:clamp(.92rem,1.15vw,1.08rem);line-height:1.6;color:var(--ink-soft);max-width:30ch}
-.acorn-note-1{left:110vw;top:9%}
-.acorn-note-2{left:182vw;bottom:9%}
-.acorn-note-3{left:233vw;top:10%}
-
 /* ═ MANIFESTO ══════════════════════════════════════════════════════ */
 .p-manifesto{display:flex;align-items:center}
 .manifesto-inner{
@@ -377,29 +339,6 @@ html.vertical .hs-way{display:none}
 html.vertical .hero-scroll .hs-sub{color:var(--gold)}
 
 html.vertical .grain{display:none}
-html.vertical .p-acorn{width:100vw;height:340svh;min-height:0;background:#FDFDFD}
-html.vertical .p-acorn::before{left:0;right:0;top:0;bottom:auto;width:auto;height:9svh;background:linear-gradient(180deg,var(--paper),#FDFDFD)}
-html.vertical .p-acorn::after{left:0;right:0;bottom:0;top:auto;width:auto;height:9svh;background:linear-gradient(0deg,#FDFDFD,var(--paper))}
-html.vertical .acorn-stage{position:sticky;height:100svh;transform:none!important}
-html.vertical .acorn-scale{width:min(70svh,92vw);height:min(70svh,92vw)}
-html.vertical .acorn-scale::after{box-shadow:inset 0 0 13vw 10vw #FDFDFD}
-html.vertical .crack-headline{top:14svh}
-html.vertical .crack-h{white-space:normal}
-/* the three story notes share one fixed slot and crossfade on scroll
-   (JS drives opacity windows), text haloed instead of boxed */
-html.vertical .acorn-note{
-  position:fixed;top:11svh;left:7vw!important;right:7vw;bottom:auto;
-  max-width:none;background:none;padding:0;
-  opacity:0;visibility:hidden;
-}
-html.vertical .acorn-note .an-big,
-html.vertical .acorn-note .an-sub{
-  text-shadow:0 0 6px rgba(253,253,253,.95),0 0 16px rgba(253,253,253,.9),0 0 30px rgba(253,253,253,.8);
-}
-/* alternate around the pinned acorn: top, bottom, top */
-html.vertical .acorn-note-1{top:11svh}
-html.vertical .acorn-note-2{top:auto;bottom:8svh}
-html.vertical .acorn-note-3{top:11svh}
 
 html.vertical .p-manifesto{display:block;padding:13svh 7vw}
 html.vertical .manifesto-inner{display:block;padding:0}
@@ -431,10 +370,6 @@ html.vertical .p-end{height:100svh;min-height:0}
   .hero-script{top:63%;font-size:clamp(1.3rem,3.6vw,1.9rem)}
   .hero-h1{font-size:.8rem;max-width:40ch}
   .hero-foot{padding:14px var(--pad)}
-  .crack-headline{top:4%}
-  .crack-h{font-size:clamp(2rem,7vw,3.4rem)}
-  .acorn-note .an-big{font-size:clamp(1.2rem,3.2vw,1.7rem)}
-  .acorn-note .an-sub{font-size:.8rem}
   .domain-h{font-size:clamp(2.4rem,7.5vw,4rem)}
   .domain-skills{line-height:1.75;font-size:.68rem}
   .manifesto-h{font-size:clamp(1.9rem,4.6vw,3rem)}

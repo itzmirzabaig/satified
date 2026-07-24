@@ -1,8 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════
    SATIFIED — landing engine
    Horizontal world (GSAP pinned track) · spine line · WebGL hero
-   counter · scroll-scrubbed acorn choreography.
-   All effects re-implemented from scratch.
+   counter. All effects re-implemented from scratch.
    ═══════════════════════════════════════════════════════════════════ */
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -105,8 +104,7 @@ function measurePanels() {
 
 /* ────────────────────────────────────────────────────────────────────
    3 · SPINE LINE — hand-drawn wavy path across the whole track,
-       generated to fit the real layout. Dashed guide + solid draw-on
-       copy. Gapped across the acorn zone so nothing covers the video.
+       generated to fit the real layout. Dashed guide + solid draw-on copy.
    ──────────────────────────────────────────────────────────────────── */
 const dashPath  = $('#spine-dash');
 const solidPath = $('#spine-solid');
@@ -125,7 +123,7 @@ function buildSpine() {
   spine.setAttribute('height', H);
 
   const yAt = {                       /* viewport-height fractions per chapter */
-    'p-hero': .57, 'p-acorn': .57, 'p-manifesto': .94, 'p-stats': .18,
+    'p-hero': .57, 'p-manifesto': .94, 'p-stats': .18,
     'p-algebra': .86, 'p-advmath': .80, 'p-psda': .86, 'p-geo': .80,
     'p-test': .12, 'p-faq': .88, 'p-end': .55
   };
@@ -133,14 +131,10 @@ function buildSpine() {
 
   /* build waypoint list: [x, y] pairs; null = pen up (gap) */
   const pts = [];
-  const hero = get('p-hero'), acorn = get('p-acorn'), end = get('p-end');
+  const hero = get('p-hero'), end = get('p-end');
 
   pts.push([hero.left + hero.width * .62, H * yAt['p-hero']]);
   pts.push([hero.left + hero.width, H * (yAt['p-hero'] - .015)]);
-  /* short lead into the acorn panel, then a gap while the acorn owns the stage */
-  pts.push([acorn.left + vw() * .16, H * .57]);
-  pts.push(null);
-  pts.push([acorn.left + acorn.width - vw() * .14, H * .62]);
   /* dive low before the manifesto text so the line never crosses the heading */
   pts.push([get('p-manifesto').left - vw() * .01, H * .97]);
 
@@ -187,13 +181,6 @@ function buildSpine() {
     const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     c.setAttribute('cx', p.left); c.setAttribute('cy', H * yAt[id]);
     c.setAttribute('r', 5); c.setAttribute('class', 'spine-dot');
-    dotsGroup.appendChild(c);
-  });
-  /* gold terminals at the acorn gap */
-  [[acorn.left + vw() * .16, .57], [acorn.left + acorn.width - vw() * .14, .62]].forEach(([x, fy]) => {
-    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    c.setAttribute('cx', x); c.setAttribute('cy', H * fy);
-    c.setAttribute('r', 6); c.setAttribute('class', 'spine-dot gold');
     dotsGroup.appendChild(c);
   });
 }
@@ -524,91 +511,7 @@ addEventListener('pointermove', e => {
 }, { passive: true });
 
 /* ────────────────────────────────────────────────────────────────────
-   5 · ACORN — fully-buffered scroll scrub + scale/drift choreography.
-   ──────────────────────────────────────────────────────────────────── */
-const acornPanel = $('#p-acorn');
-const stage      = $('#acorn-stage');
-const scaleWrap  = $('#acorn-scale');
-const video      = $('#acorn-video');
-let vidDuration  = 8.4, lastSeek = -1;
-let prTarget = 0, prSmooth = 0;
-
-const setStageX = gsap.quickSetter(stage, 'x', 'px');
-/* the acorn itself never moves or scales: pure playback on scroll.
-   the only choreography is the headline reveal at the shatter. */
-const choreo = gsap.timeline({ paused: true, defaults: { ease: 'none' } });
-choreo
-  .fromTo('#crack-headline', { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: .1, ease: 'power2.out' }, .855)
-  .to({}, { duration: .045 }, .955);   /* pad timeline to full 0..1 progress range */
-
-function loadAcorn() {
-  const small = matchMedia('(max-width:760px)').matches ||
-                (navigator.connection && navigator.connection.saveData);
-  const src = small ? '/media/acorn-640-i60.mp4' : '/media/acorn-960-i60.mp4';
-  /* show the acorn instantly by streaming… */
-  video.src = src;
-  video.addEventListener('loadedmetadata', () => { vidDuration = video.duration; }, { once: true });
-  video.load();
-  /* …then swap to a fully-buffered blob for gapless scrubbing */
-  fetch(src)
-    .then(r => r.blob())
-    .then(b => {
-      const keep = video.currentTime;
-      const url = URL.createObjectURL(b);
-      video.addEventListener('loadedmetadata', () => {
-        vidDuration = video.duration;
-        video.currentTime = keep;
-        lastSeek = keep;
-      }, { once: true });
-      video.src = url;
-      video.load();
-    })
-    .catch(() => {});
-}
-
-function updateAcorn(trackX) {
-  const pl = acornPanel.offsetLeft, pw = acornPanel.offsetWidth;
-  const range = pw - vw();
-  const raw = -trackX - pl;
-  const x = Math.max(0, Math.min(range, raw));
-  setStageX(x);
-  prTarget = range > 0 ? x / range : 0;
-}
-
-/* one smoothed progress value drives BOTH the video seek and the
-   scale/drift choreography — butter over raw scroll ticks */
-/* on phones the three story notes alternate top / bottom / top around
-   the pinned acorn, each owning a generous slice of the section so text
-   is on screen nearly the whole ride. Note 3 exits before the crack
-   headline reveals at .855. */
-const NOTE_WINDOWS = [[.02, .32], [.34, .60], [.62, .82]];
-const noteEls = $$('.acorn-note');
-
-gsap.ticker.add(() => {
-  if (!ready) return;
-  prSmooth += (prTarget - prSmooth) * (REDUCED ? 1 : .12);
-  if (Math.abs(prTarget - prSmooth) < .0004) prSmooth = prTarget;
-  if (video.readyState >= 2 && !video.seeking) {   /* never queue seeks — that's what causes chop */
-    const t = prSmooth * Math.max(0, vidDuration - .05);
-    if (Math.abs(t - lastSeek) > (TOUCH ? 1 / 30 : 1 / 61)) { video.currentTime = t; lastSeek = t; }
-  }
-  choreo.progress(prSmooth);
-
-  if (TOUCH) {
-    for (let i = 0; i < noteEls.length; i++) {
-      const w = NOTE_WINDOWS[i]; if (!w) break;
-      let o = 0;
-      if (prSmooth > w[0] && prSmooth < w[1]) {
-        o = Math.min(1, (prSmooth - w[0]) / .045, (w[1] - prSmooth) / .045);
-      }
-      noteEls[i].style.opacity = o.toFixed(3);
-      noteEls[i].style.visibility = o > .01 ? 'visible' : 'hidden';
-    }
-  }
-});
-
-/* ────────────────────────────────────────────────────────────────────
-   6 · PER-TICK UPDATE — header theme, spine draw, acorn.
+   5 · PER-TICK UPDATE — header theme, spine draw.
    ──────────────────────────────────────────────────────────────────── */
 function onScrollUpdate(self) {
   if (!ready) return;
@@ -627,11 +530,10 @@ function onScrollUpdate(self) {
   }
 
   heroVisible = -trackX < vw() * 1.2;
-  updateAcorn(trackX);
 }
 
 /* ────────────────────────────────────────────────────────────────────
-   7 · PANEL CONTENT REVEALS (containerAnimation triggers)
+   6 · PANEL CONTENT REVEALS (containerAnimation triggers)
    ──────────────────────────────────────────────────────────────────── */
 function buildReveals() {
   if (REDUCED) return;
@@ -685,7 +587,7 @@ function buildStatsCounter() {
 }
 
 /* ────────────────────────────────────────────────────────────────────
-   8 · NAV JUMPS
+   7 · NAV JUMPS
    ──────────────────────────────────────────────────────────────────── */
 function jumpTo(id) {
   const el = document.getElementById(id); if (!el) return;
@@ -701,7 +603,7 @@ function jumpTo(id) {
 $$('.nav-jump').forEach(b => b.addEventListener('click', () => jumpTo('p-' + b.dataset.jump)));
 
 /* ────────────────────────────────────────────────────────────────────
-   9 · FULL SITE MENU (burger)
+   8 · FULL SITE MENU (burger)
    ──────────────────────────────────────────────────────────────────── */
 const burger = $('#burger');
 const menuOverlay = $('#menu-overlay');
@@ -718,15 +620,11 @@ if (burger) {
 /* ────────────────────────────────────────────────────────────────────
    BOOT
    ──────────────────────────────────────────────────────────────────── */
-/* vertical (touch) mode: normal page scroll, sticky acorn stage,
+/* vertical (touch) mode: normal page scroll,
    per panel header theming, no spine, no pin */
 function setupVertical() {
   document.body.classList.add('vertical');
   measurePanels();
-  ScrollTrigger.create({
-    trigger: acornPanel, start: 'top top', end: 'bottom bottom',
-    onUpdate: s => { prTarget = s.progress; }
-  });
   panels.forEach(p => ScrollTrigger.create({
     trigger: p.el, start: 'top 72px', end: 'bottom 72px',
     onToggle: self => { if (self.isActive) header.classList.toggle('on-dark', p.theme === 'dark'); }
@@ -748,7 +646,6 @@ function boot() {
   glCanvas.addEventListener('webglcontextrestored', () => {
     if (initGL()) { document.body.classList.remove('no-gl'); sizeGL(); drawNum(); }
   });
-  loadAcorn();
   if (HORIZONTAL) buildSpine(); else setupVertical();
   sizeGL();
   buildReveals();
