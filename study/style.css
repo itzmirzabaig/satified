@@ -2065,3 +2065,34 @@ body.light-mode .pt-result-card-status[style*="#e74c3c"]{color:var(--err-ink) !i
   .tutor-btn:hover{letter-spacing:.14em}
   .tutor-btn:active{transform:none}
 }
+
+/* ── Legal notice · persistent, theme-aware, pinned to the viewport bottom ───
+   Sits below the calc button (z900) and, on phones, above the mobile nav
+   (z600). pointer-events:none lets scroll/taps pass through the strip while
+   the links stay clickable, so it never blocks the tool. */
+.study-legal{
+  position:fixed;left:0;right:0;bottom:0;z-index:500;
+  display:flex;justify-content:center;align-items:center;
+  padding:7px 92px 7px 16px;              /* right pad clears the calc button */
+  background:var(--surface);
+  border-top:1px solid var(--hairline);
+  font-family:var(--f-mono);
+  font-size:11px;line-height:1.45;letter-spacing:.015em;
+  color:var(--muted);text-align:center;
+  pointer-events:none;
+}
+.study-legal span{max-width:78ch}
+.study-legal a{
+  color:var(--muted);pointer-events:auto;
+  text-decoration:underline;text-decoration-color:var(--gold);
+  text-underline-offset:2px;text-decoration-thickness:1px;
+}
+.study-legal a:hover,.study-legal a:focus-visible{color:var(--text)}
+/* keep the last of the scrollable content clear of the fixed strip */
+body{padding-bottom:38px}
+
+@media (max-width:640px){
+  /* ride just above the 64px mobile nav, tighter type */
+  .study-legal{bottom:64px;padding:6px 12px;font-size:9.5px;line-height:1.35}
+  body{padding-bottom:0}                  /* mobile nav already reserves space */
+}
