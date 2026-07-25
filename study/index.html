@@ -226,11 +226,6 @@
 
   </div><!-- end container -->
 
-  <!-- Persistent legal notice: use = acceptance, no guaranteed outcome -->
-  <aside class="study-legal" role="note">
-    <span>By using Satified you agree to our <a href="/terms/">Terms</a> &amp; <a href="/privacy/">Privacy Policy</a>. It&rsquo;s a free practice tool &mdash; no particular score or admission result is guaranteed.</span>
-  </aside>
-
   <!-- Mobile sticky bottom nav -->
   <div class="mobile-nav" id="mobile-nav">
     <button class="mob-btn" id="mob-submit-btn" disabled>Submit</button>
@@ -450,6 +445,46 @@
 
     </div>
   </div>
+
+  <!-- One time agreement gate. Shown until the visitor clicks agree, then
+       remembered in this browser so it never nags a returning user. -->
+  <div id="agree-overlay" class="agree-overlay" role="dialog" aria-modal="true" aria-labelledby="agree-title" aria-describedby="agree-body" hidden>
+    <div class="agree-card">
+      <span class="agree-mark" aria-hidden="true"></span>
+      <h2 class="agree-title" id="agree-title">Before you start</h2>
+      <p class="agree-body" id="agree-body">By using Satified you agree to our <a href="/terms/" target="_blank" rel="noopener">Terms</a> and <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a>. Satified is a free practice tool. It does not guarantee any particular score or admission result.</p>
+      <div class="agree-actions">
+        <button type="button" class="agree-btn" id="agree-btn">I agree</button>
+        <a class="agree-leave" href="/">Not now</a>
+      </div>
+    </div>
+  </div>
+  <script>
+  /* ── Agreement gate: show once, remember the choice in localStorage ── */
+  (function () {
+    var KEY = 'satified-agreed';
+    var overlay = document.getElementById('agree-overlay');
+    if (!overlay) return;
+    var accepted = false;
+    try { accepted = !!localStorage.getItem(KEY); } catch (e) {}
+    if (accepted) { overlay.parentNode.removeChild(overlay); return; }
+
+    overlay.hidden = false;
+    document.body.classList.add('agree-open');            /* lock scroll */
+    var btn = document.getElementById('agree-btn');
+
+    function accept() {
+      try { localStorage.setItem(KEY, new Date().toISOString()); } catch (e) {}
+      overlay.classList.add('closing');
+      document.body.classList.remove('agree-open');
+      var done = function () { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); };
+      overlay.addEventListener('animationend', done, { once: true });
+      setTimeout(done, 400);                              /* fallback */
+    }
+    btn.addEventListener('click', accept);
+    setTimeout(function () { try { btn.focus(); } catch (e) {} }, 80);
+  })();
+  </script>
 
   <script type="module" src="./app.ts"></script>
   <script>

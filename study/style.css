@@ -2066,33 +2066,77 @@ body.light-mode .pt-result-card-status[style*="#e74c3c"]{color:var(--err-ink) !i
   .tutor-btn:active{transform:none}
 }
 
-/* ── Legal notice · persistent, theme-aware, pinned to the viewport bottom ───
-   Sits below the calc button (z900) and, on phones, above the mobile nav
-   (z600). pointer-events:none lets scroll/taps pass through the strip while
-   the links stay clickable, so it never blocks the tool. */
-.study-legal{
-  position:fixed;left:0;right:0;bottom:0;z-index:500;
-  display:flex;justify-content:center;align-items:center;
-  padding:7px 92px 7px 16px;              /* right pad clears the calc button */
-  background:var(--surface);
-  border-top:1px solid var(--hairline);
-  font-family:var(--f-mono);
-  font-size:11px;line-height:1.45;letter-spacing:.015em;
-  color:var(--muted);text-align:center;
-  pointer-events:none;
+/* ── Agreement gate · one time modal, theme-aware, animated ───────────────────
+   Full-screen overlay above every panel (z2000). Shown until the visitor
+   clicks agree; the choice is remembered in localStorage so it never returns.
+   Nothing is pinned to the app chrome, so it can never block the buttons. */
+.agree-open{overflow:hidden}
+.agree-overlay{
+  position:fixed;inset:0;z-index:2000;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+  background:rgba(10,9,1,.58);
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  opacity:0;
+  animation:agree-fade .3s ease forwards;
 }
-.study-legal span{max-width:78ch}
-.study-legal a{
-  color:var(--muted);pointer-events:auto;
+.agree-card{
+  position:relative;
+  width:100%;max-width:432px;
+  background:var(--surface);
+  border:1px solid var(--hairline-strong);
+  border-radius:16px;
+  padding:30px 28px 24px;
+  box-shadow:var(--shadow-float);
+  text-align:center;
+  opacity:0;transform:translateY(18px) scale(.965);
+  animation:agree-pop .46s cubic-bezier(.22,1,.36,1) .05s forwards;
+}
+.agree-mark{
+  display:block;width:46px;height:46px;margin:0 auto 14px;
+  background:url('/logo-mark.png') center/contain no-repeat;
+}
+.agree-title{
+  font-family:var(--f-serif);font-weight:400;
+  font-size:1.7rem;line-height:1.1;color:var(--text);margin-bottom:10px;
+}
+.agree-body{
+  font-family:var(--f-sans);
+  font-size:.92rem;line-height:1.6;color:var(--muted);
+  margin:0 auto 22px;max-width:34ch;
+}
+.agree-body a{
+  color:var(--text);
   text-decoration:underline;text-decoration-color:var(--gold);
   text-underline-offset:2px;text-decoration-thickness:1px;
 }
-.study-legal a:hover,.study-legal a:focus-visible{color:var(--text)}
-/* keep the last of the scrollable content clear of the fixed strip */
-body{padding-bottom:38px}
+.agree-body a:hover,.agree-body a:focus-visible{color:var(--gold)}
+.agree-actions{display:flex;flex-direction:column;align-items:center;gap:12px}
+.agree-btn{
+  width:100%;
+  font-family:var(--f-mono);font-size:.86rem;letter-spacing:.04em;
+  padding:13px 20px;border-radius:10px;cursor:pointer;
+  background:var(--gold);color:var(--night);border:1px solid var(--gold);
+  transition:transform .12s ease,box-shadow .2s ease,filter .2s ease;
+}
+.agree-btn:hover{filter:brightness(1.05);box-shadow:0 8px 20px -8px rgba(232,185,0,.6)}
+.agree-btn:active{transform:translateY(1px)}
+.agree-btn:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+.agree-leave{
+  font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;
+  color:var(--muted);text-decoration:none;
+}
+.agree-leave:hover,.agree-leave:focus-visible{color:var(--text)}
 
-@media (max-width:640px){
-  /* ride just above the 64px mobile nav, tighter type */
-  .study-legal{bottom:64px;padding:6px 12px;font-size:9.5px;line-height:1.35}
-  body{padding-bottom:0}                  /* mobile nav already reserves space */
+.agree-overlay.closing{animation:agree-fade-out .24s ease forwards}
+.agree-overlay.closing .agree-card{animation:agree-pop-out .24s ease forwards}
+
+@keyframes agree-fade{to{opacity:1}}
+@keyframes agree-pop{to{opacity:1;transform:none}}
+@keyframes agree-fade-out{to{opacity:0}}
+@keyframes agree-pop-out{to{opacity:0;transform:translateY(8px) scale(.98)}}
+
+@media (prefers-reduced-motion:reduce){
+  .agree-overlay,.agree-card,
+  .agree-overlay.closing,.agree-overlay.closing .agree-card{animation-duration:.001s}
 }
