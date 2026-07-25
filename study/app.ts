@@ -490,11 +490,11 @@ class QuestionTester {
     }).join('');
     const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
     const bugHref = isMobile
-      ? 'mailto:bmirza113@gmail.com?subject=Bug%2FError%20Report'
-      : 'https://mail.google.com/mail/?view=cm&fs=1&to=bmirza113@gmail.com&su=Bug%2FError%20Report';
+      ? 'mailto:inputs@satified.org?subject=Bug%2FError%20Report'
+      : 'https://mail.google.com/mail/?view=cm&fs=1&to=inputs@satified.org&su=Bug%2FError%20Report';
     const feedHref = isMobile
-      ? 'mailto:bmirza113@gmail.com?subject=Feedback'
-      : 'https://mail.google.com/mail/?view=cm&fs=1&to=bmirza113@gmail.com&su=Feedback';
+      ? 'mailto:inputs@satified.org?subject=Feedback'
+      : 'https://mail.google.com/mail/?view=cm&fs=1&to=inputs@satified.org&su=Feedback';
     let h=`<div class="question-header">
       <div class="question-header-left">
         <h3>Question</h3>
@@ -1353,7 +1353,7 @@ class PracticeTestEngine {
         <h3>Question ${this.cursor + 1}</h3>
       </div>
       <div class="question-header-right">
-        <a href="${/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mailto:bmirza113@gmail.com?subject=Bug%2FError%20Report' : 'https://mail.google.com/mail/?view=cm&fs=1&to=bmirza113@gmail.com&su=Bug%2FError%20Report'}" target="_blank" class="BugButton">
+        <a href="${/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mailto:inputs@satified.org?subject=Bug%2FError%20Report' : 'https://mail.google.com/mail/?view=cm&fs=1&to=inputs@satified.org&su=Bug%2FError%20Report'}" target="_blank" class="BugButton">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 43 42" class="bugsvg">
             <path stroke-width="4" stroke="currentColor" d="M20 7H23C26.866 7 30 10.134 30 14V28.5C30 33.1944 26.1944 37 21.5 37C16.8056 37 13 33.1944 13 28.5V14C13 10.134 16.134 7 20 7Z"></path>
             <path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M18 2V7"></path>
