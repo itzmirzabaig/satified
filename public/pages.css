@@ -212,6 +212,20 @@ em{font-family:var(--serif);font-style:italic}
 .card .skills{display:flex;flex-wrap:wrap;gap:.4em}
 .card .skills a{font-size:.78rem;color:var(--bronze-ink);text-decoration:none;border:1px solid rgba(157,110,70,.35);border-radius:999px;padding:.15em .62em}
 .card .skills a:hover{background:rgba(157,110,70,.1)}
+/* Product screenshots. Every one is lazy loaded and sits below the fold, and
+   carries width/height so it reserves space and cannot shift layout. */
+.shot{margin:1.8rem 0;padding:0}
+.shot img{
+  display:block;width:100%;height:auto;
+  border:1px solid rgba(51,47,34,.22);border-radius:10px;
+  background:var(--night);
+}
+.shot figcaption{
+  margin-top:.7em;font-size:.82rem;line-height:1.5;color:var(--ink-faint);
+  font-family:var(--mono);letter-spacing:.01em;max-width:70ch;
+}
+.shot figcaption strong{color:var(--ink-soft);font-weight:500}
+
 /* Author box: the experience signal, repeated consistently under every article */
 .author-box{
   border-top:1px solid rgba(51,47,34,.18);
