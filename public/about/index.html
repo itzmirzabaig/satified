@@ -17,8 +17,8 @@
   <meta property="og:image" content="https://satified.org/media/og-card.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/pages.css?v=4">
-  <script src="/pages.js?v=4" defer></script>
+  <link rel="stylesheet" href="/pages.css?v=5">
+  <script src="/pages.js?v=5" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -92,6 +92,43 @@
       <section>
         <h2>Why it exists</h2>
         <p>My name is Mirza N. Baig, and I graduated from Charlotte Amalie High School in St. Thomas in 2026.</p>
+
+        <div class="photo-switch" id="val-photos">
+          <div class="photo-switch-btns" role="group" aria-label="Choose a photo">
+            <button type="button" data-photo="trophy" aria-pressed="true" aria-controls="photo-trophy">With the trophy</button>
+            <button type="button" data-photo="recognition" aria-pressed="false" aria-controls="photo-recognition">Being recognized</button>
+          </div>
+          <figure class="shot photo" id="photo-trophy">
+            <img src="/media/mirza-valedictorian-trophy.webp" width="900" height="1333" loading="lazy" decoding="async"
+                 alt="Mirza N. Baig in a blue cap and gown with Valedictorian sashes, holding the Charlotte Amalie High School valedictorian award, an eagle statuette on a wooden base engraved with his name and the Class of 2026.">
+            <figcaption>The valedictorian award, Charlotte Amalie High School Class of 2026. St. Thomas, US Virgin Islands.</figcaption>
+          </figure>
+          <figure class="shot photo" id="photo-recognition" hidden>
+            <img src="/media/mirza-valedictorian-recognition.webp" width="1200" height="839" loading="lazy" decoding="async"
+                 alt="Mirza N. Baig standing in cap and gown wearing two Valedictorian sashes as he is recognized during the Charlotte Amalie High School graduation ceremony, with faculty seated behind him.">
+            <figcaption>Being recognized as valedictorian at the graduation ceremony.</figcaption>
+          </figure>
+        </div>
+        <script>
+        /* two image switcher: no dependency, and the first photo stays visible
+           if this script never runs */
+        (function () {
+          var wrap = document.getElementById('val-photos');
+          if (!wrap) return;
+          var btns = wrap.querySelectorAll('.photo-switch-btns button');
+          btns.forEach(function (b) {
+            b.addEventListener('click', function () {
+              btns.forEach(function (o) {
+                var on = o === b;
+                o.setAttribute('aria-pressed', on ? 'true' : 'false');
+                var fig = document.getElementById(o.getAttribute('aria-controls'));
+                if (fig) fig.hidden = !on;
+              });
+            });
+          });
+        })();
+        </script>
+
         <p>My class kept losing math teachers. We lost the calculus teacher. We had no Algebra 2 teacher. Our only geometry teacher was out for about three months, and in that time we did almost nothing. We still passed our classes, because passing a class and learning the math are two different things. The difference only showed up when something measured us: about 4 percent of my class was proficient in math on the Smarter Balanced assessment, and the class below us was around 1.5 percent. Every year, there was a little less to work with.</p>
         <p>I got through it by teaching myself. That worked for me on the SAT, and it is not a solution. It only helps the one student willing to spend a year doing the school's job alone, and I watched classmates who were every bit as capable get nothing.</p>
         <p>Then there was the second wall. The practice platforms whose questions actually felt like the test, especially at medium and hard, all had a price on them. The free ones recycled the same handful of problems until you were memorizing answers instead of learning patterns.</p>

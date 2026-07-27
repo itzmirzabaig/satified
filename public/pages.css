@@ -212,6 +212,32 @@ em{font-family:var(--serif);font-style:italic}
 .card .skills{display:flex;flex-wrap:wrap;gap:.4em}
 .card .skills a{font-size:.78rem;color:var(--bronze-ink);text-decoration:none;border:1px solid rgba(157,110,70,.35);border-radius:999px;padding:.15em .62em}
 .card .skills a:hover{background:rgba(157,110,70,.1)}
+/* Photographs of the founder. Same rules as the screenshots: lazy, sized, below
+   the fold. .photo keeps a light background since these are not dark UI shots. */
+.photo img{background:var(--card)}
+.photo.portrait{max-width:340px}
+
+/* Two image switcher. Without JS the first image simply stays visible. */
+.photo-switch{margin:1.8rem 0}
+.photo-switch-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:.9rem}
+.photo-switch-btns button{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;
+  padding:8px 13px;cursor:pointer;
+  background:none;color:var(--ink-soft);
+  border:1px solid rgba(51,47,34,.28);border-radius:2px;
+  transition:all .25s var(--ease);
+}
+.photo-switch-btns button:hover{border-color:var(--bronze-ink);color:var(--ink)}
+.photo-switch-btns button[aria-pressed="true"]{
+  background:var(--night);border-color:var(--night);color:var(--gold);
+}
+.photo-switch-btns button:focus-visible{outline:2px solid var(--focus,#7A6000);outline-offset:2px}
+.photo-switch figure[hidden]{display:none}
+/* cap the height so a portrait and a landscape shot sit at a similar scale
+   instead of the portrait running to 1400px tall in a full width column */
+.photo-switch figure img{max-height:520px;width:auto;max-width:100%;margin-inline:auto}
+@media (max-width:640px){.photo-switch figure img{max-height:400px}}
+
 /* Product screenshots. Every one is lazy loaded and sits below the fold, and
    carries width/height so it reserves space and cannot shift layout. */
 .shot{margin:1.8rem 0;padding:0}
