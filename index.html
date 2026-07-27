@@ -12,9 +12,27 @@
   <meta name="author" content="Mirza N. Baig">
   <meta name="theme-color" content="#0A0901">
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HZ19REXM8B"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-HZ19REXM8B');</script>
+  <!-- Google tag (gtag.js). The hit is queued in dataLayer immediately, but the
+       50 KB library is fetched only once the page has painted, so it stops
+       competing with the hero font and CSS for bandwidth on slow connections. -->
+  <script>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    gtag('js',new Date());gtag('config','G-HZ19REXM8B');
+    (function(){
+      var loaded=false;
+      function load(){
+        if(loaded)return;loaded=true;
+        var s=document.createElement('script');
+        s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-HZ19REXM8B';
+        document.head.appendChild(s);
+      }
+      if(document.readyState==='complete')load();
+      else addEventListener('load',load,{once:true});
+      /* whichever comes first: paint settling, or the visitor doing something */
+      addEventListener('pointerdown',load,{once:true});
+      addEventListener('keydown',load,{once:true});
+    })();
+  </script>
 
   <!-- ── Open Graph / Twitter ────────────────────────────────────── -->
   <meta property="og:type" content="website">
@@ -38,6 +56,9 @@
   <link rel="manifest" href="/site.webmanifest">
 
   <!-- ── Performance: self-hosted font preloads ──────────────────── -->
+  <!-- Instrument Sans first: it renders the hero headline, which is the LCP
+       element. Without this it is only discovered once landing.css parses. -->
+  <link rel="preload" href="/fonts/instrument-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/dm-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -219,8 +240,10 @@
       <!-- ═ PANEL 04 · STATS ═ -->
       <section class="panel p-stats" id="p-stats" data-theme="light">
         <div class="stats-giant">
-          <span class="stats-num t-serif" id="stats-num">1,483</span>
-          <span class="stats-word t-cond">QUESTIONS</span>
+          <span class="stats-num t-serif" id="stats-num" aria-label="1,483 questions">1,483</span>
+          <!-- faint watermark behind the number: decorative, so it is hidden from
+               assistive tech and the label above carries the full meaning -->
+          <span class="stats-word t-cond" aria-hidden="true">QUESTIONS</span>
         </div>
         <ul class="stats-list t-mono">
           <li><span class="sl-num">04</span> domains</li>
@@ -244,7 +267,7 @@
         </ul>
         <div class="domain-links">
           <a class="bracket-link t-mono domain-cta" href="/study/">Drill Algebra&nbsp;→</a>
-          <a class="bracket-link t-mono domain-more" href="/sat-math/algebra/">What's on it</a>
+          <a class="bracket-link t-mono domain-more" href="/sat-math/algebra/" aria-label="What's on it: Algebra">What's on it</a>
         </div>
       </section>
 
@@ -258,7 +281,7 @@
         </ul>
         <div class="domain-links">
           <a class="bracket-link t-mono domain-cta" href="/study/">Drill Advanced Math&nbsp;→</a>
-          <a class="bracket-link t-mono domain-more" href="/sat-math/advanced-math/">What's on it</a>
+          <a class="bracket-link t-mono domain-more" href="/sat-math/advanced-math/" aria-label="What's on it: Advanced Math">What's on it</a>
         </div>
       </section>
 
@@ -276,7 +299,7 @@
         </ul>
         <div class="domain-links">
           <a class="bracket-link t-mono domain-cta" href="/study/">Drill Data Analysis&nbsp;→</a>
-          <a class="bracket-link t-mono domain-more" href="/sat-math/problem-solving-data-analysis/">What's on it</a>
+          <a class="bracket-link t-mono domain-more" href="/sat-math/problem-solving-data-analysis/" aria-label="What's on it: Problem Solving and Data Analysis">What's on it</a>
         </div>
       </section>
 
@@ -291,7 +314,7 @@
         </ul>
         <div class="domain-links">
           <a class="bracket-link t-mono domain-cta" href="/study/">Drill Geometry&nbsp;→</a>
-          <a class="bracket-link t-mono domain-more" href="/sat-math/geometry-trigonometry/">What's on it</a>
+          <a class="bracket-link t-mono domain-more" href="/sat-math/geometry-trigonometry/" aria-label="What's on it: Geometry and Trigonometry">What's on it</a>
         </div>
       </section>
 

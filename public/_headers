@@ -7,6 +7,35 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Brand icons and the nav logo mark. These live at the root rather than under a
+# hashed path, so they get 30 days instead of a year: long enough to stop the
+# 4 hour default from refetching them constantly, short enough that replacing
+# one is not stranded in caches. Bust sooner by bumping a ?v= on the reference.
+/logo-mark.png
+  Cache-Control: public, max-age=2592000
+/favicon.svg
+  Cache-Control: public, max-age=2592000
+/favicon.ico
+  Cache-Control: public, max-age=2592000
+/favicon-s.ico
+  Cache-Control: public, max-age=2592000
+/apple-touch-icon.png
+  Cache-Control: public, max-age=2592000
+/apple-touch-icon-s.png
+  Cache-Control: public, max-age=2592000
+/icon-192.png
+  Cache-Control: public, max-age=2592000
+/icon-512.png
+  Cache-Control: public, max-age=2592000
+
+# Subpage CSS and JS are not content hashed, so they stay short lived and
+# revalidate. stale-while-revalidate keeps repeat visits instant while a fresh
+# copy is fetched in the background, so edits still reach people quickly.
+/pages.css
+  Cache-Control: public, max-age=14400, stale-while-revalidate=86400
+/pages.js
+  Cache-Control: public, max-age=14400, stale-while-revalidate=86400
+
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
