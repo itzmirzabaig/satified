@@ -79,6 +79,13 @@ export const generator_1397 = {
       const W=400,H=350,P=45;
       const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
       const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
+      return '<rect x="'+mx((group1Q1))+'" y="'+my(1.0)+'" width="'+(mx((group1Q3))-mx((group1Q1)))+'" height="'+(my(0.4)-my(1.0))+'" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>';
+    })()}${(() => {
+      const xmin=(xMin),xmax=(xMax);
+      const ymin=-1,ymax=2;
+      const W=400,H=350,P=45;
+      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
+      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
       return '<line x1="'+mx((group1Median))+'" y1="'+my(0.4)+'" x2="'+mx((group1Median))+'" y2="'+my(1.0)+'" stroke="currentColor" stroke-width="2"/>';
     })()}${(() => {
       const xmin=(xMin),xmax=(xMax);
@@ -94,6 +101,13 @@ export const generator_1397 = {
       const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
       const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
       return '<line x1="'+mx((group2Q3))+'" y1="'+my(-0.3)+'" x2="'+mx((group2Max))+'" y2="'+my(-0.3)+'" stroke="currentColor" stroke-width="2"/>';
+    })()}${(() => {
+      const xmin=(xMin),xmax=(xMax);
+      const ymin=-1,ymax=2;
+      const W=400,H=350,P=45;
+      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
+      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
+      return '<rect x="'+mx((group2Q1))+'" y="'+my(0.0)+'" width="'+(mx((group2Q3))-mx((group2Q1)))+'" height="'+(my(-0.6)-my(0.0))+'" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2"/>';
     })()}${(() => {
       const xmin=(xMin),xmax=(xMax);
       const ymin=-1,ymax=2;
