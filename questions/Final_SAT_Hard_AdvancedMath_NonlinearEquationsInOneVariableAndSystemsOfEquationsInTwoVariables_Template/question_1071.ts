@@ -71,7 +71,7 @@ export const generator_1071 = {
     const figureCode = null;
     
     return {
-      questionText: `The solutions to $x^2+${2*p1}x+${finalC1}=0$ are $r$ and $s$, where $r<s$. The solutions to $x^2+${2*p2}x+${finalC2}=0$ are $t$ and $u$, where $t<u$. The solutions to $x^2+${2*(p1+p2)}x+c=0$, where $c$ is a constant, are $r+t$ and $s+u$. What is the value of $c$?`,
+      questionText: `The solutions to $x^2+${2*p1}x+${finalC1}=0$ are $r$ and $s$, where $r \\lt s$. The solutions to $x^2+${2*p2}x+${finalC2}=0$ are $t$ and $u$, where $t \\lt u$. The solutions to $x^2+${2*(p1+p2)}x+c=0$, where $c$ is a constant, are $r+t$ and $s+u$. What is the value of $c$?`,
       figureCode: figureCode,
       options: [],
       correctAnswer: cValue.toString(),
