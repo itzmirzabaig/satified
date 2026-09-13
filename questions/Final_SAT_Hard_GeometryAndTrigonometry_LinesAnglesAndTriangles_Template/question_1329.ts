@@ -1,229 +1,141 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
- * Question 1329
- * 
- * ORIGINAL ANALYSIS:
- * - Number ranges: [angles: 45°, 104° (specific values), answer: 83°]
- * - Difficulty factors: [Isosceles triangle properties, exterior angles, supplementary angles, multi-step reasoning]
- * - Distractor patterns: [N/A - fill in the blank]
- * - Constraints: [AC = CD creates isosceles triangle, angle chasing required]
- * - Question type: [Figure→Fill in the blank]
- * - Figure generation: [Geometric diagram with points A, B, C, D, E]
+ * Question <ID> — ⚠ set the real id in the export name + metadata below.
+ *
+ * AC = CD, ∠ACD = a°, ∠EBC = e° (a, e randomized) → find x.
+ * Figure: A, D, E collinear; C, D, B collinear; sides A–C and E–B.
+ *
+ * DESIGN RULE: the SVG must never contain numeric angle values — they
+ * regenerate on every call. Numbers are interpolated into questionText /
+ * explanation / options only. The figure shows: tick marks (AC = CD, true in
+ * every generation), unlabeled arcs on the two given angles (C and B), and
+ * x° at E (the unknown, in the accent blue).
+ *
+ * Math: △ACD isosceles ⇒ ∠CDA = (180−a)/2; ∠BDE = ∠CDA (vertical angles);
+ * △BDE ⇒ x = 180 − (180−a)/2 − e.
  */
 
-export const generator_1329 = {
+type Pt = { x: number; y: number };
+
+export const generator_XXXX = {                  // ⚠ e.g. generator_1187
   metadata: {
-    id: "1329",
+    id: "XXXX",                                  // ⚠ e.g. "1187"
     assessment: "SAT",
     domain: "Geometry And Trigonometry",
     skill: "Lines Angles And Triangles",
-    difficulty: "Hard"
+    difficulty: "Medium"                         // keep whatever the bank had
   },
-  
+
   generate: (): QuestionData => {
-    let attempts = 0;
-    const maxAttempts = 100;
-    
-    while (attempts < maxAttempts) {
-      attempts++;
-      
-      // STEP 1: Generate base angles ensuring valid geometry
-      // angleACD is the vertex angle of isosceles triangle (must allow two equal base angles)
-      // Base angles = (180 - vertex)/2 must be positive, so vertex < 180
-      const angleACD = getRandomInt(100, 140);
-      const angleEBC = getRandomInt(30, 60);
-      
-      // STEP 2: Calculate derived angles
-      // Triangle ACD is isosceles with AC = CD
-      const baseAngleACD = (180 - angleACD) / 2;
-      
-      // In triangle BDE: angle EBC = angleEBC, angle BDE = baseAngleACD (same angle)
-      // angle DEB = 180 - angleEBC - baseAngleACD
-      const angleDEB = 180 - angleEBC - baseAngleACD;
-      
-      // x is supplementary to angleDEB
-      const x = 180 - angleDEB;
-      
-      // STEP 3: Verify x is a reasonable integer (SAT answers are usually integers)
-      if (Number.isInteger(x) && x > 0 && x < 180) {
-        // STEP 4: Build Mafs code for the figure with randomized coordinates
-        const cX = getRandomInt(2, 4);
-        const cY = getRandomInt(2, 4);
-        const aX = cX - getRandomInt(2, 4);
-        const dX = cX + getRandomInt(4, 8);
-        const eX = dX + getRandomInt(2, 4);
-        const bX = cX + getRandomInt(2, 5);
-        const bY = cY - getRandomInt(1, 3);
-        
-        const _svg_0 = bY - 2; const _svg_1 = cY + 2; const _svg_2 = aX - 2; const _svg_3 = eX + 2;
-        const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 320" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=_svg_2,xmax=_svg_3;
-      const ymin=_svg_0,ymax=_svg_1;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      const xstep=Math.max(1,Math.ceil((_svg_3-(_svg_2))/8));
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0)continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
+    // STEP 1 — randomized givens (fresh values on every generation).
+    const beta = getRandomInt(34, 42);   // base angle of isosceles △ACD
+    const acd = 180 - 2 * beta;          // GIVEN ∠ACD (even, 96–112; classic 104 occurs)
+    const ebc = getRandomInt(55, 63);    // GIVEN ∠EBC (classic 59 occurs)
+    const xAns = 180 - beta - ebc;       // ANSWER (75–91, always an integer)
+
+    // STEP 2 — geometry computed from the generated angles (y up, D at origin).
+    const rad = (d: number) => (d * Math.PI) / 180;
+    const L = 1.5;                        // AC = CD
+    const DB = 1.7;
+    const DE = (DB * Math.sin(rad(ebc))) / Math.sin(rad(xAns));
+    const D: Pt = { x: 0, y: 0 };
+    const C: Pt = { x: L * Math.cos(rad(180 - beta)), y: L * Math.sin(rad(180 - beta)) };
+    const A: Pt = { x: -2 * L * Math.cos(rad(beta)), y: 0 };                      // A, D, E collinear
+    const B: Pt = { x: DB * Math.cos(rad(-beta)), y: DB * Math.sin(rad(-beta)) }; // C, D, B collinear
+    const E: Pt = { x: DE, y: 0 };
+
+    // STEP 3 — uniform-scale mapper (angles must render true for every variant).
+    const round2 = (v: number) => Math.round(v * 100) / 100;
+    const W = 440, H = 250, PAD = 30;
+    const xmin = A.x - 0.15, xmax = E.x + 0.15;
+    const ymin = B.y - 0.15, ymax = C.y + 0.15;
+    const sc = Math.min((W - 2 * PAD) / (xmax - xmin), (H - 2 * PAD) / (ymax - ymin));
+    const ox = (W - (xmax - xmin) * sc) / 2;
+    const oy = (H - (ymax - ymin) * sc) / 2;
+    const mx = (x: number) => round2(ox + (x - xmin) * sc);
+    const my = (y: number) => round2(oy + (ymax - y) * sc);
+
+    // STEP 4 — figure pieces (house style, NO numeric labels).
+    const line = (P: Pt, Q: Pt, color = "currentColor") =>
+      `<line x1="${mx(P.x)}" y1="${my(P.y)}" x2="${mx(Q.x)}" y2="${my(Q.y)}" stroke="${color}" stroke-width="2"/>`;
+
+    const tick = (P: Pt, Q: Pt) => {      // equal-length mark (AC = CD holds in every generation)
+      const M: Pt = { x: (P.x + Q.x) / 2, y: (P.y + Q.y) / 2 };
+      const dx = Q.x - P.x, dy = Q.y - P.y, Ln = Math.hypot(dx, dy) || 1, h = 0.09;
+      const a: Pt = { x: M.x - (dy / Ln) * h, y: M.y + (dx / Ln) * h };
+      const b: Pt = { x: M.x + (dy / Ln) * h, y: M.y - (dx / Ln) * h };
+      return `<line x1="${mx(a.x)}" y1="${my(a.y)}" x2="${mx(b.x)}" y2="${my(b.y)}" stroke="currentColor" stroke-width="2"/>`;
+    };
+
+    // Arc on the interior angle at V between rays V→P and V→Q. Text only for x° —
+    // never a number, since the values regenerate.
+    const angleMark = (V: Pt, P: Pt, Q: Pt, r: number, text?: string, rText = 0, color = "currentColor") => {
+      const a1 = Math.atan2(P.y - V.y, P.x - V.x);
+      const a2 = Math.atan2(Q.y - V.y, Q.x - V.x);
+      let diff = a2 - a1;
+      while (diff <= -Math.PI) diff += 2 * Math.PI;
+      while (diff > Math.PI) diff -= 2 * Math.PI;
+      let d = "";
+      for (let i = 0; i <= 14; i++) {
+        const t = a1 + (diff * i) / 14;
+        d += `${i === 0 ? "M " : "L "}${mx(V.x + r * Math.cos(t))} ${my(V.y + r * Math.sin(t))} `;
       }
-      const ystep=Math.max(1,Math.ceil((_svg_1-(_svg_0))/6));
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        if(y===0)continue;
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
+      let out = `<path d="${d}" fill="none" stroke="${color}" stroke-width="1.4"/>`;
+      if (text) {
+        const mid = a1 + diff / 2;
+        out += `<text x="${mx(V.x + rText * Math.cos(mid))}" y="${my(V.y + rText * Math.sin(mid))}" text-anchor="middle" font-size="13" fill="${color}">${text}</text>`;
       }
-      return s;
-    })()}${(() => {
-      const xmin=(aX - 2),xmax=(eX + 2);
-      const ymin=(bY - 2),ymax=(cY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx((cX))+'" y1="'+my((cY))+'" x2="'+mx((eX))+'" y2="'+my((bY))+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=(aX - 2),xmax=(eX + 2);
-      const ymin=(bY - 2),ymax=(cY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((aX))+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">A</text>';
-    })()}${(() => {
-      const xmin=(aX - 2),xmax=(eX + 2);
-      const ymin=(bY - 2),ymax=(cY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((cX))+'" y="'+my((cY + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">C</text>';
-    })()}${(() => {
-      const xmin=(aX - 2),xmax=(eX + 2);
-      const ymin=(bY - 2),ymax=(cY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((dX))+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">D</text>';
-    })()}${(() => {
-      const xmin=(aX - 2),xmax=(eX + 2);
-      const ymin=(bY - 2),ymax=(cY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((eX))+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">E</text>';
-    })()}${(() => {
-      const xmin=(aX - 2),xmax=(eX + 2);
-      const ymin=(bY - 2),ymax=(cY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((bX))+'" y="'+my((bY + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">B</text>';
-    })()}${(() => {
-      const xmin=(aX - 2),xmax=(eX + 2);
-      const ymin=(bY - 2),ymax=(cY + 2);
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx((eX - 1))+'" y="'+my((bY + 0.5))+'" text-anchor="middle" font-size="13" fill="currentColor">x^circ</text>';
-    })()}</svg></div>`;
-        
-        // STEP 5: Return question data (fill in the blank)
-        return {
-          questionText: `In the figure, $AC = CD$. The measure of angle $EBC$ is $${angleEBC}^\\\\circ$, and the measure of angle $ACD$ is $${angleACD}^\\\\circ$. What is the value of $x$?`,
-          figureCode: mafsCode,
-          options: [],
-          correctAnswer: Math.round(x).toString(),
-          explanation: `Since $AC = CD$, triangle $ACD$ is isosceles with $\\\\angle CAD = \\\\angle CDA$. The sum of angles in $\\\\triangle ACD$ is $180^\\\\circ$, so $${angleACD} + 2(\\\\angle CDA) = 180$, yielding $\\\\angle CDA = ${baseAngleACD}^\\\\circ$. In $\\\\triangle BDE$, $\\\\angle EBC = ${angleEBC}^\\\\circ$ and $\\\\angle BDE = ${baseAngleACD}^\\\\circ$. Thus, $\\\\angle DEB = 180 - ${angleEBC} - ${baseAngleACD} = ${angleDEB}^\\\\circ$. Since $\\\\angle DEB$ and $x$ are supplementary, $x = 180 - ${angleDEB} = ${Math.round(x)}$.`
-        };
-      }
+      return out;
+    };
+
+    const dot = (P: Pt) => `<circle cx="${mx(P.x)}" cy="${my(P.y)}" r="2.5" fill="currentColor"/>`;
+    const vlabel = (P: Pt, text: string, dx: number, dy: number) =>
+      `<text x="${mx(P.x) + dx}" y="${my(P.y) + dy}" text-anchor="middle" font-size="14" font-style="italic" fill="currentColor">${text}</text>`;
+
+    const figureCode = `<div style="width:100%;max-width:440px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      line(A, E) + line(C, B) +            // the two straight lines through D
+      line(A, C) + line(E, B) +            // the two sides
+      tick(A, C) + tick(C, D) +            // GIVEN: AC = CD
+      dot(A) + dot(C) + dot(D) + dot(E) + dot(B) +
+      vlabel(A, "A", -16, 18) +
+      vlabel(C, "C", 0, -10) +
+      vlabel(D, "D", -14, 18) +
+      vlabel(E, "E", 14, 5) +
+      vlabel(B, "B", 14, 5) +
+      angleMark(C, A, D, 0.40) +                             // given ∠ACD — arc only, value lives in the stem
+      angleMark(B, E, C, 0.38) +                             // given ∠EBC — arc only, value lives in the stem
+      angleMark(E, D, B, 0.38, "x\u00B0", 0.60, "#3b82f6") + // asked: x° at E
+      `</svg></div>`;
+
+    // STEP 5 — options, distractors computed from THIS generation's values.
+    const correctText = String(xAns);
+    const distractors = [
+      180 - xAns,              // supplement of x
+      acd - ebc,               // used (180−acd) as the angle at D
+      180 - acd - ebc,         // used acd itself as the angle at D
+      beta                     // stopped at the base angle
+    ];
+    const optionSet = new Set<string>([correctText]);
+    for (const d of distractors) {
+      if (optionSet.size >= 4) break;
+      if (d > 0) optionSet.add(String(d));
     }
-    
-    // Fallback with guaranteed valid values
-    const angleACD = 104;
-    const angleEBC = 45;
-    const baseAngleACD = 38;
-    const angleDEB = 97;
-    const x = 83;
-    
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 320" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-2,xmax=12;
-      const ymin=-2,ymax=8;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>';
-      const xstep=Math.max(1,Math.ceil((12-(-2))/8));
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        if(x===0)continue;
-        s+='<text x="'+mx(x)+'" y="'+(my(0)+14)+'" text-anchor="middle" font-size="9" fill="currentColor">'+x+'</text>';
-      }
-      const ystep=Math.max(1,Math.ceil((8-(-2))/6));
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        if(y===0)continue;
-        s+='<text x="'+(mx(0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=-2,xmax=12;
-      const ymin=-2,ymax=8;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(2)+'" y1="'+my(3)+'" x2="'+mx(10)+'" y2="'+my(2)+'" stroke="currentColor" stroke-width="2.5"/>';
-    })()}${(() => {
-      const xmin=-2,xmax=12;
-      const ymin=-2,ymax=8;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(0)+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">A</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=12;
-      const ymin=-2,ymax=8;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(2)+'" y="'+my(3.5)+'" text-anchor="middle" font-size="13" fill="currentColor">C</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=12;
-      const ymin=-2,ymax=8;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(8)+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">D</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=12;
-      const ymin=-2,ymax=8;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(10)+'" y="'+my(-0.5)+'" text-anchor="middle" font-size="13" fill="currentColor">E</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=12;
-      const ymin=-2,ymax=8;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(6)+'" y="'+my(2.5)+'" text-anchor="middle" font-size="13" fill="currentColor">B</text>';
-    })()}${(() => {
-      const xmin=-2,xmax=12;
-      const ymin=-2,ymax=8;
-      const W=400,H=320,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<text x="'+mx(9)+'" y="'+my(1)+'" text-anchor="middle" font-size="13" fill="currentColor">x^circ</text>';
-    })()}</svg></div>`;
-    
+    const optionsData = Array.from(optionSet).map(text => ({ text, isCorrect: text === correctText }));
+    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
+      ...opt,
+      letter: String.fromCharCode(65 + index)
+    }));
+    const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+    const correctLetter = correctOption.letter;
+
     return {
-      questionText: `In the figure, $AC = CD$. The measure of angle $EBC$ is $${angleEBC}^\\\\circ$, and the measure of angle $ACD$ is $${angleACD}^\\\\circ$. What is the value of $x$?`,
-      figureCode: mafsCode,
-      options: [],
-      correctAnswer: x.toString(),
-      explanation: `Since $AC = CD$, triangle $ACD$ is isosceles with $\\\\angle CAD = \\\\angle CDA$. The sum of angles in $\\\\triangle ACD$ is $180^\\\\circ$, so $${angleACD} + 2(\\\\angle CDA) = 180$, yielding $\\\\angle CDA = ${baseAngleACD}^\\\\circ$. In $\\\\triangle BDE$, $\\\\angle EBC = ${angleEBC}^\\\\circ$ and $\\\\angle BDE = ${baseAngleACD}^\\\\circ$. Thus, $\\\\angle DEB = 180 - ${angleEBC} - ${baseAngleACD} = ${angleDEB}^\\\\circ$. Since $\\\\angle DEB$ and $x$ are supplementary, $x = 180 - ${angleDEB} = ${x}.`
+      questionText: `In the figure above, $AC = CD$, $m\\angle EBC = ${ebc}^\\circ$, and $m\\angle ACD = ${acd}^\\circ$. What is the value of $x$?`,
+      figureCode: figureCode,
+      options: shuffledOptions.map(o => ({ text: o.text })),
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctLetter} is correct. Since $AC = CD$, triangle $ACD$ is isosceles with vertex angle $m\\angle ACD = ${acd}^\\circ$, so $m\\angle CDA = m\\angle CAD = \\frac{180 - ${acd}}{2} = ${beta}^\\circ$. Because $A$, $D$, $E$ are collinear and $C$, $D$, $B$ are collinear, $\\angle BDE$ is vertical to $\\angle CDA$, so $m\\angle BDE = ${beta}^\\circ$; and since $D$ lies on $\\overline{BC}$, $m\\angle DBE = m\\angle EBC = ${ebc}^\\circ$. In triangle $BDE$, $x = 180 - ${ebc} - ${beta} = ${xAns}$.`
     };
   }
 };
