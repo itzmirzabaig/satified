@@ -1107,9 +1107,9 @@ class PracticeTestEngine {
       openPanel();
     });
 
-    // Close
-    document.getElementById('pt-close')?.addEventListener('click', () => this.close());
-    this.overlay.addEventListener('click', (e) => { if (e.target === this.overlay) this.close(); });
+    // Close — show confirmation modal instead of closing immediately
+    document.getElementById('pt-close')?.addEventListener('click', () => this.showExitConfirm());
+    // NOTE: overlay backdrop click intentionally does NOT close the panel
 
     // Home → Info
     document.getElementById('pt-info-btn')?.addEventListener('click', () => this.showScreen('info'));
@@ -1207,6 +1207,24 @@ class PracticeTestEngine {
     mush?.classList.remove('popped');
     // Clear all test data to free memory and prevent slowdown
     this.resetTestData();
+  }
+
+  private showExitConfirm() {
+    const modal = document.getElementById('pt-exit-confirm');
+    if (!modal) { this.close(); return; }
+    modal.classList.add('visible');
+
+    const yesBtn = document.getElementById('pt-exit-yes')!;
+    const noBtn  = document.getElementById('pt-exit-no')!;
+
+    const cleanup = () => {
+      modal.classList.remove('visible');
+      yesBtn.replaceWith(yesBtn.cloneNode(true));
+      noBtn.replaceWith(noBtn.cloneNode(true));
+    };
+
+    yesBtn.addEventListener('click', () => { cleanup(); this.close(); }, { once: true });
+    noBtn.addEventListener('click',  () => { cleanup(); }, { once: true });
   }
 
   private resetTestData() {

@@ -1192,6 +1192,52 @@ body.light-mode .pt-panel{box-shadow:0 40px 90px -34px rgba(51,44,20,.5)}
 .pt-close:hover{border-color:var(--err);color:var(--err-ink);background:var(--err-soft)}
 .pt-close:active{transform:scale(.92)}
 
+/* exit confirmation modal */
+.pt-exit-confirm{
+  position:absolute;inset:0;z-index:50;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s ease;
+}
+.pt-exit-confirm.visible{opacity:1;pointer-events:all}
+.pt-exit-confirm-backdrop{
+  position:absolute;inset:0;
+  background:rgba(10,9,1,.72);
+  border-radius:8px;
+}
+.pt-exit-confirm-card{
+  position:relative;z-index:1;
+  background:var(--surface);
+  border:1px solid var(--hairline-strong);
+  border-radius:6px;
+  padding:32px 36px 28px;
+  max-width:360px;width:90%;
+  text-align:center;
+  box-shadow:0 20px 60px -16px rgba(5,4,1,.7);
+  transform:scale(.96);
+  transition:transform .25s var(--ease-out);
+}
+.pt-exit-confirm.visible .pt-exit-confirm-card{transform:scale(1)}
+.pt-exit-confirm-msg{
+  font-size:14.5px;line-height:1.65;
+  color:var(--text);margin:0 0 24px;
+}
+.pt-exit-confirm-actions{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+}
+.pt-exit-btn{
+  padding:10px 30px;
+  font-family:var(--f-mono);font-weight:500;font-size:12px;
+  letter-spacing:.16em;text-transform:uppercase;
+  border:1px solid var(--hairline-strong);border-radius:2px;
+  background:transparent;color:var(--text);
+  cursor:pointer;
+  transition:background-color .2s ease,border-color .2s ease,color .2s ease,transform .15s var(--ease-out);
+}
+.pt-exit-btn:active{transform:scale(.97)}
+.pt-exit-btn-yes:hover{background:var(--err-soft);border-color:var(--err);color:var(--err-ink)}
+.pt-exit-btn-no:hover{background:var(--gold);border-color:var(--gold);color:var(--night)}
+
 /* screens */
 .pt-screen{
   flex:1;display:flex;flex-direction:column;
