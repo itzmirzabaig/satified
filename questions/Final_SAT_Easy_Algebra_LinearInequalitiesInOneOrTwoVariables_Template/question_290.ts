@@ -13,13 +13,18 @@ import type { QuestionData } from '../../study/types';
  * - Figure generation: [linear inequality y >= m*x + b, shaded region]
  *
  * FIXED:
- * - Replaced legacy Mafs Plot.Inequality with a self-contained SVG that draws
- *   the boundary line and shades y >= m*x + b, auto-scaled to fit every draw.
- * - Guarded all distractors against collisions with each other and the answer
- *   (bounded retry) so DUP_OPTIONS can never occur.
- * - Every distractor is provably NOT a solution; the correct point provably IS.
- * - Explanation reads the correct letter from the shuffled array and recomputes
- *   its numbers from the same live variables.
+ * - Answer leak removed: the figure drew the correct option as a labeled blue
+ *   dot — the answer, plotted. Marker and coordinate label deleted. The data
+ *   window still spans all four option coordinates so each candidate can be
+ *   checked against the graph by eye.
+ * - Numbered axes: tick marks and labels on both axes (1-2-5-10 ladder, at
+ *   most ~8 intervals per axis) plus a 0 at the origin.
+ * - Companion fix required by numbering: the y-window could exclude y = 0,
+ *   and the old code clamped the x-axis onto the window edge — a fake axis
+ *   at nonzero y that numeric labels would make actively wrong. The window
+ *   now always includes y = 0, so the axis is the real axis.
+ * - Generation logic untouched: same random ranges, distractor construction,
+ *   guard loops, options, explanation.
  */
 
 export const generator_290 = {
@@ -94,7 +99,7 @@ export const generator_290 = {
     const gH = height - margin.top - margin.bottom;
 
     // Data window from the boundary over the visible x-span plus all points,
-    // padded, so the drawn line/region always matches the live equation.
+    // padded, so every option coordinate stays plottable against the graph.
     const xVals = allPoints.map(p => p.x);
     const yVals = allPoints.map(p => p.y);
     // include boundary y at the x-extremes so the line is always in view
@@ -103,7 +108,7 @@ export const generator_290 = {
     yVals.push(slope * xLo0 + intercept, slope * xHi0 + intercept, intercept);
     const xMin = Math.min(xLo0, -1) - 1;
     const xMax = Math.max(xHi0, 1) + 1;
-    const yMin = Math.min(...yVals) - 1;
+    const yMin = Math.min(...yVals, 0) - 1; // always include y = 0 → real x-axis
     const yMax = Math.max(...yVals) + 1;
 
     const sx = (x: number) => margin.left + ((x - xMin) / (xMax - xMin)) * gW;
@@ -116,11 +121,31 @@ export const generator_290 = {
     // Shaded region (y >= line) clipped to the window: polygon of line + top edge.
     const region = `${sx(bx1)},${sy(by1)} ${sx(bx2)},${sy(by2)} ${sx(bx2)},${sy(yMax)} ${sx(bx1)},${sy(yMax)}`;
 
-    const axisX0 = sx(Math.max(xMin, Math.min(xMax, 0)));
-    const axisY0 = sy(Math.max(yMin, Math.min(yMax, 0)));
+    // 0 is inside both windows by construction, so the axes pass through the
+    // true origin (no clamping to a window edge).
+    const axisX0 = sx(0);
+    const axisY0 = sy(0);
 
-    // Only the correct point is marked on the figure (it is the solution shown).
-    const marker = `<circle cx="${sx(correctX)}" cy="${sy(correctY)}" r="5" fill="#3b82f6" stroke="white" stroke-width="2" />`;
+    // Numbered ticks: 1-2-5-10 ladder targeting ~8 intervals per axis.
+    const tickStep = (span: number): number => {
+      const target = span / 8;
+      return [1, 2, 5, 10].find(s => s >= target) ?? 10;
+    };
+    const xStep = tickStep(xMax - xMin);
+    const yStep = tickStep(yMax - yMin);
+
+    let ticks = "";
+    for (let t = Math.ceil(xMin / xStep) * xStep; t <= xMax + 1e-9; t += xStep) {
+      if (t === 0) continue; // 0 drawn once at the origin below
+      ticks += `<line x1="${sx(t)}" y1="${axisY0 - 4}" x2="${sx(t)}" y2="${axisY0 + 4}" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" />`;
+      ticks += `<text x="${sx(t)}" y="${axisY0 + 15}" text-anchor="middle" font-size="11" fill="currentColor">${t}</text>`;
+    }
+    for (let t = Math.ceil(yMin / yStep) * yStep; t <= yMax + 1e-9; t += yStep) {
+      if (t === 0) continue;
+      ticks += `<line x1="${axisX0 - 4}" y1="${sy(t)}" x2="${axisX0 + 4}" y2="${sy(t)}" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" />`;
+      ticks += `<text x="${axisX0 - 8}" y="${sy(t) + 3.5}" text-anchor="end" font-size="11" fill="currentColor">${t}</text>`;
+    }
+    ticks += `<text x="${axisX0 - 7}" y="${axisY0 + 14}" text-anchor="end" font-size="11" fill="currentColor">0</text>`;
 
     const figureCode = `
       <div style="width:100%;max-width:${width}px;margin:0 auto;">
@@ -128,9 +153,8 @@ export const generator_290 = {
           <polygon points="${region}" fill="#3b82f6" fill-opacity="0.18" />
           <line x1="${sx(xMin)}" y1="${axisY0}" x2="${sx(xMax)}" y2="${axisY0}" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" />
           <line x1="${axisX0}" y1="${sy(yMin)}" x2="${axisX0}" y2="${sy(yMax)}" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" />
+          ${ticks}
           <line x1="${sx(bx1)}" y1="${sy(by1)}" x2="${sx(bx2)}" y2="${sy(by2)}" stroke="#3b82f6" stroke-width="3" />
-          ${marker}
-          <text x="${sx(correctX) + 8}" y="${sy(correctY) - 8}" font-size="12" fill="currentColor">(${correctX}, ${correctY})</text>
           <text x="${width - margin.right}" y="${axisY0 - 6}" text-anchor="end" font-size="12" fill="currentColor">x</text>
           <text x="${axisX0 + 6}" y="${margin.top + 10}" font-size="12" fill="currentColor">y</text>
         </svg>
