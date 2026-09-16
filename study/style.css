@@ -183,7 +183,7 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:2px 0}
 .pt-overlay{contain:size layout}
 .pt-panel{contain:layout}
 .flip-card{contain:layout style}
-.flip-card-front,.flip-card-back{contain:layout paint}
+.flip-card-front,.flip-card-back{contain:layout}
 .options{contain:layout} /* paint omitted: it would clip focus rings on .option */
 .pt-results-list{contain:layout paint}
 
@@ -333,7 +333,7 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:2px 0}
   color:var(--text);overflow:hidden;border-radius:2px;
   transition:color .2s ease;
 }
-.dd-select:hover{overflow:visible}
+@media(hover:hover) and (pointer:fine){.dd-select:hover{overflow:visible}}
 .dd-selected{
   background:var(--field);
   border:1px solid var(--hairline-strong);
@@ -348,7 +348,7 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:2px 0}
   font-family:var(--f-mono);font-weight:400;font-size:11px;
   letter-spacing:.05em;padding:8px 10px;
 }
-.dd-select:hover .dd-selected{border-color:var(--accent)}
+@media(hover:hover) and (pointer:fine){.dd-select:hover .dd-selected{border-color:var(--accent)}}
 .dd-selected-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dd-arrow{
   height:12px;width:12px;flex-shrink:0;
@@ -356,7 +356,7 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:2px 0}
   transform:rotate(0deg);
   transition:transform .25s var(--ease-out),fill .2s ease;
 }
-.dd-select:hover .dd-arrow{transform:rotate(180deg);fill:var(--accent-ink)}
+@media(hover:hover) and (pointer:fine){.dd-select:hover .dd-arrow{transform:rotate(180deg);fill:var(--accent-ink)}}
 
 /* invisible bridge between trigger and menu keeps hover alive over the gap */
 .dd-select::after{
@@ -374,15 +374,17 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:2px 0}
   position:absolute;top:100%;left:0;right:0;margin-top:6px;
   transform:translateY(-6px);opacity:0;visibility:hidden;
   transition:transform .2s var(--ease-out),opacity .2s var(--ease-out),visibility .2s;
-  z-index:9;max-height:280px;overflow-y:auto;
+  z-index:1000;max-height:280px;overflow-y:auto;
+  touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;
 }
-.dd-select:hover .dd-options{transform:translateY(0);opacity:1;visibility:visible}
+@media(hover:hover) and (pointer:fine){.dd-select:hover .dd-options{transform:translateY(0);opacity:1;visibility:visible}}
 .dd-options input[type="radio"]{display:none}
 .dd-options label{display:inline-block;width:100%}
 .dd-options label::before{content:attr(data-txt)}
 .dd-options label.dd-option-item::before{content:attr(data-val)}
 .dd-options input[type="radio"]:checked + label{display:none}
 .dd-option{
+  
   border-radius:2px;padding:9px 12px;font-size:13px;color:var(--text);
   cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   min-height:36px;display:flex;align-items:center;flex-shrink:0;
@@ -409,7 +411,7 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:2px 0}
 
 /* ── 07 · WORKSPACE ROW · PREV / NEXT ARROWS ──────────────────────────────── */
 .main-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:8px}
-.card-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:0}
+.card-col{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;gap:0}
 .card-col .flip-card{margin-bottom:0}
 
 .btn-conteiner{display:flex;justify-content:center;align-items:center;flex-shrink:0}
@@ -476,6 +478,7 @@ body.light-mode .flip-card-back{box-shadow:0 26px 56px -38px rgba(51,44,20,.42)}
   height:100%;max-height:none;
   padding:24px 30px 28px;overflow-y:auto;
   line-height:1.65;text-align:left;
+  touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;
 }
 
 /* the answer face reads as one calm page */
@@ -653,7 +656,7 @@ body.light-mode .flip-card-back{box-shadow:0 26px 56px -38px rgba(51,44,20,.42)}
   border:1px solid var(--hairline-strong);border-radius:2px;
   cursor:pointer;background:transparent;
   transition:border-color .15s ease,background-color .15s ease,transform .12s var(--ease-out);
-  -webkit-user-select:none;user-select:none;touch-action:manipulation;
+  -webkit-user-select:none;user-select:none;
 }
 .option:hover{border-color:var(--accent);background:var(--accent-soft)}
 .option:active{transform:scale(.99)}
@@ -1124,7 +1127,7 @@ body.light-mode .calc-toggle-btn::before {
 }
 .mob-filter-item.open .mob-filter-chevron{transform:rotate(180deg)}
 .mob-filter-opts{max-height:0;overflow:hidden;transition:max-height .28s ease}
-.mob-filter-item.open .mob-filter-opts{max-height:200px;overflow-y:auto}
+.mob-filter-item.open .mob-filter-opts{max-height:200px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .mob-filter-item.open .mob-filter-opts::-webkit-scrollbar{width:4px}
 .mob-filter-item.open .mob-filter-opts::-webkit-scrollbar-thumb{background:var(--scroll-thumb);border-radius:2px}
 .mob-filter-item.open .mob-filter-opts::-webkit-scrollbar-button{display:none}
@@ -1517,9 +1520,10 @@ body.light-mode .pt-panel{box-shadow:0 40px 90px -34px rgba(51,44,20,.5)}
 #pt-test{overflow:visible} /* lets the jump menu escape the screen box */
 .pt-question-area{
   flex:1;overflow-y:auto;overflow-x:hidden;
+  touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;
   padding:20px 0;
   display:flex;flex-direction:column;align-items:center;
-  min-height:0; /* critical: allows this flex child to scroll */
+  min-height:0;
 }
 .pt-q-content{
   font-size:15px;color:var(--text);

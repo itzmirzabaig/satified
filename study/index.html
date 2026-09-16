@@ -522,21 +522,30 @@
   /* ── Swipe navigation ── */
   (function() {
     let sx = 0, sy = 0;
-    const MIN_SWIPE = 50, MAX_VERT = 80;
+    const MIN_SWIPE = 35;
+    const MAX_VERT = 80;
     document.addEventListener('touchstart', e => {
+      const target = e.target;
+      if (target && target.closest && target.closest('.dd-options, #desmos-panel, .pt-exit-confirm')) {
+        sx = 0; sy = 0;
+        return;
+      }
       sx = e.touches[0].clientX;
       sy = e.touches[0].clientY;
     }, { passive: true });
     document.addEventListener('touchend', e => {
       const dx = e.changedTouches[0].clientX - sx;
       const dy = e.changedTouches[0].clientY - sy;
-      if (Math.abs(dx) < MIN_SWIPE || Math.abs(dy) > MAX_VERT) return;
+      if (!sx && !sy) return;
+      if (document.querySelector('.dd-select.is-open')) return;
+      if (Math.abs(dx) < MIN_SWIPE || Math.abs(dy) > MAX_VERT || Math.abs(dy) >= Math.abs(dx)) return;
+      sx = 0; sy = 0;
       if (dx < 0) document.dispatchEvent(new CustomEvent('mob-swipe-next'));
       else         document.dispatchEvent(new CustomEvent('mob-swipe-prev'));
     }, { passive: true });
   })();
 
-  /* ── Burger accordion for mobile filter ── */
+    /* ── Burger accordion for mobile filter ── */
   (function() {
     document.querySelectorAll('.mob-filter-item').forEach(item => {
       const trigger = item.querySelector('.mob-filter-row');
@@ -591,18 +600,18 @@
     closeBtn.addEventListener('click', closePanel);
     let drag=false,dsx,dsy,dpl,dpt;
     titlebar.addEventListener('mousedown',sd); titlebar.addEventListener('touchstart',sd,{passive:false});
-    function sd(e){if(e.target===closeBtn)return;drag=true;const r=panel.getBoundingClientRect();panel.style.left=r.left+'px';panel.style.top=r.top+'px';panel.style.right='auto';panel.style.bottom='auto';dpl=r.left;dpt=r.top;const p=pt(e);dsx=p.x;dsy=p.y;e.preventDefault();}
-    document.addEventListener('mousemove',dm); document.addEventListener('touchmove',dm,{passive:false});
+    function sd(e){if(e.target===closeBtn)return;drag=true;const r=panel.getBoundingClientRect();panel.style.left=r.left+'px';panel.style.top=r.top+'px';panel.style.right='auto';panel.style.bottom='auto';dpl=r.left;dpt=r.top;const p=pt(e);dsx=p.x;dsy=p.y;document.addEventListener('touchmove',dm,{passive:false});e.preventDefault();}
+    document.addEventListener('mousemove',dm);
     document.addEventListener('mouseup',ed); document.addEventListener('touchend',ed);
     function dm(e){if(!drag)return;const p=pt(e),dx=p.x-dsx,dy=p.y-dsy;panel.style.left=cl(dpl+dx,0,window.innerWidth-60)+'px';panel.style.top=cl(dpt+dy,0,window.innerHeight-60)+'px';e.preventDefault();}
-    function ed(){drag=false;}
+    function ed(){if(drag){drag=false;document.removeEventListener('touchmove',dm);}}
     let res=false,rdir,rsx,rsy,rsw,rsh,rsl,rst;
     document.querySelectorAll('.resize-handle').forEach(h=>{h.addEventListener('mousedown',sr);h.addEventListener('touchstart',sr,{passive:false});});
-    function sr(e){res=true;rdir=e.currentTarget.dataset.dir;const r=panel.getBoundingClientRect();panel.style.left=r.left+'px';panel.style.top=r.top+'px';panel.style.right='auto';panel.style.bottom='auto';rsw=r.width;rsh=r.height;rsl=r.left;rst=r.top;const p=pt(e);rsx=p.x;rsy=p.y;e.preventDefault();e.stopPropagation();}
-    document.addEventListener('mousemove',rm); document.addEventListener('touchmove',rm,{passive:false});
+    function sr(e){res=true;rdir=e.currentTarget.dataset.dir;const r=panel.getBoundingClientRect();panel.style.left=r.left+'px';panel.style.top=r.top+'px';panel.style.right='auto';panel.style.bottom='auto';rsw=r.width;rsh=r.height;rsl=r.left;rst=r.top;const p=pt(e);rsx=p.x;rsy=p.y;document.addEventListener('touchmove',rm,{passive:false});e.preventDefault();e.stopPropagation();}
+    document.addEventListener('mousemove',rm);
     document.addEventListener('mouseup',er); document.addEventListener('touchend',er);
     function rm(e){if(!res)return;const p=pt(e),dx=p.x-rsx,dy=p.y-rsy;let w=rsw,h=rsh,l=rsl,t=rst;if(rdir.includes('e'))w=Math.max(MIN_W,rsw+dx);if(rdir.includes('s'))h=Math.max(MIN_H,rsh+dy);if(rdir.includes('w')){w=Math.max(MIN_W,rsw-dx);l=rsl+(rsw-w);}if(rdir.includes('n')){h=Math.max(MIN_H,rsh-dy);t=rst+(rsh-h);}panel.style.width=w+'px';panel.style.height=h+'px';panel.style.left=l+'px';panel.style.top=t+'px';if(calc)calc.resize();e.preventDefault();}
-    function er(){if(res){res=false;if(calc)calc.resize();}}
+    function er(){if(res){res=false;document.removeEventListener('touchmove',rm);if(calc)calc.resize();}}
     function pt(e){const s=e.touches?e.touches[0]:e;return{x:s.clientX,y:s.clientY};}
     function cl(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
   })();
