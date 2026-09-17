@@ -30,12 +30,12 @@ export const generator_308 = {
     const total = numFull + numReduced;
     const revenue = priceFull * numFull + priceReduced * numReduced;
 
-    const correctAnswer = `f + r = ${total}\n${priceFull}f + ${priceReduced}r = ${revenue.toLocaleString()}`;
+    const correctAnswer = `$\\begin{aligned} f + r &= ${total} \\\\ ${priceFull}f + ${priceReduced}r &= ${revenue.toLocaleString()} \\end{aligned}$`;
     const optionsData = [
-      { text: `f + r = ${revenue.toLocaleString()}\n${priceFull}f + ${priceReduced}r = ${total}`, isCorrect: false, reason: "swaps the total tickets with total revenue" },
+      { text: `$\\begin{aligned} f + r &= ${revenue.toLocaleString()} \\\\ ${priceFull}f + ${priceReduced}r &= ${total} \\end{aligned}$`, isCorrect: false, reason: "swaps the total tickets with total revenue" },
       { text: correctAnswer, isCorrect: true },
-      { text: `f + r = ${total}\n${priceReduced}f + ${priceFull}r = ${revenue.toLocaleString()}`, isCorrect: false, reason: "swaps the prices for full and reduced tickets" },
-      { text: `f + r = ${revenue.toLocaleString()}\n${priceReduced}f + ${priceFull}r = ${total}`, isCorrect: false, reason: "swaps both totals and prices" }
+      { text: `$\\begin{aligned} f + r &= ${total} \\\\ ${priceReduced}f + ${priceFull}r &= ${revenue.toLocaleString()} \\end{aligned}$`, isCorrect: false, reason: "swaps the prices for full and reduced tickets" },
+      { text: `$\\begin{aligned} f + r &= ${revenue.toLocaleString()} \\\\ ${priceReduced}f + ${priceFull}r &= ${total} \\end{aligned}$`, isCorrect: false, reason: "swaps both totals and prices" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

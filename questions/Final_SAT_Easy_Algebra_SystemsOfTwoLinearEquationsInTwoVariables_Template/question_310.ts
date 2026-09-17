@@ -32,12 +32,12 @@ export const generator_310 = {
     const score1 = coins1 * c + stars1 * s;
     const score2 = coins2 * c + stars2 * s;
 
-    const correctAnswer = `${coins1}c + ${stars1}s = ${score1}\n${coins2}c + ${stars2}s = ${score2}`;
+    const correctAnswer = `$\\begin{aligned} ${coins1}c + ${stars1}s &= ${score1} \\\\ ${coins2}c + ${stars2}s &= ${score2} \\end{aligned}$`;
     const optionsData = [
-      { text: `${stars1}c + ${coins1}s = ${score1}\n${stars2}c + ${coins2}s = ${score2}`, isCorrect: false, reason: "swaps coins and stars in the equations" },
+      { text: `$\\begin{aligned} ${stars1}c + ${coins1}s &= ${score1} \\\\ ${stars2}c + ${coins2}s &= ${score2} \\end{aligned}$`, isCorrect: false, reason: "swaps coins and stars in the equations" },
       { text: correctAnswer, isCorrect: true },
-      { text: `${coins1}c + ${score1}s = ${stars1}\n${coins2}c + ${score2}s = ${stars2}`, isCorrect: false, reason: "misplaces coefficients and totals" },
-      { text: `${score1}c + ${coins1}s = ${stars1}\n${score2}c + ${coins2}s = ${stars2}`, isCorrect: false, reason: "misplaces all values" }
+      { text: `$\\begin{aligned} ${coins1}c + ${score1}s &= ${stars1} \\\\ ${coins2}c + ${score2}s &= ${stars2} \\end{aligned}$`, isCorrect: false, reason: "misplaces coefficients and totals" },
+      { text: `$\\begin{aligned} ${score1}c + ${coins1}s &= ${stars1} \\\\ ${score2}c + ${coins2}s &= ${stars2} \\end{aligned}$`, isCorrect: false, reason: "misplaces all values" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

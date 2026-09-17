@@ -30,12 +30,12 @@ export const generator_316 = {
     const total = num1 + num2;
     const revenue = price1 * num1 + price2 * num2;
 
-    const correctAnswer = `x + y = ${total}\n${price1}x + ${price2}y = ${revenue.toLocaleString()}`;
+    const correctAnswer = `$\\begin{aligned} x + y &= ${total} \\\\ ${price1}x + ${price2}y &= ${revenue.toLocaleString()} \\end{aligned}$`;
     const optionsData = [
       { text: correctAnswer, isCorrect: true },
-      { text: `x + y = ${total}\n${price1}x + ${price2}y = ${total * revenue}`, isCorrect: false, reason: "multiplies the totals incorrectly" },
-      { text: `x + y = ${revenue.toLocaleString()}\n${price1}x + ${price2}y = ${total * revenue}`, isCorrect: false, reason: "swaps the total tickets with total revenue" },
-      { text: `${price1}x = ${price2}y\n${total}x + ${total}y = ${revenue.toLocaleString()}`, isCorrect: false, reason: "sets up incorrect equations" }
+      { text: `$\\begin{aligned} x + y &= ${total} \\\\ ${price1}x + ${price2}y &= ${total * revenue} \\end{aligned}$`, isCorrect: false, reason: "multiplies the totals incorrectly" },
+      { text: `$\\begin{aligned} x + y &= ${revenue.toLocaleString()} \\\\ ${price1}x + ${price2}y &= ${total * revenue} \\end{aligned}$`, isCorrect: false, reason: "swaps the total tickets with total revenue" },
+      { text: `$\\begin{aligned} ${price1}x &= ${price2}y \\\\ ${total}x + ${total}y &= ${revenue.toLocaleString()} \\end{aligned}$`, isCorrect: false, reason: "sets up incorrect equations" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
