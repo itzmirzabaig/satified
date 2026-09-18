@@ -8,6 +8,19 @@ import type { QuestionData } from '../../study/types';
  * - Replaced Mafs <Coordinates> and <Line.Segment> with custom SVG Bar Graph.
  * - Uses the robust SVG structure from previous fixes (currentColor, clear margins).
  * - Visualizes frequency of battery charges (0-4 kWh).
+ *
+ * FIXED (x-axis cut off — figure taller than the question's figure area):
+ * - The SVG's own content was fine (axis line at y=280, category labels at
+ *   305, title at 335 — all inside the 350-tall viewBox), but it was the
+ *   tallest figure in the bank and the only one missing the house-style
+ *   wrapper: no max-width container div and no display:block, so it rendered
+ *   inline at the full container width and the oversized bottom got clipped —
+ *   hiding the x-axis line, the 0-4 category labels, and the axis title.
+ * - Now matches every working figure: wrapper div with max-width, display
+ *   block, xmlns, and a compact 460x300 layout with tightened margins so the
+ *   full bottom stack (axis line -> category labels -> title) sits well
+ *   inside the viewBox. Bars, value labels, gridlines, y-labels, titles, and
+ *   colors are unchanged.
  */
 
 export const generator_406 = {
@@ -36,11 +49,11 @@ export const generator_406 = {
 
     const totalDays = data.reduce((acc, d) => acc + d.val, 0);
 
-    // 2. Setup SVG Dimensions
-    const width = 500;
-    const height = 350;
-    // Adequate bottom margin for labels and axis title
-    const margin = { top: 40, bottom: 70, left: 50, right: 20 };
+    // 2. Setup SVG Dimensions (compact so the whole figure fits the figure area)
+    const width = 460;
+    const height = 300;
+    // Bottom margin still fits axis line + category labels + axis title
+    const margin = { top: 26, bottom: 54, left: 46, right: 16 };
 
     const plotHeight = height - margin.top - margin.bottom;
     const plotWidth = width - margin.left - margin.right;
@@ -66,7 +79,7 @@ export const generator_406 = {
     }
 
     // 4. Generate Bars & X-Axis Labels
-    const barWidth = 50;
+    const barWidth = 44;
     const totalBarSpace = data.length * barWidth;
     const totalSpacing = plotWidth - totalBarSpace;
     const spacing = totalSpacing / (data.length + 1);
@@ -77,7 +90,7 @@ export const generator_406 = {
       const h = getY(0) - y;
 
       // Label Y position: just below axis
-      const labelY = height - margin.bottom + 25;
+      const labelY = height - margin.bottom + 20;
 
       return `
         <!-- Bar: Blue 500 -->
@@ -91,22 +104,26 @@ export const generator_406 = {
       `;
     }).join('');
 
-    // 5. Construct Final SVG String
+    // 5. Construct Final SVG String — house-style wrapper caps the rendered
+    // size; display:block removes the inline-SVG baseline gap that was also
+    // pushing the figure down into the clip.
     const figureCode = `
-      <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; user-select: none; overflow: visible;">
-        <!-- Grid -->
-        ${gridLines.join('')}
-        
-        <!-- X Axis Line -->
-        <line x1="${margin.left}" y1="${height - margin.bottom}" x2="${width - margin.right}" y2="${height - margin.bottom}" stroke="currentColor" stroke-width="2" />
-        
-        <!-- Bars and Labels -->
-        ${bars}
-        
-        <!-- Axis Titles -->
-        <text x="${margin.left - 30}" y="${margin.top - 20}" text-anchor="start" font-size="12" font-weight="bold" fill="currentColor" style="font-family: sans-serif; opacity: 0.7;">Number of Days</text>
-        <text x="${width / 2 + margin.left / 2}" y="${height - 15}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor" style="font-family: sans-serif; opacity: 0.7;">Charge (kWh)</text>
-      </svg>
+      <div style="width:100%;max-width:${width}px;margin:0 auto;">
+        <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; display: block; user-select: none;">
+          <!-- Grid -->
+          ${gridLines.join('')}
+          
+          <!-- X Axis Line -->
+          <line x1="${margin.left}" y1="${height - margin.bottom}" x2="${width - margin.right}" y2="${height - margin.bottom}" stroke="currentColor" stroke-width="2" />
+          
+          <!-- Bars and Labels -->
+          ${bars}
+          
+          <!-- Axis Titles -->
+          <text x="${margin.left - 32}" y="${margin.top - 10}" text-anchor="start" font-size="12" font-weight="bold" fill="currentColor" style="font-family: sans-serif; opacity: 0.7;">Number of Days</text>
+          <text x="${width / 2 + margin.left / 2}" y="${height - 14}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor" style="font-family: sans-serif; opacity: 0.7;">Charge (kWh)</text>
+        </svg>
+      </div>
     `;
 
     // 6. Options
@@ -122,7 +139,7 @@ export const generator_406 = {
       letter: String.fromCharCode(65 + index)
     }));
 
-    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
 
     return {
       questionText: `The bar graph shows the daily battery charge (in kWh) recorded over ${totalDays} days. For how many of these days did the battery receive a charge of 0 kWh?`,
