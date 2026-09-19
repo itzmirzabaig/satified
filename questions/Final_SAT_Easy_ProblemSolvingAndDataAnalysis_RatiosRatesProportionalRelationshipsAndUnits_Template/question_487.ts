@@ -11,6 +11,15 @@ import type { QuestionData } from '../../study/types';
 * - Constraints: [Ratio must be constant, x values must generate integer y values]
 * - Question type: [Multiple Choice Text with TABLE]
 * - Figure generation: [HTML Table - CRITICAL!]
+*
+* FIXED (table hard to read):
+* - tableCode was a bare unstyled <table> — no borders, no cell padding, no
+*   centering — so the cells rendered as a cramped unreadable block (browsers
+*   draw no borders by default) with nothing adapting to the site theme.
+* - Rebuilt in the house table style (same as Questions 85 and 411): wrapper
+*   div with max-width, border-collapse, currentColor borders + padding,
+*   centered cells, italic variable headers (x, y) and an italic k cell.
+* - Generation logic untouched.
 */
 
 export const generator_487 = {
@@ -37,7 +46,19 @@ export const generator_487 = {
     const distractor2 = x4 - ratio;
     const distractor3 = x4 * 2;
 
-    const tableCode = `<table><tr><th>x</th><th>y</th></tr><tr><td>${x1}</td><td>${y1}</td></tr><tr><td>${x2}</td><td>${y2}</td></tr><tr><td>${x3}</td><td>${y3}</td></tr><tr><td>${x4}</td><td>k</td></tr></table>`;
+    // ---- Figure: house-style table ----
+    const cell = 'style="border:1px solid currentColor;padding:4px 14px;text-align:center;"';
+    const head = 'style="border:1px solid currentColor;padding:4px 14px;text-align:center;font-style:italic;"';
+    const kcell = 'style="border:1px solid currentColor;padding:4px 14px;text-align:center;font-style:italic;"';
+
+    const tableCode =
+      `<div style="width:100%;max-width:220px;margin:0 auto 14px;"><table style="width:100%;border-collapse:collapse;font-size:15px;">` +
+      `<tr><th ${head}>x</th><th ${head}>y</th></tr>` +
+      `<tr><td ${cell}>${x1}</td><td ${cell}>${y1}</td></tr>` +
+      `<tr><td ${cell}>${x2}</td><td ${cell}>${y2}</td></tr>` +
+      `<tr><td ${cell}>${x3}</td><td ${cell}>${y3}</td></tr>` +
+      `<tr><td ${cell}>${x4}</td><td ${kcell}>k</td></tr>` +
+      `</table></div>`;
 
     const optionsData = [
       { text: distractor1.toString(), isCorrect: false, reason: "This is the value of y when the value of x is " + (x4 - x1) + ", not " + x4 + "." },

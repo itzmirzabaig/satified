@@ -11,6 +11,15 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Base is 100 making answer = percentage; percentage != 50 so the complement 100-p never collides with the answer]
  * - Question type: [Text→Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * FIXED (stem rendered as "What is 39100$?"):
+ * - The old stem wrapped the two numbers in adjacent $...$ math segments
+ *   (`$39\%$ of $100$`), and the renderer mis-paired the dollar signs,
+ *   swallowing " of " and leaving a stray $ — displaying as "What is 39100$?".
+ *   Bare integers don't need math mode, so the stem is now plain text with no
+ *   dollar signs at all. The explanation keeps its LaTeX (its $ segments are
+ *   separated by real words, which is the safe pattern). Generation logic
+ *   unchanged.
  */
 
 export const generator_454 = {
@@ -57,7 +66,7 @@ export const generator_454 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `What is $${percentage}\\%$ of $${base}$?`,
+      questionText: `What is ${percentage}% of ${base}?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,

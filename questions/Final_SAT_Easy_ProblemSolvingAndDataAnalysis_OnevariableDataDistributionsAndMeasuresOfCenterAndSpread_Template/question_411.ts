@@ -11,6 +11,20 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Frequencies must sum to 9]
  * - Question type: [Raw Data→Frequency Table Selection]
  * - Figure generation: [HTML tables for options]
+ *
+ * FIXED (tables not visible in options):
+ * - The option renderer injects only each option's `text` as HTML; it ignores
+ *   `figureCode` on options (same pipeline fact established in Question 85).
+ *   The tables lived in figureCode, so every option rendered only its text
+ *   label. The table HTML now goes in `text`, with correctAnswer set to the
+ *   correct option's text — the validated Q85 pattern.
+ * - Dropped the "Table A"–"Table D" labels: the platform assigns A–D by
+ *   position after the shuffle, so a fixed "Table A" label could sit under
+ *   letter C and mismatch the explanation's letter. The tables themselves are
+ *   the option content.
+ * - Tables restyled to the house table style (currentColor borders, compact,
+ *   centered) so they render on both light and dark themes.
+ * - Generation logic untouched: same ranges, data, and distractor tables.
  */
 
 export const generator_411 = {
@@ -37,17 +51,17 @@ export const generator_411 = {
       ...Array(freq3).fill(val3)
     ];
 
-    const tableStyle = `style="border-collapse: collapse; margin: 10px;"`;
-    const cellStyle = `style="border: 1px solid #ccc; padding: 6px;"`;
+    // House-style table: currentColor adapts to theme; compact for option rows.
+    const cell = 'style="border:1px solid currentColor;padding:3px 10px;text-align:center;"';
+    const head = 'style="border:1px solid currentColor;padding:3px 10px;text-align:center;font-style:italic;"';
 
-    const createTable = (v1: number, f1: number, v2: number, f2: number, v3: number, f3: number) => `
-      <table ${tableStyle}>
-        <tr><th ${cellStyle}>Number</th><th ${cellStyle}>Frequency</th></tr>
-        <tr><td ${cellStyle}>${v1}</td><td ${cellStyle}>${f1}</td></tr>
-        <tr><td ${cellStyle}>${v2}</td><td ${cellStyle}>${f2}</td></tr>
-        <tr><td ${cellStyle}>${v3}</td><td ${cellStyle}>${f3}</td></tr>
-      </table>
-    `;
+    const createTable = (v1: number, f1: number, v2: number, f2: number, v3: number, f3: number) =>
+      `<div style="width:100%;max-width:200px;margin:6px auto;"><table style="width:100%;border-collapse:collapse;font-size:14px;">` +
+      `<tr><th ${head}>Number</th><th ${head}>Frequency</th></tr>` +
+      `<tr><td ${cell}>${v1}</td><td ${cell}>${f1}</td></tr>` +
+      `<tr><td ${cell}>${v2}</td><td ${cell}>${f2}</td></tr>` +
+      `<tr><td ${cell}>${v3}</td><td ${cell}>${f3}</td></tr>` +
+      `</table></div>`;
 
     const tableA = createTable(val1, freq1, val2, freq2, val3, freq3);
     const tableB = createTable(freq1, val1, freq2, val2, freq3, val3);
@@ -55,10 +69,10 @@ export const generator_411 = {
     const tableD = createTable(val1 * 4, freq1 * 2, val2 * 3, freq2 * 3, val3 * 2, freq3 * 4);
 
     const optionsData = [
-      { text: "Table A", figureCode: tableA, isCorrect: true },
-      { text: "Table B", figureCode: tableB, isCorrect: false },
-      { text: "Table C", figureCode: tableC, isCorrect: false },
-      { text: "Table D", figureCode: tableD, isCorrect: false }
+      { text: tableA, isCorrect: true },
+      { text: tableB, isCorrect: false },
+      { text: tableC, isCorrect: false },
+      { text: tableD, isCorrect: false }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -71,7 +85,7 @@ export const generator_411 = {
     return {
       questionText: `Which frequency table correctly represents the data listed?\n\n${rawData.join(', ')}`,
       figureCode: null,
-      options: shuffledOptions.map(o => ({ text: o.text, figureCode: o.figureCode })),
+      options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
       explanation: `Choice ${correctOption.letter} is correct. In the data listed, ${val1} occurs ${freq1} times, ${val2} occurs ${freq2} times, and ${val3} occurs ${freq3} times. This matches the frequency table in option ${correctOption.letter}.`
     };
