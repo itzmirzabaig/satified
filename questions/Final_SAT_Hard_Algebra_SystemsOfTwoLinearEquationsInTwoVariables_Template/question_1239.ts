@@ -21,6 +21,13 @@ import type { QuestionData } from '../../study/types';
  * silicon quantity is an exact integer. A bounded retry (<=50) keeps only draws
  * where the blended percentage pT is an integer and the four answer choices are
  * pairwise distinct. The correct answer is the silicon MASS in the second piece.
+ *
+ * FIXED (stray "/" next to numbers — same as Q1229):
+ * - Four percent signs were written \\%, a LITERAL backslash + % at runtime,
+ *   sitting outside any $...$ math segment so nothing consumed the backslash:
+ *   three in the stem (${pTotal}\\%, ${p1}\\%, ${p2}\\%) and one in the
+ *   explanation (${p2}\\% of ...). All are now plain % in prose — the house
+ *   rule: percent signs are never escaped and never inside math delimiters.
  */
 
 export const generator_1239 = {
@@ -86,9 +93,9 @@ export const generator_1239 = {
 
       result = {
         questionText:
-          `A sample of a certain alloy has a total mass of ${totalMass} grams and is ${pTotal}\\% silicon by mass. ` +
+          `A sample of a certain alloy has a total mass of ${totalMass} grams and is ${pTotal}% silicon by mass. ` +
           `The sample was formed by combining two pieces of different alloys. ` +
-          `The first piece was ${p1}\\% silicon by mass, and the second piece was ${p2}\\% silicon by mass. ` +
+          `The first piece was ${p1}% silicon by mass, and the second piece was ${p2}% silicon by mass. ` +
           `What was the mass, in grams, of the silicon in the second piece?`,
         figureCode: null,
         options: shuffledOptions.map(o => ({ text: o.text })),
@@ -97,7 +104,7 @@ export const generator_1239 = {
           `Choice ${correctLetter} is correct. Let $x$ and $y$ be the masses (in grams) of the first and second pieces. ` +
           `The total mass gives $x + y = ${totalMass}$, and the silicon balance gives $${p1}x + ${p2}y = ${pTotal} \\times ${totalMass} = ${pTotalTimes}$ ` +
           `(after multiplying each percentage-times-mass by 100). Solving the system gives $y = ${yMass}$ grams for the second piece. ` +
-          `Its silicon mass is ${p2}\\% of ${yMass}, which is $\\frac{${p2}}{100} \\times ${yMass} = ${correct}$ grams. ` +
+          `Its silicon mass is ${p2}% of ${yMass}, which is $\\frac{${p2}}{100} \\times ${yMass} = ${correct}$ grams. ` +
           `The choice ${dPieceMass} is the second piece's total mass, ${dOtherSilicon} is the silicon in the first piece, and ${dTotalSilicon} is the silicon in the entire sample.`
       };
     }

@@ -20,6 +20,11 @@ import type { QuestionData } from '../../study/types';
  *   - Rewrote the muddled closing line of the explanation into a clean round-up step and
  *     added the reason for each distractor.
  *   - Currency stays escaped as \\$ (no bare $ that MathJax could pair).
+ *   - FIXED (stray "/" next to a number): the explanation's percent was written \\% —
+ *     a LITERAL backslash + % at runtime — sitting outside any $...$ math segment,
+ *     so nothing consumed it and the browser drew "80\%" (backslash after the
+ *     number). Now a plain % in prose. House rule from Q454/Q1225: percent signs
+ *     live in plain text, never escaped, never inside math delimiters.
  */
 export const generator_1229 = {
   metadata: {
@@ -94,7 +99,7 @@ export const generator_1229 = {
     // 3. FORMATTING & RETURN  (currency escaped as \$)
     // ----------------------------------------------------------------------
     return {
-      questionText: `A student is working this summer as part of a crew on a farm. They earned \\$${firstRate} per hour for the first ${firstHours} hours they worked this week. Because of their performance, their crew leader raised their pay to \\$${secondRate} per hour for the rest of the week. The student saves ${savingsPercent}\\% of their earnings from each week. What is the least number of hours they must work the rest of the week to save at least \\$${targetSavings} for the week?`,
+      questionText: `A student is working this summer as part of a crew on a farm. They earned \\$${firstRate} per hour for the first ${firstHours} hours they worked this week. Because of their performance, their crew leader raised their pay to \\$${secondRate} per hour for the rest of the week. The student saves ${savingsPercent}\% of their earnings from each week. What is the least number of hours they must work the rest of the week to save at least \\$${targetSavings} for the week?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: finalAnswer.toString(),
@@ -102,20 +107,15 @@ export const generator_1229 = {
         Choice ${correctLetter} is correct.
         <br/><br/>
         1. <b>Earnings from the first part of the week:</b>
-        $$ ${firstHours} \\times ${firstRate} = ${firstEarnings} $$
-        <br/>
-        2. <b>Set up the savings inequality.</b> Let $x$ be the number of additional hours worked at the higher rate. The total earnings are $${firstEarnings} + ${secondRate}x$, and the student saves ${savingsPercent}\\% (that is, ${savingsDecimal}) of them:
-        $$ ${savingsDecimal}(${firstEarnings} + ${secondRate}x) \\ge ${targetSavings} $$
-        <br/>
+        $$ ${firstHours} \\times ${firstRate} = ${firstEarnings} $$         <br/>
+        2. <b>Set up the savings inequality.</b> Let $x$ be the number of additional hours worked at the higher rate. The total earnings are $${firstEarnings} + ${secondRate}x$, and the student saves ${savingsPercent}% (that is, ${savingsDecimal}) of them:
+        $$ ${savingsDecimal}(${firstEarnings} + ${secondRate}x) \\ge ${targetSavings} $$         <br/>
         3. <b>Solve for $x$.</b> Divide both sides by ${savingsDecimal}:
-        $$ ${firstEarnings} + ${secondRate}x \\ge ${requiredTotalEarnings.toFixed(2)} $$
-        <br/>
+        $$ ${firstEarnings} + ${secondRate}x \\ge ${requiredTotalEarnings.toFixed(2)} $$         <br/>
         Subtract ${firstEarnings}:
-        $$ ${secondRate}x \\ge ${requiredSecondEarnings.toFixed(2)} $$
-        <br/>
+        $$ ${secondRate}x \\ge ${requiredSecondEarnings.toFixed(2)} $$         <br/>
         Divide by ${secondRate}:
-        $$ x \\ge ${calculatedHours.toFixed(2)} $$
-        <br/>
+        $$ x \\ge ${calculatedHours.toFixed(2)} $$         <br/>
         4. <b>Round up.</b> Because $x$ must be a whole number of hours and it must be at least ${calculatedHours.toFixed(2)}, the least value is ${finalAnswer}.
         <br/><br/>
         The value ${distractorC} comes from dividing the required earnings by the second rate without first subtracting the ${firstEarnings} earned at the lower rate. The values ${distractorA} and ${distractorB} are too high and too low, respectively, to be the least number of hours that reaches the goal.

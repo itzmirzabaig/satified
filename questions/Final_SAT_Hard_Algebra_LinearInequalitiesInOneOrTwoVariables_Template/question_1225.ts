@@ -12,6 +12,12 @@ import type { QuestionData } from '../../study/types';
  * Issues fixed:
  * - correctAnswer was a bare letter (CORRECT_MISMATCH); now the correct option text.
  * - Distractor letters in the explanation now taken from the shuffled array.
+ * - The commission percent showed a literal "$" ("$11%"): it was wrapped in
+ *   math delimiters ($11\%$), and the renderer chokes on the escaped percent
+ *   and falls back to raw display (same bug class as Question 454's
+ *   $39\%$). The percent is now plain text — a bare number + % needs no
+ *   math mode. All other math segments in this stem ($x$, $2$, $5$, $s$)
+ *   render correctly and are unchanged.
  */
 export const generator_1225 = {
   metadata: {
@@ -90,7 +96,7 @@ export const generator_1225 = {
     const rateDecimal = commissionRate < 10 ? `0.0${commissionRate}` : `0.${commissionRate}`;
 
     return {
-      questionText: `A salesperson's total earnings consist of a base salary of $x$ dollars per year, plus commission earnings of $${commissionRate}\\%$ of the total sales the salesperson makes during the year. This year, the salesperson has a goal for the total earnings to be at least $${minMultiplier}$ times and at most $${maxMultiplier}$ times the base salary. Which of the following inequalities represents all possible values of total sales $s$, in dollars, the salesperson can make this year in order to meet that goal?`,
+      questionText: `A salesperson's total earnings consist of a base salary of $x$ dollars per year, plus commission earnings of ${commissionRate}% of the total sales the salesperson makes during the year. This year, the salesperson has a goal for the total earnings to be at least $${minMultiplier}$ times and at most $${maxMultiplier}$ times the base salary. Which of the following inequalities represents all possible values of total sales $s$, in dollars, the salesperson can make this year in order to meet that goal?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
@@ -100,12 +106,9 @@ export const generator_1225 = {
         Let $E$ be the total earnings and $s$ be the total sales. The earnings are the base salary plus commission, so $E = x + ${rateDecimal}s$.
         <br/>
         The goal is total earnings at least $${minMultiplier}x$ and at most $${maxMultiplier}x$:
-        $$${minMultiplier}x \\le x + ${rateDecimal}s \\le ${maxMultiplier}x$$
-        Subtract the base salary $x$ from each part:
-        $$${minMultiplier - 1}x \\le \\frac{${commissionRate}}{100}s \\le ${maxMultiplier - 1}x$$
-        Multiply each part by $\\frac{100}{${commissionRate}}$ to isolate $s$ and simplify:
-        $$${coefLow}x \\le s \\le ${coefHigh}x$$
-        <br/>
+        $$${minMultiplier}x \\le x + ${rateDecimal}s \\le ${maxMultiplier}x$$         Subtract the base salary $x$ from each part:
+        $$${minMultiplier - 1}x \\le \\frac{${commissionRate}}{100}s \\le ${maxMultiplier - 1}x$$         Multiply each part by $\\frac{100}{${commissionRate}}$ to isolate $s$ and simplify:
+        $$${coefLow}x \\le s \\le ${coefHigh}x$$         <br/>
         Choice ${letterOf("d1")} is incorrect: it uses $${minMultiplier}$ and $${maxMultiplier}$ in the numerators, forgetting to subtract the base salary $x$ before dividing by the rate.
         Choice ${letterOf("d2")} is incorrect: it keeps $${minMultiplier - 1}$ and $${maxMultiplier - 1}$ without dividing by the commission rate $\\frac{${commissionRate}}{100}$.
         Choice ${letterOf("d3")} is incorrect: it compares the sales directly to $${minMultiplier}x$ and $${maxMultiplier}x$, ignoring both the base salary and the commission rate.

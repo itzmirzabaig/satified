@@ -7,7 +7,9 @@ import type { QuestionData } from '../../study/types';
  * Difficulty: Hard
  * 
  * Description: Identifies which table of values satisfies a linear inequality y > mx + b.
- * visualization: SVG showing the inequality region.
+ * visualization: None — SVG graph removed per review. The inequality is stated
+ * in the stem with its actual coefficients and the options are the tables, so
+ * the question remains fully answerable; the graph-building code went with it.
  */
 export const generator_1221 = {
   metadata: {
@@ -102,83 +104,11 @@ export const generator_1221 = {
     const correctLetter = String.fromCharCode(65 + correctOptionIndex);
 
     // ----------------------------------------------------------------------
-    // 3. SVG VISUALIZATION (Dynamic Graph)
-    // ----------------------------------------------------------------------
-    // Define Graph Bounds
-    const xMin = 0;
-    const xMax = Math.max(...xValues) + 2;
-    const yMin = -30;
-    const yMax = getBoundary(xMax) + 20;
-
-    // SVG Dimensions
-    const width = 300;
-    const height = 300;
-    const padding = 40;
-
-    // Coordinate Mapping Functions
-    const mapX = (x: number) => padding + ((x - xMin) / (xMax - xMin)) * (width - 2 * padding);
-    const mapY = (y: number) => height - padding - ((y - yMin) / (yMax - yMin)) * (height - 2 * padding);
-
-    // Calculate Line Coordinates
-    const x1 = xMin;
-    const y1 = m * x1 + b;
-    const x2 = xMax;
-    const y2 = m * x2 + b;
-
-    const svgX1 = mapX(x1);
-    const svgY1 = mapY(y1);
-    const svgX2 = mapX(x2);
-    const svgY2 = mapY(y2);
-
-    // Polygon for Shading (Above the line)
-    // Corners: Top-Left, Top-Right, Line-Right, Line-Left
-    const polyPoints = `
-      ${padding},${padding} 
-      ${width - padding},${padding} 
-      ${svgX2},${svgY2} 
-      ${svgX1},${svgY1}
-    `;
-
-    const svgFigure = `
-    <div style="width: 100%; max-width: 400px; margin: 0 auto;">
-      <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; display: block; color: inherit; font-family: sans-serif;">
-        <!-- Defs for arrowheads -->
-        <defs>
-          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
-          </marker>
-        </defs>
-
-        <!-- Axes -->
-        <line x1="${padding}" y1="${mapY(0)}" x2="${width - padding}" y2="${mapY(0)}" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)" />
-        <line x1="${mapX(0)}" y1="${height - padding}" x2="${mapX(0)}" y2="${padding}" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)" />
-
-        <!-- Labels -->
-        <text x="${width - 20}" y="${mapY(0) + 15}" fill="currentColor" text-anchor="middle" font-size="12">$x$</text>
-        <text x="${mapX(0) - 15}" y="${padding + 10}" fill="currentColor" text-anchor="middle" font-size="12">$y$</text>
-
-        <!-- Shaded Region (Inequality) -->
-        <polygon points="${polyPoints}" fill="currentColor" fill-opacity="0.1" />
-
-        <!-- Inequality Line (Dashed) -->
-        <line x1="${svgX1}" y1="${svgY1}" x2="${svgX2}" y2="${svgY2}" stroke="currentColor" stroke-width="2" stroke-dasharray="5,5" />
-
-        <!-- Origin Label -->
-        <text x="${mapX(0) - 10}" y="${mapY(0) + 15}" fill="currentColor" font-size="10">0</text>
-        
-        <!-- Y-intercept approx label if visible -->
-        <text x="${mapX(0) + 5}" y="${mapY(b)}" fill="currentColor" font-size="10" alignment-baseline="middle">${b}</text>
-
-      </svg>
-    </div>
-    `;
-
-    // ----------------------------------------------------------------------
-    // 4. QUESTION TEXT & RETURN
+    // 3. QUESTION TEXT & RETURN
     // ----------------------------------------------------------------------
     return {
       questionText: `Which of the following tables shows values of $x$ and their corresponding values of $y$ that are all solutions to the inequality $y > ${rhsLatex}$?`,
-      figureCode: svgFigure,
+      figureCode: null,
       options: shuffledOptions.map(opt => ({ text: opt.html })),
       correctAnswer: correctOptionIndex,
       explanation: `
