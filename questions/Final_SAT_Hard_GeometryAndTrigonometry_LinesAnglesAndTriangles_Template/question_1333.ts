@@ -16,6 +16,14 @@ import type { QuestionData } from '../../study/types';
  * correspondence L<->Q, M<->P gives RQ/LR = RP/MR, hence RQ = LR*RP/MR and
  * LQ = LR + RQ = (LR*MR + LR*RP)/MR. All options are reduced a/b fractions;
  * a bounded redraw guarantees the four options are numerically distinct.
+ *
+ * FIXED (the word "overline" showing in the text):
+ * - The stem and explanation wrote LaTeX commands with FOUR backslashes
+ *   (\\\\overline, \\\\frac, \\\\cdot) — two backslashes at runtime — so the
+ *   renderer treated \\ as a row break and displayed the command name as
+ *   literal text ("overline{LQ}" etc.). Now the standard two-in-source
+ *   (\\overline -> \overline at runtime), same as every working generator.
+ *   No other content changed.
  */
 
 export const generator_1333 = {
@@ -116,11 +124,11 @@ export const generator_1333 = {
       `</svg></div>`;
 
     return {
-      questionText: `In the figure, $\\\\overline{LQ}$ intersects $\\\\overline{MP}$ at point $R$, and $\\\\overline{LM}$ is parallel to $\\\\overline{PQ}$. Given that $\\\\overline{MR} = ${MR}$, $\\\\overline{LR} = ${LR}$, and $\\\\overline{RP} = ${RP}$, what is the length of $\\\\overline{LQ}$?`,
+      questionText: `In the figure, $\\overline{LQ}$ intersects $\\overline{MP}$ at point $R$, and $\\overline{LM}$ is parallel to $\\overline{PQ}$. Given that $\\overline{MR} = ${MR}$, $\\overline{LR} = ${LR}$, and $\\overline{RP} = ${RP}$, what is the length of $\\overline{LQ}$?`,
       figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. Because $\\\\overline{LM}$ is parallel to $\\\\overline{PQ}$, triangles $LMR$ and $QPR$ are similar by AA, so $\\\\frac{RQ}{LR} = \\\\frac{RP}{MR}$. Then $RQ = \\\\frac{LR \\\\cdot RP}{MR} = \\\\frac{${LR} \\\\cdot ${RP}}{${MR}} = ${RQ}$, and $LQ = LR + RQ = ${LR} + ${RQ} = ${correct}$. Choice ${letterOf(d1)} is $RQ$ alone (it forgets to add $LR$). Choice ${letterOf(d2)} inverts the ratio, using $\\\\frac{RQ}{LR} = \\\\frac{MR}{RP}$. Choice ${letterOf(d3)} adds $RP$ instead of $LR$ to $RQ$.`
+      explanation: `Choice ${correctLetter} is correct. Because $\\overline{LM}$ is parallel to $\\overline{PQ}$, triangles $LMR$ and $QPR$ are similar by AA, so $\\frac{RQ}{LR} = \\frac{RP}{MR}$. Then $RQ = \\frac{LR \\cdot RP}{MR} = \\frac{${LR} \\cdot ${RP}}{${MR}} = ${RQ}$, and $LQ = LR + RQ = ${LR} + ${RQ} = ${correct}$. Choice ${letterOf(d1)} is $RQ$ alone (it forgets to add $LR$). Choice ${letterOf(d2)} inverts the ratio, using $\\frac{RQ}{LR} = \\frac{MR}{RP}$. Choice ${letterOf(d3)} adds $RP$ instead of $LR$ to $RQ$.`
     };
   }
 };
