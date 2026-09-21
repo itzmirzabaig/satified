@@ -22,6 +22,18 @@ import type { QuestionData } from '../../study/types';
  *   With exponent ≤ 3 that is at most 3 decimal places. The whole answer is built
  *   from the integer (k·mantissa) divided by 10^exponent, so no float artifact can
  *   appear, and the explanation is computed from the same live variables.
+ *
+ * FIXED (raw "$2 \times 10^{-3}%" showing in the stem):
+ * - The scientific-notation percentage was wrapped as
+ *   `$${mantissa} \\times 10^{-${exponent}}\\%$` — the percent sign was
+ *   INSIDE the math delimiters as `\%`, which this renderer chokes on
+ *   (the Q1400 bug class), breaking the segment and dumping it raw with
+ *   its literal dollar signs and backslash. House rule (7 files now):
+ *   percent signs are plain text — never escaped, never inside $...$.
+ *   The notation stays in math (`$2 \times 10^{-3}$`), the % moves outside
+ *   as a plain character. The explanation was already clean (its only
+ *   percent usages are plain prose) and is unchanged. No question logic
+ *   changed.
  */
 
 export const generator_1416 = {
@@ -56,7 +68,7 @@ export const generator_1416 = {
     const scaledProduct = round(percentValue * sampleMass, 4); // e.g. 0.02×300 = 6
 
     return {
-      questionText: `According to a set of standards, a certain type of substance can contain a maximum of $${mantissa} \\times 10^{-${exponent}}\\%$ phosphorus by mass. If a sample of this substance has a mass of ${sampleMass} grams, what is the maximum mass, in grams, of phosphorus the sample can contain to meet these standards?`,
+      questionText: `According to a set of standards, a certain type of substance can contain a maximum of $${mantissa} \\times 10^{-${exponent}}$% phosphorus by mass. If a sample of this substance has a mass of ${sampleMass} grams, what is the maximum mass, in grams, of phosphorus the sample can contain to meet these standards?`,
       figureCode: null,
       options: [], // Fill-in-the-blank
       correctAnswer: maxMass.toString(),

@@ -7,6 +7,18 @@ import type { QuestionData } from '../../study/types';
  * FIXES:
  * - SVG Text: Replaced `${k}\\sqrt{3}` with `${k}√3` (Unicode) inside the SVG text tag so it renders correctly as text.
  * - Logic: Height to Perimeter relation maintained.
+ *
+ * FIXED (broken math text in the stem):
+ * - The stem's height value was NOT wrapped in $...$ delimiters, so the
+ *   renderer showed the raw `8\sqrt{3}` instead of math. Now wrapped in
+ *   $...$ so it renders as a proper radical.
+ *
+ * FIXED (height label placement):
+ * - At the old 250px scale, the label crossed the triangle's right side for
+ *   double-digit k (at k = 15, ~10px overlap). Rebuilt at house scale
+ *   (460px): label sits right of the dashed altitude, vertically centered
+ *   on its midpoint, clearance from the right side verified for the widest
+ *   label (k = 15).
  */
 
 export const generator_1461 = {
@@ -26,45 +38,47 @@ export const generator_1461 = {
     // Perimeter = 6k
     const perimeter = 6 * k;
 
-    // 2. SVG Configuration
-    const width = 250;
-    const height = 220;
-    const pad = 30;
-    
-    // Draw Equilateral Triangle
-    const sDraw = 160;
-    const hDraw = sDraw * Math.sqrt(3) / 2;
-    
-    const pTop = { x: width / 2, y: pad };
-    const pLeft = { x: (width - sDraw) / 2, y: pad + hDraw };
-    const pRight = { x: (width + sDraw) / 2, y: pad + hDraw };
-    const pBaseMid = { x: width / 2, y: pad + hDraw };
+    // 2. SVG Configuration (house scale; drawn height rounded to the pixel —
+    //    242 vs 242.49, a 0.2% difference, visually indistinguishable).
+    const W = 460, H = 320;
+    const sDraw = 280;                            // drawn base length (px)
+    const hDraw = Math.round((sDraw * Math.sqrt(3)) / 2);  // 242 — true proportions
+    const apexX = W / 2;                          // 230
+    const apexY = 35;
+    const baseY = apexY + hDraw;                  // 277
+    const leftX = apexX - sDraw / 2;               // 90
+    const rightX = apexX + sDraw / 2;              // 370
+    const footX = apexX;                          // altitude foot = base midpoint
 
-    // Use Unicode Square Root (√) for SVG text label
+    // Height label: right of the dashed altitude, baseline offset +6px so the
+    // 16px text is vertically centered on the segment's midpoint.
+    const midY = (apexY + baseY) / 2;              // 156
     const labelText = `${k}√3`;
 
     const svgCode = `
-      <svg viewBox="0 0 ${width} ${height}" style="width: 100%; max-width: 250px; height: auto; display: block; margin: 0 auto; font-family: sans-serif;">
-        <!-- Triangle -->
-        <polygon points="${pLeft.x},${pLeft.y} ${pRight.x},${pRight.y} ${pTop.x},${pTop.y}" 
-          fill="none" stroke="currentColor" stroke-width="2" />
+      <div style="width:100%;max-width:${W}px;margin:0 auto;">
+        <svg viewBox="0 0 ${W} ${H}" style="width: 100%; height: auto; display: block; font-family: sans-serif;" xmlns="http://www.w3.org/2000/svg">
+          <!-- Triangle -->
+          <polygon points="${leftX},${baseY} ${rightX},${baseY} ${apexX},${apexY}" 
+            fill="none" stroke="currentColor" stroke-width="2" />
           
-        <!-- Height Line (dashed) -->
-        <line x1="${pTop.x}" y1="${pTop.y}" x2="${pBaseMid.x}" y2="${pBaseMid.y}" 
-          stroke="currentColor" stroke-width="1.5" stroke-dasharray="4" />
+          <!-- Height Line (dashed) -->
+          <line x1="${apexX}" y1="${apexY}" x2="${footX}" y2="${baseY}" 
+            stroke="currentColor" stroke-width="1.5" stroke-dasharray="4" />
           
-        <!-- Right Angle Marker -->
-        <polyline points="${pBaseMid.x},${pBaseMid.y - 10} ${pBaseMid.x + 10},${pBaseMid.y - 10} ${pBaseMid.x + 10},${pBaseMid.y}" 
-          fill="none" stroke="currentColor" stroke-width="1.5" />
+          <!-- Right Angle Marker at the foot -->
+          <polyline points="${footX},${baseY - 12} ${footX + 12},${baseY - 12} ${footX + 12},${baseY}" 
+            fill="none" stroke="currentColor" stroke-width="1.5" />
           
-        <!-- Label for Height -->
-        <text x="${pBaseMid.x + 8}" y="${(pTop.y + pBaseMid.y) / 2}" 
-          font-size="16" fill="currentColor">${labelText}</text>
-      </svg>
+          <!-- Label for Height (right of the dashed line, centered on its midpoint) -->
+          <text x="${footX + 14}" y="${midY + 6}" 
+            font-size="16" fill="currentColor">${labelText}</text>
+        </svg>
+      </div>
     `;
 
     return {
-      questionText: `The height of the equilateral triangle shown is ${k}\\sqrt{3}. What is the perimeter of the triangle?`,
+      questionText: `The height of the equilateral triangle shown is $${k}\\sqrt{3}$. What is the perimeter of the triangle?`,
       figureCode: svgCode,
       options: [], // Fill in the blank
       correctAnswer: perimeter.toString(),
@@ -74,10 +88,7 @@ export const generator_1461 = {
 
 2. **Solve for Side Length ($s$):**
    We are given $h = ${k}\\sqrt{3}$.
-   $\\frac{s\\sqrt{3}}{2} = ${k}\\sqrt{3}$
-   $\\frac{s}{2} = ${k}$
-   $s = ${2 * k}$
-
+   $\\frac{s\\sqrt{3}}{2} = ${k}\\sqrt{3}$    $\\frac{s}{2} = ${k}$    $s = ${2 * k}$ 
 3. **Calculate Perimeter:**
    The perimeter of an equilateral triangle is $3s$.
    $Perimeter = 3(${2 * k}) = ${perimeter}$.`

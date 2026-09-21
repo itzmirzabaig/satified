@@ -11,6 +11,20 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Sale = 0.2 * 11.70, sale = 1.3 * cost, so cost = sale/1.3]
  * - Question type: [Fill-in-the-blank]
  * - Figure generation: [None - word problem]
+ *
+ * FIXED (the "4-digit percentage" — two percentages jammed together):
+ * - Both percentage values were wrapped in math delimiters around an escaped
+ *   percent (`$80\%$` at runtime — the Q454/Q1225 bug class). The renderer
+ *   chokes on `\%` inside math; the broken segment's dollars then re-pair,
+ *   swallowing the words between the two percentages and jamming their digits
+ *   together (discount 80 + markup 35 -> "8035"). Both values are always
+ *   two-digit, which is why the jam always read as one suspicious 4-digit
+ *   "percentage". It is not a real value in the question.
+ * - House rule (Q454/Q1225/Q1229/Q1239): percent signs are plain text —
+ *   never escaped, never inside $...$. Applied to both stem percents and both
+ *   explanation percents. Currency stays escaped as \$, and the genuine math
+ *   segments (\times, \frac, \text inside $...$) are unchanged. Generation
+ *   logic untouched.
  */
 
 export const generator_1400 = {
@@ -37,11 +51,11 @@ export const generator_1400 = {
     const markupDecimal = (1 + markupPct / 100).toFixed(2);
     
     return {
-      questionText: `The regular price of a shirt at a store is \\$${regularPrice.toFixed(2)}. The sale price of the shirt is $${discountPct}\\%$ less than the regular price, and the sale price is $${markupPct}\\%$ greater than the store's cost for the shirt. What was the store's cost, in dollars, for the shirt? (Disregard the \\$ sign when entering your answer. For example, if your answer is \\$4.97, enter 4.97)`,
+      questionText: `The regular price of a shirt at a store is \\$${regularPrice.toFixed(2)}. The sale price of the shirt is ${discountPct}% less than the regular price, and the sale price is ${markupPct}% greater than the store's cost for the shirt. What was the store's cost, in dollars, for the shirt? (Disregard the \\$ sign when entering your answer. For example, if your answer is \\$4.97, enter 4.97)`,
       figureCode: null,
       options: [], // Fill-in-the-blank
       correctAnswer: storeCost.toFixed(2),
-      explanation: `The sale price is $${discountPct}\\%$ less than \\$${regularPrice.toFixed(2)}, so sale price $= ${regularPrice.toFixed(2)} \\times ${discountDecimal} = ${salePrice.toFixed(2)}$. This sale price is $${markupPct}\\%$ greater than cost, so $${salePrice.toFixed(2)} = ${markupDecimal} \\times \\text{cost}$. Therefore, $\\text{cost} = \\frac{${salePrice.toFixed(2)}}{${markupDecimal}} = ${storeCost.toFixed(2)}$.`
+      explanation: `The sale price is ${discountPct}% less than \\$${regularPrice.toFixed(2)}, so sale price $= ${regularPrice.toFixed(2)} \\times ${discountDecimal} = ${salePrice.toFixed(2)}$. This sale price is ${markupPct}% greater than cost, so $${salePrice.toFixed(2)} = ${markupDecimal} \\times \\text{cost}$. Therefore, $\\text{cost} = \\frac{${salePrice.toFixed(2)}}{${markupDecimal}} = ${storeCost.toFixed(2)}$.`
     };
   }
 };
