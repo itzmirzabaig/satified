@@ -25,6 +25,22 @@ import type { QuestionData } from '../../study/types';
  * and angle A = 60 deg. tan A = tan 60 deg = (leg opposite A)/(leg adjacent A)
  * = (H/2 * sqrt(3)) / (H/2) = sqrt(3), independent of the hypotenuse H. H is
  * randomized only to vary the figure's side labels.
+ *
+ * FIXED (60-degree mark floated on top of the AB line — previous fix was wrong):
+ * - The previous label positions were computed as if SVG's y-axis pointed UP;
+ *   it points DOWN. The "60 degree" label landed at 15 degrees below horizontal
+ *   from A — ABOVE the hypotenuse (on top of AB) — and the "30 degree" label
+ *   at 165 degrees landed BELOW the base line. The arc at A was also never
+ *   actually fixed: its start point sat 26px horizontally right of A (above
+ *   the hypotenuse, outside the triangle) and its end floated mid-wedge.
+ * - All angle geometry now uses explicit SCREEN directions (positive sin =
+ *   downward): at A the interior wedge spans 30 deg (hypotenuse) to 90 deg
+ *   (vertical leg), bisector 60 deg; at B it spans 180 deg (base) to 210 deg
+ *   (hypotenuse), bisector 195 deg. Arc endpoints are computed ON the sides
+ *   (A arc: vertical leg to hypotenuse; B arc: base to hypotenuse), and both
+ *   value labels sit on their wedge's bisector past the arc, inside the
+ *   triangle. Triangle, right-angle mark, side labels, stem, options, and
+ *   explanation unchanged.
  */
 
 export const generator_1352 = {
@@ -53,6 +69,35 @@ export const generator_1352 = {
     const Apt = { x: cx, y: cyBase - legShortPx };    // A: 60 deg (top-left)
     const Bpt = { x: cx + legLongPx, y: cyBase };     // B: 30 deg (bottom-right)
 
+    // All angle work below uses SVG SCREEN directions: theta from the +x axis
+    // with POSITIVE sin pointing DOWN (y grows downward). Interior wedges:
+    //   at A: 30 deg (hypotenuse, down-right) to 90 deg (vertical leg, down)
+    //         -> bisector 60 deg
+    //   at B: 180 deg (base toward C) to 210 deg (hypotenuse, up-left)
+    //         -> bisector 195 deg
+    const D2R = Math.PI / 180;
+    const at = (V: { x: number; y: number }, ang: number, d: number) => ({
+      x: V.x + d * Math.cos(ang * D2R),
+      y: V.y + d * Math.sin(ang * D2R)
+    });
+
+    // Arc endpoints ON the sides (radii in px):
+    //   A arc (60 deg): from 26 px down the vertical leg (90 deg) to 26 px
+    //   along the hypotenuse (30 deg) — the arc stays inside the wedge.
+    //   B arc (30 deg): from 34 px along the base toward C (180 deg) to
+    //   34 px along the hypotenuse (210 deg).
+    const rArcA = 26, rArcB = 34;
+    const arcA1 = at(Apt, 90, rArcA);
+    const arcA2 = at(Apt, 30, rArcA);
+    const arcB1 = at(Bpt, 180, rArcB);
+    const arcB2 = at(Bpt, 210, rArcB);
+
+    // Angle-measure labels ON each wedge's bisector, past its arc:
+    //   "60 deg" at 45 px from A along 60 deg; "30 deg" at 54 px from B
+    //   along 195 deg — both inside the triangle, clear of both sides.
+    const labA = at(Apt, 60, 45);
+    const labB = at(Bpt, 195, 54);
+
     const figureCode = `
       <div style="width:100%;max-width:420px;margin:0 auto;">
         <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;font-family:sans-serif;" xmlns="http://www.w3.org/2000/svg">
@@ -61,19 +106,19 @@ export const generator_1352 = {
           <!-- right-angle marker at C -->
           <polyline points="${Cpt.x + 14},${Cpt.y} ${Cpt.x + 14},${Cpt.y - 14} ${Cpt.x},${Cpt.y - 14}"
             fill="none" stroke="currentColor" stroke-width="1.5"/>
-          <!-- angle arc at A (60 deg) -->
-          <path d="M ${Apt.x + 26},${Apt.y} A 26 26 0 0 1 ${Apt.x + 13},${Apt.y + 22}"
+          <!-- angle arc at A (60 deg): vertical leg -> hypotenuse, inside the wedge -->
+          <path d="M ${arcA1.x.toFixed(1)},${arcA1.y.toFixed(1)} A ${rArcA} ${rArcA} 0 0 0 ${arcA2.x.toFixed(1)},${arcA2.y.toFixed(1)}"
             fill="none" stroke="currentColor" stroke-width="1.4"/>
-          <!-- angle arc at B (30 deg) -->
-          <path d="M ${Bpt.x - 34},${Bpt.y} A 34 34 0 0 1 ${Bpt.x - 30},${Bpt.y - 17}"
+          <!-- angle arc at B (30 deg): base -> hypotenuse, inside the wedge -->
+          <path d="M ${arcB1.x.toFixed(1)},${arcB1.y.toFixed(1)} A ${rArcB} ${rArcB} 0 0 1 ${arcB2.x.toFixed(1)},${arcB2.y.toFixed(1)}"
             fill="none" stroke="currentColor" stroke-width="1.4"/>
           <!-- vertex labels -->
           <text x="${Apt.x - 12}" y="${Apt.y - 6}" font-size="15" font-weight="bold" fill="currentColor">A</text>
           <text x="${Bpt.x + 8}" y="${Bpt.y + 6}" font-size="15" font-weight="bold" fill="currentColor">B</text>
           <text x="${Cpt.x - 16}" y="${Cpt.y + 16}" font-size="15" font-weight="bold" fill="currentColor">C</text>
-          <!-- angle measures -->
-          <text x="${Apt.x + 16}" y="${Apt.y + 24}" font-size="12" fill="currentColor">60&#176;</text>
-          <text x="${Bpt.x - 48}" y="${Bpt.y - 8}" font-size="12" fill="currentColor">30&#176;</text>
+          <!-- angle measures, on their wedges' bisectors -->
+          <text x="${labA.x.toFixed(1)}" y="${(labA.y + 4).toFixed(1)}" font-size="12" text-anchor="middle" fill="currentColor">60&#176;</text>
+          <text x="${labB.x.toFixed(1)}" y="${(labB.y + 4).toFixed(1)}" font-size="12" text-anchor="middle" fill="currentColor">30&#176;</text>
           <!-- hypotenuse label (AB) -->
           <text x="${(Apt.x + Bpt.x) / 2 + 6}" y="${(Apt.y + Bpt.y) / 2 - 6}" font-size="13" font-weight="bold" fill="currentColor">${hypotenuse}</text>
           <!-- short leg label (AC, opposite 30 deg) -->

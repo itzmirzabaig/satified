@@ -18,6 +18,14 @@ import type { QuestionData } from '../../study/types';
  * triangle ABC, giving x/y = s/b, i.e. x = y*(s/b). The area of ABC is
  * (1/2)*b*y. The area window is built to admit EXACTLY ONE integer y, so x is a
  * single well-defined value (a clean integer). Fill-in answer: one number.
+ *
+ * FIXED (the word "overline" showing in the text — same as Question 1333):
+ * - The stem and explanation wrote LaTeX commands with FOUR backslashes
+ *   (\\\\overline, \\\\frac, \\\\cdot, \\\\le) — two backslashes at runtime —
+ *   so the renderer treated \\ as a row break and displayed the command name
+ *   as literal text. Now the standard two-in-source form (\\overline ->
+ *   \overline at runtime), which renders the line over the segment as
+ *   intended. No other content changed.
  */
 
 export const generator_1337 = {
@@ -107,11 +115,11 @@ export const generator_1337 = {
       `</svg></div>`;
 
     return {
-      questionText: `In the figure above, triangle $ABC$ has a right angle at $C$, and the segment of length $x$ is drawn perpendicular to $\\\\overline{AC}$. The area of triangle $ABC$ is at least ${minArea} and no more than ${maxArea}. If $y$ is an integer, what is the value of $x$?`,
+      questionText: `In the figure above, triangle $ABC$ has a right angle at $C$, and the segment of length $x$ is drawn perpendicular to $\\overline{AC}$. The area of triangle $ABC$ is at least ${minArea} and no more than ${maxArea}. If $y$ is an integer, what is the value of $x$?`,
       figureCode,
       options: [],
       correctAnswer: `${x}`,
-      explanation: `The area of triangle $ABC$ is $\\\\frac{1}{2}\\\\cdot AC\\\\cdot BC = \\\\frac{1}{2}\\\\cdot ${b}\\\\cdot y$. Requiring this area to be between ${minArea} and ${maxArea} gives $\\\\frac{2\\\\cdot ${minArea}}{${b}} \\\\le y \\\\le \\\\frac{2\\\\cdot ${maxArea}}{${b}}$, so the only integer value is $y = ${y}$. The segment $x$ is parallel to $\\\\overline{BC}$, so by similar triangles $\\\\frac{x}{y} = \\\\frac{${s}}{${b}}$, which gives $x = ${y}\\\\cdot\\\\frac{${s}}{${b}} = ${x}$.`
+      explanation: `The area of triangle $ABC$ is $\\frac{1}{2}\\cdot AC\\cdot BC = \\frac{1}{2}\\cdot ${b}\\cdot y$. Requiring this area to be between ${minArea} and ${maxArea} gives $\\frac{2\\cdot ${minArea}}{${b}} \\le y \\le \\frac{2\\cdot ${maxArea}}{${b}}$, so the only integer value is $y = ${y}$. The segment $x$ is parallel to $\\overline{BC}$, so by similar triangles $\\frac{x}{y} = \\frac{${s}}{${b}}$, which gives $x = ${y}\\cdot\\frac{${s}}{${b}} = ${x}$.`
     };
   }
 };

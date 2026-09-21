@@ -10,6 +10,15 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Perimeter must be in form a + a√2 where hypotenuse = a]
  * - Question type: [Figure→Multiple Choice Text]
  * - Figure generation: [Isosceles right triangle with leg labels]
+ *
+ * FIXED (italicized, crambled-together text — same as Q1333/Q1337/Q1342/
+ * Q1345/Q1350): the stem, explanation, and options wrote LaTeX commands with
+ * FOUR backslashes (\\\\sqrt, \\\\dfrac, \\\\cdot) — two at runtime — so
+ * inside $...$ segments the renderer treated \\ as a row break and printed
+ * the command names as italic math text with spaces collapsed. The two
+ * radical option strings ALSO had no $...$ delimiters, so they could never
+ * render as math regardless. Now two-backslash form throughout and the
+ * radical options wrapped in $...$. No question logic changed.
  */
 
 export const generator_1355 = {
@@ -63,11 +72,13 @@ export const generator_1355 = {
     // Options: correct hypotenuse = base; distractors are distinct as MATH for
     // every base in [5,15] (two rationals base vs 2·base, two irrationals
     // base√2 vs 2·base√2 — a rational never equals an irrational).
+    // Radical options are wrapped in $...$ so the option renderer displays
+    // them as math (bare strings render as literal text).
     const optionsData = [
       { text: hypotenuse.toString(), isCorrect: true, reason: "correct hypotenuse length" },
       { text: (base * 2).toString(), isCorrect: false, reason: "doubles the hypotenuse, as if the perimeter were the given expression's coefficient times two" },
-      { text: `${base}\\\\sqrt{2}`, isCorrect: false, reason: "multiplies the hypotenuse by an extra factor of $\\\\sqrt{2}$" },
-      { text: `${base * 2}\\\\sqrt{2}`, isCorrect: false, reason: "both doubles the length and keeps an extra $\\\\sqrt{2}$ factor" }
+      { text: `$${base}\\sqrt{2}$`, isCorrect: false, reason: "multiplies the hypotenuse by an extra factor of $\\sqrt{2}$" },
+      { text: `$${base * 2}\\sqrt{2}$`, isCorrect: false, reason: "both doubles the length and keeps an extra $\\sqrt{2}$ factor" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -78,10 +89,10 @@ export const generator_1355 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. Let each leg be $x$; then the hypotenuse is $x\\\\sqrt{2}$ and the perimeter is $P = 2x + x\\\\sqrt{2} = x(2 + \\\\sqrt{2})$. We are given $P = ${base} + ${base}\\\\sqrt{2} = ${base}(1 + \\\\sqrt{2})$, so $x(2 + \\\\sqrt{2}) = ${base}(1 + \\\\sqrt{2})$. Solving, $x = \\\\dfrac{${base}(1 + \\\\sqrt{2})}{2 + \\\\sqrt{2}} = \\\\dfrac{${base}(1 + \\\\sqrt{2})(2 - \\\\sqrt{2})}{(2 + \\\\sqrt{2})(2 - \\\\sqrt{2})} = \\\\dfrac{${base}\\\\sqrt{2}}{2}$. The hypotenuse is $x\\\\sqrt{2} = \\\\dfrac{${base}\\\\sqrt{2}}{2}\\\\cdot\\\\sqrt{2} = ${hypotenuse}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Let each leg be $x$; then the hypotenuse is $x\\sqrt{2}$ and the perimeter is $P = 2x + x\\sqrt{2} = x(2 + \\sqrt{2})$. We are given $P = ${base} + ${base}\\sqrt{2} = ${base}(1 + \\sqrt{2})$, so $x(2 + \\sqrt{2}) = ${base}(1 + \\sqrt{2})$. Solving, $x = \\dfrac{${base}(1 + \\sqrt{2})}{2 + \\sqrt{2}} = \\dfrac{${base}(1 + \\sqrt{2})(2 - \\sqrt{2})}{(2 + \\sqrt{2})(2 - \\sqrt{2})} = \\dfrac{${base}\\sqrt{2}}{2}$. The hypotenuse is $x\\sqrt{2} = \\dfrac{${base}\\sqrt{2}}{2}\\cdot\\sqrt{2} = ${hypotenuse}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `The perimeter of an isosceles right triangle is $${base} + ${base}\\\\sqrt{2}$ inches. What is the length, in inches, of the hypotenuse of this triangle?`,
+      questionText: `The perimeter of an isosceles right triangle is $${base} + ${base}\\sqrt{2}$ inches. What is the length, in inches, of the hypotenuse of this triangle?`,
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: hypotenuse.toString(),

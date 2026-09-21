@@ -10,6 +10,16 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Must recognize 10-24-26 Pythagorean triple scaled by √37]
  * - Question type: [Figure→Multiple Choice Text]
  * - Figure generation: [Right triangle with right angle at B]
+ *
+ * FIXED (italicized, crambled-together text — same as Q1333/Q1337/Q1342/
+ * Q1345): the stem, explanation, and options wrote LaTeX commands with FOUR
+ * backslashes (\\\\sqrt, \\\\cdot) — two at runtime — so inside $...$ the
+ * renderer treated \\ as a row break and printed the command names as italic
+ * math text ("sqrt"). The four option strings ALSO had no $...$ delimiters
+ * at all, so they could never render as math regardless (the Question 1340
+ * lesson: options need delimiters; Question 1457's delimited options render
+ * fine). Now two-backslash form throughout and every option wrapped in
+ * $...$. No question logic changed.
  */
 
 export const generator_1350 = {
@@ -68,11 +78,12 @@ export const generator_1350 = {
       `<text x="${(bx + cx) / 2}" y="${by + 20}" text-anchor="middle" font-size="12" fill="currentColor">${leg2}√${radicand}</text>` +
       `</svg></div>`;
 
-    // Generate options
-    const correctAnswer = `${hypotenuse}\\\\sqrt{${radicand}}`;
-    const optionA = `${Math.abs(leg2 - leg1)}\\\\sqrt{${radicand}}`;
-    const optionC = `${leg1 + leg2}\\\\sqrt{${radicand}}`;
-    const optionD = `\\\\sqrt{${leg1 + leg2} \\\\cdot ${radicand}}`;
+    // Generate options — each wrapped in $...$ so the option renderer
+    // displays them as math (bare strings render as literal text).
+    const correctAnswer = `$${hypotenuse}\\sqrt{${radicand}}$`;
+    const optionA = `$${Math.abs(leg2 - leg1)}\\sqrt{${radicand}}$`;
+    const optionC = `$${leg1 + leg2}\\sqrt{${radicand}}$`;
+    const optionD = `$\\sqrt{${leg1 + leg2} \\cdot ${radicand}}$`;
 
     const optionsData = [
       { text: optionA, isCorrect: false, reason: "subtracts legs instead of using Pythagorean theorem" },
@@ -89,10 +100,10 @@ export const generator_1350 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. Using the Pythagorean theorem: $AC^2 = (${leg1}\\\\sqrt{${radicand}})^2 + (${leg2}\\\\sqrt{${radicand}})^2 = ${leg1 * leg1}(${radicand}) + ${leg2 * leg2}(${radicand}) = ${radicand}(${leg1 * leg1 + leg2 * leg2})$. Since ${leg1}² + ${leg2}² = ${hypotenuse}² = ${hypotenuse * hypotenuse}, we have $AC^2 = ${radicand}(${hypotenuse * hypotenuse})$, so $AC = ${hypotenuse}\\\\sqrt{${radicand}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Using the Pythagorean theorem: $AC^2 = (${leg1}\\sqrt{${radicand}})^2 + (${leg2}\\sqrt{${radicand}})^2 = ${leg1 * leg1}(${radicand}) + ${leg2 * leg2}(${radicand}) = ${radicand}(${leg1 * leg1 + leg2 * leg2})$. Since ${leg1}² + ${leg2}² = ${hypotenuse}² = ${hypotenuse * hypotenuse}, we have $AC^2 = ${radicand}(${hypotenuse * hypotenuse})$, so $AC = ${hypotenuse}\\sqrt{${radicand}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `In triangle $ABC$, angle $B$ is a right angle. The length of side $AB$ is $${leg1}\\\\sqrt{${radicand}}$ and the length of side $BC$ is $${leg2}\\\\sqrt{${radicand}}$. What is the length of side $AC$?`,
+      questionText: `In triangle $ABC$, angle $B$ is a right angle. The length of side $AB$ is $${leg1}\\sqrt{${radicand}}$ and the length of side $BC$ is $${leg2}\\sqrt{${radicand}}$. What is the length of side $AC$?`,
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctAnswer,

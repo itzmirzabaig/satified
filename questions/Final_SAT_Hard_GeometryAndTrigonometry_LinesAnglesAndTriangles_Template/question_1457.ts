@@ -11,6 +11,16 @@ import type { QuestionData } from '../../study/types';
  * - Logic: 
  *   - AA Similarity: Need one more pair of angles.
  *   - SAS Similarity: Need the other adjacent side (LM and RS) to be in the same ratio.
+ *
+ * FIXED (literal "^circ" + bunched italic text like "andthemeasure" in options):
+ * - The wrongAngle option was missing its OPENING $ before both angle
+ *   interpolations (`is ${angleN}^\\circ$` instead of `is $${angleN}^\\circ$`),
+ *   unlike the correct option which had them. The stray closing $ then paired
+ *   with the $ before "$T$", trapping " and the measure of angle " inside a
+ *   math segment — rendered italic with its spaces collapsed — and left the
+ *   ^\circ fragments outside math mode, displayed as literal text. Both
+ *   opening $s added; the option now matches the structure of the correct
+ *   option. No question logic changed.
  */
 
 export const generator_1457 = {
@@ -73,7 +83,7 @@ export const generator_1457 = {
       },
       {
         id: 'wrongAngle',
-        text: `The measure of angle $M$ is ${angleN}^\\circ$ and the measure of angle $T$ is ${angleN + 10}^\\circ$`,
+        text: `The measure of angle $M$ is $${angleN}^\\circ$ and the measure of angle $T$ is $${angleN + 10}^\\circ$`,
         isCorrect: false,
         explanation: "the angles are not congruent, so it does not establish AA similarity"
       }

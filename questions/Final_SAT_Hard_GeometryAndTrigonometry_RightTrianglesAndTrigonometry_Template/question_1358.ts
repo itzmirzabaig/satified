@@ -8,8 +8,22 @@ import type { QuestionData } from '../../study/types';
  * - Number ranges: [diagonal: 3√17, shorter side: 3]
  * - Difficulty factors: [Pythagorean theorem with radicals, solving for unknown side]
  * - Constraints: [Longer side = √(153-9) = √144 = 12]
- * - Question type: [Figure→Fill in the blank]
- * - Figure generation: [Rectangle with diagonal]
+ * - Question type: [Text→Fill in the blank]
+ * - Figure generation: [None — figure removed per review]
+ *
+ * FIXED (italicized text — same as Q1333/1337/1342/1345/1350/1355/1356):
+ * - The stem and explanation used FOUR backslashes before LaTeX commands
+ *   (\\\\sqrt, \\\\implies) — two at runtime — so the renderer treated \\ as
+ *   a row break and printed the command names as italic math text. Now the
+ *   standard two-in-source form (\\sqrt -> \sqrt at runtime).
+ *
+ * FIXED (figure removed):
+ * - The old figure drew only the DIAGONAL segment on faint coordinate axes —
+ *   the rectangle's sides were never drawn, so it rendered as an orphan
+ *   slanted line. The stem is fully self-contained ("rectangle" supplies the
+ *   right angles; the diagonal and shorter side are given as values), so no
+ *   figure is needed: figureCode is now null and the broken figure code is
+ *   deleted. Question logic, stem, answer, and explanation unchanged.
  */
 
 export const generator_1358 = {
@@ -35,34 +49,13 @@ export const generator_1358 = {
     const shorterSide = m;
     const diagonalCoef = m;
     const longerSide = m * Math.sqrt(perfectSquare);
-    
-    const _svg_0 = shorterSide + 2; const _svg_1 = longerSide + 2;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 350" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-2,xmax=_svg_1;
-      const ymin=-2,ymax=_svg_0;
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Axes
-      s+='<line x1="'+P+'" y1="'+my(0)+'" x2="'+(W-P)+'" y2="'+my(0)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      s+='<line x1="'+mx(0)+'" y1="'+P+'" x2="'+mx(0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>';
-      return s;
-    })()}${(() => {
-      const xmin=-2,xmax=(longerSide + 2);
-      const ymin=-2,ymax=(shorterSide + 2);
-      const W=400,H=350,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      return '<line x1="'+mx(0)+'" y1="'+my(0)+'" x2="'+mx((longerSide))+'" y2="'+my((shorterSide))+'" stroke="currentColor" stroke-width="2"/>';
-    })()}</svg></div>`;
 
     return {
-      questionText: `The length of a rectangle's diagonal is $${diagonalCoef}\\\\sqrt{${k}}$, and the length of the rectangle's shorter side is ${shorterSide}. What is the length of the rectangle's longer side?`,
-      figureCode: mafsCode,
+      questionText: `The length of a rectangle's diagonal is $${diagonalCoef}\\sqrt{${k}}$, and the length of the rectangle's shorter side is ${shorterSide}. What is the length of the rectangle's longer side?`,
+      figureCode: null,
       options: [], // Fill in the blank
       correctAnswer: longerSide.toString(),
-      explanation: `By Pythagoras: $${shorterSide}^2 + x^2 = (${diagonalCoef}\\\\sqrt{${k}})^2 \\\\implies ${shorterSide * shorterSide} + x^2 = ${diagonalCoef * diagonalCoef * k} \\\\implies x^2 = ${diagonalCoef * diagonalCoef * k - shorterSide * shorterSide} \\\\implies x = ${longerSide}$.`
+      explanation: `By Pythagoras: $${shorterSide}^2 + x^2 = (${diagonalCoef}\\sqrt{${k}})^2 \\implies ${shorterSide * shorterSide} + x^2 = ${diagonalCoef * diagonalCoef * k} \\implies x^2 = ${diagonalCoef * diagonalCoef * k - shorterSide * shorterSide} \\implies x = ${longerSide}$.`
     };
   }
 };

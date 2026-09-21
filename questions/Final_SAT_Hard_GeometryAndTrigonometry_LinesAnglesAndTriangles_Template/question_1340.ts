@@ -8,6 +8,15 @@ import type { QuestionData } from '../../study/types';
  * - Fixed LaTeX syntax `^\\\\circ` to `^{\\circ}` to resolve "missing open brace" errors.
  * - Fixed `options` return type to be `string[]` (previously returned objects).
  * - Refined distractor logic to ensure mathematical precision regarding SSA vs SAS vs AA similarity.
+ * - FIXED (literal "^{\circ}" visible in options): the option renderer is not
+ *   a reliable KaTeX pass (it injects option text as HTML — the same pipeline
+ *   that broke in Questions 85, 411, and 1174). Degree symbols in option text
+ *   are now the plain ° character (no LaTeX, no delimiters), which cannot
+ *   break in any pipeline. The stem and explanation keep their LaTeX — they
+ *   render through the working text path.
+ * - FIXED (TS2304 "Cannot find name 'o'"): a previous edit renamed the arrow
+ *   parameter to `opt` but left the body referencing `o`. Restored the
+ *   original `find(o => o.isCorrect)`.
  */
 
 export const generator_1340 = {
@@ -56,13 +65,13 @@ export const generator_1340 = {
       },
       { 
         id: "C",
-        text: `The measure of angle $M$ is ${angleM}^{\\circ} and the measure of angle $S$ is ${wrongAngle}^{\\circ}`, 
+        text: `The measure of angle $M$ is ${angleM}\u00B0 and the measure of angle $S$ is ${wrongAngle}\u00B0`, 
         isCorrect: false,
         reason: "the angles are not congruent, so AA similarity cannot be established"
       },
       { 
         id: "D",
-        text: `The measure of angle $M$ is ${angleM}^{\\circ} and the measure of angle $S$ is ${angleS}^{\\circ}`, 
+        text: `The measure of angle $M$ is ${angleM}\u00B0 and the measure of angle $S$ is ${angleS}\u00B0`, 
         isCorrect: true,
         reason: "it provides a second pair of congruent angles ($\\angle M \\cong \\angle S$). Combined with the given $\\angle L \\cong \\angle R$, the triangles are similar by the AA Similarity Theorem"
       }
@@ -74,7 +83,7 @@ export const generator_1340 = {
       letter: String.fromCharCode(65 + index)
     }));
     
-    const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const getLetter = (id: string) => shuffledOptions.find(o => o.id === id)?.letter || '?';
     
     return {

@@ -10,6 +10,16 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [cos(Q) = sin(R) implies Q + R = 90°]
  * - Question type: [No Figure→Multiple Choice Text]
  * - Figure generation: null
+ *
+ * FIXED (italicized, crambled-together text like "angleQ" — same as Q1333/
+ * Q1337/Q1342): the stem and explanation wrote LaTeX commands with FOUR
+ * backslashes (\\\\angle, \\\\cos, \\\\sin, \\\\circ) — two at runtime —
+ * so inside otherwise-valid $...$ segments the renderer treated \\ as a row
+ * break and printed the command names as italic math text with spaces
+ * collapsed. Now the standard two-in-source form (\\angle -> \angle at
+ * runtime). Note the $${angleQ}$ pattern is NOT a double dollar — it is one
+ * literal $ plus the ${...} interpolation — and needs no change. No question
+ * logic changed.
  */
 
 export const generator_1345 = {
@@ -59,10 +69,10 @@ export const generator_1345 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The problem involves the cofunction identity for sine and cosine, which states that $\\\\sin(R) = \\\\cos(90^{\\\\circ} - R)$. Thus, if $\\\\cos(Q) = \\\\sin(R)$, then the angles Q and R are complementary. This means their sum must be equal to $90^{\\\\circ}$. Given: $\\\\angle Q = ${angleQ}$ and $\\\\angle R = ${angleR}$. Substituting: $(${angleQ}) + (${angleR}) = 90$. This gives ${coeff1 + coeff2}x + ${adjustedConst1 + const2} = 90$, so ${coeff1 + coeff2}x = ${90 - adjustedConst1 - const2}$, and $x = ${solution}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The problem involves the cofunction identity for sine and cosine, which states that $\\sin(R) = \\cos(90^{\\circ} - R)$. Thus, if $\\cos(Q) = \\sin(R)$, then the angles Q and R are complementary. This means their sum must be equal to $90^{\\circ}$. Given: $\\angle Q = ${angleQ}$ and $\\angle R = ${angleR}$. Substituting: $(${angleQ}) + (${angleR}) = 90$. This gives ${coeff1 + coeff2}x + ${adjustedConst1 + const2} = 90, so ${coeff1 + coeff2}x = ${90 - adjustedConst1 - const2}, and $x = ${solution}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `For two acute angles, $\\\\angle Q$ and $\\\\angle R$, $\\\\cos(Q) = \\\\sin(R)$. The measures, in degrees, of $\\\\angle Q$ and $\\\\angle R$ are $${angleQ}$ and $${angleR}$, respectively. What is the value of $x$?`,
+      questionText: `For two acute angles, $\\angle Q$ and $\\angle R$, $\\cos(Q) = \\sin(R)$. The measures, in degrees, of $\\angle Q$ and $\\angle R$ are $${angleQ}$ and $${angleR}$, respectively. What is the value of $x$?`,
       figureCode: null, // No figure
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: solution.toString(),
