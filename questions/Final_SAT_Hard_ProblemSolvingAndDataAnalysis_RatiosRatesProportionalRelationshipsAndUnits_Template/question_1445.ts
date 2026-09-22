@@ -11,6 +11,12 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Must convert m/s² to mi/min² using squared conversion factor]
  * - Question type: [Text→Multiple Choice Text]
  * - Figure generation: [None - conceptual]
+ *
+ * FIXED (literal "**" showing in the stem):
+ * - The stem contained Markdown emphasis ("**miles per minute squared**"),
+ *   but the question pipeline injects text as HTML and does not process
+ *   Markdown — so the asterisks passed through literally. Replaced with the
+ *   pipeline's native emphasis: <b>...</b>. No question logic changed.
  */
 
 export const generator_1445 = {
@@ -68,7 +74,7 @@ export const generator_1445 = {
     const explanation = `Choice ${correctLetter} is correct. To convert ${acceleration} m/s² to mi/min², multiply by (1 mile / ${metersPerMile} meters) and by (${secondsPerMinute}²), since the time unit is squared. This gives ${acceleration} × (3600/${metersPerMile}) = ${acceleration} × ${conversionFactor.toFixed(4)} = ${resultRounded} mi/min². Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `The speed of a vehicle is increasing at a rate of $${acceleration}$ meters per second squared. What is this rate, in **miles per minute squared**, rounded to the nearest tenth? (Use $1 \\text{ mile} = 1,609 \\text{ meters}$.)`,
+      questionText: `The speed of a vehicle is increasing at a rate of $${acceleration}$ meters per second squared. What is this rate, in <b>miles per minute squared</b>, rounded to the nearest tenth? (Use $1 \\text{ mile} = 1,609 \\text{ meters}$.)`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,

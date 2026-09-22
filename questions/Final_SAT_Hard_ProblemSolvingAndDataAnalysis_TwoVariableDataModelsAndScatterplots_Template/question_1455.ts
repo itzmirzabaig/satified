@@ -11,6 +11,13 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Negative quadratic coefficient = opens down, positive constant = positive y-intercept]
  * - Question type: [Figure→Multiple Choice Text]
  * - Figure generation: [Parabola opening downward]
+ *
+ * FIXED (options displayed as plain text, no LaTeX — same as Q1470): the four
+ * option strings and the correctAnswer string had no $...$ delimiters, so the
+ * renderer showed raw "y=-1.7x^2+12.5x-745.3" with a caret. All five strings
+ * are now wrapped in $...$ with a proper superscript (x^{2}). The existing
+ * + / - template characters already produce consistent signs for all four
+ * combinations, so no sign logic changed. Everything else is untouched.
  */
 
 export const generator_1455 = {
@@ -105,15 +112,17 @@ export const generator_1455 = {
 
     const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;font-family:sans-serif;" xmlns="http://www.w3.org/2000/svg"><rect width="${W}" height="${H}" fill="transparent"/>${axes}${xTicks}${yTicks}${curve}${dots}${titles}</svg></div>`;
     
-    // STEP 4: Create options
+    // STEP 4: Create options — wrapped in $...$ with a proper superscript so
+    // they render as math (same fix as Q1470). The existing + / - template
+    // characters already produce consistent signs for all four combinations.
     // All combinations of signs
     const absACoeff = Math.abs(aCoeff);
     
     const optionsData = [
-      { text: `y=${absACoeff}x^2+${bCoeff}x-${cConst}`, isCorrect: false, reason: "has a positive quadratic coefficient, which would make the parabola open upward" },
-      { text: `y=${aCoeff}x^2-${bCoeff}x-${cConst}`, isCorrect: false, reason: "has negative linear coefficient and negative constant" },
-      { text: `y=${absACoeff}x^2+${bCoeff}x+${cConst}`, isCorrect: false, reason: "has a positive quadratic coefficient, which would make the parabola open upward" },
-      { text: `y=${aCoeff}x^2+${bCoeff}x+${cConst}`, isCorrect: true }
+      { text: `$y=${absACoeff}x^{2}+${bCoeff}x-${cConst}$`, isCorrect: false, reason: "has a positive quadratic coefficient, which would make the parabola open upward" },
+      { text: `$y=${aCoeff}x^{2}-${bCoeff}x-${cConst}$`, isCorrect: false, reason: "has negative linear coefficient and negative constant" },
+      { text: `$y=${absACoeff}x^{2}+${bCoeff}x+${cConst}$`, isCorrect: false, reason: "has a positive quadratic coefficient, which would make the parabola open upward" },
+      { text: `$y=${aCoeff}x^{2}+${bCoeff}x+${cConst}$`, isCorrect: true }
     ];
     
     // STEP 5: Shuffle and assign letters
@@ -131,7 +140,7 @@ export const generator_1455 = {
       questionText: `The scatterplot below shows the amount of electric energy generated, in millions of megawatt-hours, by nuclear sources over a 10‑year period. Of the following equations, which best models the data in the scatterplot?`,
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `y=${aCoeff}x^2+${bCoeff}x+${cConst}`,
+      correctAnswer: `$y=${aCoeff}x^{2}+${bCoeff}x+${cConst}$`,
       explanation: `Choice ${correctLetter} is correct. The scatterplot shows a downward-opening parabola (negative $x^2$ coefficient) with a positive y-intercept around ${Math.round(cConst)}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }

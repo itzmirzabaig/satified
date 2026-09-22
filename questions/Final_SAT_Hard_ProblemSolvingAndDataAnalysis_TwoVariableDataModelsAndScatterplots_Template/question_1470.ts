@@ -11,6 +11,14 @@ import type { QuestionData } from '../../study/types';
  *   - Leading coefficient 'a' must be negative (opens down).
  *   - y-intercept (constant term 'c') must be positive (based on typical data context like height or profit).
  *   - Axis of symmetry location (-b/2a).
+ *
+ * FIXED (options displayed as plain text, no LaTeX): the four equation
+ * strings had no $...$ delimiters, so the option renderer showed raw
+ * "y = -1.5x^2 + 20x + 700" with a caret. Now wrapped in $...$ with a
+ * proper superscript (x^{2}), which the option pipeline renders as math
+ * (established in Q1457). No backslash commands needed in these strings.
+ * Nothing else in the file changed — values, generator, and figure are
+ * untouched.
  */
 
 export const generator_1470 = {
@@ -112,14 +120,14 @@ export const generator_1470 = {
       </div>
     `;
 
-    // 3. Options
+    // 3. Options — wrapped in $...$ so they render as math (x^{2} superscript).
     // Correct: y = ax^2 + bx + c
-    const correctEq = `y = ${a}x^2 + ${b}x + ${c}`;
+    const correctEq = `$y = ${a}x^{2} + ${b}x + ${c}$`;
     
     // Distractors
-    const d1 = `y = ${Math.abs(a)}x^2 + ${b}x + ${c}`; // Opens up (wrong sign on a)
-    const d2 = `y = ${a}x^2 - ${b}x - ${c}`; // Negative intercept (wrong)
-    const d3 = `y = ${Math.abs(a)}x^2 - ${b}x + ${c}`; // Opens up
+    const d1 = `$y = ${Math.abs(a)}x^{2} + ${b}x + ${c}$`; // Opens up (wrong sign on a)
+    const d2 = `$y = ${a}x^{2} - ${b}x - ${c}$`; // Negative intercept (wrong)
+    const d3 = `$y = ${Math.abs(a)}x^{2} - ${b}x + ${c}$`; // Opens up
     
     const optionsData = [
       { text: correctEq, isCorrect: true },

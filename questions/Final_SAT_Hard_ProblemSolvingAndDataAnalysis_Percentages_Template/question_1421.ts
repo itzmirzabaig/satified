@@ -15,6 +15,16 @@ import type { QuestionData } from '../../study/types';
  *   equals (I-D) - D*I/100, which has at most two decimal places exactly (no rounding artifact).
  * - Question type: [Multiple Choice Text]
  * - Figure generation: [None - compound percentage problem]
+ *
+ * FIXED (stray backslash next to every option's percent — Q1229/Q1239/Q1410
+ * class): all four option texts appended "\\%" — a LITERAL backslash+percent
+ * at runtime, in plain text with no math wrapper, so the browser rendered
+ * "43.70\%". House rule (Q454/Q1225/Q1229/Q1239/Q1400/Q1410): percent signs
+ * are plain text — never escaped, never inside math delimiters. Options are
+ * now `value + "%"`; correctAnswer shares the same string. The stem's
+ * percents were already plain and the explanation's `\\%` usages sit inside
+ * balanced $...$ segments — both audited and unchanged. No question logic
+ * changed.
  */
 
 export const generator_1421 = {
@@ -67,13 +77,13 @@ export const generator_1421 = {
     const multiplier2 = 1 - decreasePct / 100;
     const finalMultiplier = multiplier1 * multiplier2;
 
-    const correctText = netIncreasePct.toFixed(2) + "\\%";
+    const correctText = netIncreasePct.toFixed(2) + "%";
 
     const optionsData = [
       { text: correctText, isCorrect: true, reason: "" },
-      { text: wrongOrderPct.toFixed(2) + "\\%", isCorrect: false, reason: "results from reversing the order of the two changes" },
-      { text: additiveError.toFixed(2) + "\\%", isCorrect: false, reason: "results from subtracting the percentages instead of compounding them" },
-      { text: wrongCalc.toFixed(2) + "\\%", isCorrect: false, reason: "results from adding the percentages" }
+      { text: wrongOrderPct.toFixed(2) + "%", isCorrect: false, reason: "results from reversing the order of the two changes" },
+      { text: additiveError.toFixed(2) + "%", isCorrect: false, reason: "results from subtracting the percentages instead of compounding them" },
+      { text: wrongCalc.toFixed(2) + "%", isCorrect: false, reason: "results from adding the percentages" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

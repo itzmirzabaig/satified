@@ -9,11 +9,17 @@ import type { QuestionData } from '../../study/types';
  * - Equation: f(x) = Initial * (1 - rate)^x.
  * - Given: Initial value, rate %.
  * - Find: Correct equation.
+ *
+ * FIXED (options displayed as plain text, no LaTeX — same as Q1470/Q1455):
+ * the four option strings had no $...$ delimiters, so the renderer showed
+ * raw "f(x) = 3000(0.98)^x" with a caret. All four are now wrapped in $...$  * with an explicit ^{x} superscript. correctAnswer references
+ * correctOption.text, so it stays in sync automatically. Nothing else in
+ * the file changed.
  */
 export const generator_1472 = {
   metadata: {
     id: "1472",
-    assessment: "SAT",
+    assessment: "AdvancedMath",
     domain: "AdvancedMath",
     skill: "Nonlinear Functions",
     difficulty: "Medium"
@@ -27,19 +33,19 @@ export const generator_1472 = {
     // Decay factor = 1 - p/100
     const factor = (1 - percent / 100).toFixed(2);
     
-    // 2. Options
-    const correctEq = `f(x) = ${initial}(${factor})^x`;
+    // 2. Options — wrapped in $...$ so they render as math (superscript x).
+    const correctEq = `$f(x) = ${initial}(${factor})^{x}$`;
     
     // Distractor 1: Growth instead of decay
     const growthFactor = (1 + percent / 100).toFixed(2);
-    const d1 = `f(x) = ${initial}(${growthFactor})^x`;
+    const d1 = `$f(x) = ${initial}(${growthFactor})^{x}$`;
     
     // Distractor 2: Rate as base (extreme decay)
     const rateBase = (percent / 100).toFixed(2);
-    const d2 = `f(x) = ${initial}(${rateBase})^x`;
+    const d2 = `$f(x) = ${initial}(${rateBase})^{x}$`;
     
     // Distractor 3: Subtracting percent linearly (not exponential base) or just weird algebra
-    const d3 = `f(x) = ${initial}(1 - ${percent}x)`;
+    const d3 = `$f(x) = ${initial}(1 - ${percent}x)$`;
 
     const optionsData = [
       { text: correctEq, isCorrect: true },
@@ -58,7 +64,7 @@ export const generator_1472 = {
     return {
       questionText: `A population of ${initial} organisms decreases by ${percent}% each year. Which function $f$ models the population of the organisms $x$ years after the population starts decreasing?`,
       figureCode: null,
-      options: shuffledOptions.map(o => o.text),
+      options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
       explanation: `Choice ${correctOption.letter} is correct. 
       

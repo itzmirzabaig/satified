@@ -17,7 +17,7 @@ export const generator_537 = {
     const rate = getRandomInt(5, 12);
     const growthFactor = (100 + rate) / 100;
     
-    const questionText = `A company has a newsletter. In January 2018, there were $${initial.toLocaleString()}$ customers subscribed to the newsletter. For the next $24$ months after January 2018, the total number of customers subscribed to the newsletter each month was ${rate}\\% greater than the total number subscribed the previous month. Which equation gives the total number of customers, $c$, subscribed to the company's newsletter $m$ months after January 2018, where $m \\\\le 24$?`;
+    const questionText = `A company has a newsletter. In January 2018, there were $${initial.toLocaleString()}$ customers subscribed to the newsletter. For the next $24$ months after January 2018, the total number of customers subscribed to the newsletter each month was ${rate}% greater than the total number subscribed the previous month. Which equation gives the total number of customers, $c$, subscribed to the company's newsletter $m$ months after January 2018, where $m \\le 24$?`;
     
     const rateDecimal = (rate / 100).toFixed(2).replace(/^0\./, '0.');
     
@@ -38,7 +38,7 @@ export const generator_537 = {
     const correctAnswer = `$c = ${initial}(${growthFactor})^m$`;
     
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. This is an exponential growth situation. The initial number of subscribers in January 2018 is $${initial}$, so this is the starting value. The number increases by ${rate}\\% each month, so the growth factor is $1 + \\\\frac{${rate}}{100} = ${growthFactor}$. The general form is $c = \\\\text{initial} \\\\times (\\\\text{growth factor})^{\\\\text{time}}$, which gives $c = ${initial}(${growthFactor})^m$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. This is an exponential growth situation. The initial number of subscribers in January 2018 is $${initial}$, so this is the starting value. The number increases by ${rate}% each month, so the growth factor is $1 + \\frac{${rate}}{100} = ${growthFactor}$. The general form is $c = \\text{initial} \\times (\\text{growth factor})^{\\text{time}}$, which gives $c = ${initial}(${growthFactor})^m$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: questionText,
