@@ -11,6 +11,13 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Must have Mafs figure]
  * - Question type: [Figure→Multiple Choice Text]
  * - Figure generation: [Mafs graph with line and points]
+ *
+ * FIXED (figure showed only two dots — no graph, same class as Q602/Q611):
+ * the figure drew axes plus two points and never the line, but the stem
+ * says "the graph of the function" and the explanation cites points on it.
+ * Now draws the line y = fixedCost + perItemCost*x across x in [0, 5] with
+ * the two marked points ON it. The x-axis sits at the plot bottom (y = 0 is
+ * below the cost window — standard for cost graphs). Question logic untouched.
  */
 
 export const generator_739 = {
@@ -31,53 +38,41 @@ export const generator_739 = {
     // Show range up to 5 items
     const maxItems = 5;
     
-    // STEP 2: Build Mafs code
-    const _svg_0 = fixedCost + perItemCost * maxItems + 20; const _svg_1 = fixedCost - 20; const _svg_2 = maxItems + 1;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-1,xmax=_svg_2;
-      const ymin=_svg_1,ymax=_svg_0;
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Border
-      s+='<rect x="'+P+'" y="'+P+'" width="'+(W-2*P)+'" height="'+(H-2*P)+'" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>';
-      // X axis
-      const y0=Math.max(ymin,Math.min(ymax,0));
-      s+='<line x1="'+P+'" y1="'+my(y0)+'" x2="'+(W-P)+'" y2="'+my(y0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // Y axis
-      const x0=Math.max(xmin,Math.min(xmax,0));
-      s+='<line x1="'+mx(x0)+'" y1="'+P+'" x2="'+mx(x0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // X tick labels
-      const xstep=Math.ceil((xmax-xmin)/8);
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        s+='<line x1="'+mx(x)+'" y1="'+my(y0)+'" x2="'+mx(x)+'" y2="'+(my(y0)+4)+'" stroke="currentColor" stroke-width="1"/>';
-        s+='<text x="'+mx(x)+'" y="'+(my(y0)+15)+'" text-anchor="middle" font-size="10" fill="currentColor">'+x+'</text>';
-      }
-      // Y tick labels
-      const ystep=Math.ceil((ymax-ymin)/6);
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        s+='<line x1="'+(mx(x0)-4)+'" y1="'+my(y)+'" x2="'+mx(x0)+'" y2="'+my(y)+'" stroke="currentColor" stroke-width="1"/>';
-        s+='<text x="'+(mx(x0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="10" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=-1,xmax=(maxItems + 1);
-      const ymin=(fixedCost - 20),ymax=(fixedCost + perItemCost * maxItems + 20);
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      const cx=mx(0),cy=my((fixedCost));
-      return '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>';
-    })()}${(() => {
-      const xmin=-1,xmax=(maxItems + 1);
-      const ymin=(fixedCost - 20),ymax=(fixedCost + perItemCost * maxItems + 20);
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      const cx=mx(1),cy=my((perItemCost + fixedCost));
-      return '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>';
-    })()}</svg></div>`;
+    // STEP 2: Figure — the line y = fixedCost + perItemCost*x with the two
+    // marked points (0, fixedCost) and (1, fixedCost + perItemCost) on it.
+    const W = 450, H = 300, P = 45;
+    const xmin = -0.5, xmax = maxItems + 0.5;
+    const ymin = fixedCost - 20, ymax = fixedCost + perItemCost * maxItems + 20;
+    const mx = (x: number) => P + (x - xmin) / (xmax - xmin) * (W - 2 * P);
+    const my = (y: number) => H - P - (y - ymin) / (ymax - ymin) * (H - 2 * P);
+
+    const f = (x: number) => fixedCost + perItemCost * x;
+    const lineSvg = `<line x1="${mx(0)}" y1="${my(f(0))}" x2="${mx(maxItems)}" y2="${my(f(maxItems))}" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>`;
+
+    // y = 0 is always below the window (ymin >= 60), so the x-axis is the
+    // plot's bottom edge.
+    const axes =
+      `<line x1="${P}" y1="${H - P}" x2="${W - P}" y2="${H - P}" stroke="currentColor" stroke-width="1.5"/>` +
+      `<line x1="${mx(0)}" y1="${P}" x2="${mx(0)}" y2="${H - P}" stroke="currentColor" stroke-width="1.5"/>`;
+
+    // Ticks: x every 1 (0..5), y every 25 within the window.
+    let ticks = '';
+    for (let x = 0; x <= maxItems; x++) {
+      ticks += `<line x1="${mx(x)}" y1="${H - P}" x2="${mx(x)}" y2="${H - P + 4}" stroke="currentColor" stroke-width="1"/>`;
+      ticks += `<text x="${mx(x)}" y="${H - P + 15}" text-anchor="middle" font-size="10" fill="currentColor">${x}</text>`;
+    }
+    const yStart = Math.ceil(ymin / 25) * 25;
+    for (let y = yStart; y <= ymax; y += 25) {
+      ticks += `<line x1="${mx(0) - 4}" y1="${my(y)}" x2="${mx(0)}" y2="${my(y)}" stroke="currentColor" stroke-width="1"/>`;
+      ticks += `<text x="${mx(0) - 8}" y="${my(y) + 3}" text-anchor="end" font-size="10" fill="currentColor">${y}</text>`;
+    }
+
+    const dots =
+      `<circle cx="${mx(0)}" cy="${my(f(0))}" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>` +
+      `<circle cx="${mx(1)}" cy="${my(f(1))}" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>`;
+
+    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      axes + ticks + lineSvg + dots + `</svg></div>`;
     
     // STEP 3: Create options
     // Note: perItemCost (15-40) and fixedCost (80-150) are disjoint ranges,

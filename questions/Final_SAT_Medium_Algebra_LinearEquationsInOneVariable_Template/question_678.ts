@@ -10,6 +10,12 @@ import type { QuestionData } from '../../study/types';
  * - Distractor patterns: [None - fill in blank]
  * - Constraints: [Profit = Revenue - Expenses, solve for quantity]
  * - Question type: [Fill-in-the-blank]
+ *
+ * FIXED (missing dollar signs on money values in the stem): the three
+ * monetary amounts (revenue per unit, profit, daily expenses) appeared as
+ * bare numbers. They are now escaped currency (`\\$` in source), the house
+ * convention used throughout the bank. The explanation already had its
+ * dollar-sign math and is unchanged. No question logic changed.
  */
 
 export const generator_678 = {
@@ -35,7 +41,7 @@ export const generator_678 = {
     const product = getRandomElement(products);
     
     return {
-      questionText: `A museum rents ${product} to visitors. The museum earns revenue of ${pricePerUnit} for each ${product.slice(0, -1)} rented for the day. On Wednesday, the museum earned ${profit} in profit from renting ${product} after paying daily expenses of ${expenses}. How many ${product} did the museum rent on Wednesday? (profit = total revenue – total expenses)`,
+      questionText: `A museum rents ${product} to visitors. The museum earns revenue of \\$${pricePerUnit} for each ${product.slice(0, -1)} rented for the day. On Wednesday, the museum earned \\$${profit} in profit from renting ${product} after paying daily expenses of \\$${expenses}. How many ${product} did the museum rent on Wednesday? (profit = total revenue – total expenses)`,
       figureCode: null,
       options: [],
       correctAnswer: correctAnswer,

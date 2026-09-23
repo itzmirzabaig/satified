@@ -8,6 +8,14 @@ import type { QuestionData } from '../../study/types';
  * - Context: Binomial Multiplication.
  * - Task: Expand (ax + b)(cx + d).
  * - Result: acx^2 + (ad + bc)x + bd.
+ *
+ * FIXED (options displayed as plain text — same as Q1470/Q1455/Q1472/Q586):
+ * the four option texts came from formatPolynomial() with no $...$  * delimiters, so they rendered raw with a caret. Options are now wrapped in
+ * $...$ at construction; the plain unwrapped strings are kept for the
+ * explanation, which embeds them inside its own $...$ segments (that's why
+ * the explanation already rendered correctly). letterFor() now receives the
+ * wrapped texts so it still matches the shuffled options. Nothing else
+ * changed.
  */
 export const generator_1473 = {
   metadata: {
@@ -61,11 +69,19 @@ export const generator_1473 = {
     // 3. Sign error on constant
     const d3 = formatPolynomial(term1, term2, -term3);
 
+    // Display forms (math-delimited) for the options. The plain strings above
+    // stay unwrapped for the explanation, which embeds them inside its own
+    // $...$ segments.
+    const correctText = `$${correctPoly}$`;
+    const d1Text = `$${d1}$`;
+    const d2Text = `$${d2}$`;
+    const d3Text = `$${d3}$`;
+
     const optionsData = [
-      { text: correctPoly, isCorrect: true },
-      { text: d1, isCorrect: false },
-      { text: d2, isCorrect: false },
-      { text: d3, isCorrect: false }
+      { text: correctText, isCorrect: true },
+      { text: d1Text, isCorrect: false },
+      { text: d2Text, isCorrect: false },
+      { text: d3Text, isCorrect: false }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -85,16 +101,12 @@ export const generator_1473 = {
 
 To expand the expression $(${bin1})(${bin2})$, multiply each term in the first binomial by each term in the second binomial (FOIL method):
 
-1.  **First terms:** $(${a}x)(${c}x) = ${term1}x^2$
-2.  **Outer terms:** $(${a}x)(${d}) = ${a*d}x$
-3.  **Inner terms:** $(${b})(${c}x) = ${b*c}x$
-4.  **Last terms:** $(${b})(${d}) = ${term3}$
-
+1.  **First terms:** $(${a}x)(${c}x) = ${term1}x^2$ 2.  **Outer terms:** $(${a}x)(${d}) = ${a*d}x$ 3.  **Inner terms:** $(${b})(${c}x) = ${b*c}x$ 4.  **Last terms:** $(${b})(${d}) = ${term3}$ 
 Combine the like terms: $${a*d}x ${b*c >= 0 ? '+' : '-'} ${Math.abs(b*c)}x = ${term2}x$.
 
 So the product is $${correctPoly}$.
 
-Choice ${letterFor(d1)} is incorrect; it results from subtracting the inner product from the outer product instead of adding them when combining the middle terms. Choice ${letterFor(d2)} is incorrect; it adds the leading coefficients of the two binomials, $${a} + ${c} = ${a + c}$, and uses that sum as the coefficient of the middle term instead of combining the outer and inner products. Choice ${letterFor(d3)} is incorrect; it results from a sign error on the constant term: $(${b})(${d}) = ${term3}$, not $${-term3}$.`
+Choice ${letterFor(d1Text)} is incorrect; it results from subtracting the inner product from the outer product instead of adding them when combining the middle terms. Choice ${letterFor(d2Text)} is incorrect; it adds the leading coefficients of the two binomials, $${a} + ${c} = ${a + c}$, and uses that sum as the coefficient of the middle term instead of combining the outer and inner products. Choice ${letterFor(d3Text)} is incorrect; it results from a sign error on the constant term: $(${b})(${d}) = ${term3}$, not $${-term3}$.`
     };
   }
 };

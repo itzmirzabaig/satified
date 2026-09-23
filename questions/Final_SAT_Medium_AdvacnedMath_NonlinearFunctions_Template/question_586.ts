@@ -11,6 +11,12 @@ import type { QuestionData } from '../../study/types';
  * - Number ranges: Simple integer coefficients (1-10 range)
  * - Difficulty: Medium - requires understanding vertical shifts
  * - Distractor patterns: Confusing shift direction, wrong operation type
+ *
+ * FIXED (options showed raw LaTeX): options 1 and 2 contained \\frac with no
+ * $...$ delimiters, so the renderer displayed them literally ("g(x) =
+ * \frac{4}{3}x^3"). All four options (and the matching correctAnswer string)
+ * are now wrapped in $...$ with a proper x^{3} superscript — the same fix
+ * as Q1470/Q1455/Q1472. Nothing else changed.
  */
 
 export const generator_586 = {
@@ -29,13 +35,13 @@ export const generator_586 = {
     
     const questionText = `The function $f$ is defined by $f(x) = ${coefficient}x^3$. In the $xy$-plane, the graph of $y = g(x)$ is the result of shifting the graph of $y = f(x)$ down ${shift} units. Which equation defines function $g$?`;
     
-    const correctAnswer = `g(x) = ${coefficient}x^3 - ${shift}`;
+    const correctAnswer = `$g(x) = ${coefficient}x^{3} - ${shift}$`;
     
     const optionsData = [
-      { text: `g(x) = \\frac{${coefficient}}{${shift}}x^3`, isCorrect: false, reason: "incorrectly divides coefficient by shift amount" },
-      { text: `g(x) = ${coefficient}x^{\\frac{3}{${shift}}}`, isCorrect: false, reason: "incorrectly changes exponent instead of shifting" },
-      { text: `g(x) = ${coefficient}x^3 + ${shift}`, isCorrect: false, reason: "shifts up instead of down" },
-      { text: `g(x) = ${coefficient}x^3 - ${shift}`, isCorrect: true }
+      { text: `$g(x) = \\frac{${coefficient}}{${shift}}x^{3}$`, isCorrect: false, reason: "incorrectly divides coefficient by shift amount" },
+      { text: `$g(x) = ${coefficient}x^{\\frac{3}{${shift}}}$`, isCorrect: false, reason: "incorrectly changes exponent instead of shifting" },
+      { text: `$g(x) = ${coefficient}x^{3} + ${shift}$`, isCorrect: false, reason: "shifts up instead of down" },
+      { text: `$g(x) = ${coefficient}x^{3} - ${shift}$`, isCorrect: true }
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

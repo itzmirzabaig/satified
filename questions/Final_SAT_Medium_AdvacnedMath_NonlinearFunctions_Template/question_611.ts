@@ -12,6 +12,12 @@ import type { QuestionData } from '../../study/types';
  * - Difficulty: Medium - reading graph points and calculating ratio
  * - Figure: Mafs graph with points (0,6) and (1,9)
  * - Distractor patterns: Wrong point selection, ratio inversion
+ *
+ * FIXED (figure was axes + two dots, no graph — same as Q602): the curve
+ * was never drawn, so the "read off the graph" question had nothing to
+ * read. Now draws the exponential curve y = c·ratio^x through both marked
+ * points (0, c) and (1, yAt1) out to x = 5, matching the stem's described
+ * growth. Everything else is untouched.
  */
 
 export const generator_611 = {
@@ -34,52 +40,46 @@ export const generator_611 = {
     const c = getRandomElement([4, 6, 8, 10]); // even y-intercept -> integer yAt1
     const yAt1 = c * ratioValue; // y when x=1 (exact integer)
 
-    const _svg_0 = yAt1 + 6;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-1,xmax=3;
-      const ymin=-1,ymax=_svg_0;
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Border
-      s+='<rect x="'+P+'" y="'+P+'" width="'+(W-2*P)+'" height="'+(H-2*P)+'" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>';
-      // X axis
-      const y0=Math.max(ymin,Math.min(ymax,0));
-      s+='<line x1="'+P+'" y1="'+my(y0)+'" x2="'+(W-P)+'" y2="'+my(y0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // Y axis
-      const x0=Math.max(xmin,Math.min(xmax,0));
-      s+='<line x1="'+mx(x0)+'" y1="'+P+'" x2="'+mx(x0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // X tick labels
-      const xstep=Math.ceil((xmax-xmin)/8);
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        s+='<line x1="'+mx(x)+'" y1="'+my(y0)+'" x2="'+mx(x)+'" y2="'+(my(y0)+4)+'" stroke="currentColor" stroke-width="1"/>';
-        s+='<text x="'+mx(x)+'" y="'+(my(y0)+15)+'" text-anchor="middle" font-size="10" fill="currentColor">'+x+'</text>';
-      }
-      // Y tick labels
-      const ystep=Math.ceil((ymax-ymin)/6);
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        s+='<line x1="'+(mx(x0)-4)+'" y1="'+my(y)+'" x2="'+mx(x0)+'" y2="'+my(y)+'" stroke="currentColor" stroke-width="1"/>';
-        s+='<text x="'+(mx(x0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="10" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=-1,xmax=3;
-      const ymin=-1,ymax=(yAt1 + 6);
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      const cx=mx(0),cy=my((c));
-      return '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>';
-    })()}${(() => {
-      const xmin=-1,xmax=3;
-      const ymin=-1,ymax=(yAt1 + 6);
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      const cx=mx(1),cy=my((yAt1));
-      return '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>';
-    })()}</svg></div>`;
+    // ---- Figure: exponential growth y = c * ratio^x, x in [0, 5] ----
+    // Passes exactly through the two marked points (0, c) and (1, yAt1).
+    const W = 450, H = 300, P = 45;
+    const xmin = -0.5, xmax = 5.5, ymin = -0.5, ymax = yAt1 + 6;
+    const mx = (x: number) => P + (x - xmin) / (xmax - xmin) * (W - 2 * P);
+    const my = (y: number) => H - P - (y - ymin) / (ymax - ymin) * (H - 2 * P);
+
+    const f = (x: number) => c * Math.pow(ratioValue, x);
+    const pts: string[] = [];
+    for (let i = 0; i <= 60; i++) {
+      const x = (5 * i) / 60;
+      pts.push(`${mx(x).toFixed(1)},${my(f(x)).toFixed(1)}`);
+    }
+    const curve = `<polyline points="${pts.join(' ')}" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+    const y0 = Math.max(ymin, Math.min(ymax, 0));
+    const x0 = Math.max(xmin, Math.min(xmax, 0));
+    const axes =
+      `<line x1="${P}" y1="${my(y0)}" x2="${W - P}" y2="${my(y0)}" stroke="currentColor" stroke-width="1.5"/>` +
+      `<line x1="${mx(x0)}" y1="${P}" x2="${mx(x0)}" y2="${H - P}" stroke="currentColor" stroke-width="1.5"/>`;
+
+    // Ticks: x every 1 (0..5), y every 2 up to yAt1+6 (keeps labels readable
+    // at the largest draws: c=10, ratio=3 -> ymax = 36, 18 labels at step 2).
+    let ticks = '';
+    for (let x = 0; x <= 5; x++) {
+      ticks += `<line x1="${mx(x)}" y1="${my(y0)}" x2="${mx(x)}" y2="${my(y0) + 4}" stroke="currentColor" stroke-width="1"/>`;
+      ticks += `<text x="${mx(x)}" y="${my(y0) + 15}" text-anchor="middle" font-size="10" fill="currentColor">${x}</text>`;
+    }
+    const yStep = ymax > 20 ? 5 : 2;
+    for (let y = yStep; y <= Math.floor(ymax); y += yStep) {
+      ticks += `<line x1="${mx(x0) - 4}" y1="${my(y)}" x2="${mx(x0)}" y2="${my(y)}" stroke="currentColor" stroke-width="1"/>`;
+      ticks += `<text x="${mx(x0) - 8}" y="${my(y) + 3}" text-anchor="end" font-size="10" fill="currentColor">${y}</text>`;
+    }
+
+    // The two read-off points, marked.
+    const dot0 = `<circle cx="${mx(0)}" cy="${my(c)}" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>`;
+    const dot1 = `<circle cx="${mx(1)}" cy="${my(yAt1)}" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>`;
+
+    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      axes + ticks + curve + dot0 + dot1 + `</svg></div>`;
     
     // Format a clean decimal without trailing-zero artifacts (3.0 -> "3", 1.25 -> "1.25").
     const fmt = (n: number) => Number(n.toFixed(2)).toString();

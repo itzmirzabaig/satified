@@ -18,7 +18,7 @@ export const generator_541 = {
     const time = 3 * halfLife;
     const remaining = initial / 8;
     
-    const questionText = `A sample of a certain isotope takes ${halfLife} years to decay to half its original mass. The function $s(t)=${initial}(0.5)^{\\\\frac{t}{${halfLife}}}$ gives the approximate mass of this isotope, in grams, that remains $t$ years after a ${initial}-gram sample starts to decay. Which statement is the best interpretation of $s(${time})=${remaining}$ in this context?`;
+    const questionText = `A sample of a certain isotope takes ${halfLife} years to decay to half its original mass. The function $s(t)=${initial}(0.5)^{\\frac{t}{${halfLife}}}$ gives the approximate mass of this isotope, in grams, that remains $t$ years after a ${initial}-gram sample starts to decay. Which statement is the best interpretation of $s(${time})=${remaining}$ in this context?`;
     
     const massDecreased = initial - remaining;
     

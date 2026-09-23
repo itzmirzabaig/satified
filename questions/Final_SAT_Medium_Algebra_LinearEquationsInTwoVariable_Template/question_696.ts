@@ -9,6 +9,16 @@ import type { QuestionData } from '../../study/types';
  * - Added styled HTML table with borders.
  * - Logic: Given table of (x,y), find linear equation in standard form.
  * - Equation: y = mx + b  => -mx + y = b => Ax + By = C.
+ *
+ * FIXED (table displayed as raw HTML source in the question — same as Q687):
+ * - The table HTML was embedded inside questionText, but the question-text
+ *   pipeline renders text and LaTeX only — not HTML — so the <table> markup
+ *   showed literally. The table now lives in figureCode, the pipeline's
+ *   HTML channel, with plain-HTML styling (italic headers, no LaTeX inside
+ *   the table).
+ *
+ * FIXED (options had no $...$ delimiters — same as Q1470/Q1455/Q1472/Q586/
+ * Q1473/Q687): the four equations now render as math.
  */
 export const generator_696 = {
   metadata: {
@@ -29,44 +39,27 @@ export const generator_696 = {
     const xVals = [-6, -2, 2, 6];
     const yVals = xVals.map(x => slope * x + intercept);
     
-    // 2. Table Generation (Styled HTML)
-    const tableStyle = `
-      style="
-        border-collapse: collapse; 
-        margin: 20px auto; 
-        font-family: sans-serif; 
-        min-width: 200px;
-        border: 1px solid currentColor;
-      "
-    `;
-    const cellStyle = `
-      style="
-        border: 1px solid currentColor; 
-        padding: 8px 15px; 
-        text-align: center;
-      "
-    `;
-    
-    const rows = xVals.map((x, i) => `
-      <tr>
-        <td ${cellStyle}>${x}</td>
-        <td ${cellStyle}>${yVals[i]}</td>
-      </tr>
-    `).join('');
-    
-    const tableHTML = `
-      <table ${tableStyle}>
-        <thead>
-          <tr style="background-color: rgba(0,0,0,0.05);">
-            <th ${cellStyle}>$x$</th>
-            <th ${cellStyle}>$y$</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rows}
-        </tbody>
-      </table>
-    `;
+    // 2. Table — figureCode is the HTML channel (same as Q687). Plain HTML
+    //    styling; italic headers; no LaTeX dependencies.
+    const th = 'style="border:1px solid currentColor;padding:8px 15px;text-align:center;font-style:italic;"';
+    const td = 'style="border:1px solid currentColor;padding:8px 15px;text-align:center;"';
+    const rows = xVals.map((x, i) =>
+      `<tr><td ${td}>${x}</td><td ${td}>${yVals[i]}</td></tr>`
+    ).join('');
+    const tableHTML =
+      `<div style="width:100%;max-width:240px;margin:0 auto;">` +
+      `<table style="width:100%;border-collapse:collapse;font-family:sans-serif;">` +
+      `<thead>` +
+      `<tr style="background-color:rgba(0,0,0,0.05);">` +
+      `<th ${th}>x</th>` +
+      `<th ${th}>y</th>` +
+      `</tr>` +
+      `</thead>` +
+      `<tbody>` +
+      `${rows}` +
+      `</tbody>` +
+      `</table>` +
+      `</div>`;
     
     // 3. Equation Generation
     // y = mx + b
@@ -80,13 +73,13 @@ export const generator_696 = {
     const B = 3;
     const C = intercept * 3;
     
-    const correctEq = `${A}x + ${B}y = ${C}`;
+    const correctEq = `$${A}x + ${B}y = ${C}$`;
     
     // Distractors
     // 1. Swap coefficients? Or random coefficients.
-    const d1 = `${A + 6}x + ${B}y = ${C}`;
-    const d2 = `${A}x + ${B}y = ${B}`; // Wrong constant
-    const d3 = `${B}x + ${A}y = ${C}`; // Swapped x/y coeff
+    const d1 = `$${A + 6}x + ${B}y = ${C}$`;
+    const d2 = `$${A}x + ${B}y = ${B}$`; // Wrong constant
+    const d3 = `$${B}x + ${A}y = ${C}$`; // Swapped x/y coeff
 
     const optionsData = [
       { text: correctEq, isCorrect: true },
@@ -103,29 +96,21 @@ export const generator_696 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
 
     return {
-      questionText: `The table shows four values of $x$ and their corresponding values of $y$. There is a linear relationship between $x$ and $y$. Which of the following equations represents this relationship?
-      
-${tableHTML}`,
-      figureCode: null, // No graph per request
+      questionText: `The table shows four values of $x$ and their corresponding values of $y$. There is a linear relationship between $x$ and $y$. Which of the following equations represents this relationship?`,
+      figureCode: tableHTML,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
       explanation: `Choice ${correctOption.letter} is correct. 
       
 First, calculate the slope ($m$) using two points from the table, such as $(${xVals[0]}, ${yVals[0]})$ and $(${xVals[1]}, ${yVals[1]})$:
-$m = \\frac{y_2 - y_1}{x_2 - x_1} = \\frac{${yVals[1]} - ${yVals[0]}}{${xVals[1]} - (${xVals[0]})} = \\frac{${yVals[1] - yVals[0]}}{${xVals[1] - xVals[0]}} = ${slope}$
-
+ $m = \\frac{y_2 - y_1}{x_2 - x_1} = \\frac{${yVals[1]} - ${yVals[0]}}{${xVals[1]} - (${xVals[0]})} = \\frac{${yVals[1] - yVals[0]}}{${xVals[1] - xVals[0]}} = ${slope}$ 
 The y-intercept ($b$) can be found by substituting $m=${slope}$ and a point into $y = mx + b$.
-$${yVals[2]} = ${slope}(${xVals[2]}) + b$
-$${yVals[2]} = ${slope * xVals[2]} + b$
-$b = ${intercept}$
-
+ $${yVals[2]} = ${slope}(${xVals[2]}) + b$  $${yVals[2]} = ${slope * xVals[2]} + b$  $b = ${intercept}$ 
 So the equation is $y = ${slope}x + ${intercept}$.
 Rearranging to standard form:
-$-(${slope}x) + y = ${intercept}$
-$${-slope}x + y = ${intercept}$
-
+ $-(${slope}x) + y = ${intercept}$  $${-slope}x + y = ${intercept}$ 
 Multiplying the entire equation by 3:
-$${A}x + ${B}y = ${C}$`
+ $${A}x + ${B}y = ${C}$`
     };
   }
 };

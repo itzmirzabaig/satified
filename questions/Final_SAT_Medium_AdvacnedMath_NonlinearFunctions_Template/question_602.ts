@@ -18,44 +18,45 @@ export const generator_602 = {
     const base = baseNum / 10;
     const maxY = initial + 2;
     
-    const _svg_0 = maxY;
-    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 400 300" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">${(() => {
-      const xmin=-1,xmax=11;
-      const ymin=-1,ymax=_svg_0;
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      let s='';
-      // Border
-      s+='<rect x="'+P+'" y="'+P+'" width="'+(W-2*P)+'" height="'+(H-2*P)+'" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>';
-      // X axis
-      const y0=Math.max(ymin,Math.min(ymax,0));
-      s+='<line x1="'+P+'" y1="'+my(y0)+'" x2="'+(W-P)+'" y2="'+my(y0)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // Y axis
-      const x0=Math.max(xmin,Math.min(xmax,0));
-      s+='<line x1="'+mx(x0)+'" y1="'+P+'" x2="'+mx(x0)+'" y2="'+(H-P)+'" stroke="currentColor" stroke-width="1.5"/>';
-      // X tick labels
-      const xstep=Math.ceil((xmax-xmin)/8);
-      for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){
-        s+='<line x1="'+mx(x)+'" y1="'+my(y0)+'" x2="'+mx(x)+'" y2="'+(my(y0)+4)+'" stroke="currentColor" stroke-width="1"/>';
-        s+='<text x="'+mx(x)+'" y="'+(my(y0)+15)+'" text-anchor="middle" font-size="10" fill="currentColor">'+x+'</text>';
-      }
-      // Y tick labels
-      const ystep=Math.ceil((ymax-ymin)/6);
-      for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep){
-        s+='<line x1="'+(mx(x0)-4)+'" y1="'+my(y)+'" x2="'+mx(x0)+'" y2="'+my(y)+'" stroke="currentColor" stroke-width="1"/>';
-        s+='<text x="'+(mx(x0)-8)+'" y="'+(my(y)+3)+'" text-anchor="end" font-size="10" fill="currentColor">'+y+'</text>';
-      }
-      return s;
-    })()}${(() => {
-      const xmin=-1,xmax=11;
-      const ymin=-1,ymax=(maxY);
-      const W=400,H=300,P=45;
-      const mx=(x)=>P+(x-xmin)/(xmax-xmin)*(W-2*P);
-      const my=(y)=>H-P-(y-ymin)/(ymax-ymin)*(H-2*P);
-      const cx=mx(0),cy=my((initial));
-      return '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>';
-    })()}</svg></div>`;
+    // Figure: exponential decay y = initial * base^x over 0..10, with axes,
+    // ticks, and the y-intercept point marked (the subject of the question).
+    const W = 450, H = 300, P = 45;
+    const xmin = -1, xmax = 11, ymin = -1, ymax = maxY;
+    const mx = (x: number) => P + (x - xmin) / (xmax - xmin) * (W - 2 * P);
+    const my = (y: number) => H - P - (y - ymin) / (ymax - ymin) * (H - 2 * P);
+
+    // Decay curve sampled at 60 points across x in [0, 10].
+    const f = (x: number) => initial * Math.pow(base, x);
+    const pts: string[] = [];
+    for (let i = 0; i <= 60; i++) {
+      const x = (10 * i) / 60;
+      pts.push(`${mx(x).toFixed(1)},${my(f(x)).toFixed(1)}`);
+    }
+    const curve = `<polyline points="${pts.join(' ')}" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+    // Axes.
+    const y0 = Math.max(ymin, Math.min(ymax, 0));
+    const x0 = Math.max(xmin, Math.min(xmax, 0));
+    const axes =
+      `<line x1="${P}" y1="${my(y0)}" x2="${W - P}" y2="${my(y0)}" stroke="currentColor" stroke-width="1.5"/>` +
+      `<line x1="${mx(x0)}" y1="${P}" x2="${mx(x0)}" y2="${H - P}" stroke="currentColor" stroke-width="1.5"/>`;
+
+    // Ticks: x every 1 (0..10), y every 1 up to maxY.
+    let ticks = '';
+    for (let x = 0; x <= 10; x++) {
+      ticks += `<line x1="${mx(x)}" y1="${my(y0)}" x2="${mx(x)}" y2="${my(y0) + 4}" stroke="currentColor" stroke-width="1"/>`;
+      ticks += `<text x="${mx(x)}" y="${my(y0) + 15}" text-anchor="middle" font-size="10" fill="currentColor">${x}</text>`;
+    }
+    for (let y = 1; y <= maxY; y++) {
+      ticks += `<line x1="${mx(x0) - 4}" y1="${my(y)}" x2="${mx(x0)}" y2="${my(y)}" stroke="currentColor" stroke-width="1"/>`;
+      ticks += `<text x="${mx(x0) - 8}" y="${my(y) + 3}" text-anchor="end" font-size="10" fill="currentColor">${y}</text>`;
+    }
+
+    // Y-intercept point (0, initial) — the value the question asks about.
+    const interceptDot = `<circle cx="${mx(0)}" cy="${my(initial)}" r="4" fill="#2563eb" stroke="white" stroke-width="1"/>`;
+
+    const mafsCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      axes + ticks + curve + interceptDot + `</svg></div>`;
     
     const questionText = `The graph gives the estimated number of catalogs $y$, in thousands, a company sent to its customers at the end of each year, where $x$ represents the number of years since the end of 1992, where $0 \\leq x \\leq 10$. Which statement is the best interpretation of the y-intercept in this context?`;
     
