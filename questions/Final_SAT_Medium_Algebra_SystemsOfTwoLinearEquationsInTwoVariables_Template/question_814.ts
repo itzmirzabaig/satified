@@ -13,6 +13,16 @@ import type { QuestionData } from '../../study/types';
  *   (r1,r2)/(r2,r1)/(d1,d2)/(d2,d1); prices/discounts chosen so the combined
  *   sale price is an exact integer (no rounding fudge in the correct equation).
  * - Currency stays escaped as \$; coefficients are math, not currency.
+ *
+ * FIXED (both equations in each option ran together on one line — same as
+ * Q308/Q310/Q316): the options joined their two equations with \n, which
+ * HTML collapses to a space. Each option is now a single $...$ aligned
+ * block: second equation below the first, equals signs aligned.
+ *
+ * FIXED (percent signs inside math in the explanation — the Q1400/Q1416
+ * bug class): "$100\% - 15\% = 85\%$" used \% inside $...$, which this
+ * renderer chokes on. Those clauses are now plain text (house rule:
+ * percents are never escaped, never inside math). No question logic changed.
  */
 
 export const generator_814 = {
@@ -63,12 +73,14 @@ export const generator_814 = {
     const questionText = `The combined original price of a mirror and a vase is \\$${totalOriginal}. A ${discount1}% discount is applied to the mirror and a ${discount2}% discount is applied to the vase, making the combined sale price of the two items \\$${sale}. Which system of equations gives the original price $m$, in dollars, of the mirror and the original price $v$, in dollars, of the vase?`;
 
     // STEP 3: Build the four systems. Each shares m + v = totalOriginal and
-    // differs only in the second equation's coefficients.
-    const firstEq = `$m+v=${totalOriginal}$`;
-    const correctText = `${firstEq}\n$${r1}m+${r2}v=${sale}$`;   // correct: remaining amounts
-    const swapRemText = `${firstEq}\n$${r2}m+${r1}v=${sale}$`;   // remaining amounts swapped
-    const discText    = `${firstEq}\n$${d1}m+${d2}v=${sale}$`;   // used discount %, not remaining
-    const swapDiscText = `${firstEq}\n$${d2}m+${d1}v=${sale}$`;  // discount % swapped
+    // differs only in the second equation's coefficients. Each option is ONE
+    // $...$ aligned block so the two equations stack (the old \n collapsed
+    // to a space in HTML and ran them together on one line).
+    const sys = (second: string) => `$\\begin{aligned} m+v &= ${totalOriginal} \\\\ ${second} \\end{aligned}$`;
+    const correctText  = sys(`${r1}m + ${r2}v = ${sale}`);   // correct: remaining amounts
+    const swapRemText  = sys(`${r2}m + ${r1}v = ${sale}`);   // remaining amounts swapped
+    const discText     = sys(`${d1}m + ${d2}v = ${sale}`);   // used discount %, not remaining
+    const swapDiscText = sys(`${d2}m + ${d1}v = ${sale}`);   // discount % swapped
 
     const optionsData = [
       { text: correctText, isCorrect: true, kind: 'correct' },
@@ -88,18 +100,17 @@ export const generator_814 = {
     const letterOfKind = (kind: string) => shuffledOptions.find(o => o.kind === kind)!.letter;
 
     // STEP 5: Build explanation — computed from the same live values, letters
-    // taken from the shuffled array.
+    // taken from the shuffled array. Percent clauses in plain text (no \%
+    // inside math — the renderer chokes on it).
     const explanation = `The combined original price of the mirror and the vase is \\$${totalOriginal}. Letting $m$ be the mirror's original price and $v$ be the vase's original price gives the first equation:
-$$m + v = ${totalOriginal}$$
-
+ $$m + v = ${totalOriginal}$$ 
 For the sale price, each item is reduced by its discount, so you pay the remaining fraction of each price.
 
-1. The mirror has a ${discount1}% discount, so its sale price is $100\\% - ${discount1}\\% = ${100 - discount1}\\%$ of $m$, that is $${r1}m$.
-2. The vase has a ${discount2}% discount, so its sale price is $100\\% - ${discount2}\\% = ${100 - discount2}\\%$ of $v$, that is $${r2}v$.
+1. The mirror has a ${discount1}% discount, so its sale price is 100% - ${discount1}% = ${100 - discount1}% of $m$, that is $${r1}m$.
+2. The vase has a ${discount2}% discount, so its sale price is 100% - ${discount2}% = ${100 - discount2}% of $v$, that is $${r2}v$.
 
 The combined sale price is \\$${sale}, giving the second equation:
-$$${r1}m + ${r2}v = ${sale}$$
-
+ $$${r1}m + ${r2}v = ${sale}$$ 
 This system is choice ${correctLetter}.
 
 Why the other options are incorrect:

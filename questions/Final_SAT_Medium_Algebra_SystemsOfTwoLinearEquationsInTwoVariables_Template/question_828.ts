@@ -11,6 +11,13 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Same slope, different intercept]
  * - Question type: [Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * FIXED (both equations in each option rendered on one line — same as
+ * Q814/Q818): each option was TWO adjacent $...$ segments, which HTML runs
+ * together inline. Each option is now ONE $...$ aligned block: second
+ * equation below the first, equals signs aligned. Option values were
+ * hoisted to variables (same ranges, same draw order — generation behavior
+ * unchanged). No question logic changed.
  */
 
 export const generator_828 = {
@@ -46,10 +53,22 @@ export const generator_828 = {
     }
     if (cSlope2 === cSlope1) cSlope2 = cSlope1 === 5 ? 6 : cSlope1 - 1;
 
-    const optionA = `$y=${m}x+${b1}$ $y=${m}x+${b2}$`;
-    const optionB = `$y=${getRandomInt(10, 20)}$ $y=${getRandomInt(5, 15)}x+${getRandomInt(5, 15)}$`;
-    const optionC = `$y=${cSlope1}x+${getRandomInt(10, 20)}$ $y=${cSlope2}x+${getRandomInt(10, 20)}$`;
-    const optionD = `$x=${getRandomInt(2, 5)}$ $y=${getRandomInt(5, 15)}$`;
+    // Option values (hoisted so each random draw is used once — identical
+    // ranges and order to the original inline interpolations).
+    const bHoriz = getRandomInt(10, 20);
+    const bSlope = getRandomInt(5, 15);
+    const bInt = getRandomInt(5, 15);
+    const cInt1 = getRandomInt(10, 20);
+    const cInt2 = getRandomInt(10, 20);
+    const dX = getRandomInt(2, 5);
+    const dY = getRandomInt(5, 15);
+
+    // Each option is ONE aligned block so the two equations stack.
+    const sys = (e1: string, e2: string) => `$\\begin{aligned} ${e1} \\\\ ${e2} \\end{aligned}$`;
+    const optionA = sys(`y=${m}x+${b1}`, `y=${m}x+${b2}`);
+    const optionB = sys(`y=${bHoriz}`, `y=${bSlope}x+${bInt}`);
+    const optionC = sys(`y=${cSlope1}x+${cInt1}`, `y=${cSlope2}x+${cInt2}`);
+    const optionD = sys(`x=${dX}`, `y=${dY}`);
     
     const optionsData = [
       { text: optionA, isCorrect: true },

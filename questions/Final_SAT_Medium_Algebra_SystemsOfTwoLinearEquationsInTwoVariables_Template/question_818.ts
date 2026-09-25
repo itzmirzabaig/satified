@@ -11,6 +11,13 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Same slope = parallel = no solution]
  * - Question type: [Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * FIXED (both equations in each option rendered on one line — same as
+ * Q814/Q308/Q310/Q316): each option was TWO adjacent $...$ segments, which
+ * HTML runs together inline. Each option is now ONE $...$ aligned block:
+ * second equation below the first, equals signs aligned. Option values
+ * were hoisted to variables (same ranges, same draw order — generation
+ * behavior unchanged). No question logic changed.
  */
 
 export const generator_818 = {
@@ -46,10 +53,22 @@ export const generator_818 = {
     }
     if (bSlope2 === bSlope1) bSlope2 = bSlope1 === 2 ? 3 : bSlope1 - 1;
 
-    const optionA = `$x=${getRandomInt(2, 5)}$ $y=${getRandomInt(5, 15)}$`;
-    const optionB = `$y=${bSlope1}x+${getRandomInt(5, 10)}$ $y=${bSlope2}x+${getRandomInt(5, 10)}$`;
-    const optionC = `$y=${m}x+${b1}$ $y=${m}x+${b2}$`;
-    const optionD = `$y=${getRandomInt(3, 8)}$ $y=${getRandomInt(5, 15)}x+${getRandomInt(5, 15)}$`;
+    // Option values (hoisted so each random draw is used once — identical
+    // ranges and order to the original inline interpolations).
+    const aX = getRandomInt(2, 5);
+    const aY = getRandomInt(5, 15);
+    const bInt1 = getRandomInt(5, 10);
+    const bInt2 = getRandomInt(5, 10);
+    const dHoriz = getRandomInt(3, 8);
+    const dSlope = getRandomInt(5, 15);
+    const dInt = getRandomInt(5, 15);
+
+    // Each option is ONE aligned block so the two equations stack.
+    const sys = (e1: string, e2: string) => `$\\begin{aligned} ${e1} \\\\ ${e2} \\end{aligned}$`;
+    const optionA = sys(`x=${aX}`, `y=${aY}`);
+    const optionB = sys(`y=${bSlope1}x+${bInt1}`, `y=${bSlope2}x+${bInt2}`);
+    const optionC = sys(`y=${m}x+${b1}`, `y=${m}x+${b2}`);
+    const optionD = sys(`y=${dHoriz}`, `y=${dSlope}x+${dInt}`);
     
     const optionsData = [
       { text: optionA, isCorrect: false },

@@ -11,6 +11,15 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Numbers must work cleanly with π]
  * - Question type: [Text→Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * FIXED (the word "pi" showing instead of the symbol — two stacked bugs):
+ * - Options: all four were `${value}\\\\pi` — FOUR backslashes in source (a
+ *   literal double backslash at runtime) AND no $...$ delimiters, so they
+ *   rendered as raw "576\\pi" text. Now two-backslash \pi wrapped in $...$.
+ * - Explanation: the same \\\\pi inside otherwise-valid $...$ segments — the
+ *   renderer treated \\ as a row break and printed "pi" as italic text.
+ *   All occurrences are now the standard two-in-source form. No question
+ *   logic changed.
  */
 
 export const generator_851 = {
@@ -33,13 +42,13 @@ export const generator_851 = {
     const baseArea = radius * radius;
     const lateralArea = diameter * height; // 2πr × h = πdh, coefficient
     
-    // STEP 3: Create options with tracking
-    const correctText = `${volume}\\\\pi`;
+    // STEP 3: Create options — wrapped in $...$ so they render as math.
+    const correctText = `$${volume}\\pi$`;
     
     // Distractors
-    const distractorA = `${baseArea}\\\\pi`; // Base area only
-    const distractorB = `${lateralArea}\\\\pi`; // Lateral surface area
-    const distractorD = `${diameter * diameter * height}\\\\pi`; // Using diameter as radius
+    const distractorA = `$${baseArea}\\pi$`; // Base area only
+    const distractorB = `$${lateralArea}\\pi$`; // Lateral surface area
+    const distractorD = `$${diameter * diameter * height}\\pi$`; // Using diameter as radius
     
     const optionsData = [
       { text: distractorA, isCorrect: false },
@@ -59,7 +68,7 @@ export const generator_851 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
     
     // STEP 5: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. The radius is half the diameter: $${diameter}/2 = ${radius}$. The volume is $V = \\\\pi r^2 h = \\\\pi(${radius})^2(${height}) = \\\\pi(${baseArea})(${height}) = ${volume}\\\\pi$. Choice ${incorrectOptions[0].letter} is incorrect; this is just the area of the base ($\\\\pi r^2 = ${baseArea}\\\\pi$). Choice ${incorrectOptions[1].letter} is incorrect; this is the lateral surface area ($\\\\pi dh = \\\\pi(${diameter})(${height}) = ${lateralArea}\\\\pi$). Choice ${incorrectOptions[2].letter} is incorrect; this results from using the diameter (${diameter}) instead of the radius (${radius}) in the volume formula.`;
+    const explanation = `Choice ${correctLetter} is correct. The radius is half the diameter: $${diameter}/2 = ${radius}$. The volume is $V = \\pi r^2 h = \\pi(${radius})^2(${height}) = \\pi(${baseArea})(${height}) = ${volume}\\pi$. Choice ${incorrectOptions[0].letter} is incorrect; this is just the area of the base ($\\pi r^2 = ${baseArea}\\pi$). Choice ${incorrectOptions[1].letter} is incorrect; this is the lateral surface area ($\\pi dh = \\pi(${diameter})(${height}) = ${lateralArea}\\pi$). Choice ${incorrectOptions[2].letter} is incorrect; this results from using the diameter (${diameter}) instead of the radius (${radius}) in the volume formula.`;
     
     return {
       questionText: `A cylinder has a diameter of $${diameter}$ inches and a height of $${height}$ inches. What is the volume, in cubic inches, of the cylinder?`,
