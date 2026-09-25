@@ -11,6 +11,13 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [k = 1 + percent/100]
  * - Question type: [Text→Multiple Choice Text]
  * - Figure generation: [No figure]
+ *
+ * FIXED (random backslash — same as Q932): the stem and explanation wrote
+ * ${percent}\\% in PLAIN PROSE — a literal backslash+percent at runtime,
+ * nothing consuming it, so "7\%" displayed. Now plain % per the house rule
+ * (Q454/Q1225/Q1229/Q1239/Q1400/Q1410/Q1416/Q1421/Q932). The math segments
+ * ($P_{2015}$, $\\frac{...}{100}...$) were already correctly formed and are
+ * unchanged. No question logic changed.
  */
 
 export const generator_933 = {
@@ -50,11 +57,11 @@ export const generator_933 = {
     
     // STEP 3: Return question data
     return {
-      questionText: `The population of City A increased by ${percent}\\% from 2015 to 2016. If the 2016 population is $k$ times the 2015 population, what is the value of $k$?`,
+      questionText: `The population of City A increased by ${percent}% from 2015 to 2016. If the 2016 population is $k$ times the 2015 population, what is the value of $k$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Let $P_{2015}$ be the population of City A in 2015. The population increased by ${percent}\\% from 2015 to 2016. The population in 2016 is $P_{2015} + \\frac{${percent}}{100}P_{2015} = ${multiplier}P_{2015}$. Since $P_{2016} = k \\cdot P_{2015}$, it follows that $k = ${multiplier}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Let $P_{2015}$ be the population of City A in 2015. The population increased by ${percent}% from 2015 to 2016. The population in 2016 is $P_{2015} + \\frac{${percent}}{100}P_{2015} = ${multiplier}P_{2015}$. Since $P_{2016} = k \\cdot P_{2015}$, it follows that $k = ${multiplier}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

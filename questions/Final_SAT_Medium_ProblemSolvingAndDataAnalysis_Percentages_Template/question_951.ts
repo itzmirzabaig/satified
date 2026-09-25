@@ -11,6 +11,16 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [result = total * percent / 100]
  * - Question type: [Text→Fill-in-the-blank (no options shown)]
  * - Figure generation: [No figure]
+ *
+ * FIXED (random backslashes — same two bugs as Q932):
+ * - The stem and explanation wrote ${percent}\\% in PLAIN PROSE — a literal
+ *   backslash+percent at runtime, nothing consuming it, so "6\%" displayed.
+ *   Now plain % per the house rule.
+ * - The explanation used MathJax-style \\( ... \\) inline delimiters, but
+ *   this renderer speaks KaTeX-style $ ... $ — so the delimiter fragments
+ *   and the \frac commands inside them displayed literally. Converted to
+ *   $ ... $ segments with two-backslash commands.
+ * - No question logic changed.
  */
 
 export const generator_951 = {
@@ -35,11 +45,11 @@ export const generator_951 = {
     
     // STEP 3: Return question data
     return {
-      questionText: `There are ${total} tiles in a box. Of these tiles, ${percent}\\% are black. How many black tiles are in the box?`,
+      questionText: `There are ${total} tiles in a box. Of these tiles, ${percent}% are black. How many black tiles are in the box?`,
       figureCode: null,
       options: [],
       correctAnswer: correctAnswer,
-      explanation: `The correct answer is ${correctAnswer}. It's given that ${percent}\\% of the ${total} tiles in a box are black. Therefore, the number of black tiles in the box can be calculated by multiplying the number of tiles in the box by \\( \\frac{${percent}}{100} \\), which is equivalent to \\( ${total} \\times \\frac{${percent}}{100} = ${correctAnswer} \\).`
+      explanation: `The correct answer is ${correctAnswer}. It's given that ${percent}% of the ${total} tiles in a box are black. Therefore, the number of black tiles in the box can be calculated by multiplying the number of tiles in the box by $\\frac{${percent}}{100}$, which is equivalent to $${total} \\times \\frac{${percent}}{100} = ${correctAnswer}$.`
     };
   }
 };

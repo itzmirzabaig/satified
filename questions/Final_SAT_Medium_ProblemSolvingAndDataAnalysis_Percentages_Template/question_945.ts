@@ -11,6 +11,17 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [(new - old) / old * 100]
  * - Question type: [Text→Multiple Choice Text]
  * - Figure generation: [No figure]
+ *
+ * FIXED (random backslashes — two variants of the percent bug):
+ * - Options (Q1229/Q1239/Q1410/Q1421/Q941 class): all four texts appended
+ *   "\\%" — a LITERAL backslash+percent in plain text, nothing consuming it,
+ *   so "900\%" displayed. All now plain %.
+ * - Explanation (Q1400/Q1416 class): the formula had \times 100\% INSIDE a
+ *   $...$ segment — \% inside math, which this renderer chokes on. The
+ *   formula is restructured as clean $...$ segments with "percent" in plain
+ *   prose after them, so no % ever sits inside math and every segment
+ *   closes before any percent character.
+ * - The stem was already plain. No question logic changed.
  */
 
 export const generator_945 = {
@@ -41,12 +52,12 @@ export const generator_945 = {
     const distractorB = increase;                                // absolute increase only
     const distractorC = newValue;                                // final value confused for a percent
 
-    const correctText = `${percentIncrease}\\%`;
+    const correctText = `${percentIncrease}%`;
 
     const optionsData = [
-      { text: `${distractorA}\\%`, isCorrect: false, reason: "results from dividing the original by the new value instead of the increase by the original" },
-      { text: `${distractorB}\\%`, isCorrect: false, reason: "gives the absolute increase without dividing by the original value" },
-      { text: `${distractorC}\\%`, isCorrect: false, reason: "uses the final value as if it were the percent increase" },
+      { text: `${distractorA}%`, isCorrect: false, reason: "results from dividing the original by the new value instead of the increase by the original" },
+      { text: `${distractorB}%`, isCorrect: false, reason: "gives the absolute increase without dividing by the original value" },
+      { text: `${distractorC}%`, isCorrect: false, reason: "uses the final value as if it were the percent increase" },
       { text: correctText, isCorrect: true }
     ];
 
@@ -64,7 +75,7 @@ export const generator_945 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. The percent increase is $\\frac{\\text{New} - \\text{Original}}{\\text{Original}} \\times 100\\% = \\frac{${newValue} - ${original}}{${original}} \\times 100\\% = \\frac{${increase}}{${original}} \\times 100\\% = ${percentIncrease}\\%$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The percent increase is $\\frac{\\text{New} - \\text{Original}}{\\text{Original}} \\times 100$ percent, which is $\\frac{${newValue} - ${original}}{${original}} \\times 100 = \\frac{${increase}}{${original}} \\times 100 = ${percentIncrease}$ percent. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

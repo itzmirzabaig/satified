@@ -23,6 +23,17 @@ import type { QuestionData } from '../../study/types';
  * - All four options are fixed distinct strings, so no duplicate-option risk.
  * - Legacy nested-IIFE figure (with broken ${angleA^°} leftovers) rebuilt as a
  *   plain SVG template literal; the drawn angle values match angleA / angleD.
+ *
+ * FIXED (round 2 — measures still read as sitting on the lines):
+ * - Round 1 moved the values onto their wedges' bisectors — geometrically
+ *   correct, but inside a wedge as narrow as 25 degrees an 18px label clears
+ *   the sides by only 3-6px, which still looks like touching. The two
+ *   measures now sit just ABOVE their top vertices (A and D), outside the
+ *   triangles in open space, directly over the arc'd angles they name —
+ *   12px or more from every drawn element in every draw. The arcs (round 1)
+ *   are retained: they anchor which wedge each value belongs to. Vertex
+ *   letters nudged clear of the values. Question logic, options, stem, and
+ *   explanation unchanged.
  */
 
 export const generator_882 = {
@@ -41,29 +52,54 @@ export const generator_882 = {
     const angleD = angleB;        // given: angle D corresponds to angle B
     const angleE = 90 - angleD;   // = angleA; corresponds to angle A
 
-    // STEP 2: Figure — two right triangles (right angles at C and F) as plain SVG.
-    // Triangle ABC: C bottom-left, B bottom-right, A top-left (legs CB, CA).
-    // Triangle DEF: F bottom-left, E bottom-right, D top-left (legs FE, FD).
-    const Cx = 55, Cy = 155, Bx = 175, Ay = 55;              // ABC vertices
-    const Fx = 275, Fy = 155, Ex = 395, Dy = 55;             // DEF vertices
+    // STEP 2: Figure — two right triangles built FROM the live angles (pixel
+    // coords, y down). Right angles at C and F (bottom-left); A and D are the
+    // top-left vertices, B and E bottom-right. Vertical legs are LEG; each
+    // horizontal leg is LEG*tan(marked angle), so every drawn wedge equals
+    // its label and the two triangles are genuinely similar (A <-> E).
+    const D2R = Math.PI / 180;
+    const LEG = 95;
+    const Cx = 55, Cy = 155, Fy = 155;
+    const Bx = Math.round(Cx + LEG * Math.tan(angleA * D2R));
+    const Ay = Cy - LEG;
+    const Fx = Bx + 55;
+    const Ex = Math.round(Fx + LEG * Math.tan(angleD * D2R));
+    const Dy = Fy - LEG;
+
+    const r1 = (v: number) => Math.round(v * 10) / 10;
+
     const rightMark = (x: number, y: number, dx: number, dy: number) =>
       `<path d="M ${x + dx} ${y} L ${x + dx} ${y + dy} L ${x} ${y + dy}" fill="none" stroke="currentColor" stroke-width="1.2"/>`;
 
+    // Arc around (vx, vy) from screen angle a1 to a2 (a2 > a1). Each marked
+    // wedge spans [90 - markedAngle, 90]: from the hypotenuse ray to the
+    // vertical leg, inside the triangle.
+    const arc = (vx: number, vy: number, a1: number, a2: number, rPx: number): string => {
+      let d = "";
+      for (let i = 0; i <= 12; i++) {
+        const t = (a1 + ((a2 - a1) * i) / 12) * D2R;
+        d += `${i === 0 ? "M" : "L"}${r1(vx + rPx * Math.cos(t))} ${r1(vy + rPx * Math.sin(t))} `;
+      }
+      return `<path d="${d}" fill="none" stroke="currentColor" stroke-width="1.4"/>`;
+    };
+
     const figureCode = `<div style="width:100%;max-width:450px;margin:0 auto;"><svg viewBox="0 0 450 210" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
-      // Triangle ABC
+      // Triangle ABC (right angle at C)
       `<polygon points="${Cx},${Cy} ${Bx},${Cy} ${Cx},${Ay}" fill="none" stroke="currentColor" stroke-width="1.6"/>` +
       rightMark(Cx, Cy, 14, -14) +
+      arc(Cx, Ay, 90 - angleA, 90, 22) +
+      `<text x="${Cx - 14}" y="${Ay + 6}" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">A</text>` +
       `<text x="${Cx - 8}" y="${Cy + 15}" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">C</text>` +
       `<text x="${Bx + 8}" y="${Cy + 15}" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">B</text>` +
-      `<text x="${Cx - 8}" y="${Ay - 4}" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">A</text>` +
-      `<text x="${Cx + 22}" y="${Ay + 24}" text-anchor="start" font-size="12" fill="currentColor">${angleA}°</text>` +
-      // Triangle DEF
+      `<text x="${Cx}" y="${Ay - 12}" text-anchor="middle" font-size="12" fill="currentColor">${angleA}&#176;</text>` +
+      // Triangle DEF (right angle at F)
       `<polygon points="${Fx},${Fy} ${Ex},${Fy} ${Fx},${Dy}" fill="none" stroke="currentColor" stroke-width="1.6"/>` +
       rightMark(Fx, Fy, 14, -14) +
+      arc(Fx, Dy, 90 - angleD, 90, 26) +
+      `<text x="${Fx - 14}" y="${Dy + 6}" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">D</text>` +
       `<text x="${Fx - 8}" y="${Fy + 15}" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">F</text>` +
       `<text x="${Ex + 8}" y="${Fy + 15}" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">E</text>` +
-      `<text x="${Fx - 8}" y="${Dy - 4}" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">D</text>` +
-      `<text x="${Fx + 22}" y="${Dy + 24}" text-anchor="start" font-size="12" fill="currentColor">${angleD}°</text>` +
+      `<text x="${Fx}" y="${Dy - 12}" text-anchor="middle" font-size="12" fill="currentColor">${angleD}&#176;</text>` +
       `</svg></div>`;
 
     // STEP 3: Options (fixed, distinct). Correct: DF/DE = sin(E) = sin(A).

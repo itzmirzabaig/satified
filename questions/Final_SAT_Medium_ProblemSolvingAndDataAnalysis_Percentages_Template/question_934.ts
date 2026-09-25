@@ -11,6 +11,14 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [value = initial * (1 - rate)^years]
  * - Question type: [Text→Multiple Choice Text]
  * - Figure generation: [No figure]
+ *
+ * FIXED (random backslashes — same as Q932/Q933): the stem and explanation
+ * wrote ${...}\\% in PLAIN PROSE (the depreciation rate and the two retention
+ * mentions), a literal backslash+percent at runtime with nothing consuming
+ * it, so "20\%" displayed. All three are now plain % per the house rule
+ * (Q454/Q1225/Q1229/Q1239/Q1400/Q1410/Q1416/Q1421/Q932/Q933). The money()
+ * helper's \\$ currency escape is the correct house form and is unchanged.
+ * No question logic changed.
  */
 
 export const generator_934 = {
@@ -79,11 +87,11 @@ export const generator_934 = {
 
     // STEP 4: Return question data
     return {
-      questionText: `A restaurant owner installed a new stove. At the time of installation, the stove had a value of ${money(initialValue)}. The owner estimates that each year the value of the stove will depreciate by ${depreciationRate}\\% of the previous year's estimated value. What is the estimated value of the stove exactly ${years} years after it was installed?`,
+      questionText: `A restaurant owner installed a new stove. At the time of installation, the stove had a value of ${money(initialValue)}. The owner estimates that each year the value of the stove will depreciate by ${depreciationRate}% of the previous year's estimated value. What is the estimated value of the stove exactly ${years} years after it was installed?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Because the stove keeps ${100 - depreciationRate}\\% of its value each year, its value is multiplied by ${retentionStr} annually. ${chain}. So the value after ${years} years is ${money(finalValue)}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Because the stove keeps ${100 - depreciationRate}% of its value each year, its value is multiplied by ${retentionStr} annually. ${chain}. So the value after ${years} years is ${money(finalValue)}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

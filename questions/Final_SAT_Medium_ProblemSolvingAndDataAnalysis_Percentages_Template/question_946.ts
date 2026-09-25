@@ -11,6 +11,14 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [(new - old) / old * 100, round to 1 decimal]
  * - Question type: [Text→Multiple Choice Text]
  * - Figure generation: [No figure]
+ *
+ * FIXED (random backslashes — the Q945 combo):
+ * - Options: all four texts appended "\\%" — a LITERAL backslash+percent in
+ *   plain text, nothing consuming it, so "5.4\%" displayed. All now plain %.
+ * - Explanation (Q1400/Q1416 class): the formula ended "\approx 5.4\%" with
+ *   \% INSIDE the $...$ segment — which this renderer chokes on. The math
+ *   segment now closes before the percent, which sits outside as plain
+ *   prose. No question logic changed.
  */
 
 export const generator_946 = {
@@ -61,14 +69,14 @@ export const generator_946 = {
       ok = set.size === 4 && actualIncrease > 0 && roundedPercent > 0;
     }
 
-    // STEP 2: Correct answer text (percent sign escaped for MathJax).
-    const correctText = `${roundedPercent.toFixed(1)}\\%`;
+    // STEP 2: Correct answer text (plain percent sign).
+    const correctText = `${roundedPercent.toFixed(1)}%`;
 
     // STEP 3: Assemble options with reasons.
     const optionsData = [
-      { text: `${distractorDollar.toFixed(1)}\\%`, isCorrect: false, reason: "uses the dollar amount of the increase as if it were the percent" },
-      { text: `${distractorDivNew.toFixed(1)}\\%`, isCorrect: false, reason: "divides the increase by the new bill instead of the original bill" },
-      { text: `${distractorRound.toFixed(1)}\\%`, isCorrect: false, reason: "rounds the percent to the wrong tenth" },
+      { text: `${distractorDollar.toFixed(1)}%`, isCorrect: false, reason: "uses the dollar amount of the increase as if it were the percent" },
+      { text: `${distractorDivNew.toFixed(1)}%`, isCorrect: false, reason: "divides the increase by the new bill instead of the original bill" },
+      { text: `${distractorRound.toFixed(1)}%`, isCorrect: false, reason: "rounds the percent to the wrong tenth" },
       { text: correctText, isCorrect: true }
     ];
 
@@ -86,7 +94,7 @@ export const generator_946 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. The percent increase equals $\\frac{${roundedNewBill.toFixed(2)} - ${roundedOriginal.toFixed(2)}}{${roundedOriginal.toFixed(2)}} \\times 100 = \\frac{${actualIncrease.toFixed(2)}}{${roundedOriginal.toFixed(2)}} \\times 100 \\approx ${roundedPercent.toFixed(1)}\\%$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The percent increase equals $\\frac{${roundedNewBill.toFixed(2)} - ${roundedOriginal.toFixed(2)}}{${roundedOriginal.toFixed(2)}} \\times 100 = \\frac{${actualIncrease.toFixed(2)}}{${roundedOriginal.toFixed(2)}} \\times 100 \\approx ${roundedPercent.toFixed(1)}$ percent. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

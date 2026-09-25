@@ -11,6 +11,16 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Part/whole relationship: part = percent * whole]
  * - Question type: [Text→Fill-in-the-blank]
  * - Figure generation: [No figure - conceptual question]
+ *
+ * FIXED (random backslashes in the stem and explanation):
+ * - The explanation used MathJax-style \\( ... \\) inline delimiters, but
+ *   this renderer speaks KaTeX-style $ ... $ (the convention of every
+ *   working file) — so the delimiter fragments and the \frac commands
+ *   inside them displayed literally. All math is converted to $ ... $  *   segments with two-backslash commands inside.
+ * - The stem's ${percent}\\% was a literal backslash+percent in plain prose
+ *   ("80\%") — now a plain % per the house rule (Q454/Q1225/Q1229/Q1239/
+ *   Q1400/Q1410/Q1416/Q1421). The explanation's percents get the same
+ *   treatment. No question logic changed.
  */
 
 export const generator_932 = {
@@ -25,7 +35,7 @@ export const generator_932 = {
   generate: (): QuestionData => {
     // STEP 1: Answer-first construction so total is always a clean integer.
     // percent is a multiple of 10 in {60,70,80,90}; total is a multiple of 10.
-    // faulty = (percent/100) * total = (percent/10) * (total/10) is then an
+    // faulty = (percent/10) * (total/10) is then an
     // exact integer for every draw, and the answer (total) is an exact integer.
     const percent = getRandomInt(6, 9) * 10;       // 60, 70, 80, 90
     const totalItems = getRandomInt(6, 15) * 10;   // 60, 70, ..., 150
@@ -36,11 +46,11 @@ export const generator_932 = {
 
     // STEP 3: Return question data
     return {
-      questionText: `In a sample, ${percent}\\% of the items are faulty. There are ${faultyItems} faulty items in the sample. How many total items are in the sample?`,
+      questionText: `In a sample, ${percent}% of the items are faulty. There are ${faultyItems} faulty items in the sample. How many total items are in the sample?`,
       figureCode: null,
       options: [],
       correctAnswer: correctAnswer,
-      explanation: `The correct answer is ${correctAnswer}. Let \\( x \\) represent the total number of items in the sample. It's given that ${percent}\\% of the items are faulty and that there are ${faultyItems} faulty items in the sample. Therefore, ${percent}\\% of \\( x \\) is ${faultyItems}. Since ${percent}\\% can be rewritten as \\( \\frac{${percent}}{100} \\), it follows that \\( \\frac{${percent}}{100} x=${faultyItems} \\). Multiplying both sides of this equation by 100 yields \\( ${percent}x=${faultyItems * 100} \\). Dividing both sides of this equation by ${percent} yields \\( x=${correctAnswer} \\). Therefore, there are ${correctAnswer} total items in the sample.`
+      explanation: `The correct answer is ${correctAnswer}. Let $x$ represent the total number of items in the sample. It's given that ${percent}% of the items are faulty and that there are ${faultyItems} faulty items in the sample. Therefore, ${percent}% of $x$ is ${faultyItems}. Since ${percent}% can be rewritten as $\\frac{${percent}}{100}$, it follows that $\\frac{${percent}}{100}x=${faultyItems}$. Multiplying both sides of this equation by 100 yields $${percent}x=${faultyItems * 100}$. Dividing both sides of this equation by ${percent} yields $x=${correctAnswer}$. Therefore, there are ${correctAnswer} total items in the sample.`
     };
   }
 };

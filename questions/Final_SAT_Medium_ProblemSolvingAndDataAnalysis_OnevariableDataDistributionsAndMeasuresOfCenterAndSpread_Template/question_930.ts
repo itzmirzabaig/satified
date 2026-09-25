@@ -11,6 +11,14 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Range is simple difference]
  * - Question type: [Text→Fill in the blank]
  * - Figure generation: [None]
+ *
+ * FIXED (literal "**" in the stem — same class as Q1445): the stem used
+ * Markdown emphasis ("**Scores:**"), but the question-text pipeline
+ * renders text and LaTeX only (no Markdown, no HTML), so the asterisks
+ * displayed literally. The emphasis markers are removed. The \n\n line
+ * break before the score list also collapses to a space in that pipeline,
+ * so the list is now set off with a period instead. No question logic
+ * changed.
  */
 
 export const generator_930 = {
@@ -40,7 +48,7 @@ export const generator_930 = {
     const range = maxScore - minScore;
     
     return {
-      questionText: `What is the range of the 7 scores shown?\n\n**Scores:** ${scores.join(', ')}`,
+      questionText: `What is the range of the 7 scores shown? The scores are ${scores.join(', ')}.`,
       figureCode: null,
       options: [],
       correctAnswer: range.toString(),

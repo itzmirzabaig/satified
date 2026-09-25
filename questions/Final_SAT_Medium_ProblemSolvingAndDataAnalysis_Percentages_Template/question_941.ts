@@ -11,6 +11,14 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Must multiply percentages: 0.40 * 0.30 = 0.12 = 12%]
  * - Question type: [Text→Multiple Choice Text]
  * - Figure generation: [No figure]
+ *
+ * FIXED (random backslashes in the options — Q1229/Q1239/Q1410/Q1421
+ * class): the four option texts (and the shared correctText) appended "\\%"
+ * — a LITERAL backslash+percent at runtime in plain text, nothing consuming
+ * it — plus two prose mentions in the explanation did the same. All are now
+ * plain % per the house rule. The stem's percents were already plain. The
+ * explanation's one math segment ($0.40 \times 0.30 = 0.12$) is correctly
+ * formed and unchanged. No question logic changed.
  */
 
 export const generator_941 = {
@@ -43,7 +51,7 @@ export const generator_941 = {
     );
 
     // STEP 2: Build display strings.
-    const correctText = `${result}\\%`;
+    const correctText = `${result}%`;
     // Decimal form of the answer, e.g. 12 -> "0.12", 4 -> "0.04". Always a
     // clean two-place decimal because result is a multiple of 1 in [4, 25].
     const productDecimal = (result / 100).toFixed(2); // "0.04" .. "0.25"
@@ -52,10 +60,10 @@ export const generator_941 = {
 
     // STEP 3: Options.
     const optionsData = [
-      { text: `${distractorSub}\\%`, isCorrect: false, reason: "results from subtracting the percentages instead of multiplying them" },
+      { text: `${distractorSub}%`, isCorrect: false, reason: "results from subtracting the percentages instead of multiplying them" },
       { text: correctText, isCorrect: true },
-      { text: `${distractorAdd}\\%`, isCorrect: false, reason: "results from adding the percentages instead of multiplying them" },
-      { text: `${distractorSecond}\\%`, isCorrect: false, reason: "gives only the second percentage without applying it to the first group" }
+      { text: `${distractorAdd}%`, isCorrect: false, reason: "results from adding the percentages instead of multiplying them" },
+      { text: `${distractorSecond}%`, isCorrect: false, reason: "gives only the second percentage without applying it to the first group" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -72,7 +80,7 @@ export const generator_941 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. To find the percentage of items that are both red and have stripes, take ${percent2}\\% of ${percent1}\\%. In decimal form: $${p1Decimal} \\times ${p2Decimal} = ${productDecimal}$, which equals ${result}\\%. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the percentage of items that are both red and have stripes, take ${percent2}% of ${percent1}%. In decimal form: $${p1Decimal} \\times ${p2Decimal} = ${productDecimal}$, which equals ${result}%. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };
