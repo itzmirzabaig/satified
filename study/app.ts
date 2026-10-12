@@ -898,6 +898,9 @@ interface PTQuestion {
   selectedOpt: number | null;
   userInput: string;
   submitted: boolean;
+  // Set when the question could not be delivered at all, so that scoring can
+  // leave it out rather than charging the student for the app's own failure.
+  loadFailed?: boolean;
 }
 
 // Domain targets per module (22 questions), tracking the College Board
@@ -1305,7 +1308,11 @@ class PracticeTestEngine {
     if (next < 0 || next >= qs.length) {
       // At last question going forward → check all answered
       if (dir > 0 && this.cursor === qs.length - 1) {
-        const unanswered = qs.filter(q => q.selectedOpt === null && !q.userInput).length;
+        // A question that could not be delivered is left out of this check.
+        // It can never be answered, so counting it would hold the student at
+        // the end of the module with a warning they have no way to clear.
+        // Questions not yet reached still count, so the warning keeps working.
+        const unanswered = qs.filter(q => !q.loadFailed && q.selectedOpt === null && !q.userInput).length;
         if (unanswered > 0) {
           this.showNotAnswered(unanswered);
           return;
@@ -1347,18 +1354,97 @@ class PracticeTestEngine {
     if (!q.data) {
       const area = document.getElementById('pt-q-content')!;
       area.innerHTML = '<div class="loading"><div class="spinner"><div></div><div></div><div></div><div></div><div></div><div></div></div><p>Loading…</p></div>';
-      try {
-        const mod = await this.allModules[q.path]();
-        const key = Object.keys(mod).find(k => k.startsWith('generator_'));
-        if (!key) throw new Error('no generator');
-        q.data = mod[key].generate() as QuestionData;
-      } catch {
-        document.getElementById('pt-q-content')!.innerHTML = '<p class="error-msg">Failed to load question.</p>';
-        return;
-      }
+      const loaded = await this.loadQuestion(q);
+      if (!loaded) { this.showLoadFailure(q); return; }
+      q.loadFailed = false;
     }
 
     this.renderQHTML(q);
+    this.updateJumpMenu();
+  }
+
+  // Fetch a question template and build its data. A single failed request used
+  // to end the question outright, which cost the student points for something
+  // the app did wrong. Now the template is retried, and if it still will not
+  // load the test continues with an equivalent one: same difficulty, same
+  // domain and same answer format, drawn from a template this test has not
+  // already used. A browser caches a module that failed to load, so retrying
+  // the same URL can resolve from that failure without touching the network;
+  // the substitutes are what genuinely recover, because they are new URLs.
+  private async loadQuestion(q: PTQuestion): Promise<boolean> {
+    if (await this.tryLoadInto(q, q.path)) return true;
+    for (const alt of this.replacementsFor(q)) {
+      if (await this.tryLoadInto(q, alt.path)) {
+        console.warn('[practice test] "' + q.path + '" could not be loaded; continuing with the equivalent template "' + alt.path + '"');
+        q.path = alt.path;
+        q.folder = alt.folder;
+        q.skill = alt.skill;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private async tryLoadInto(q: PTQuestion, path: string): Promise<boolean> {
+    const loader = this.allModules[path];
+    if (!loader) {
+      console.error('[practice test] no module registered for "' + path + '"');
+      return false;
+    }
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const mod = await loader();
+        const key = Object.keys(mod).find(k => k.startsWith('generator_'));
+        if (!key) throw new Error('module exports no generator_* member');
+        const data = mod[key].generate() as QuestionData;
+        if (!data || data.questionText == null || data.correctAnswer == null) {
+          throw new Error('generator returned an incomplete question');
+        }
+        q.data = data;
+        return true;
+      } catch (err) {
+        // Logged rather than swallowed: without this the only trace of a
+        // failure was the message on screen, which made reports undiagnosable.
+        console.error('[practice test] load failed for "' + path + '" (attempt ' + attempt + ' of 2)', err);
+        if (attempt < 2) await new Promise(r => setTimeout(r, 350));
+      }
+    }
+    return false;
+  }
+
+  // Templates that can stand in for a question that will not load. Difficulty
+  // and domain are preserved so the module keeps its intended mix, and the
+  // answer format is matched so the count of fill in questions stays right.
+  private replacementsFor(q: PTQuestion, limit = 5): QEntry[] {
+    const used = new Set([...this.module1, ...this.module2].map(x => x.path));
+    const spr = isSprPath(q.path);
+    const pool = this.allIndex.filter(e =>
+      e.difficulty === q.difficulty &&
+      e.domain === q.domain &&
+      e.path !== q.path &&
+      !used.has(e.path) &&
+      isSprPath(e.path) === spr);
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, limit);
+  }
+
+  // Last resort, when even the substitutes will not load, which in practice
+  // means the connection is down. The student gets a way to try again instead
+  // of a dead end, and the question is marked so scoring can leave it out.
+  private showLoadFailure(q: PTQuestion) {
+    q.loadFailed = true;
+    const area = document.getElementById('pt-q-content')!;
+    area.innerHTML = `<div class="pt-load-fail">
+      <p class="error-msg">This question could not be loaded.</p>
+      <p class="pt-load-fail-sub">Your connection may have dropped. It will not be counted against your score, and you can keep going either way.</p>
+      <button type="button" class="pt-retry-btn" id="pt-retry-load">Try again</button>
+    </div>`;
+    document.getElementById('pt-retry-load')?.addEventListener('click', () => {
+      this.renderCurrentQuestion();
+    });
     this.updateJumpMenu();
   }
 
@@ -1516,7 +1602,10 @@ class PracticeTestEngine {
     const mod1Paths = new Set(this.module1.map(q => q.path));
     if (this.adaptive) {
       const mod1Score = this.calcModuleScore(this.module1);
-      const hardPath = mod1Score / (18*10+4*20) >= 0.57;
+      const mod1Possible = this.modulePossible(this.module1);
+      // Measured against what module 1 actually delivered, so a question that
+      // failed to load cannot push a student onto the easier second module.
+      const hardPath = mod1Possible > 0 && mod1Score / mod1Possible >= 0.57;
       this.module2 = hardPath
         ? buildModuleQuestions(this.allIndex, this.allModules, [{ diff: 'Medium', count: 12 }, { diff: 'Hard', count: 10 }], mod1Paths)
         : buildModuleQuestions(this.allIndex, this.allModules, [{ diff: 'Easy', count: 16 }, { diff: 'Medium', count: 6 }], mod1Paths);
@@ -1532,6 +1621,16 @@ class PracticeTestEngine {
     this.populateJumpMenu();
     this.showScreen('test');
     this.renderCurrentQuestion();
+  }
+
+  // Points a module could have been worth, counting only the questions the
+  // app actually managed to deliver. The totals match the old fixed numbers
+  // (860 non adaptive, 800 or 540 adaptive) whenever every question loads,
+  // and shrink when one does not, so a question the student never got to see
+  // is dropped from the denominator instead of scoring a guaranteed zero.
+  private modulePossible(qs: PTQuestion[]): number {
+    const pts: Record<string, number> = { Easy: 10, Medium: 20, Hard: 30 };
+    return qs.reduce((sum, q) => sum + (q.data ? (pts[q.difficulty] ?? 10) : 0), 0);
   }
 
   private calcModuleScore(qs: PTQuestion[]): number {
@@ -1550,15 +1649,16 @@ class PracticeTestEngine {
   private showResults() {
     // ── Score calculation ────────────────────────────────────────────────────
     const rawScore = this.calcModuleScore(this.module1) + this.calcModuleScore(this.module2);
-    let maxRaw: number, ceiling: number;
+    const mod1Possible = this.modulePossible(this.module1);
+    const maxRaw = mod1Possible + this.modulePossible(this.module2);
+    let ceiling: number;
     if (this.adaptive) {
-      const hardPath = this.calcModuleScore(this.module1) / (18*10+4*20) >= 0.57;
-      maxRaw = hardPath ? 800 : 540;
+      const hardPath = mod1Possible > 0 && this.calcModuleScore(this.module1) / mod1Possible >= 0.57;
       ceiling = hardPath ? 800 : 600;
     } else {
-      maxRaw = 860; ceiling = 800;
+      ceiling = 800;
     }
-    const overallPct = Math.min(1, rawScore / maxRaw);
+    const overallPct = maxRaw > 0 ? Math.min(1, rawScore / maxRaw) : 0;
     const scaledScore = Math.round((200 + overallPct * (ceiling - 200)) / 10) * 10;
 
     document.getElementById('pt-score-num')!.textContent = String(scaledScore);
@@ -1584,8 +1684,10 @@ class PracticeTestEngine {
     const domainStats: Record<string, { correct: number; total: number }> = {};
     for (const q of allQs) {
       if (!domainStats[q.domain]) domainStats[q.domain] = { correct: 0, total: 0 };
-      domainStats[q.domain].total++;
+      // A question that never loaded is left out of the domain totals too, so
+      // the breakdown does not read as though the student got it wrong.
       if (!q.data) continue;
+      domainStats[q.domain].total++;
       const fillIn = !q.data.options || q.data.options.length === 0;
       const norm = (s: string) => s.trim().toLowerCase().replace(/\.0+$/, '');
       const correct = fillIn

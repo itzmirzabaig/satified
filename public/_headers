@@ -28,6 +28,14 @@
 /icon-512.png
   Cache-Control: public, max-age=2592000
 
+# Question templates are one lazily loaded chunk each, kept at a stable name
+# so a practice test that is already open never asks for a filename a newer
+# deploy has removed. Because the name no longer changes with the content,
+# these cannot be immutable: a short TTL with background revalidation keeps
+# repeat loads instant while edits still reach students quickly.
+/q/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
 # Subpage CSS and JS are not content hashed, so they stay short lived and
 # revalidate. stale-while-revalidate keeps repeat visits instant while a fresh
 # copy is fetched in the background, so edits still reach people quickly.

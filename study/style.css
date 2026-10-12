@@ -2211,3 +2211,31 @@ body.light-mode .pt-result-card-status[style*="#e74c3c"]{color:var(--err-ink) !i
   .agree-overlay,.agree-card,
   .agree-overlay.closing,.agree-overlay.closing .agree-card{animation-duration:.001s}
 }
+
+/* ── PRACTICE TEST: QUESTION THAT WOULD NOT LOAD ──────────────────────────── */
+/* Shown only when a template and every equivalent substitute all failed to
+   load, which in practice means the connection is down. It replaces a dead
+   end that used to cost the student the question.                           */
+.pt-load-fail{
+  padding:24px 20px;text-align:center;
+}
+.pt-load-fail .error-msg{
+  padding:0 0 8px;font-weight:600;
+}
+.pt-load-fail-sub{
+  margin:0 auto 18px;max-width:34em;
+  color:var(--ink-soft,#5b5546);font-size:14px;line-height:1.6;
+}
+.pt-retry-btn{
+  appearance:none;cursor:pointer;
+  padding:10px 22px;border-radius:999px;
+  border:1px solid rgba(0,0,0,.14);background:#fff;
+  font:inherit;font-size:14px;font-weight:600;color:inherit;
+  transition:background-color .18s ease,border-color .18s ease,transform .18s ease;
+}
+.pt-retry-btn:hover{background:#f6f3ec;border-color:rgba(0,0,0,.26);}
+.pt-retry-btn:active{transform:translateY(1px);}
+.pt-retry-btn:focus-visible{outline:2px solid #85572F;outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){
+  .pt-retry-btn{transition-duration:.001s}
+}
