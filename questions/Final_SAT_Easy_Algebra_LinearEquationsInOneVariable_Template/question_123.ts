@@ -43,7 +43,7 @@ export const generator_123 = {
 
     const optionsData = [
       { text: result.toString(), isCorrect: true },
-      { text: distractorB.toString(), isCorrect: false, reason: "ignores the negative sign" },
+      { text: distractorB.toString(), isCorrect: false, reason: `is the opposite of the solution; $${rightSide} - ${pAdd + const1}$ is negative, not positive` },
       { text: distractorC.toString(), isCorrect: false, reason: `results from adding ${pAdd + const1} to ${rightSide} instead of subtracting it` },
       { text: distractorD.toString(), isCorrect: false, reason: `results from subtracting only ${pAdd} and forgetting to subtract ${const1}` }
     ];
@@ -61,7 +61,7 @@ export const generator_123 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Simplify: $p + ${pAdd + const1} = ${rightSide}$. Subtract ${pAdd + const1}: $p = ${rightSide} - ${pAdd + const1} = ${result}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Combining the constants on the left side of the given equation yields $p + ${pAdd + const1} = ${rightSide}$. Subtracting ${pAdd + const1} from both sides yields $p = ${rightSide} - ${pAdd + const1}$, or $p = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
