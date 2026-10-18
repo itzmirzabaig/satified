@@ -30,9 +30,9 @@ export const generator_40 = {
 
     const optionsData = [
       { text: `${yValue}`, isCorrect: true, reason: "" },
-      { text: `${xValue - constant}`, isCorrect: false, reason: "subtracted the constant instead of adding it" },
-      { text: `${base * constant}`, isCorrect: false, reason: "multiplied the values instead of adding them" },
-      { text: `${xValue + constant}`, isCorrect: false, reason: "forgot to take the square root of $x$" }
+      { text: `${xValue - constant}`, isCorrect: false, reason: "uses $x$ instead of $\\sqrt{x}$ and also subtracts the constant instead of adding it" },
+      { text: `${base * constant}`, isCorrect: false, reason: "multiplies the values instead of adding them" },
+      { text: `${xValue + constant}`, isCorrect: false, reason: "uses $x$ instead of $\\sqrt{x}$" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
