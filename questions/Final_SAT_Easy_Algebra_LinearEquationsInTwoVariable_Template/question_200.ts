@@ -33,10 +33,10 @@ export const generator_200 = {
     const total = 3 * xVal + 4 * yVal;
 
     const optionsData = [
-      { text: `If ${xVal} triangles are constructed, then ${yVal} rectangles are constructed.`, isCorrect: true },
-      { text: `If ${xVal} triangles are constructed, then ${yVal} straws are used.`, isCorrect: false, reason: "confuses rectangles with a different quantity" },
-      { text: `If ${yVal} triangles are constructed, then ${xVal} rectangles are constructed.`, isCorrect: false, reason: "swaps the roles of x and y" },
-      { text: `If ${yVal} triangles are constructed, then ${xVal} straws are used.`, isCorrect: false, reason: "swaps the variables and mislabels the quantity" }
+      { text: `If ${xVal} triangles are constructed, then ${yVal} rectangles are constructed.`, isCorrect: true, reason: '' },
+      { text: `If ${xVal} triangles are constructed, then ${yVal} straws are used.`, isCorrect: false, reason: `${yVal} is the number of rectangles, not the number of straws; a total of ${total} straws are used` },
+      { text: `If ${yVal} triangles are constructed, then ${xVal} rectangles are constructed.`, isCorrect: false, reason: `it swaps the values of $x$ and $y$; $x = ${xVal}$ is the number of triangles` },
+      { text: `If ${yVal} triangles are constructed, then ${xVal} straws are used.`, isCorrect: false, reason: `it swaps the values of $x$ and $y$ and describes ${xVal} as a number of straws instead of a number of triangles` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,11 +47,11 @@ export const generator_200 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
 
     return {
-      questionText: `In the equation $3x + 4y = ${total}$, the value of x is the number of triangles constructed and the value of y is the number of rectangles constructed. What is the meaning of the solution $(x, y) = (${xVal}, ${yVal})$?`,
+      questionText: `A student uses straws to construct triangles and rectangles. Each triangle uses 3 straws, and each rectangle uses 4 straws. The equation $3x + 4y = ${total}$ represents this situation, where $x$ is the number of triangles constructed, $y$ is the number of rectangles constructed, and ${total} is the total number of straws used. What is the best interpretation of the solution $(x, y) = (${xVal}, ${yVal})$ in this context?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. In the ordered pair $(x, y) = (${xVal}, ${yVal})$, the first coordinate is the value of x (the number of triangles) and the second coordinate is the value of y (the number of rectangles). So ${xVal} triangles correspond to ${yVal} rectangles. Substituting confirms $3(${xVal}) + 4(${yVal}) = ${total}$. The other choices either swap the two coordinates or relabel the number of rectangles as a different quantity.`
+      explanation: `Choice ${correctOption.letter} is correct. In the ordered pair $(x, y) = (${xVal}, ${yVal})$, the value of $x$, the number of triangles, is ${xVal}, and the value of $y$, the number of rectangles, is ${yVal}. Substituting confirms $3(${xVal}) + 4(${yVal}) = ${total}$. So if ${xVal} triangles are constructed, then ${yVal} rectangles are constructed. ${shuffledOptions.filter(o => !o.isCorrect).map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
