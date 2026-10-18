@@ -23,34 +23,25 @@ export const generator_228 = {
   },
 
   generate: (): QuestionData => {
-    let bonus = getRandomInt(800, 1200);
-    let hourlyRate = getRandomInt(15, 25);
-    let hours = getRandomInt(30, 40);
-
-    // The three distractors reuse these numbers, so certain draws can make a
-    // distractor equal the correct answer (hours) or equal each other — e.g.
-    // floor(bonus/hourlyRate) lands in [32, 80] and can coincide with hours in
-    // [30, 40]. Re-draw (bounded) until all four option values are distinct.
-    const optionValues = () => [
-      Math.floor(hours / 2),
-      hours,
-      Math.floor(bonus / hourlyRate),
-      Math.floor((bonus + hourlyRate * hours) / hourlyRate),
-    ];
-    let tries = 0;
-    while (new Set(optionValues()).size !== 4 && tries++ < 50) {
-      bonus = getRandomInt(800, 1200);
+    // The bonus is a multiple of the hourly rate, so dividing the bonus or the
+    // total pay by the rate gives a whole number (the old choices were floors
+    // of inexact quotients, and one was "approximately half" the answer).
+    // Redraw until the four choices differ.
+    let hourlyRate = 15, hours = 30, k = 60;
+    do {
       hourlyRate = getRandomInt(15, 25);
       hours = getRandomInt(30, 40);
-    }
-
+      k = getRandomInt(Math.ceil(800 / hourlyRate), Math.floor(1200 / hourlyRate));
+    } while (new Set([hours, k, k + hours, hourlyRate * hours]).size < 4);
+    const bonus = hourlyRate * k;
     const totalPay = bonus + hourlyRate * hours;
+    const fmt = (n: number) => n.toLocaleString('en-US');
 
     const optionsData = [
-      { text: Math.floor(hours / 2).toString(), isCorrect: false, reason: "is approximately half the correct number of hours" },
-      { text: hours.toString(), isCorrect: true },
-      { text: Math.floor(bonus / hourlyRate).toString(), isCorrect: false, reason: "divides the bonus by the hourly rate" },
-      { text: Math.floor(totalPay / hourlyRate).toString(), isCorrect: false, reason: "divides total pay by hourly rate without subtracting the bonus" }
+      { text: (hourlyRate * hours).toString(), isCorrect: false, reason: `is the amount, in dollars, the employee earned for the hours worked, $${fmt(totalPay)} - ${fmt(bonus)}$; it must still be divided by ${hourlyRate}` },
+      { text: hours.toString(), isCorrect: true, reason: '' },
+      { text: k.toString(), isCorrect: false, reason: `results from dividing the bonus, \\$${fmt(bonus)}, by ${hourlyRate}` },
+      { text: (k + hours).toString(), isCorrect: false, reason: `results from dividing the total pay, \\$${fmt(totalPay)}, by ${hourlyRate} without first subtracting the bonus` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -63,11 +54,11 @@ export const generator_228 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `In the equation $T = ${bonus} + ${hourlyRate}h$, $T$ represents an employee's total take-home pay, in dollars, for her first week of work, where $h$ represents the number of hours she worked that week and \\$${bonus} represents a sign-on bonus. If the employee's total take-home pay was \\$${totalPay}, for how many hours was the employee paid for her first week of work?`,
+      questionText: `In the equation $T = ${fmt(bonus)} + ${hourlyRate}h$, $T$ represents an employee's total take-home pay, in dollars, for her first week of work, where $h$ represents the number of hours she worked that week and \\$${fmt(bonus)} represents a sign-on bonus. If the employee's total take-home pay was \\$${fmt(totalPay)}, for how many hours was the employee paid for her first week of work?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: hours.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting the total pay for $T$ gives the equation $T = ${bonus} + ${hourlyRate}h$ with $T = ${totalPay}$. Subtract the sign-on bonus and divide by the hourly rate to solve for $h$: $h = \\frac{${totalPay} - ${bonus}}{${hourlyRate}} = ${hours}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${fmt(totalPay)} for $T$ in the given equation yields $${fmt(totalPay)} = ${fmt(bonus)} + ${hourlyRate}h$. Subtracting ${fmt(bonus)} from both sides yields $${fmt(hourlyRate * hours)} = ${hourlyRate}h$, and dividing both sides by ${hourlyRate} yields $h = ${hours}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
