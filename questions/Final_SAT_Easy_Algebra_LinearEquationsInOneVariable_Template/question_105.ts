@@ -28,10 +28,10 @@ export const generator_105 = {
     const result = x + addend;
 
     const optionsData = [
-      { text: (addend - x).toString(), isCorrect: false, reason: "results from subtracting instead of adding" },
-      { text: addend.toString(), isCorrect: false, reason: "ignores the variable" },
+      { text: (addend - x).toString(), isCorrect: false, reason: `results from subtracting ${x} from ${addend} instead of adding` },
+      { text: addend.toString(), isCorrect: false, reason: `is the value of the constant ${addend} alone, without adding the value of $x$` },
       { text: result.toString(), isCorrect: true },
-      { text: (2 * x + addend).toString(), isCorrect: false, reason: "results from doubling x incorrectly" }
+      { text: (2 * x + addend).toString(), isCorrect: false, reason: `results from adding twice the value of $x$, ${2 * x}, to ${addend}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,7 +47,7 @@ export const generator_105 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Substitute: ${x} + ${addend} = ${result}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Substituting ${x} for $x$ in the expression $x + ${addend}$ gives $${x} + ${addend} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };

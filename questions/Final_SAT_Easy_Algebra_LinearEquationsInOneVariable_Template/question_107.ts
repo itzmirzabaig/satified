@@ -32,9 +32,9 @@ export const generator_107 = {
 
     const optionsData = [
       { text: volunteers.toString(), isCorrect: true },
-      { text: donors.toString(), isCorrect: false, reason: "is the number of donors" },
-      { text: total.toString(), isCorrect: false, reason: "is the total" },
-      { text: (total + donors).toString(), isCorrect: false, reason: "incorrectly adds instead of subtracts" }
+      { text: donors.toString(), isCorrect: false, reason: "is the number of people who contributed as a donor" },
+      { text: total.toString(), isCorrect: false, reason: "is the total number of people who contributed" },
+      { text: (total + donors).toString(), isCorrect: false, reason: `results from adding ${donors} to ${total} instead of subtracting it` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,7 +50,7 @@ export const generator_107 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: volunteers.toString(),
-      explanation: `Volunteers = Total - Donors = ${total} - ${donors} = ${volunteers}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Each of the ${total} people contributed as either a donor or a volunteer, and ${donors} contributed as a donor. So the number of people who contributed as a volunteer is $${total} - ${donors} = ${volunteers}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };

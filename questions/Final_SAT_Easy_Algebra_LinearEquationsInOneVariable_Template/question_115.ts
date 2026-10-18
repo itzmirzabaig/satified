@@ -50,7 +50,7 @@ export const generator_115 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: yellow.toString(),
-      explanation: `Yellow = Total - Blue = $${total} - ${blue} = ${yellow}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Each of the ${total} flags was either blue or yellow, and ${blue} of them were blue. So the number of yellow flags used is $${total} - ${blue} = ${yellow}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
