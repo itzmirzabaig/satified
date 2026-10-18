@@ -70,7 +70,7 @@ function generateWithValues(finalResult: number, finalCoeff: number, finalX: num
     figureCode: null,
     options: shuffled.map(o => o.text),
     correctAnswer: finalResult.toString(),
-    explanation: `Choice ${correctOption.letter} is correct. Substitute $${finalX}$ for $x$ in the function: $g(${finalX}) = \\sqrt{${finalCoeff}(${finalX}) + 1}$. This simplifies to $\sqrt{${finalInside}}$, which is $${finalResult}$.`
+    explanation: `Choice ${correctOption.letter} is correct. Substitute $${finalX}$ for $x$ in the function: $g(${finalX}) = \\sqrt{${finalCoeff}(${finalX}) + 1}$. This simplifies to $\\sqrt{${finalInside}}$, which is $${finalResult}$.`
   };
 }
 
