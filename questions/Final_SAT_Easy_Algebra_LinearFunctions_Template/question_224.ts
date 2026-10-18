@@ -34,13 +34,15 @@ export const generator_224 = {
       monthlyCost = getRandomInt(20, 30);
     }
 
-    const correctEquation = `c=${monthlyCost}t+${activationFee}`;
+    // All choices typeset (only the fraction choices were, so the others showed
+    // as plain text like "c=30t+35")
+    const correctEquation = `$c = ${monthlyCost}t + ${activationFee}$`;
 
-    const distractorA = `c=\\frac{t}{${monthlyCost}}+${activationFee}`;
+    const distractorA = `$c = \\frac{t}{${monthlyCost}} + ${activationFee}$`;
 
-    const distractorB = `c=\\frac{t}{${activationFee}}+${monthlyCost}`;
+    const distractorB = `$c = \\frac{t}{${activationFee}} + ${monthlyCost}$`;
 
-    const distractorD = `c=${activationFee}t+${monthlyCost}`;
+    const distractorD = `$c = ${activationFee}t + ${monthlyCost}$`;
 
     const optionsData = [
       { text: distractorA, isCorrect: false, reason: "incorrectly divides time by monthly cost" },
