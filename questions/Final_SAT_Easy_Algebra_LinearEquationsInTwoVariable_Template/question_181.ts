@@ -55,11 +55,11 @@ export const generator_181 = {
     const letterOf = (key: string) => shuffled.find(o => o.key === key)!.letter;
 
     return {
-      questionText: `Fertilizer A is ${pct1}% filler ($x$ pounds) and Fertilizer B is ${pct2}% filler ($y$ pounds). The total amount of filler is ${total} pounds. Which equation represents this situation?`,
+      questionText: `Fertilizer A is ${pct1}% filler by weight, and Fertilizer B is ${pct2}% filler by weight. A mixture of $x$ pounds of Fertilizer A and $y$ pounds of Fertilizer B contains a total of ${total} pounds of filler. Which equation represents this situation?`,
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: correct.text,
-      explanation: `Choice ${correct.letter} is correct. Convert each percentage to a decimal before multiplying: ${pct1}% = ${dec1} and ${pct2}% = ${dec2}. The filler from Fertilizer A is ${dec1}x pounds and from Fertilizer B is ${dec2}y pounds, and their sum is the total filler: $${dec1}x + ${dec2}y = ${total}$. Choice ${letterOf('swap')} is incorrect; it attaches each decimal to the wrong variable. Choice ${letterOf('ints')} is incorrect; it uses the whole-number percents instead of decimals. Choice ${letterOf('intsSwap')} is incorrect; it both uses whole numbers and swaps the coefficients.`
+      explanation: `Choice ${correct.letter} is correct. Written as decimals, ${pct1}% is ${dec1} and ${pct2}% is ${dec2}. So $x$ pounds of Fertilizer A contain $${dec1}x$ pounds of filler, and $y$ pounds of Fertilizer B contain $${dec2}y$ pounds of filler. The total amount of filler is ${total} pounds, so $${dec1}x + ${dec2}y = ${total}$. Choice ${letterOf('swap')} is incorrect because it applies each percent to the wrong fertilizer. Choice ${letterOf('ints')} is incorrect because it uses the percents as whole numbers instead of writing them as decimals. Choice ${letterOf('intsSwap')} is incorrect because it uses the percents as whole numbers and applies each to the wrong fertilizer.`
     };
   }
 };
