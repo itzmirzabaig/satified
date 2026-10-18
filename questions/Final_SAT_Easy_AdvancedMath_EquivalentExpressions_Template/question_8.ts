@@ -23,8 +23,10 @@ export const generator_8 = {
   },
 
   generate: (): QuestionData => {
-    const root1 = getRandomInt(10, 20);
-    const root2 = getRandomInt(10, 30);
+    // Even roots, as in the original (16 and 26): two distractors halve the
+    // roots, and an odd root would turn them into decimals like 8.5w.
+    const root1 = 2 * getRandomInt(5, 10);
+    const root2 = 2 * getRandomInt(5, 15);
     const square1 = root1 * root1;
     const square2 = root2 * root2;
 
@@ -43,13 +45,15 @@ export const generator_8 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+    const letterOf = (i: number) => shuffledOptions.find(o => o.text === optionsData[i].text)!.letter;
+    const h1 = root1 / 2, h2 = root2 / 2;
 
     return {
       questionText: `Which expression is equivalent to $${square1}w^{2}-${square2}$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. This is a difference of squares: $(${root1}w)^2-(${root2})^2 = (${root1}w-${root2})(${root1}w+${root2})$.`
+      explanation: `Choice ${correctOption.letter} is correct. Both terms are perfect squares, since $${square1}w^{2}=(${root1}w)^2$ and $${square2}=${root2}^2$, so this is a difference of squares: $(${root1}w)^2-(${root2})^2 = (${root1}w-${root2})(${root1}w+${root2})$. Choice ${letterOf(0)} is incorrect; $(${root1}w-${root2})(${root1}w-${root2})$ expands to $${square1}w^{2}-${2 * root1 * root2}w+${square2}$. Choice ${letterOf(1)} is incorrect; it halves the square roots, and expands to $${h1 * h1}w^{2}-${h2 * h2}$. Choice ${letterOf(2)} is incorrect; it halves the square roots and also uses the same sign in both factors.`
     };
   }
 };
