@@ -39,13 +39,14 @@ export const generator_64 = {
     const shuffled = shuffle(optionsData).map((opt, i) => ({ ...opt, letter: String.fromCharCode(65 + i) }));
 
     const correctOption = shuffled.find(o => o.isCorrect)!;
+    const letterOf = (i: number) => shuffled.find(o => o.text === optionsData[i].text)!.letter;
 
     return {
       questionText: `The function $g$ is defined by $g(x)=x^2+${cVal}$. For which value of $x$ is $g(x)=${target}$?`,
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. Setting $g(x)=${target}$ gives $x^2+${cVal}=${target}$. Subtracting ${cVal} gives $x^2=${target - cVal}$, so $x^2=${xSol * xSol}$. Taking the square root gives $x=\\pm${xSol}$. Since ${xSol} is one of the choices, it is correct.`
+      explanation: `Choice ${correctOption.letter} is correct. Setting $g(x)=${target}$ gives $x^2+${cVal}=${target}$. Subtracting ${cVal} from both sides gives $x^2=${xSol * xSol}$, and taking the square root of both sides gives $x=\\pm${xSol}$. Of these, only ${xSol} is one of the choices. Choice ${letterOf(3)} is incorrect; ${xSol * xSol} is the value of $x^2$, not $x$. Choice ${letterOf(2)} is incorrect; ${target} is the value of $g(x)$, not $x$. Choice ${letterOf(1)} is incorrect; $g(${xSol + 1})=${(xSol + 1) * (xSol + 1) + cVal}$, not ${target}.`
     };
   }
 };
