@@ -21,25 +21,25 @@ export const generator_197 = {
   },
 
   generate: (): QuestionData => {
-    const p1 = getRandomInt(1, 5);          // drink price
+    const p1 = getRandomInt(2, 5);          // drink price (at least 2, so the equation never shows "1x")
     const p2 = getRandomInt(p1 + 2, 12);    // salad price (more expensive)
 
     const optionsData = [
-      { text: `The price, in dollars, of one salad`, isCorrect: true },
-      { text: `The price, in dollars, of one drink`, isCorrect: false, reason: "describes coefficient of x" },
-      { text: `The number of drinks`, isCorrect: false, reason: "confuses rate with variable" },
-      { text: `The number of salads`, isCorrect: false, reason: "confuses rate with variable" }
+      { text: `The price, in dollars, of one salad`, isCorrect: true, reason: '' },
+      { text: `The price, in dollars, of one drink`, isCorrect: false, reason: `the price of one drink is ${p1}, the coefficient of $x$` },
+      { text: `The number of drinks`, isCorrect: false, reason: `the number of drinks is $x$` },
+      { text: `The number of salads`, isCorrect: false, reason: `the number of salads is $y$; ${p2} is multiplied by the number of salads` }
     ];
 
     const shuffled = shuffle(optionsData).map((opt, i) => ({ ...opt, letter: String.fromCharCode(65 + i) }));
     const correctLetter = shuffled.find(o => o.isCorrect)!.letter;
 
     return {
-      questionText: `$F = ${p1}x + ${p2}y$ is the total cost for $x$ drinks and $y$ salads. What does ${p2} represent?`,
+      questionText: `The equation $F = ${p1}x + ${p2}y$ gives the total cost $F$, in dollars, of buying $x$ drinks and $y$ salads at a café. What is the best interpretation of ${p2} in this context?`,
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: shuffled.find(o => o.isCorrect)!.text,
-      explanation: `Choice ${correctLetter} is correct. ${p2} multiplies $y$ (salads), so it represents the price per salad in dollars.`
+      explanation: `Choice ${correctLetter} is correct. The term $${p2}y$ is the cost, in dollars, of $y$ salads, so each salad adds ${p2} dollars to the total cost. Therefore, ${p2} is the price, in dollars, of one salad. ${shuffled.filter(o => !o.isCorrect).map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
