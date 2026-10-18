@@ -22,27 +22,20 @@ export const generator_135 = {
   },
 
   generate: (): QuestionData => {
-    let numBins = getRandomInt(5, 15);
-    let unitPrice = getRandomInt(5, 15);
-    let originalTotal = unitPrice * numBins;
-    let finalPrice = getRandomInt(20, 50);
-    // The discount must be a positive amount for the coupon story to make sense,
-    // so keep the final price strictly below the original total. Redraw (bounded).
-    let tries = 0;
-    while (originalTotal - finalPrice < 1 && tries++ < 50) {
-      numBins = getRandomInt(5, 15);
-      unitPrice = getRandomInt(5, 15);
-      originalTotal = unitPrice * numBins;
-      finalPrice = getRandomInt(20, 50);
-    }
+    const numBins = getRandomInt(5, 15);
+    const unitPrice = getRandomInt(5, 15);
+    const originalTotal = unitPrice * numBins; // at least 25
+    // The coupon must take a positive amount off, so the final cost is drawn
+    // strictly below the original total.
+    const finalPrice = getRandomInt(20, Math.min(50, originalTotal - 1));
     const discount = originalTotal - finalPrice;
 
     return {
-      questionText: `A customer bought storage bins that were each the same price. They used a coupon for ${discount} off the entire purchase. The cost for the entire purchase after using the coupon was ${finalPrice}. If they bought ${numBins} storage bins, what was the original price, in dollars, for one storage bin?`,
+      questionText: `A customer bought storage bins that were each the same price. They used a coupon for \\$${discount} off the entire purchase. The cost for the entire purchase after using the coupon was \\$${finalPrice}. If they bought ${numBins} storage bins, what was the original price, in dollars, for one storage bin?`,
       figureCode: null,
       options: [],
       correctAnswer: unitPrice.toString(),
-      explanation: `The original total before the discount is the final price plus the discount amount: ${finalPrice} + ${discount} = ${originalTotal}. The price for one storage bin is found by dividing the original total by the number of bins: ${originalTotal} / ${numBins} = ${unitPrice}.`
+      explanation: `The original cost of the entire purchase, in dollars, is the cost after the coupon plus the amount of the coupon: $${finalPrice} + ${discount} = ${originalTotal}$. Since the customer bought ${numBins} bins that were each the same price, the original price, in dollars, for one storage bin is $\\frac{${originalTotal}}{${numBins}} = ${unitPrice}$.`
     };
   }
 };
