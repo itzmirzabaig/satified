@@ -28,11 +28,11 @@ export const generator_163 = {
     const b = (perimeter - 2 * a) / 2;
 
     return {
-      questionText: `$${perimeter} = 2a + 2b$ relates sides $a, b$ of a parallelogram. If $a=${a}$, what is $b$?`,
+      questionText: `The equation $${perimeter} = 2a + 2b$ represents the perimeter, in centimeters, of a parallelogram with adjacent sides of length $a$ centimeters and $b$ centimeters. If $a = ${a}$, what is the value of $b$?`,
       figureCode: null,
       options: [],
       correctAnswer: b.toString(),
-      explanation: `Substitute $a=${a}$ into the equation: $${perimeter} = 2(${a}) + 2b = ${2*a} + 2b$. Solving: $${perimeter - 2*a} = 2b$, so $b = ${b}$.`
+      explanation: `Substituting ${a} for $a$ in the given equation yields $${perimeter} = 2(${a}) + 2b$, or $${perimeter} = ${2 * a} + 2b$. Subtracting ${2 * a} from both sides yields $${perimeter - 2 * a} = 2b$, and dividing both sides by 2 yields $b = ${b}$.`
     };
   }
 };
