@@ -88,8 +88,8 @@ export const generator_636 = {
         <line x1="${sx(0).toFixed(1)}" y1="${sy(yMin).toFixed(1)}" x2="${sx(0).toFixed(1)}" y2="${sy(yMax).toFixed(1)}" stroke="currentColor" stroke-width="2" />
         <polyline points="${paraPts.join(' ')}" fill="none" stroke="#3b82f6" stroke-width="2.5" />
         <polyline points="${linePts.join(' ')}" fill="none" stroke="#ef4444" stroke-width="2.5" />
-        <circle cx="${sx(0).toFixed(1)}" cy="${sy(c).toFixed(1)}" r="4" fill="#111827" />
-        <circle cx="${sx(-1).toFixed(1)}" cy="${sy(c + 1).toFixed(1)}" r="4" fill="#111827" />
+        <circle cx="${sx(0).toFixed(1)}" cy="${sy(c).toFixed(1)}" r="4" fill="currentColor" />
+        <circle cx="${sx(-1).toFixed(1)}" cy="${sy(c + 1).toFixed(1)}" r="4" fill="currentColor" />
         <text x="${(sx(0) + 8).toFixed(1)}" y="${(sy(c) - 6).toFixed(1)}" font-size="11" fill="currentColor">(0, ${c})</text>
       </svg>
       </div>
