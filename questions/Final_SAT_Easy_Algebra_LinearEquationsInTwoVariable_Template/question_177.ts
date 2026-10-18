@@ -28,11 +28,11 @@ export const generator_177 = {
     const perimeter = 2 * (l + w);
 
     return {
-      questionText: `$${perimeter} = 2x + 2y$ gives the perimeter for length $x$ and width $y$. If the width is ${w}, what is the length?`,
+      questionText: `The equation $${perimeter} = 2x + 2y$ represents the perimeter, in feet, of a rectangular rug with length $x$ feet and width $y$ feet. If the width of the rug is ${w} feet, what is the length of the rug, in feet?`,
       figureCode: null,
       options: [],
       correctAnswer: l.toString(),
-      explanation: `Substitute $y=${w}$ into the equation: $${perimeter} = 2x + 2(${w}) = 2x + ${2*w}$. Solving: $2x = ${perimeter - 2*w}$, so $x = ${l}$.`
+      explanation: `Substituting ${w} for $y$ in the given equation yields $${perimeter} = 2x + 2(${w})$, or $${perimeter} = 2x + ${2 * w}$. Subtracting ${2 * w} from both sides yields $${perimeter - 2 * w} = 2x$, and dividing both sides by 2 yields $x = ${l}$. Therefore, the length of the rug is ${l} feet.`
     };
   }
 };
