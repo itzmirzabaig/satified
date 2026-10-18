@@ -30,11 +30,11 @@ export const generator_121 = {
     const result = multiplier * rightSide;
 
     return {
-      questionText: `If ${coeff}x + ${const1} = ${rightSide}, what is the value of ${multiplier * coeff}x + ${multiplier * const1}?`,
+      questionText: `If $${coeff}x + ${const1} = ${rightSide}$, what is the value of $${multiplier * coeff}x + ${multiplier * const1}$?`,
       figureCode: null,
       options: [],
       correctAnswer: result.toString(),
-      explanation: `Multiply by ${multiplier}: ${multiplier}(${coeff}x + ${const1}) = ${multiplier}(${rightSide}), giving ${multiplier * coeff}x + ${multiplier * const1} = ${result}.`
+      explanation: `The expression $${multiplier * coeff}x + ${multiplier * const1}$ is equivalent to $${multiplier}(${coeff}x + ${const1})$. Multiplying both sides of the given equation by ${multiplier} gives $${multiplier}(${coeff}x + ${const1}) = ${multiplier}(${rightSide})$, which is equivalent to $${multiplier * coeff}x + ${multiplier * const1} = ${result}$. Therefore, the value of $${multiplier * coeff}x + ${multiplier * const1}$ is ${result}.`
     };
   }
 };
