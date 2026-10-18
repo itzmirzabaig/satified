@@ -7,7 +7,14 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [d1: 1-3, factor: 2-3]
 * - Difficulty factors: [Fraction arithmetic, common denominators]
-* - Constraints: [Clean integer result]
+* - Distractor patterns: [subtracting in the wrong order, the combined
+*   coefficient (1/x), subtracting the denominators]
+* - Constraints: [Clean integer result; d1 >= 2]
+*
+* FIX NOTES:
+* One choice was 1/3 on every draw ("wrong operation"), the others were -x and
+* 2x labeled "negative value error" and "calculation error", and d1 could be
+* 1, printing "1/1 x" in the stem. Each distractor now comes from a real error.
 * - Question type: [Multiple Choice]
 * - Figure generation: [None]
 */
@@ -22,18 +29,23 @@ export const generator_143 = {
   },
 
   generate: (): QuestionData => {
-    const fMinusOne = getRandomInt(1, 3);
-    const f = fMinusOne + 1;
-    const d1Multiplier = getRandomInt(1, 4);
-    const d1 = fMinusOne * d1Multiplier;
+    // d1 = (f - 1)m and d2 = f * d1, so x = d2 / (f - 1) = f * m is an integer.
+    // Redraw if d1 = 1, which would print "1/1 x".
+    let f = 2, m = 2, d1 = 2;
+    do {
+      f = getRandomInt(1, 3) + 1;
+      m = getRandomInt(1, 4);
+      d1 = (f - 1) * m;
+    } while (d1 === 1);
     const d2 = d1 * f;
-    const xValue = (f * d1) / (f - 1);
-
+    const xValue = f * m;
+    // Distinct: -x < 0 < 1/x < 1 <= d2 - d1 = m(f - 1)^2, and m(f - 1)^2 = fm
+    // has no solution in integers, so d2 - d1 never equals x.
     const optionsData = [
-      { text: (-xValue).toString(), isCorrect: false, reason: "negative value error" },
-      { text: `\\(\\frac{1}{3}\\)`, isCorrect: false, reason: "wrong operation" },
-      { text: xValue.toString(), isCorrect: true },
-      { text: (xValue * 2).toString(), isCorrect: false, reason: "calculation error" }
+      { text: (-xValue).toString(), isCorrect: false, reason: `it results from subtracting $\\frac{1}{${d1}}x$ from $\\frac{1}{${d2}}x$ instead of subtracting $\\frac{1}{${d2}}x$ from $\\frac{1}{${d1}}x$` },
+      { text: `$\\frac{1}{${xValue}}$`, isCorrect: false, reason: `it is equal to the coefficient of $x$ after the fractions are combined, $\\frac{${f - 1}}{${d2}}$, not the value of $x$` },
+      { text: xValue.toString(), isCorrect: true, reason: '' },
+      { text: (d2 - d1).toString(), isCorrect: false, reason: `it results from subtracting the denominators, $${d2} - ${d1}$, instead of subtracting the fractions` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -49,7 +61,7 @@ export const generator_143 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: xValue.toString(),
-      explanation: `To solve for $x$, find a common denominator for the fractions, which is ${d2}. This gives $\\frac{${f}}{${d2}}x - \\frac{1}{${d2}}x = 1$, or $\\frac{${f - 1}}{${d2}}x = 1$. Multiplying by the reciprocal $\\frac{${d2}}{${f - 1}}$ gives $x = ${xValue}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The least common denominator of the fractions is ${d2}, and $\\frac{1}{${d1}} = \\frac{${f}}{${d2}}$. So the equation can be rewritten as $\\frac{${f}}{${d2}}x - \\frac{1}{${d2}}x = 1$, or $\\frac{${f - 1}}{${d2}}x = 1$. ${f - 1 === 1 ? `Multiplying both sides by ${d2}` : `Multiplying both sides by the reciprocal $\\frac{${d2}}{${f - 1}}$`} yields $x = ${xValue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
