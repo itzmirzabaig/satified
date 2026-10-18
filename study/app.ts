@@ -485,7 +485,7 @@ class QuestionTester {
       const key=Object.keys(mod).find(k=>k.startsWith('generator_'));
       if(!key) throw new Error('no generator');
       this.currentData=mod[key].generate();
-    } catch { this.showError('Failed to load — try Next or Regenerate.'); return; }
+    } catch { this.showError('Failed to load. Try Next or Regenerate.'); return; }
     this.renderQuestion();
     this.typeset();
     // Tutor context: published for study/tutor.js (the Ask the tutor panel)
@@ -1161,8 +1161,8 @@ class PracticeTestEngine {
     adaptiveCb?.addEventListener('change', () => {
       this.adaptive = adaptiveCb.checked;
       if (adaptiveDesc) adaptiveDesc.textContent = this.adaptive
-        ? 'On — Module 2 difficulty adjusts to your Module 1 score'
-        : 'Off — equal difficulty both modules';
+        ? 'On: Module 2 difficulty adjusts to your Module 1 score'
+        : 'Off: equal difficulty both modules';
     });
 
     // Begin
@@ -1285,7 +1285,7 @@ class PracticeTestEngine {
     if (ptJumpOpts) ptJumpOpts.innerHTML = '';
     // Reset score display
     const scoreNum = document.getElementById('pt-score-num');
-    if (scoreNum) scoreNum.textContent = '—';
+    if (scoreNum) scoreNum.textContent = '';
     const scoreSvg = document.getElementById('pt-score-svg');
     if (scoreSvg) scoreSvg.innerHTML = '';
     const domainBreakdown = document.getElementById('pt-domain-breakdown');
@@ -1893,7 +1893,7 @@ class PracticeTestEngine {
         if (!q.data) {
           // Question was never loaded (user skipped to end before reaching it)
           const card = document.getElementById('pt-result-card')!;
-          card.innerHTML = `<div class="pt-result-card-header"><span class="pt-result-card-module">Module ${modNum} · Q${qIndex + 1}</span><span class="pt-result-card-status" style="color:#999">— Not reached</span></div><div class="pt-result-card-body" style="opacity:0.5;font-size:14px">This question was not loaded during the test.</div>`;
+          card.innerHTML = `<div class="pt-result-card-header"><span class="pt-result-card-module">Module ${modNum} · Q${qIndex + 1}</span><span class="pt-result-card-status" style="color:#999">Not reached</span></div><div class="pt-result-card-body" style="opacity:0.5;font-size:14px">This question was not loaded during the test.</div>`;
           document.getElementById('pt-result-counter')!.textContent = `${idx + 1} / ${allResultQs.length}`;
           const prevBtn = document.getElementById('pt-result-prev') as HTMLButtonElement;
           const nextBtn = document.getElementById('pt-result-next') as HTMLButtonElement;

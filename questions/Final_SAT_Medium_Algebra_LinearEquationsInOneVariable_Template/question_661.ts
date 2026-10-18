@@ -45,7 +45,7 @@ export const generator_661 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The equation $$${coefficient}x = ${coefficient}x$$ is an identity—it is true for any value of $$x$$. Subtracting $$${coefficient}x$$ from both sides gives $$0 = 0$$, which is always true. Therefore, the equation has infinitely many solutions.`
+      explanation: `Choice ${correctLetter} is correct. The equation $$${coefficient}x = ${coefficient}x$$ is an identity: it is true for any value of $$x$$. Subtracting $$${coefficient}x$$ from both sides gives $$0 = 0$$, which is always true. Therefore, the equation has infinitely many solutions.`
     };
   }
 };

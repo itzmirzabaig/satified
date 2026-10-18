@@ -151,7 +151,7 @@ export const generator_85 = {
       figureCode: tableHTML,
       options: shuffled.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. Each pair $(x, y)$ in the table satisfies $y = x^3$: when $x = ${xVals[1]}$, $y = ${points[1].y}$, and when $x = ${endX}$, $y = ${points[3].y}$. On the same axes, only the cubic curve passes through all of these points — the parabola $y = x^2$ and the straight lines do not.`
+      explanation: `Choice ${correctOption.letter} is correct. Each pair $(x, y)$ in the table satisfies $y = x^3$: when $x = ${xVals[1]}$, $y = ${points[1].y}$, and when $x = ${endX}$, $y = ${points[3].y}$. On the same axes, only the cubic curve passes through all of these points; the parabola $y = x^2$ and the straight lines do not.`
     };
   }
 };

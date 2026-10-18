@@ -82,7 +82,7 @@ export const generator_1298 = {
         $$ (-1)^2 + y^2 = 1 \\;\\Rightarrow\\; y^2 = 0 \\;\\Rightarrow\\; y = 0, $$
         so $H$ is at $(-1, 0)$.
         <br/>
-        <b>Find the angle.</b> Rotating from $F$ on the positive $x$-axis to $H$ on the negative $x$-axis is a half turn, $\\pi$ radians. Every coterminal direction has the form $\\pi + 2\\pi k$, which equals $(2k+1)\\pi$ — the odd multiples of $\\pi$.
+        <b>Find the angle.</b> Rotating from $F$ on the positive $x$-axis to $H$ on the negative $x$-axis is a half turn, $\\pi$ radians. Every coterminal direction has the form $\\pi + 2\\pi k$, which equals $(2k+1)\\pi$, the odd multiples of $\\pi$.
         <br/>
         Choice ${correctLetter} has an odd coefficient of $\\pi$ (here $n = ${n}$), so it points at $(-1, 0)$ and is a valid measure.
         <br/><br/>

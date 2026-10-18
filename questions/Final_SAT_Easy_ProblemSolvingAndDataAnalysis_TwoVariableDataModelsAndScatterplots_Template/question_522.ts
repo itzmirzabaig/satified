@@ -22,11 +22,11 @@ export const generator_522 = {
     // 1. Setup Intervals and Labels
     // We strictly define the intervals we care about for the options
     const intervalDefinitions = [
-      { label: "2003–2004", startYear: 2003, endYear: 2004, isGap: false },
-      { label: "2004–2008", startYear: 2004, endYear: 2008, isGap: true }, // Gap year, not an option usually
-      { label: "2008–2009", startYear: 2008, endYear: 2009, isGap: false },
-      { label: "2009–2010", startYear: 2009, endYear: 2010, isGap: false },
-      { label: "2010–2011", startYear: 2010, endYear: 2011, isGap: false }
+      { label: "2003 and2004", startYear: 2003, endYear: 2004, isGap: false },
+      { label: "2004 and2008", startYear: 2004, endYear: 2008, isGap: true }, // Gap year, not an option usually
+      { label: "2008 and2009", startYear: 2008, endYear: 2009, isGap: false },
+      { label: "2009 and2010", startYear: 2009, endYear: 2010, isGap: false },
+      { label: "2010 and2011", startYear: 2010, endYear: 2011, isGap: false }
     ];
 
     // Select which valid interval (not the gap) will have the Max Change

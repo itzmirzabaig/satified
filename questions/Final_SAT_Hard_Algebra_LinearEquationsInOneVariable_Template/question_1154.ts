@@ -119,7 +119,7 @@ $$${b}p = ${-a}$$
 Divide both sides by $${b}$:
 $$p = ${pReductionStr}$$
 
-With $p = ${correctP}$ the equation becomes $0 \\cdot x = ${c}$, i.e. $0 = ${c}$, which is false — so there is no solution.
+With $p = ${correctP}$ the equation becomes $0 \\cdot x = ${c}$, i.e. $0 = ${c}$, which is false, so there is no solution.
 
 Choice ${correctLetter} is correct.
 

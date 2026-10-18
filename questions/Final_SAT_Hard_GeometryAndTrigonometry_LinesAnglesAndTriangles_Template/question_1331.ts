@@ -71,7 +71,7 @@ export const generator_1331 = {
       // FIX: Map strictly to strings for the frontend
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. It is given that $\\angle B \\cong \\angle E$ and $\\angle C \\cong \\angle F$. To prove congruence using the ASA (Angle-Side-Angle) Postulate, we need the length of the included side—the side between the two known angles—for both triangles. Thus, knowing the lengths of $BC$ and $EF$ is sufficient.
+      explanation: `Choice ${correctOption.letter} is correct. It is given that $\\angle B \\cong \\angle E$ and $\\angle C \\cong \\angle F$. To prove congruence using the ASA (Angle-Side-Angle) Postulate, we need the length of the included side (the side between the two known angles) for both triangles. Thus, knowing the lengths of $BC$ and $EF$ is sufficient.
 
 Choice ${getLetter('angleA')} is incorrect because ${optionsRaw.find(o => o.id === 'angleA')!.reason}.
 Choice ${getLetter('sideAB')} is incorrect because ${optionsRaw.find(o => o.id === 'sideAB')!.reason}.

@@ -41,7 +41,7 @@ export const generator_678 = {
     const product = getRandomElement(products);
     
     return {
-      questionText: `A museum rents ${product} to visitors. The museum earns revenue of \\$${pricePerUnit} for each ${product.slice(0, -1)} rented for the day. On Wednesday, the museum earned \\$${profit} in profit from renting ${product} after paying daily expenses of \\$${expenses}. How many ${product} did the museum rent on Wednesday? (profit = total revenue – total expenses)`,
+      questionText: `A museum rents ${product} to visitors. The museum earns revenue of \\$${pricePerUnit} for each ${product.slice(0, -1)} rented for the day. On Wednesday, the museum earned \\$${profit} in profit from renting ${product} after paying daily expenses of \\$${expenses}. How many ${product} did the museum rent on Wednesday? (profit = total revenue minus total expenses)`,
       figureCode: null,
       options: [],
       correctAnswer: correctAnswer,

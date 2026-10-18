@@ -96,7 +96,7 @@ export const generator_994 = {
     // Reasons are attached to each distractor here so they survive the shuffle
     // (keying explanation text to post-shuffle position mislabels the options).
     const optionsData = [
-      { text: steepSlope, isCorrect: false, reason: "is too steep — about three times the correct magnitude" },
+      { text: steepSlope, isCorrect: false, reason: "is too steep, about three times the correct magnitude" },
       { text: slopeVal.toFixed(1), isCorrect: true, reason: "" },
       { text: positiveSlope, isCorrect: false, reason: "has the correct magnitude but the wrong sign" },
       { text: wrongSlope, isCorrect: false, reason: "has both the wrong sign and the wrong magnitude" }

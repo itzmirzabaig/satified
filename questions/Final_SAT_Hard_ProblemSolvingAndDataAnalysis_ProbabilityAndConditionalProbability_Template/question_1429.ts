@@ -84,7 +84,7 @@ export const generator_1429 = {
     const correctAnswer = xValue.toString();
     
     return {
-      questionText: `Human blood can be classified into four common blood types—A, B, AB, and O. It is also characterized by the presence or absence of the rhesus factor. The table shows the distribution of blood type and rhesus factor for a group of people. If one of these people who is rhesus negative is chosen at random, the probability that the person has blood type B is $\\frac{1}{9}$. What is the value of $x$?`,
+      questionText: `Human blood can be classified into four common blood types: A, B, AB, and O. It is also characterized by the presence or absence of the rhesus factor. The table shows the distribution of blood type and rhesus factor for a group of people. If one of these people who is rhesus negative is chosen at random, the probability that the person has blood type B is $\\frac{1}{9}$. What is the value of $x$?`,
       figureCode: tableCode,
       options: [],
       correctAnswer: correctAnswer,

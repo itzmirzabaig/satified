@@ -48,7 +48,7 @@ export const generator_552 = {
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. In the function, $x$ represents the number of years after ${startYear}, and $f(x)$ gives the value of the account, in dollars, at the end of that year. So $f(${yearsAfter}) \\approx ${finalValue}$ means that ${yearsAfter} years after ${startYear} — that is, in ${targetYear} — the value of the bank account is approximately \\$${finalValue}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. In the function, $x$ represents the number of years after ${startYear}, and $f(x)$ gives the value of the account, in dollars, at the end of that year. So $f(${yearsAfter}) \\approx ${finalValue}$ means that ${yearsAfter} years after ${startYear}, that is, in ${targetYear}, the value of the bank account is approximately \\$${finalValue}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText,

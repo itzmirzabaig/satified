@@ -71,7 +71,7 @@ export const generator_899 = {
     // STEP 4: Build explanation with dynamic letters
     const explanation = `Choice ${correctLetter} is correct. ` +
       `Statement I need not be true because sample statistics provide estimates of population parameters, ` +
-      `not exact values—there is always a margin of error. ` +
+      `not exact values; there is always a margin of error. ` +
       `Statement II need not be true because of sampling variability; ` +
       `different random samples from the same population will likely yield slightly different results. ` +
       `Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. ` +
