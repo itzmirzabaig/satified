@@ -37,9 +37,9 @@ export const generator_229 = {
 
     const optionsData = [
       { text: optionA, isCorrect: true },
-      { text: optionB, isCorrect: false, reason: "the end height depends on when the experiment ends" },
-      { text: optionC, isCorrect: false, reason: "describes the rate of change, not the initial value" },
-      { text: optionD, isCorrect: false, reason: "would require solving for when height equals zero" }
+      { text: optionB, isCorrect: false, reason: `the height at the end of the experiment is $f(x)$ for the last day, which depends on how long the experiment lasts` },
+      { text: optionC, isCorrect: false, reason: `the change in height each day is given by the coefficient of $x$, not by ${initialHeight}` },
+      { text: optionD, isCorrect: false, reason: `the number of days for all the fluid to evaporate is the value of $x$ for which $f(x) = 0$, not ${initialHeight}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -56,7 +56,7 @@ export const generator_229 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: optionA,
-      explanation: `Choice ${correctOption.letter} is correct. In the function $f(x) = ${initialHeight} - ${rate}x$, the value ${initialHeight} is the y-intercept, which represents the height when $x = 0$ (the start of the experiment). Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In the function $f(x) = ${initialHeight} - ${rate}x$, the value ${initialHeight} is the y-intercept, which represents the height when $x = 0$ (the start of the experiment). ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
