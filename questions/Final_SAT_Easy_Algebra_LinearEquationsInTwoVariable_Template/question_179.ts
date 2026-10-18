@@ -20,23 +20,20 @@ export const generator_179 = {
 
   generate: (): QuestionData => {
     // Generate random values
-    const hatPrice = getRandomInt(2, 5);   // price per package of hats
-    const cupPrice = getRandomInt(1, 3);   // price per cupcake
+    const hatPrice = getRandomInt(2, 5);   // price per package of party hats
+    const cupPrice = getRandomInt(2, 3);   // price per cupcake (not 1, which made the last step trivial)
     const hats = getRandomInt(5, 15);      // number of hat packages
     const cups = getRandomInt(20, 50);     // number of cupcakes
-    
+
     // Calculate total to ensure clean integer
     const total = hatPrice * hats + cupPrice * cups;
 
-    // Grammar helper so "1 dollars" reads as "1 dollar".
-    const dollarWord = (n: number) => (n === 1 ? 'dollar' : 'dollars');
-
     return {
-      questionText: `A customer spent ${total} dollars on hats (${hatPrice} ${dollarWord(hatPrice)} per package) and cupcakes (${cupPrice} ${dollarWord(cupPrice)} each). If they bought ${hats} packages of hats, how many cupcakes did they buy?`,
+      questionText: `A customer spent \\$${total} on party hats and cupcakes. The party hats cost \\$${hatPrice} per package, and the cupcakes cost \\$${cupPrice} each. If the customer bought ${hats} packages of party hats, how many cupcakes did the customer buy?`,
       figureCode: null,
       options: [],
       correctAnswer: cups.toString(),
-      explanation: `Hats cost ${hatPrice} × ${hats} = ${hatPrice * hats} dollars. Remaining for cupcakes: ${total} - ${hatPrice * hats} = ${cupPrice * cups} dollars. Since each cupcake is ${cupPrice} ${dollarWord(cupPrice)}, they bought ${cupPrice * cups} / ${cupPrice} = ${cups} cupcakes.`
+      explanation: `The ${hats} packages of party hats cost $${hatPrice}(${hats}) = ${hatPrice * hats}$ dollars, which leaves $${total} - ${hatPrice * hats} = ${cupPrice * cups}$ dollars for cupcakes. Since each cupcake costs \\$${cupPrice}, the customer bought $\\frac{${cupPrice * cups}}{${cupPrice}} = ${cups}$ cupcakes.`
     };
   }
 };
