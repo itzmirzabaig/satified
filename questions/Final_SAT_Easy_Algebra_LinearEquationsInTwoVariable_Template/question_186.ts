@@ -20,10 +20,10 @@ export const generator_186 = {
     const other = getRandomInt(100, 300);
 
     const optionsData = [
-      { text: `$x - y = ${other}$`, isCorrect: true },
-      { text: `$x + y = ${other}$`, isCorrect: false, reason: "incorrectly adds total and part" },
-      { text: `$2x - y = ${other}$`, isCorrect: false, reason: "wrong coefficient" },
-      { text: `$y - x = ${other}$`, isCorrect: false, reason: "implies negative other expenses" }
+      { text: `$x - y = ${other}$`, isCorrect: true, reason: '' },
+      { text: `$x + y = ${other}$`, isCorrect: false, reason: `it adds the department expenses to the total budget, but the total budget already includes the department expenses` },
+      { text: `$2x - y = ${other}$`, isCorrect: false, reason: `it counts the total budget twice` },
+      { text: `$y - x = ${other}$`, isCorrect: false, reason: `it subtracts the total budget from the department expenses, which would make the department expenses greater than the total budget` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -34,11 +34,11 @@ export const generator_186 = {
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
 
     return {
-      questionText: `Total budget is $x$. Dept expenses are $y$ and other expenses are $${other}$. Which relates $x$ and $y$?`,
+      questionText: `An office has a total budget of $x$ dollars. The entire budget is spent on department expenses of $y$ dollars and other expenses of \\$${other}. Which equation relates $x$ and $y$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `$x - y = ${other}$`,
-      explanation: `Choice ${correctLetter} is correct. $x = y + ${other}$, so $x - y = ${other}$.`
+      explanation: `Choice ${correctLetter} is correct. The total budget equals the department expenses plus the other expenses, so $x = y + ${other}$. Subtracting $y$ from both sides of this equation yields $x - y = ${other}$. ${shuffledOptions.filter(o => !o.isCorrect).map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
