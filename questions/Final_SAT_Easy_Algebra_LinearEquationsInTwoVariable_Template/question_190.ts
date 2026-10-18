@@ -58,7 +58,7 @@ export const generator_190 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The salt from the low-salt mixture is $${lowDec}x$ and the salt from the high-salt mixture is $${highDec}y$; their sum equals the salt in the final mixture, $(${finalDec})(${totalKg})$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The salt from the low-salt mixture is $${lowDec}x$ and the salt from the high-salt mixture is $${highDec}y$; their sum equals the salt in the final mixture, $(${finalDec})(${totalKg})$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
