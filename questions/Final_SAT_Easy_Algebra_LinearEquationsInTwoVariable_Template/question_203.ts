@@ -30,13 +30,15 @@ export const generator_203 = {
     // Generate quantities and compute total
     const qForks = getRandomInt(100, 999);
     const qPlates = getRandomInt(100, 999);
-    const total = ((p1Cents * qForks + p2Cents * qPlates) / 100).toFixed(2);
+    // Totals can pass $1,000, so group thousands with a comma.
+    const total = ((p1Cents * qForks + p2Cents * qPlates) / 100)
+      .toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     const optionsData = [
-      { text: `$${p1}x + ${p2}y = ${total}$`, isCorrect: true },
-      { text: `$${p2}x + ${p1}y = ${total}$`, isCorrect: false, reason: "swaps coefficients" },
-      { text: `$${p1}x - ${p2}y = ${total}$`, isCorrect: false, reason: "uses subtraction" },
-      { text: `$${p2}x - ${p1}y = ${total}$`, isCorrect: false, reason: "swaps and subtracts" }
+      { text: `$${p1}x + ${p2}y = ${total}$`, isCorrect: true, reason: '' },
+      { text: `$${p2}x + ${p1}y = ${total}$`, isCorrect: false, reason: `it applies the price of a plate to the forks and the price of a fork to the plates` },
+      { text: `$${p1}x - ${p2}y = ${total}$`, isCorrect: false, reason: `it subtracts the cost of the plates instead of adding it` },
+      { text: `$${p2}x - ${p1}y = ${total}$`, isCorrect: false, reason: `it swaps the two prices and subtracts instead of adding` }
     ];
 
     const shuffled = shuffle(optionsData).map((opt, i) => ({ ...opt, letter: String.fromCharCode(65 + i) }));
@@ -47,7 +49,7 @@ export const generator_203 = {
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: `$${p1}x + ${p2}y = ${total}$`,
-      explanation: `Choice ${correctLetter} is correct. The total cost is the sum of unit costs: $${p1}x + ${p2}y = ${total}$.`
+      explanation: `Choice ${correctLetter} is correct. The $x$ forks cost \\$${p1} each, for a total of $${p1}x$ dollars, and the $y$ plates cost \\$${p2} each, for a total of $${p2}y$ dollars. The total cost is the sum of these amounts, so $${p1}x + ${p2}y = ${total}$. ${shuffled.filter(o => !o.isCorrect).map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
