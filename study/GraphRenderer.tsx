@@ -137,8 +137,10 @@ function parseValue(valueStr: string, scope: Record<string, any>): any {
   if (!valueStr) return undefined;
   valueStr = valueStr.trim();
 
-  // Arrow functions
-  if (valueStr.includes('=>')) {
+  // Arrow functions. Only a value that starts with one counts: an object such
+  // as `{ lines: 5, labels: (n) => ... }` also contains "=>", and treating it
+  // as a function made Mafs ignore every custom axis setting.
+  if (/^(\([^)]*\)|\w+)\s*=>/.test(valueStr)) {
     console.log('Parsing arrow function:', valueStr);
     const result = createFunctionFromArrow(valueStr, scope);
     console.log('  Result type:', typeof result);
