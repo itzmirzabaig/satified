@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [slope: 2-6, intercept: 1-5 negative, x: 8-15]
  * - Difficulty factors: [Function evaluation with negative intercept]
- * - Distractor patterns: [sign error, forgot intercept, added intercept]
+ * - Distractor patterns: [subtracted before multiplying, forgot intercept, added intercept]
  * - Constraints: [Ensure negative intercept]
  * - Question type: [Function evaluation→Multiple Choice Text]
  * - Figure generation: null
@@ -31,17 +31,17 @@ export const generator_236 = {
 
     const result = slope * xValue + intercept;
 
-    const distractor1 = -(slope * xValue);
+    const c = Math.abs(intercept);
 
-    const distractor2 = slope * xValue;
-
-    const distractor3 = slope * xValue - intercept;
-
+    // Every wrong choice is a real evaluation slip. The old "sign error" choice
+    // was the negative of slope * x, which no one gets by evaluating f.
+    // The four values are distinct: slope * (x - c) < slope * x - c because
+    // slope >= 2.
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "results from a sign error" },
-      { text: result.toString(), isCorrect: true },
-      { text: distractor2.toString(), isCorrect: false, reason: "results from forgetting to add the intercept" },
-      { text: distractor3.toString(), isCorrect: false, reason: "results from adding the intercept instead of subtracting it" }
+      { text: (slope * (xValue - c)).toString(), isCorrect: false, reason: `it results from subtracting ${c} from ${xValue} before multiplying by ${slope}, which gives $${slope}(${xValue} - ${c})$ instead of $${slope}(${xValue}) - ${c}$` },
+      { text: result.toString(), isCorrect: true, reason: '' },
+      { text: (slope * xValue).toString(), isCorrect: false, reason: `it is the value of $${slope}(${xValue})$; ${c} must still be subtracted` },
+      { text: (slope * xValue + c).toString(), isCorrect: false, reason: `it results from adding ${c} instead of subtracting it` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -54,11 +54,11 @@ export const generator_236 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `The function $f$ is defined by $f(x) = ${slope}x - ${Math.abs(intercept)}$. What is the value of $f(${xValue})$?`,
+      questionText: `The function $f$ is defined by $f(x) = ${slope}x - ${c}$. What is the value of $f(${xValue})$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$: $f(${xValue}) = ${slope}(${xValue}) - ${Math.abs(intercept)} = ${slope * xValue} - ${Math.abs(intercept)} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$ in the given function yields $f(${xValue}) = ${slope}(${xValue}) - ${c}$, or $f(${xValue}) = ${slope * xValue} - ${c} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
