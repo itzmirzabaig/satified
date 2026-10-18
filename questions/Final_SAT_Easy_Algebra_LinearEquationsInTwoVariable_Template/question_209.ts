@@ -35,6 +35,8 @@ export const generator_209 = {
     }
     if (largePrice <= smallPrice) largePrice = parseFloat((smallPrice + 1).toFixed(2));
     const totalSales = parseFloat((getRandomInt(500, 2000) + getRandomInt(0, 99) / 100).toFixed(2));
+    // Two decimals with a thousands comma (1,616.50)
+    const totalStr = totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     const correctText = `$${smallPrice.toFixed(2)}$`;
 
@@ -54,11 +56,11 @@ export const generator_209 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `A store sells two different-sized containers of a certain Greek yogurt. The store's sales of this Greek yogurt totaled $${totalSales.toFixed(2)}$ dollars last month. The equation $${smallPrice.toFixed(2)}x + ${largePrice.toFixed(2)}y = ${totalSales.toFixed(2)}$ represents this situation, where $x$ is the number of smaller containers sold and $y$ is the number of larger containers sold. According to the equation, which of the following represents the price, in dollars, of each smaller container?`,
+      questionText: `A store sells two different-sized containers of a certain Greek yogurt. The store's sales of this Greek yogurt totaled \\$${totalStr} last month. The equation $${smallPrice.toFixed(2)}x + ${largePrice.toFixed(2)}y = ${totalStr}$ represents this situation, where $x$ is the number of smaller containers sold and $y$ is the number of larger containers sold. According to the equation, which of the following represents the price, in dollars, of each smaller container?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. In the equation $${smallPrice.toFixed(2)}x + ${largePrice.toFixed(2)}y = ${totalSales.toFixed(2)}$, the term $${smallPrice.toFixed(2)}x$ represents the total revenue from smaller containers (price × quantity). Therefore, $${smallPrice.toFixed(2)}$ is the price of each smaller container. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. In the equation $${smallPrice.toFixed(2)}x + ${largePrice.toFixed(2)}y = ${totalStr}$, the term $${smallPrice.toFixed(2)}x$ represents the total revenue from smaller containers (price × quantity). Therefore, $${smallPrice.toFixed(2)}$ is the price of each smaller container. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };
