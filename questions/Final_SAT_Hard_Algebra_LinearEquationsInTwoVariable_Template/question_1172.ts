@@ -51,7 +51,7 @@ export const generator_1172 = {
     const tableHTML = `
       <table border="1" style="border-collapse: collapse; width: 200px; margin: 0 auto; text-align: center;">
         <thead>
-          <tr style="background-color: #f0f0f0; color: black;">
+          <tr style="background-color: rgba(127,127,127,0.14);">
             <th style="padding: 8px;">$x$</th>
             <th style="padding: 8px;">$y$</th>
           </tr>

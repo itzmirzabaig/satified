@@ -102,7 +102,7 @@ export const generator_99 = {
   </svg>
   <table border="1" cellpadding="6" cellspacing="0" style="margin-top:16px;border-collapse:collapse;font-family:inherit;width:100%;max-width:520px;">
     <thead>
-      <tr style="background:#f5f5f5;">
+      <tr style="background:rgba(127,127,127,0.14);">
         <th style="border:1px solid #ddd;padding:8px 12px;">Elevation (meters)</th>
         <th style="border:1px solid #ddd;padding:8px 12px;">Measure of plant diversity</th>
       </tr>
