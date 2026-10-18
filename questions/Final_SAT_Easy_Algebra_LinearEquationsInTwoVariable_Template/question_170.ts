@@ -7,6 +7,11 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS: [Snail count from total cost]
  * - Number ranges: [pR: 5-12, pN: 3-8, nN: 1-4]
  * - Constraints: [total must be divisible to give integer nR]
+ *
+ * FIX NOTES:
+ * One distractor was nR + 1, explained as "one more than the number of rabbit
+ * snails bought". It is now the dollars spent on rabbit snails (forgetting to
+ * divide by the price). Reasons are listed in letter order as full sentences.
  */
 
 export const generator_170 = {
@@ -19,27 +24,25 @@ export const generator_170 = {
   },
 
   generate: (): QuestionData => {
-    // Prices and counts, constructed so all four option values are distinct:
-    //  - pR + pN >= 10, so the "sum of prices" distractor can never equal
-    //    nR (<= 8) or nR + 1 (<= 9);
-    //  - nN chosen so the nerite cost pN * nN avoids the other three values
-    //    (pN * {1,2,3,4} are four distinct candidates vs. only three
-    //    forbidden values, so a valid nN always exists — pigeonhole).
-    const pN = getRandomInt(3, 8);                       // nerite snail price
-    const pR = getRandomInt(Math.max(5, 10 - pN), 12);   // rabbit snail price (keeps pR + pN >= 10)
-    const nR = getRandomInt(3, 8);                       // number of rabbit snails (the answer)
-    const priceSum = pR + pN;
-    const nN = shuffle([1, 2, 3, 4]).find(
-      k => pN * k !== nR && pN * k !== nR + 1 && pN * k !== priceSum
-    )!;                                                  // number of nerite snails
-    const neriteCost = pN * nN;
-    const total = pR * nR + neriteCost;
+    // Redraw until the four option values are distinct.
+    let pN = 3, pR = 7, nR = 3, nN = 1;
+    let neriteCost = 0, priceSum = 0, rabbitCost = 0;
+    do {
+      pN = getRandomInt(3, 8);                     // nerite snail price
+      pR = getRandomInt(5, 12);                    // rabbit snail price
+      nR = getRandomInt(3, 8);                     // number of rabbit snails (the answer)
+      nN = getRandomInt(1, 4);                     // number of nerite snails
+      neriteCost = pN * nN;
+      priceSum = pR + pN;
+      rabbitCost = pR * nR;
+    } while (pR === pN || new Set([nR, neriteCost, priceSum, rabbitCost]).size < 4);
+    const total = rabbitCost + neriteCost;
 
     const optionsData = [
-      { key: 'correct', text: nR.toString(), isCorrect: true },
-      { key: 'neriteCost', text: neriteCost.toString(), isCorrect: false }, // cost of nerite snails, not a count
-      { key: 'priceSum', text: priceSum.toString(), isCorrect: false },     // sums the two prices
-      { key: 'offByOne', text: (nR + 1).toString(), isCorrect: false }      // off-by-one error
+      { key: 'correct', text: nR.toString(), isCorrect: true, reason: '' },
+      { key: 'neriteCost', text: neriteCost.toString(), isCorrect: false, reason: `it is the cost, in dollars, of the nerite snails, not a number of snails` },
+      { key: 'priceSum', text: priceSum.toString(), isCorrect: false, reason: `it is the sum of the two prices, \\$${pR} and \\$${pN}` },
+      { key: 'rabbitCost', text: rabbitCost.toString(), isCorrect: false, reason: `it is the amount, in dollars, spent on rabbit snails; this amount must still be divided by \\$${pR}, the price of one rabbit snail` }
     ];
 
     const shuffled = shuffle(optionsData).map((opt, i) => ({ ...opt, letter: String.fromCharCode(65 + i) }));
@@ -50,7 +53,7 @@ export const generator_170 = {
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: nR.toString(),
-      explanation: `Choice ${letterOf('correct')} is correct. The ${nN} nerite snail${nN === 1 ? '' : 's'} cost $ ${nN} \\times ${pN} = ${neriteCost} $ dollars, which leaves $ ${total} - ${neriteCost} = ${pR * nR} $ dollars for the rabbit snails. Dividing by the price of one rabbit snail gives $ ${pR * nR} \\div ${pR} = ${nR} $, so the owner bought ${nR} rabbit snails. Choice ${letterOf('neriteCost')} is incorrect; it is the cost of the nerite snails in dollars, not a number of snails. Choice ${letterOf('priceSum')} is incorrect; it is the sum of the two prices. Choice ${letterOf('offByOne')} is incorrect; it is one more than the number of rabbit snails bought.`
+      explanation: `Choice ${letterOf('correct')} is correct. ${nN === 1 ? `The nerite snail cost ${pN} dollars` : `The ${nN} nerite snails cost $${nN}(${pN}) = ${neriteCost}$ dollars`}, which leaves $${total} - ${neriteCost} = ${rabbitCost}$ dollars for the rabbit snails. Dividing by the price of one rabbit snail gives $\\frac{${rabbitCost}}{${pR}} = ${nR}$, so the owner bought ${nR} rabbit snails. ${shuffled.filter(o => !o.isCorrect).map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
