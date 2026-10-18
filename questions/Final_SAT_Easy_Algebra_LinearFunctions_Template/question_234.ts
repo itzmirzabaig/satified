@@ -5,9 +5,9 @@ import type { QuestionData } from '../../study/types';
  * Question 234
  *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [slope: 2-6, yIntercept: 2-6 negative]
+ * - Number ranges: [slope: 1-3, xIntercept: 1-4, yIntercept: -2 to -8]
  * - Difficulty factors: [Identifying y-intercept from graph]
- * - Distractor patterns: [incorrect coordinate, wrong sign]
+ * - Distractor patterns: [reversed coordinates, x-intercept, wrong sign]
  * - Constraints: [Ensure negative y-intercept]
  * - Question type: [Figure→Multiple Choice Text]
  * - Figure generation: [Plot.OfX]
@@ -23,37 +23,31 @@ export const generator_234 = {
   },
 
   generate: (): QuestionData => {
-    // slope > 0, yIntercept < 0 (constraint: negative y-intercept).
-    // The distractors reuse |b|, the slope, and the swapped coordinate, which
-    // can coincide for some draws (e.g. slope === |yIntercept|). Re-draw with a
-    // bounded retry until all four option strings are distinct.
-    let slope = getRandomInt(2, 6);
-    let yIntercept = -getRandomInt(2, 6);
+    // Positive slope with a negative y-intercept that is a multiple of the
+    // slope, so both intercepts land on gridlines. The window used to be only
+    // x = -2 to 2 with the intercept at the bottom edge.
+    let slope = 2, xIntercept = 2;
+    do {
+      slope = getRandomInt(1, 3);
+      xIntercept = getRandomInt(1, 4);
+    } while (slope * xIntercept < 2 || slope * xIntercept > 8);
+    const yIntercept = -slope * xIntercept;
+    const c = -yIntercept;
 
-    const buildOptions = () => [
-      { text: `(0, ${yIntercept})`, isCorrect: true },
-      { text: `(0, ${-yIntercept})`, isCorrect: false, reason: "uses the opposite sign for the y-coordinate" },
-      { text: `(${yIntercept}, 0)`, isCorrect: false, reason: "places the intercept value on the x-axis instead of the y-axis" },
-      { text: `(0, ${slope})`, isCorrect: false, reason: "uses the slope of the line instead of the y-intercept" }
-    ];
-
-    let tries = 0;
-    while (new Set(buildOptions().map(o => o.text)).size !== 4 && tries++ < 50) {
-      slope = getRandomInt(2, 6);
-      yIntercept = -getRandomInt(2, 6);
-    }
-
-    // Zoomed view centered on the y-intercept area.
-    // x: -2 to 2 (close to y-axis); y: yIntercept-1 to 2 (shows the intercept).
-    const mafsCode = `<Mafs viewBox={{ x: [-2, 2], y: [${yIntercept - 1}, 2] }}>
+    const mafsCode = `<Mafs viewBox={{ x: [-3, ${xIntercept + 3}], y: [${yIntercept - 1.5}, 3] }}>
   <Coordinates.Cartesian
     xAxis={{ lines: 1, labels: (n) => Number.isInteger(n) ? n : "" }}
     yAxis={{ lines: 1, labels: (n) => Number.isInteger(n) ? n : "" }}
   />
-  <Plot.OfX y={(x) => ${slope} * x + ${yIntercept}} color="var(--mafs-blue)" />
+  <Plot.OfX y={(x) => ${slope} * x - ${c}} color="var(--mafs-blue)" />
 </Mafs>`;
 
-    const optionsData = buildOptions();
+    const optionsData = [
+      { text: `$(0, ${yIntercept})$`, isCorrect: true, reason: '' },
+      { text: `$(0, ${c})$`, isCorrect: false, reason: `the graph crosses the $y$-axis below the $x$-axis, so the $y$-coordinate of the $y$-intercept is negative, not positive` },
+      { text: `$(${yIntercept}, 0)$`, isCorrect: false, reason: `it reverses the coordinates of the $y$-intercept; the point $(${yIntercept}, 0)$ is on the $x$-axis, not the $y$-axis` },
+      { text: `$(${xIntercept}, 0)$`, isCorrect: false, reason: `$(${xIntercept}, 0)$ is the $x$-intercept of the graph, where the graph crosses the $x$-axis` }
+    ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -67,8 +61,8 @@ export const generator_234 = {
       questionText: `The graph of the function $f$ is shown in the $xy$-plane, where $y=f(x)$. What is the $y$-intercept of the graph?`,
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: `(0, ${yIntercept})`,
-      explanation: `Choice ${correctOption.letter} is correct. The $y$-intercept is the point where the graph crosses the $y$-axis, which occurs at $x=0$. From the graph, that point is $(0, ${yIntercept})$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      correctAnswer: `$(0, ${yIntercept})$`,
+      explanation: `Choice ${correctOption.letter} is correct. The $y$-intercept of a graph is the point where the graph crosses the $y$-axis, which is where $x = 0$. The graph shown crosses the $y$-axis at the point $(0, ${yIntercept})$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
