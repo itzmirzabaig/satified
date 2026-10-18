@@ -35,7 +35,7 @@ export const generator_128 = {
       { text: result.toString(), isCorrect: true },
       { text: distractorB.toString(), isCorrect: false, reason: `results from subtracting ${coeff} from ${rightSide} instead of dividing` },
       { text: distractorC.toString(), isCorrect: false, reason: `results from adding ${coeff} to ${rightSide} instead of dividing` },
-      { text: distractorD.toString(), isCorrect: false, reason: `results from multiplying ${rightSide} by ${coeff} instead of dividing` }
+      { text: distractorD.toLocaleString('en-US'), isCorrect: false, reason: `results from multiplying ${rightSide} by ${coeff} instead of dividing` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -51,7 +51,7 @@ export const generator_128 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Divide by ${coeff}: $x = \\frac{${rightSide}}{${coeff}} = ${result}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Dividing both sides of the given equation by ${coeff} yields $x = \\frac{${rightSide}}{${coeff}}$, or $x = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
