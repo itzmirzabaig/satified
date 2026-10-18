@@ -761,8 +761,13 @@ const GraphRenderer: React.FC<{ code: string; height?: number; zoom?: boolean }>
     // instead of appearing as a near-vertical line in a square box.
     // Questions that need equal-axis scaling can add equalAspect to their <Mafs> tag
     // (not yet supported by our parser but can be added per-question via data-equal-aspect).
+    // height must be passed to Mafs explicitly. Without it Mafs draws a 500px
+    // tall plot inside this container, which clips the overflow, so the bottom
+    // of every graph's viewBox was cut off: a fifth of each 400px question
+    // figure and two fifths of each 300px graph answer choice, often exactly
+    // where the intercept or vertex the question asks about sits.
     <div className="mafs-container" style={{ height: effectiveHeight, width: '100%', overflow: 'hidden' }}>
-      <Mafs viewBox={viewBox} preserveAspectRatio={false} width="auto" zoom={zoom}>
+      <Mafs viewBox={viewBox} preserveAspectRatio={false} width="auto" height={effectiveHeight} zoom={zoom}>
         {needsWrapper && wrapperCoordsProps && <Coordinates.Cartesian {...wrapperCoordsProps} />}
         {elements.length > 0 ? elements : (!needsWrapper && <Coordinates.Cartesian />)}
       </Mafs>

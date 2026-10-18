@@ -629,6 +629,7 @@ class QuestionTester {
     const d=this.currentData!;
     const fillIn=isFillIn(d);
     let ok=false, correctDisplay='';
+    let answerGraph:{id:string;code:string}|null=null;
 
     if(fillIn){
       const norm=(s:string)=>s.trim().toLowerCase().replace(/\.0+$/,'');
@@ -640,18 +641,29 @@ class QuestionTester {
       const ci=resolveCorrect(d.correctAnswer,d.options);
       ok=this.selectedOpt===ci;
       const letter=String.fromCharCode(65+ci);
-      correctDisplay=`${letter}. <span class="option-text">${autoWrap(getOptText(d.options[ci]))}</span>`;
+      const ctxt=getOptText(d.options[ci]);
+      if(isGraphCode(ctxt)){
+        // A graph choice is drawn, not printed: its text is the figure's
+        // source code, which used to appear here as raw Mafs markup.
+        answerGraph={id:`ag-${Date.now()}`,code:ctxt};
+        correctDisplay=`${letter}. <span class="option-text">the graph shown below</span>`;
+      } else {
+        correctDisplay=`${letter}. <span class="option-text">${autoWrap(ctxt)}</span>`;
+      }
     }
 
     let h=`<div class="answer-section ${ok?'correct':'incorrect'}">
       <h3>${ok?'✓ Correct!':'✗ Incorrect'}</h3>
       <p class="correct-answer-display"><strong>Correct Answer:</strong> ${correctDisplay}</p>`;
+    if(answerGraph)
+      h+=`<div class="figure mafs-container answer-graph" id="${answerGraph.id}"></div>`;
     if(fillIn&&!ok)
       h+=`<p class="your-answer-display"><strong>Your Answer:</strong> ${this.userInput||'(blank)'}</p>`;
     if(d.explanation)
       h+=`<div class="explanation"><strong>Explanation:</strong><br>${this.fmtExp(d.explanation)}</div>`;
     h+=`</div>`;
     this.aContent.innerHTML=h;
+    if(answerGraph){const g=answerGraph;setTimeout(()=>this.mountGraph(g.id,g.code,260),50);}
     this.typeset();
   }
 
@@ -1874,14 +1886,34 @@ class PracticeTestEngine {
         const iconColor = correct ? '#27ae60' : '#e74c3c';
         const icon = correct ? '✓' : '✗';
 
+        // Graphs in this review (the question's figure and any graph choices)
+        // are drawn after the card is in the DOM. Their text is Mafs source
+        // code, which used to be printed here as raw markup.
+        const graphs: { id: string; code: string; h: number }[] = [];
+        let figureHTML = '';
+        if (d.figureCode) {
+          const fc = d.figureCode.trim();
+          if (fc.startsWith('<table') || fc.startsWith('<div') || fc.startsWith('<svg')) {
+            figureHTML = `<div class="figure" style="margin-bottom:16px">${d.figureCode}</div>`;
+          } else {
+            const id = `prf-${idx}`;
+            graphs.push({ id, code: d.figureCode, h: 280 });
+            figureHTML = `<div class="figure mafs-container" id="${id}" style="margin-bottom:16px"></div>`;
+          }
+        }
+
         let answersHTML = '';
         if (fillIn) {
           answersHTML = `<p style="margin-bottom:6px"><strong>Your answer:</strong> ${q.userInput || '(blank)'}</p>
                          <p><strong>Correct answer:</strong> ${autoWrap(String(d.correctAnswer))}</p>`;
         } else {
           const ci = resolveCorrect(d.correctAnswer, d.options);
-          const correctTxt = getOptText(d.options[ci]);
-          const yourTxt = q.selectedOpt !== null ? getOptText(d.options[q.selectedOpt]) : '(none)';
+          const describe = (i: number | null) => {
+            if (i === null) return '(none)';
+            const txt = getOptText(d.options[i]);
+            const letter = String.fromCharCode(65 + i);
+            return isGraphCode(txt) ? `${letter} (graph)` : autoWrap(String(txt));
+          };
           // Show all options with highlighting
           const optionsHTML = d.options.map((opt, i) => {
             const letter = String.fromCharCode(65 + i);
@@ -1891,12 +1923,17 @@ class PracticeTestEngine {
             let style = '';
             if (isCorrect) style = 'background:rgba(39,174,96,0.15);border-left:3px solid #27ae60;';
             else if (isYours && !isCorrect) style = 'background:rgba(231,76,60,0.15);border-left:3px solid #e74c3c;';
+            if (isGraphCode(txt)) {
+              const id = `pro-${idx}-${i}`;
+              graphs.push({ id, code: txt, h: 200 });
+              return `<div class="pt-result-option" style="${style}">${letter}.<div class="mafs-container" id="${id}"></div></div>`;
+            }
             return `<div class="pt-result-option" style="${style}">${letter}. ${autoWrap(txt)}</div>`;
           }).join('');
           answersHTML = `
             <div class="pt-result-options">${optionsHTML}</div>
-            <p style="margin-top:10px;margin-bottom:4px"><strong>Your answer:</strong> ${autoWrap(String(yourTxt))}</p>
-            <p><strong>Correct answer:</strong> ${autoWrap(correctTxt)}</p>`;
+            <p style="margin-top:10px;margin-bottom:4px"><strong>Your answer:</strong> ${describe(q.selectedOpt)}</p>
+            <p><strong>Correct answer:</strong> ${describe(ci)}</p>`;
         }
 
         const card = document.getElementById('pt-result-card')!;
@@ -1908,9 +1945,12 @@ class PracticeTestEngine {
           </div>
           <div class="pt-result-card-body">
             <div class="question-text" style="margin-bottom:16px;font-size:15px;line-height:1.65">${autoWrap(sanitize(String(d.questionText || '')))}</div>
+            ${figureHTML}
             ${answersHTML}
             ${d.explanation ? `<div class="explanation" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--card-shadow-a)"><strong>Explanation:</strong><br>${autoWrap(sanitize(d.explanation))}</div>` : ''}
           </div>`;
+
+        if (graphs.length) setTimeout(() => graphs.forEach(g => this.mountGraph(g.id, g.code, g.h)), 60);
 
         // Typeset math
         (window as any).MathJax?.typesetPromise?.([card]).catch(() => {});
