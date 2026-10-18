@@ -17,6 +17,9 @@ import type { QuestionData } from '../../study/types';
  *   while keeping the equation as real math.
  * - Options are pairwise distinct by wording for every draw (verb/noun differ),
  *   so no duplicate-option guard is needed.
+ * - The stem said "the number of consulting hours is multiplied by 70" without
+ *   ever defining x and y, which half gave the answer away. It now defines x
+ *   and y and asks for the best interpretation of the coefficient.
  */
 
 export const generator_180 = {
@@ -50,7 +53,7 @@ export const generator_180 = {
     const letterOf = (key: string) => shuffled.find(o => o.key === key)!.letter;
 
     return {
-      questionText: `The equation $${rate1}x + ${rate2}y = ${total}$ represents an interior designer's total earnings, where the number of consulting hours is multiplied by ${rate1} and the number of drawing hours is multiplied by ${rate2}. What does ${rate1} represent?`,
+      questionText: `The equation $${rate1}x + ${rate2}y = ${total.toLocaleString('en-US')}$ represents the total amount, in dollars, an interior designer earned, where $x$ is the number of hours the designer spent consulting and $y$ is the number of hours the designer spent drawing up plans. What is the best interpretation of ${rate1} in this context?`,
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: shuffled.find(o => o.isCorrect)!.text,
