@@ -52,7 +52,10 @@ export const generator_36 = {
     const qResult = q1 + q2;
     const zResult = z1 + z2;
 
-    const correctText = `$m^{${mResult}} q^{${qResult}} z^{${zResult}}$`;
+    // A power of 1 is written as the bare variable: m, not m^{1}.
+    const pw = (v: string, e: number) => (e === 1 ? v : `${v}^{${e}}`);
+    const term = (m: number, q: number, z: number) => `${pw('m', m)} ${pw('q', q)} ${pw('z', z)}`;
+    const correctText = `$${term(mResult, qResult, zResult)}$`;
 
     // Distinctness across all draws: the "multiply everything" distractor has
     // q exponent q1*q2, and q1*q2 - (q1+q2) = (q1-1)(q2-1) - 1 >= 1 for
@@ -60,10 +63,10 @@ export const generator_36 = {
     // The remaining pairs differ in the m exponent: mResult vs mResult+1
     // always differ, and m1*m2 differs from both by the guard above.
     const optionsData = [
-      { text: `$m^{${m1 * m2}} q^{${q1 * q2}} z^{${z1 * z2}}$`, isCorrect: false, reason: `multiplies the exponents instead of adding them` },
+      { text: `$${term(m1 * m2, q1 * q2, z1 * z2)}$`, isCorrect: false, reason: `multiplies the exponents instead of adding them` },
       { text: correctText, isCorrect: true, reason: '' },
-      { text: `$m^{${mResult + 1}} q^{${qResult}} z^{${zResult}}$`, isCorrect: false, reason: `adds the exponents but makes an arithmetic error, using $m^{${mResult + 1}}$ instead of $m^{${mResult}}$` },
-      { text: `$m^{${m1 * m2}} q^{${qResult}} z^{${zResult}}$`, isCorrect: false, reason: `multiplies the exponents of $m$ but adds the exponents of $q$ and $z$` }
+      { text: `$${term(mResult + 1, qResult, zResult)}$`, isCorrect: false, reason: `adds the exponents but makes an arithmetic error, using $${pw('m', mResult + 1)}$ instead of $${pw('m', mResult)}$` },
+      { text: `$${term(m1 * m2, qResult, zResult)}$`, isCorrect: false, reason: `multiplies the exponents of $m$ but adds the exponents of $q$ and $z$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -78,11 +81,11 @@ export const generator_36 = {
       .join(' ');
 
     return {
-      questionText: `Which expression is equivalent to $\\left(m^{${m1}} q^{${q1}} z^{${z1}}\\right)\\left(m^{${m2}} q^{${q2}} z^{${z2}}\\right)$, where $m$, $q$, and $z$ are positive?`,
+      questionText: `Which expression is equivalent to $\\left(${term(m1, q1, z1)}\\right)\\left(${term(m2, q2, z2)}\\right)$, where $m$, $q$, and $z$ are positive?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. When multiplying powers with the same base, add the exponents: $x^{a} \\cdot x^{b} = x^{a+b}$. Applying this to each base gives $m^{${m1}} \\cdot m^{${m2}} = m^{${mResult}}$, $q^{${q1}} \\cdot q^{${q2}} = q^{${qResult}}$, and $z^{${z1}} \\cdot z^{${z2}} = z^{${zResult}}$. ${incorrectSentences}`
+      explanation: `Choice ${correctOption.letter} is correct. When multiplying powers with the same base, add the exponents: $x^{a} \\cdot x^{b} = x^{a+b}$. Applying this to each base gives $m^{${m1}} \\cdot m^{${m2}} = ${pw('m', mResult)}$, $q^{${q1}} \\cdot q^{${q2}} = ${pw('q', qResult)}$, and $z^{${z1}} \\cdot z^{${z2}} = ${pw('z', zResult)}$.${[m1, q1, z1, m2, q2, z2, mResult, qResult, zResult].includes(1) ? ' A variable written with no exponent has an exponent of 1.' : ''} ${incorrectSentences}`
     };
   }
 };

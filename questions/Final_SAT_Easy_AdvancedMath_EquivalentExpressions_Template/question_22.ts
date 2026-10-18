@@ -24,7 +24,8 @@ export const generator_22 = {
 
   generate: (): QuestionData => {
     const a = getRandomInt(8, 15);
-    const b = getRandomInt(3, 7);
+    // Keep a - b at 2 or more so the answer never reads 1x^3.
+    const b = getRandomInt(3, Math.min(7, a - 2));
     const diff = a - b;
     const sum = a + b;
 

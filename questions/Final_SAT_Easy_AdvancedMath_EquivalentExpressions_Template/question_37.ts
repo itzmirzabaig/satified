@@ -23,11 +23,17 @@ export const generator_37 = {
   },
 
   generate: (): QuestionData => {
-    const a = getRandomInt(2, 4);
-    const c = getRandomInt(2, 5);
-    const add = getRandomInt(2, 5);
-    const inner = a * c;
-    const result = -inner + add;
+    // The answer's constant and the two distractor constants built from it
+    // (result + 3 and result - 1) must all be nonzero, or a choice would end
+    // in "+0".
+    let a: number, c: number, add: number, inner: number, result: number;
+    do {
+      a = getRandomInt(2, 4);
+      c = getRandomInt(2, 5);
+      add = getRandomInt(2, 5);
+      inner = a * c;
+      result = -inner + add;
+    } while (result === 0 || result + 3 === 0 || result - 1 === 0);
 
     const correctText = `$${a}ab${result >= 0 ? '+' : ''}${result}$`;
 

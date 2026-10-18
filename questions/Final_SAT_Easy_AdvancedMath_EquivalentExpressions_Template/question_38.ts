@@ -24,7 +24,8 @@ export const generator_38 = {
 
   generate: (): QuestionData => {
     const a = getRandomInt(10, 15);
-    const b = getRandomInt(4, 9);
+    // Keep a - b at 2 or more so the answer never reads 1x^3.
+    const b = getRandomInt(4, Math.min(9, a - 2));
     const diff = a - b;
 
     const correctText = `$${diff}x^{3}$`;

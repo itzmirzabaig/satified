@@ -24,7 +24,9 @@ export const generator_26 = {
 
   generate: (): QuestionData => {
     const a = getRandomInt(2, 6);
-    const b = getRandomInt(4, 10);
+    // a - b is a distractor constant; a == b would print "+0".
+    let b = getRandomInt(4, 10);
+    while (b === a) b = getRandomInt(4, 10);
     const product = a * b;
 
     const correctText = `$${a}x^2+${product}$`;

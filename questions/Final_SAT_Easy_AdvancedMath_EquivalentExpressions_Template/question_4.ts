@@ -25,7 +25,9 @@ export const generator_4 = {
     const b2 = getRandomInt(3, 7);
     const c1 = getRandomInt(3, 8);
     const const1 = getRandomInt(5, 10);
-    const const2 = getRandomInt(-10, -3);
+    // The constants must not cancel, or the answer would end in "+ 0".
+    let const2 = getRandomInt(-10, -3);
+    while (const1 + const2 === 0) const2 = getRandomInt(-10, -3);
 
     const sumA = a1 + a2;
     const sumConst = const1 + const2;

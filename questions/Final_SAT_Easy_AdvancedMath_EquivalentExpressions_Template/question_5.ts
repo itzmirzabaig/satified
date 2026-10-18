@@ -24,7 +24,9 @@ export const generator_5 = {
 
   generate: (): QuestionData => {
     const a = getRandomInt(5, 15);
-    const b = getRandomInt(2, 7);
+    // a - b is a distractor constant; keep it at 2 or more so it never prints
+    // as "+0" or "+-2".
+    const b = getRandomInt(2, Math.min(7, a - 2));
     const sum = a + b;
 
     const correctText = `$d^2+${sum}$`;
