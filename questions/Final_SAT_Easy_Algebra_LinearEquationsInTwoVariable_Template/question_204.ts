@@ -23,11 +23,11 @@ export const generator_204 = {
     const yVal = c / b;
 
     return {
-      questionText: `The y-intercept of $${a}x + ${b}y = ${c}$ is $(0, y)$. What is $y$?`,
+      questionText: `The graph of $${a}x + ${b}y = ${c}$ in the $xy$-plane has a $y$-intercept at $(0, b)$. What is the value of $b$?`,
       figureCode: null,
       options: [],
       correctAnswer: yVal.toString(),
-      explanation: `Set $x=0$ to find $${b}y = ${c}$, so $y = ${yVal}$.`
+      explanation: `The $y$-intercept of a graph is the point where $x = 0$. Substituting 0 for $x$ in the given equation yields $${a}(0) + ${b}y = ${c}$, or $${b}y = ${c}$. Dividing both sides by ${b} yields $y = ${yVal}$. So the $y$-intercept is $(0, ${yVal})$, and the value of $b$ is ${yVal}.`
     };
   }
 };
