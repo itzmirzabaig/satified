@@ -29,19 +29,19 @@ export const generator_223 = {
 
     const intercept = getRandomInt(3, 8);
 
-    const correctEquation = `f(x) = \\frac{1}{${denominator}}x + ${intercept}`;
+    const correctEquation = `$f(x) = \\frac{1}{${denominator}}x + ${intercept}$`;
 
-    const distractorB = `f(x) = \\frac{1}{${denominator}}x + \\frac{1}{${intercept}}`;
+    const distractorB = `$f(x) = \\frac{1}{${denominator}}x + \\frac{1}{${intercept}}$`;
 
-    const distractorC = `f(x) = \\frac{1}{${denominator}}x - \\frac{${intercept}}{${denominator}}`;
+    const distractorC = `$f(x) = ${intercept}x + \\frac{1}{${denominator}}$`;
 
-    const distractorD = `f(x) = \\frac{1}{${denominator}}x - ${intercept}`;
+    const distractorD = `$f(x) = \\frac{1}{${denominator}}x - ${intercept}$`;
 
     const optionsData = [
-      { text: correctEquation, isCorrect: true },
-      { text: distractorB, isCorrect: false, reason: "uses reciprocal for y-intercept" },
-      { text: distractorC, isCorrect: false, reason: "uses incorrect fraction for y-intercept" },
-      { text: distractorD, isCorrect: false, reason: "uses wrong sign for y-intercept" }
+      { text: correctEquation, isCorrect: true, reason: '' },
+      { text: distractorB, isCorrect: false, reason: `its $y$-intercept is $\\frac{1}{${intercept}}$, the reciprocal of ${intercept}; the graph passes through $(0, ${intercept})$` },
+      { text: distractorC, isCorrect: false, reason: `it swaps the slope, $\\frac{1}{${denominator}}$, and the $y$-intercept, ${intercept}` },
+      { text: distractorD, isCorrect: false, reason: `its $y$-intercept is $-${intercept}$, so its graph passes through $(0, -${intercept})$, not $(0, ${intercept})$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -58,7 +58,7 @@ export const generator_223 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. Using slope-intercept form with slope $m=\\frac{1}{${denominator}}$ and y-intercept $b=${intercept}$ gives $f(x) = \\frac{1}{${denominator}}x + ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Using slope-intercept form with slope $m=\\frac{1}{${denominator}}$ and y-intercept $b=${intercept}$ gives $f(x) = \\frac{1}{${denominator}}x + ${intercept}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
