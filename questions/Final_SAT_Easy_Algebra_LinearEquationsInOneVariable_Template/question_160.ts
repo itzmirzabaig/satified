@@ -7,8 +7,13 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [rate: 3000-8000, time: 15-30, remaining: 200000-400000]
 * - Difficulty factors: [Large numbers, rate calculation, word problem]
-* - Distractor patterns: [B: wrong division, C: miscalc, D: total not rate]
-* - Constraints: [Integer division result]
+* - Distractor patterns: [remaining / time, initial / time, total burned]
+* - Constraints: [Integer division results; remaining is a multiple of time]
+*
+* FIX NOTES:
+* One distractor was half the amount burned, labeled "miscalculation", and
+* remaining / time was floored. The distractors now come from real errors and
+* divide evenly, and the explanation is typeset with comma grouped numbers.
 * - Question type: [Multiple Choice]
 * - Figure generation: [None]
 */
@@ -23,37 +28,25 @@ export const generator_160 = {
   },
 
   generate: (): QuestionData => {
-    let rate = getRandomInt(3000, 8000);
-    let time = getRandomInt(15, 30);
-    let remaining = getRandomInt(200000, 400000);
-    let initial = remaining + rate * time;
-
-    let distractorB = Math.floor(remaining / time);
-    let distractorC = Math.floor((initial - remaining) / 2);
-    let distractorD = initial - remaining;
-
-    // Guard: re-draw until all four option values are distinct so no
-    // distractor collides with the correct answer (rate) or with each other.
-    // e.g. rate=7000, time=30, remaining=210000 gives floor(210000/30)=7000=rate.
-    let tries = 0;
-    while (
-      new Set([rate, distractorB, distractorC, distractorD]).size < 4 &&
-      tries++ < 50
-    ) {
+    // remaining is a multiple of time, so dividing the remaining amount (or the
+    // initial amount) by the time gives a whole number. Redraw until that
+    // quotient differs from the rate; the other choices are always larger.
+    let rate = 3000, time = 15, perSec = 15000;
+    do {
       rate = getRandomInt(3000, 8000);
       time = getRandomInt(15, 30);
-      remaining = getRandomInt(200000, 400000);
-      initial = remaining + rate * time;
-      distractorB = Math.floor(remaining / time);
-      distractorC = Math.floor((initial - remaining) / 2);
-      distractorD = initial - remaining;
-    }
+      perSec = getRandomInt(Math.ceil(200000 / time), Math.floor(400000 / time));
+    } while (perSec === rate);
+    const remaining = perSec * time;
+    const initial = remaining + rate * time;
+    const burned = initial - remaining;
+    const fmt = (n: number) => n.toLocaleString('en-US');
 
     const optionsData = [
-      { text: rate.toLocaleString('en-US'), isCorrect: true },
-      { text: distractorB.toLocaleString('en-US'), isCorrect: false, reason: "divides remaining by time" },
-      { text: distractorC.toLocaleString('en-US'), isCorrect: false, reason: "miscalculation" },
-      { text: distractorD.toLocaleString('en-US'), isCorrect: false, reason: "total burned, not rate per second" }
+      { text: fmt(rate), isCorrect: true, reason: '' },
+      { text: fmt(perSec), isCorrect: false, reason: `it results from dividing the amount that remained, ${fmt(remaining)} kg, by ${time} instead of dividing the amount that burned` },
+      { text: fmt(initial / time), isCorrect: false, reason: `it results from dividing the initial amount, ${fmt(initial)} kg, by ${time} instead of dividing the amount that burned` },
+      { text: fmt(burned), isCorrect: false, reason: `it is the total amount of propellant that burned in ${time} seconds, not the amount that burned each second` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -69,7 +62,7 @@ export const generator_160 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: rate.toLocaleString('en-US'),
-      explanation: `Burned: ${initial} - ${remaining} = ${initial - remaining}. Rate: ${initial - remaining}/${time} = ${rate}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The amount of propellant that burned in ${time} seconds is $${fmt(initial)} - ${fmt(remaining)} = ${fmt(burned)}$ kilograms. On average, the amount that burned each second is $\\frac{${fmt(burned)}}{${time}} = ${fmt(rate)}$ kilograms. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
