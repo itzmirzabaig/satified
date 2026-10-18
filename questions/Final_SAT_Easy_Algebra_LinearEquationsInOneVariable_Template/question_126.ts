@@ -37,7 +37,8 @@ export const generator_126 = {
       { text: x.toString(), isCorrect: false, reason: "is the value of the variable itself rather than the value of the requested expression" },
       { text: result.toString(), isCorrect: true },
       { text: rightSide.toString(), isCorrect: false, reason: `results from not dividing both sides by ${factor} after factoring` },
-      { text: (result + factor).toString(), isCorrect: false, reason: `may result from a calculation error when dividing both sides by ${factor}` }
+      // factor * x exceeds x and rightSide (x > result), so it never collides
+      { text: (factor * x).toString(), isCorrect: false, reason: `is the value of $${factor}x$, not the value of $(x - ${k})$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
