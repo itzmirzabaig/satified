@@ -23,32 +23,34 @@ export const generator_216 = {
   },
 
   generate: (): QuestionData => {
-    // Small slope so the line has a clear, readable angle in a square Mafs viewBox
-    const slope = getRandomInt(3, 7);
-    const intercept = getRandomInt(10, 50);
+    // Slope 5 or 10 and an intercept that is a multiple of 5 put every value at
+    // a whole number of atmospheres on a gridline (gridlines every 5 kelvins,
+    // labels every 10). The old figure labeled every single kelvin up to ~95,
+    // which stacked the labels into an unreadable column, and with the bottom
+    // of the window at y = 0 the x-axis labels were clipped off.
+    const slope = getRandomInt(1, 2) * 5;
+    const intercept = getRandomInt(2, 10) * 5;
     const xValue = getRandomInt(3, 7);
     const yValue = slope * xValue + intercept;
 
-    // viewBox: x from -1 to xValue+2, y from 0 to yValue+10
-    // This keeps the line at a natural diagonal rather than near-vertical
     const xMin = -1;
     const xMax = xValue + 2;
-    const yMin = 0;
-    const yMax = yValue + 10;
+    const yMax = Math.ceil((yValue + slope + 5) / 10) * 10;
+    const yMin = -Math.round(yMax / 10);   // room below the x-axis for its labels
 
     const mafsCode = `<Mafs viewBox={{ x: [${xMin}, ${xMax}], y: [${yMin}, ${yMax}] }}>
   <Coordinates.Cartesian
-    xAxis={{ lines: 1, labels: (n) => Number.isInteger(n) && n >= 0 ? n : "" }}
-    yAxis={{ lines: 1, labels: (n) => Number.isInteger(n) ? n : "" }}
+    xAxis={{ lines: 1, labels: (n) => Number.isInteger(n) && n > 0 ? n : "" }}
+    yAxis={{ lines: 5, labels: (n) => n > 0 && n % 10 === 0 ? n : "" }}
   />
   <Plot.OfX y={(x) => ${slope} * x + ${intercept}} color="var(--mafs-blue)" />
 </Mafs>`;
 
     const optionsData = [
-      { text: xValue.toString(), isCorrect: false, reason: "is the x-coordinate, not the y-coordinate" },
-      { text: intercept.toString(), isCorrect: false, reason: "is the y-intercept, not the value at x = " + xValue },
-      { text: yValue.toString(), isCorrect: true },
-      { text: (yValue + slope).toString(), isCorrect: false, reason: "overestimates by one extra unit of slope" }
+      { text: xValue.toString(), isCorrect: false, reason: `is the pressure, ${xValue} atmospheres, not the temperature` },
+      { text: intercept.toString(), isCorrect: false, reason: `is the estimated temperature when the pressure is 0 atmospheres, the $y$-intercept of the graph` },
+      { text: yValue.toString(), isCorrect: true, reason: '' },
+      { text: (yValue + slope).toString(), isCorrect: false, reason: `is the estimated temperature when the pressure is ${xValue + 1} atmospheres, not ${xValue}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -64,7 +66,7 @@ export const generator_216 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: yValue.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. From the graph, the point with x-coordinate ${xValue} has a y-coordinate of ${yValue}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. On the graph, the point on the line with $x$-coordinate ${xValue} has $y$-coordinate ${yValue}. So the estimated temperature when the pressure is ${xValue} atmospheres is ${yValue} kelvins. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
