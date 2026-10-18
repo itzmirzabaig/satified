@@ -37,21 +37,20 @@ export const generator_185 = {
 
     const optionsData = [
       { text: correctText, isCorrect: true },
-      { text: `$y = ${absM}x - ${b}$`, isCorrect: false, reason: "uses the opposite sign for both the slope and the intercept" },
-      { text: `$y = \\frac{1}{${absM}}x - ${b}$`, isCorrect: false, reason: "uses the reciprocal of the slope and the wrong intercept sign" },
-      { text: `$y = -\\frac{1}{${absM}}x + ${b}$`, isCorrect: false, reason: "uses the reciprocal of the slope instead of the slope itself" }
+      { text: `$y = ${absM}x - ${b}$`, isCorrect: false, reason: `its slope, ${absM}, and its $y$-intercept, $-${b}$, both have the wrong sign` },
+      { text: `$y = \\frac{1}{${absM}}x - ${b}$`, isCorrect: false, reason: `its slope, $\\frac{1}{${absM}}$, is the opposite of the reciprocal of $${m}$, and its $y$-intercept, $-${b}$, has the wrong sign` },
+      { text: `$y = -\\frac{1}{${absM}}x + ${b}$`, isCorrect: false, reason: `its slope, $-\\frac{1}{${absM}}$, is the reciprocal of the slope of the line shown, $${m}$` }
     ];
 
     const shuffled = shuffle(optionsData).map((opt, i) => ({ ...opt, letter: String.fromCharCode(65 + i) }));
     const correctLetter = shuffled.find(o => o.isCorrect)!.letter;
-    const wrongSign = shuffled.find(o => o.reason === "uses the opposite sign for both the slope and the intercept")!;
 
     return {
       questionText: `What is the equation of the line shown in the graph?`,
       figureCode: mafsCode,
       options: shuffled.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The line crosses the y-axis at $b = ${b}$ and falls ${absM} unit${absM === 1 ? "" : "s"} for every unit to the right, so the slope is $m = ${m}$, giving $y = ${m}x + ${b}$. Choice ${wrongSign.letter} is incorrect; it ${wrongSign.reason}. The remaining choices use $\\frac{1}{${absM}}$ (the reciprocal of the slope) rather than the actual slope of $${m}$.`
+      explanation: `Choice ${correctLetter} is correct. The line crosses the y-axis at $b = ${b}$ and falls ${absM} unit${absM === 1 ? "" : "s"} for every unit to the right, so the slope is $m = ${m}$, giving $y = ${m}x + ${b}$. ${shuffled.filter(o => !o.isCorrect).map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
