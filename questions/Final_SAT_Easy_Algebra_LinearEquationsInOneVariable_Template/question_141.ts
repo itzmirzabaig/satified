@@ -53,9 +53,9 @@ export const generator_141 = {
     const distractorC = coeff * x; // = rightSide + const1
 
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: `results from a sign error: computing ${rightSide} - ${const1} instead of ${rightSide} + ${addAmount}` },
+      { text: distractorA.toString(), isCorrect: false, reason: `results from subtracting ${const1} from ${rightSide} instead of adding ${addAmount} to ${rightSide}` },
       { text: distractorB.toString(), isCorrect: false, reason: `is the value of $x$, not the value of the expression $${coeff}x + ${const1}$` },
-      { text: distractorC.toString(), isCorrect: false, reason: `is the value of $${coeff}x$; it results from adding ${const1} to ${rightSide} only once` },
+      { text: distractorC.toString(), isCorrect: false, reason: `is the value of $${coeff}x$, which results from adding ${const1} to ${rightSide} only once` },
       { text: targetValue.toString(), isCorrect: true, reason: "" }
     ];
 
@@ -72,7 +72,7 @@ export const generator_141 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: targetValue.toString(),
-      explanation: `To find the value of $${coeff}x + ${const1}$, we can add $${addAmount}$ to both sides of the given equation: $${coeff}x - ${const1} + ${addAmount} = ${rightSide} + ${addAmount}$, which gives $${coeff}x + ${const1} = ${targetValue}$. Therefore, the value is $${targetValue}$, which corresponds to option ${correctLetter}. Why other options are incorrect: Choice ${incorrectOptions[0].letter}: ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter}: ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter}: ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Adding ${addAmount} to both sides of the given equation yields $${coeff}x - ${const1} + ${addAmount} = ${rightSide} + ${addAmount}$, which is equivalent to $${coeff}x + ${const1} = ${targetValue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
