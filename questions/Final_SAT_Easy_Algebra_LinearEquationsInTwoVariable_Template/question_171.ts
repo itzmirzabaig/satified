@@ -8,6 +8,12 @@ import type { QuestionData } from '../../study/types';
  * - Number ranges: [total: 150-400, x: 100-300]
  * - Difficulty factors: [Simple substitution in linear equation]
  * - Constraints: [x must be less than total]
+ *
+ * FIX NOTES:
+ * The stem was shorthand ("x+y=221 relates maple (x) and birch (y) trees. If
+ * x=147, what is y?") and two distractors were y - 10 and y + 15, labeled
+ * "calculation error". The stem is a full question, the distractors are the
+ * total and adding instead of subtracting, and each choice is explained.
  */
 
 export const generator_171 = {
@@ -20,37 +26,32 @@ export const generator_171 = {
   },
 
   generate: (): QuestionData => {
-    let total = 0;
-    let x = 0;
-    let y = 0;
-    let tries = 0;
+    // Randomize total (150-400) and x (100 to total-20); redraw if x = y so the
+    // maple count never equals the answer. The other choices are always
+    // distinct: y < total < total + x, and x < total.
+    let total = 0, x = 0, y = 0;
     do {
-      // Randomize total (150-400) and x (100 to total-20)
       total = getRandomInt(150, 400);
       x = getRandomInt(100, total - 20);
       y = total - x;
-      // The four option VALUES are {y, y-10, y+15, x}. Redraw until they are
-      // pairwise distinct so the correct answer is never duplicated and no two
-      // distractors coincide. (y-10, y+15 differ from y and each other always;
-      // only the x-distractor can collide, when x == y, y-10, or y+15.)
-    } while (tries++ < 50 && (x === y || x === y - 10 || x === y + 15));
+    } while (x === y);
 
     const optionsData = [
-      { text: y.toString(), isCorrect: true },
-      { text: (y - 10).toString(), isCorrect: false, reason: "calculation error" },
-      { text: (y + 15).toString(), isCorrect: false, reason: "calculation error" },
-      { text: x.toString(), isCorrect: false, reason: "uses maple count" }
+      { text: y.toString(), isCorrect: true, reason: '' },
+      { text: x.toString(), isCorrect: false, reason: `it is the number of maple trees, not the number of birch trees` },
+      { text: total.toString(), isCorrect: false, reason: `it is the total number of trees in the park` },
+      { text: (total + x).toString(), isCorrect: false, reason: `it results from adding ${x} to ${total} instead of subtracting ${x} from ${total}` }
     ];
 
     const shuffled = shuffle(optionsData).map((opt, i) => ({ ...opt, letter: String.fromCharCode(65 + i) }));
     const correctLetter = shuffled.find(o => o.isCorrect)!.letter;
 
     return {
-      questionText: `$x+y=${total}$ relates maple ($x$) and birch ($y$) trees. If $x=${x}$, what is $y$?`,
+      questionText: `A park has only maple trees and birch trees. The equation $x + y = ${total}$ represents this situation, where $x$ is the number of maple trees and $y$ is the number of birch trees. If there are ${x} maple trees in the park, how many birch trees are in the park?`,
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: y.toString(),
-      explanation: `Choice ${correctLetter} is correct. Substitute $x=${x}$ into the equation: $${x} + y = ${total}$, so $y = ${y}$.`
+      explanation: `Choice ${correctLetter} is correct. Substituting ${x} for $x$ in the given equation yields $${x} + y = ${total}$. Subtracting ${x} from both sides yields $y = ${y}$. ${shuffled.filter(o => !o.isCorrect).map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
