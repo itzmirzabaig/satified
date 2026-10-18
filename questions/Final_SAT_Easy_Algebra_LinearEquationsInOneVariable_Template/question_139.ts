@@ -24,13 +24,12 @@ export const generator_139 = {
 
   generate: (): QuestionData => {
     const unitPrice = getRandomInt(2, 8);
-    const c = 'c';
 
     const optionsData = [
-      { text: `$${unitPrice}c$`, isCorrect: true },
-      { text: `$${unitPrice} + c$`, isCorrect: false, reason: "adds dollars and pounds" },
-      { text: `$\\frac{${unitPrice}}{c}$`, isCorrect: false, reason: "divides instead of multiplying" },
-      { text: `$\\frac{c}{${unitPrice}}$`, isCorrect: false, reason: "gives pounds per dollar instead of total cost" }
+      { text: `$${unitPrice}c$`, isCorrect: true, reason: '' },
+      { text: `$${unitPrice} + c$`, isCorrect: false, reason: `it adds the price per pound and the number of pounds instead of multiplying them` },
+      { text: `$\\frac{${unitPrice}}{c}$`, isCorrect: false, reason: `it divides the price per pound by the number of pounds instead of multiplying them` },
+      { text: `$\\frac{c}{${unitPrice}}$`, isCorrect: false, reason: `it divides the number of pounds by the price per pound instead of multiplying them` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -42,11 +41,11 @@ export const generator_139 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `One pound of grapes costs ${unitPrice}. At this rate, how many dollars will ${c} pounds of grapes cost?`,
+      questionText: `One pound of grapes costs \\$${unitPrice}. At this rate, how many dollars will $c$ pounds of grapes cost?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `$${unitPrice}c$`,
-      explanation: `Total cost = unit price × quantity = ${unitPrice} × c = ${unitPrice}c. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Each pound of grapes costs ${unitPrice} dollars, so $c$ pounds of grapes cost $${unitPrice}$ times $c$, or $${unitPrice}c$, dollars. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
