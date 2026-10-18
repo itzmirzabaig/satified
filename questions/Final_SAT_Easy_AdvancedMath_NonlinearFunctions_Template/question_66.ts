@@ -27,7 +27,9 @@ export const generator_66 = {
 
     const aVal = getRandomInt(1, 5) * (Math.random() > 0.5 ? 1 : -1);
 
-    const mafsCode = `<Mafs viewBox={{ x: [-3, 3], y: [-20, 20] }}>
+    // The answer (between -5 and 5) is read off the y-axis, so keep the axis
+    // short enough that every unit gets its own readable label.
+    const mafsCode = `<Mafs viewBox={{ x: [-3, 3], y: [-10, 10] }}>
   <Coordinates.Cartesian />
   <Plot.OfX y={(x) => ${cVal} + ${aVal} * Math.pow(x, 4)} color="var(--mafs-blue)" />
 </Mafs>`;

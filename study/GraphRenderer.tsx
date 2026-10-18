@@ -714,24 +714,39 @@ const GraphRenderer: React.FC<{ code: string; height?: number; zoom?: boolean }>
 
     // A bare <Coordinates.Cartesian /> draws a gridline and a label at every
     // unit. Once an axis spans more than a couple dozen units the labels stack
-    // on top of one another and the graph cannot be read. Give such an axis a
-    // round spacing sized to the viewBox. An axis the question configures
-    // itself is left alone, and short ranges keep the one unit default.
-    const spacingFor = (range: number): number | null => {
+    // on top of one another and the graph cannot be read. For such an axis,
+    // label only round values sized to the viewBox, but keep the gridlines as
+    // fine as stays legible (at most about 60 across the axis), so a value
+    // between labels, such as a y-intercept of 3 with labels every 5, can
+    // still be read by counting lines. An axis the question configures itself
+    // is left alone, and short ranges keep the one unit default.
+    const axisFor = (range: number): any => {
       if (!(range > 24)) return null;
       const raw = range / 12;
       const pow = Math.pow(10, Math.floor(Math.log10(raw)));
-      for (const m of [1, 2, 5, 10]) if (m * pow >= raw) return m * pow;
-      return 10 * pow;
+      let step = 10 * pow;
+      for (const m of [1, 2, 5, 10]) if (m * pow >= raw) { step = m * pow; break; }
+      // Finest round spacing (1, 2, 5, 10, 20, ...) that divides the label
+      // step evenly and keeps the gridlines legible.
+      let lines = step;
+      for (let k = 0; k <= 6 && lines === step; k++) {
+        for (const m of [1, 2, 5]) {
+          const d = m * Math.pow(10, k);
+          if (d >= step) break;
+          if (Math.abs(step / d - Math.round(step / d)) < 1e-9 && range / d <= 60) { lines = d; break; }
+        }
+      }
+      const onStep = (n: number) => Math.abs(n / step - Math.round(n / step)) < 1e-6;
+      return { lines, labels: (n: number) => (onStep(n) ? n : '') };
     };
-    const xStep = spacingFor(vb.x[1] - vb.x[0]);
-    const yStep = spacingFor(vb.y[1] - vb.y[0]);
-    const spacedElements = (xStep || yStep) ? elements.map(el => {
+    const xAxisAuto = axisFor(vb.x[1] - vb.x[0]);
+    const yAxisAuto = axisFor(vb.y[1] - vb.y[0]);
+    const spacedElements = (xAxisAuto || yAxisAuto) ? elements.map(el => {
       if (!React.isValidElement(el) || el.type !== Coordinates.Cartesian) return el;
       const props: any = el.props;
       const extra: any = {};
-      if (xStep && props.xAxis === undefined) extra.xAxis = { lines: xStep };
-      if (yStep && props.yAxis === undefined) extra.yAxis = { lines: yStep };
+      if (xAxisAuto && props.xAxis === undefined) extra.xAxis = xAxisAuto;
+      if (yAxisAuto && props.yAxis === undefined) extra.yAxis = yAxisAuto;
       return Object.keys(extra).length ? React.cloneElement(el, extra) : el;
     }) : elements;
 
