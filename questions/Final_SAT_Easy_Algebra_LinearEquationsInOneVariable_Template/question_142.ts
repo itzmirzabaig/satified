@@ -7,8 +7,13 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [side: 8-18, base: 5-20]
 * - Difficulty factors: [Geometric context, perimeter formula]
-* - Distractor patterns: [A: congruent side, B/D: wrong calc]
-* - Constraints: [Triangle inequality]
+* - Distractor patterns: [congruent side, perimeter minus one side, treating the
+*   given side as the third side]
+* - Constraints: [Triangle inequality; side + base even]
+*
+* FIX NOTES:
+* One distractor was base + 2, "an arithmetic error when subtracting". It is
+* now (perimeter - side) / 2, from reading the given side as the third side.
 * - Question type: [Multiple Choice]
 * - Figure generation: [None]
 */
@@ -23,28 +28,22 @@ export const generator_142 = {
   },
 
   generate: (): QuestionData => {
-    // Bounded guard: triangle inequality (base < 2*side) plus option-collision
-    // checks (base !== side keeps the triangle non-equilateral and distinct
-    // from distractor A; base !== side - 2 keeps base + 2 distinct from side).
-    let side = getRandomInt(8, 18);
-    let base = getRandomInt(5, 20);
-    let tries = 0;
-    while ((base >= 2 * side || base === side || base === side - 2) && tries++ < 50) {
+    // Redraw until: triangle inequality (base < 2*side); base !== side keeps the
+    // triangle non-equilateral and every choice distinct; side + base even so
+    // the "16 is the third side" distractor (perimeter - side) / 2 is an integer.
+    let side = 10, base = 8;
+    do {
       side = getRandomInt(8, 18);
       base = getRandomInt(5, 20);
-    }
-    if (base >= 2 * side || base === side || base === side - 2) {
-      side = 10;
-      base = 7;
-    }
+    } while (base >= 2 * side || base === side || (side + base) % 2 !== 0);
 
     const perimeter = 2 * side + base;
 
     const optionsData = [
       { text: side.toString(), isCorrect: false, reason: "it is the length of each of the two congruent sides, not the third side" },
-      { text: (side + base).toString(), isCorrect: false, reason: `it results from subtracting the length of only one congruent side from the perimeter: ${perimeter} - ${side} = ${side + base}` },
+      { text: (side + base).toString(), isCorrect: false, reason: `it results from subtracting the length of only one congruent side from the perimeter: $${perimeter} - ${side} = ${side + base}$` },
       { text: base.toString(), isCorrect: true, reason: "" },
-      { text: (base + 2).toString(), isCorrect: false, reason: `it results from an arithmetic error when subtracting ${2 * side} from ${perimeter}` }
+      { text: ((side + base) / 2).toString(), isCorrect: false, reason: `it results from treating ${side} feet as the length of the third side and finding the length of each congruent side: $\\frac{${perimeter} - ${side}}{2} = ${(side + base) / 2}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
