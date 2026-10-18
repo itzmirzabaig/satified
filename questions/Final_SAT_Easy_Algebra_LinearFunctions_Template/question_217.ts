@@ -25,18 +25,20 @@ export const generator_217 = {
   generate: (): QuestionData => {
     const difference = getRandomInt(30, 100);
 
-    const optionA = `y = x + ${difference}`;
+    // All choices typeset (only the fraction choice was, so the others showed
+    // as plain text like "y = x - 83")
+    const optionA = `$y = x + ${difference}$`;
 
-    const optionB = `y = \\frac{1}{${difference}}x`;
+    const optionB = `$y = \\frac{1}{${difference}}x$`;
 
-    const optionC = `y = ${difference}x`;
+    const optionC = `$y = ${difference}x$`;
 
-    const optionD = `y = x - ${difference}`;
+    const optionD = `$y = x - ${difference}$`;
 
     const optionsData = [
-      { text: optionA, isCorrect: false, reason: "represents 'y is more than x', not less" },
-      { text: optionB, isCorrect: false, reason: "represents a division relationship" },
-      { text: optionC, isCorrect: false, reason: "represents a multiplication relationship" },
+      { text: optionA, isCorrect: false, reason: `represents $y$ being ${difference} more than $x$, not ${difference} less` },
+      { text: optionB, isCorrect: false, reason: `represents $y$ being $x$ divided by ${difference}` },
+      { text: optionC, isCorrect: false, reason: `represents $y$ being ${difference} times $x$` },
       { text: optionD, isCorrect: true }
     ];
 
