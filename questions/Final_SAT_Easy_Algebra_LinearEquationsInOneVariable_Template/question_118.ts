@@ -7,10 +7,16 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [coeff: 2-10, rightSide: 3-10, multiplier: 3-10]
 * - Difficulty factors: [Expression scaling]
-* - Distractor patterns: [A: wrong value, B: wrong calc, D: wrong add]
+* - Distractor patterns: [the scale factor, adding instead of multiplying,
+*   substituting the given value for x]
 * - Constraints: [Clean integer result]
 * - Question type: [Multiple Choice]
 * - Figure generation: [None]
+*
+* FIX NOTES:
+* Two distractors were rightSide - 3 (which could be 0) and result + 3,
+* labeled "wrong value" and "wrong addition". Every distractor now comes from
+* a stated error and the explanation is typeset.
 */
 
 export const generator_118 = {
@@ -28,15 +34,14 @@ export const generator_118 = {
     const multiplier = getRandomInt(3, 10);
     const result = multiplier * rightSide;
 
-    const distractorA = rightSide - 3;
-    const distractorB = multiplier + rightSide;
-    const distractorD = result + 3;
-
+    const big = multiplier * coeff;
+    // All four values are distinct: rightSide >= 3 and coeff >= 2 separate
+    // multiplier, multiplier + rightSide, multiplier * rightSide and big * rightSide.
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: "wrong value" },
-      { text: distractorB.toString(), isCorrect: false, reason: "wrong calculation" },
-      { text: result.toString(), isCorrect: true },
-      { text: distractorD.toString(), isCorrect: false, reason: "wrong addition" }
+      { text: multiplier.toString(), isCorrect: false, reason: `it is the number that $${coeff}x$ is multiplied by to get $${big}x$, not the value of $${big}x$` },
+      { text: (multiplier + rightSide).toString(), isCorrect: false, reason: `it results from adding ${multiplier} and ${rightSide} instead of multiplying them` },
+      { text: result.toString(), isCorrect: true, reason: '' },
+      { text: (big * rightSide).toString(), isCorrect: false, reason: `it results from substituting ${rightSide} for $x$ in $${big}x$, but ${rightSide} is the value of $${coeff}x$, not $x$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -48,11 +53,11 @@ export const generator_118 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `If $${coeff}x = ${rightSide}$, what is the value of $${multiplier * coeff}x$?`,
+      questionText: `If $${coeff}x = ${rightSide}$, what is the value of $${big}x$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `${multiplier * coeff}x = ${multiplier} × ${coeff}x = ${multiplier} × ${rightSide} = ${result}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Since $${big} = ${multiplier}(${coeff})$, the expression $${big}x$ is equivalent to $${multiplier}(${coeff}x)$. Substituting ${rightSide} for $${coeff}x$ gives $${multiplier}(${rightSide}) = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
