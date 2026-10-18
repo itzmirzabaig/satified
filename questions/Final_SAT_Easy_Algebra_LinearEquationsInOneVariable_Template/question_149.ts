@@ -24,7 +24,7 @@ export const generator_149 = {
 
   generate: (): QuestionData => {
     const coeff1 = getRandomInt(8, 20);
-    const coeff2 = getRandomInt(1, coeff1 - 1);
+    const coeff2 = getRandomInt(2, coeff1 - 1); // at least 2, so the stem never shows "1x"
     const result = getRandomInt(5, 15);
     const rightSide = (coeff1 + coeff2) * result;
 
@@ -33,7 +33,7 @@ export const generator_149 = {
       figureCode: null,
       options: [],
       correctAnswer: result.toString(),
-      explanation: `Add ${coeff2}x: ${coeff1 + coeff2}x = ${rightSide}. Divide: x = ${rightSide}/${coeff1 + coeff2} = ${result}.`
+      explanation: `Adding $${coeff2}x$ to both sides of the given equation yields $${coeff1 + coeff2}x = ${rightSide}$. Dividing both sides of this equation by ${coeff1 + coeff2} yields $x = ${result}$.`
     };
   }
 };
