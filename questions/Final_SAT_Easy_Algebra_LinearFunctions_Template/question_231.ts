@@ -24,10 +24,10 @@ export const generator_231 = {
   generate: (): QuestionData => {
     const slope = getRandomInt(1, 4);
 
-    // Constrain intercept to multiples of 5 so it always lands on a labeled gridline.
-    // getRandomInt picks from [15, 20, 25] via step-3 → index * 5 + 15
-    const interceptMultiplier = getRandomInt(3, 5); // 3→15, 4→20, 5→25
-    const intercept = interceptMultiplier * 5;
+    // Intercept is a multiple of 5 so it lands on a gridline. It used to be only
+    // 15, 20 or 25, so regenerating often repeated the answer; it now ranges
+    // over 10 to 45 (eight values).
+    const intercept = getRandomInt(2, 9) * 5;
 
     // Gridlines every 5 dollars (labels every 10) put the intercept on a line.
     // The window starts a little below and left of the axes so the x-axis labels

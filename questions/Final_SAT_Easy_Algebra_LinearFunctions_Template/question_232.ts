@@ -23,25 +23,31 @@ export const generator_232 = {
   },
 
   generate: (): QuestionData => {
-    const numerator = getRandomInt(2, 5);
-
-    const denominator = getRandomInt(3, 6);
+    // The slope is a proper fraction in lowest terms; numerator and denominator
+    // used to be drawn independently, giving slopes like 3/3 or 4/6.
+    const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+    let numerator = 2, denominator = 3;
+    do {
+      numerator = getRandomInt(2, 5);
+      denominator = getRandomInt(3, 7);
+    } while (numerator >= denominator || gcd(numerator, denominator) !== 1);
 
     const intercept = getRandomInt(2, 5);
+    const slopeTex = `\\frac{${numerator}}{${denominator}}`;
 
-    const correctEquation = `f(x)=\\frac{${numerator}}{${denominator}}x+${intercept}`;
+    const correctEquation = `$f(x) = ${slopeTex}x + ${intercept}$`;
 
-    const distractorA = `f(x)=\\frac{${numerator}}{${denominator}}x-${intercept}`;
+    const distractorA = `$f(x) = ${slopeTex}x - ${intercept}$`;
 
-    const distractorC = `f(x)=${denominator}x-${intercept}`;
+    const distractorC = `$f(x) = \\frac{${denominator}}{${numerator}}x + ${intercept}$`;
 
-    const distractorD = `f(x)=${denominator}x+${intercept}`;
+    const distractorD = `$f(x) = ${intercept}x + ${slopeTex}$`;
 
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "uses the wrong sign for the y-intercept" },
-      { text: correctEquation, isCorrect: true },
-      { text: distractorC, isCorrect: false, reason: "uses the denominator as slope with wrong sign" },
-      { text: distractorD, isCorrect: false, reason: "uses the denominator as slope instead of a fraction" }
+      { text: distractorA, isCorrect: false, reason: `its $y$-intercept is $-${intercept}$, so $f(0) = -${intercept}$, not ${intercept}` },
+      { text: correctEquation, isCorrect: true, reason: '' },
+      { text: distractorC, isCorrect: false, reason: `its slope, $\\frac{${denominator}}{${numerator}}$, is the reciprocal of $${slopeTex}$` },
+      { text: distractorD, isCorrect: false, reason: `it swaps the slope, $${slopeTex}$, and the $y$-intercept, ${intercept}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -58,7 +64,7 @@ export const generator_232 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. Using slope-intercept form with slope $m=\\frac{${numerator}}{${denominator}}$ and y-intercept $b=${intercept}$ gives $f(x)=\\frac{${numerator}}{${denominator}}x+${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Using slope-intercept form with slope $m=\\frac{${numerator}}{${denominator}}$ and y-intercept $b=${intercept}$ gives $f(x)=\\frac{${numerator}}{${denominator}}x+${intercept}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
