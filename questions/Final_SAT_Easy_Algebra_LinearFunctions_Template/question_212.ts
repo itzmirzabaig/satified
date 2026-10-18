@@ -31,63 +31,38 @@ export const generator_212 = {
   },
 
   generate: (): QuestionData => {
-    // Pick the coefficient, input, and denominator, then a constant that makes
-    // (numeratorCoeff * xValue - constant) a positive multiple of the denominator.
-    let numeratorCoeff = 0, xValue = 0, denominator = 0, constant = 0;
-    let numeratorValue = 0, result = 0;
-    let tries = 0;
+    // The constant is a multiple of the denominator and the denominator divides
+    // numeratorCoeff * xValue, so all three errors below give whole numbers
+    // (the old version usually fell back to "arithmetic error" fillers like
+    // result + 1 and result - 1). Redraw until the four choices are positive
+    // and distinct.
+    let numeratorCoeff = 2, xValue = 3, denominator = 2, constant = 2;
+    let numeratorValue = 0, result = 0, values: number[] = [];
     do {
       numeratorCoeff = getRandomInt(2, 5);
       xValue = getRandomInt(3, 8);
       denominator = getRandomInt(2, 5);
-      const validConstants: number[] = [];
-      for (let c = 1; c <= 5; c++) {
-        const num = numeratorCoeff * xValue - c;
-        if (num > 0 && num % denominator === 0) validConstants.push(c);
-      }
-      if (validConstants.length === 0) continue; // retry with fresh a, x, d
-      constant = validConstants[getRandomInt(0, validConstants.length - 1)];
-      numeratorValue = numeratorCoeff * xValue - constant; // guaranteed > 0
-      result = numeratorValue / denominator;               // guaranteed integer
-    } while (numeratorValue % denominator !== 0 && tries++ < 50);
+      constant = denominator * (2 * denominator <= 5 ? getRandomInt(1, 2) : 1);
+      numeratorValue = numeratorCoeff * xValue - constant;
+      result = numeratorValue / denominator;
+      values = [
+        result,
+        numeratorValue,                                            // forgot to divide
+        (numeratorCoeff * xValue + constant) / denominator,       // added the constant
+        (numeratorCoeff * xValue) / denominator - constant        // divided only the x term
+      ];
+    } while (
+      numeratorCoeff % denominator === 0 || denominator % numeratorCoeff === 0 || // keeps the fraction from simplifying, e.g. (2x - 2)/2
+      (numeratorCoeff * xValue) % denominator !== 0 ||
+      values.some(v => !Number.isInteger(v) || v <= 0) || new Set(values).size < 4
+    );
 
-    // Build on-theme integer distractors, then de-duplicate against the answer
-    // and each other. Ordered so the conceptual mistakes come first and generic
-    // arithmetic slips only fill remaining slots.
-    const candidates: { value: number; reason: string }[] = [];
-    // Forgetting to divide by the denominator (report just the numerator).
-    candidates.push({ value: numeratorValue, reason: "results from forgetting to divide the numerator by the denominator" });
-    // Adding the constant instead of subtracting it (only when it stays an integer).
-    if ((numeratorCoeff * xValue + constant) % denominator === 0) {
-      candidates.push({ value: (numeratorCoeff * xValue + constant) / denominator, reason: "results from adding the constant instead of subtracting it" });
-    }
-    // Dividing by the wrong denominator (a neighbor that still divides the numerator).
-    for (const d of [denominator - 1, denominator + 1, denominator - 2, denominator + 2]) {
-      if (d >= 1 && d !== denominator && numeratorValue % d === 0) {
-        candidates.push({ value: numeratorValue / d, reason: "results from dividing by the wrong denominator" });
-      }
-    }
-    // Generic arithmetic-slip fillers to guarantee three usable distractors.
-    candidates.push({ value: result + 1, reason: "results from an arithmetic error" });
-    candidates.push({ value: result - 1, reason: "results from an arithmetic error" });
-    candidates.push({ value: result + 2, reason: "results from an arithmetic error" });
-    candidates.push({ value: result + denominator, reason: "results from an arithmetic error" });
-
-    const used = new Set<number>([result]);
-    const distractors: { value: number; reason: string }[] = [];
-    for (const cand of candidates) {
-      if (cand.value > 0 && !used.has(cand.value)) {
-        used.add(cand.value);
-        distractors.push(cand);
-        if (distractors.length === 3) break;
-      }
-    }
-
+    const ax = numeratorCoeff * xValue;
     const optionsData = [
       { text: result.toString(), isCorrect: true, reason: "" },
-      { text: distractors[0].value.toString(), isCorrect: false, reason: distractors[0].reason },
-      { text: distractors[1].value.toString(), isCorrect: false, reason: distractors[1].reason },
-      { text: distractors[2].value.toString(), isCorrect: false, reason: distractors[2].reason }
+      { text: values[1].toString(), isCorrect: false, reason: `is the value of the numerator, $${ax} - ${constant}$; it must still be divided by ${denominator}` },
+      { text: values[2].toString(), isCorrect: false, reason: `results from adding ${constant} to ${ax} instead of subtracting it` },
+      { text: values[3].toString(), isCorrect: false, reason: `results from dividing only ${ax} by ${denominator} and then subtracting ${constant}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -103,7 +78,7 @@ export const generator_212 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$ gives $f(${xValue}) = \\frac{${numeratorCoeff}(${xValue}) - ${constant}}{${denominator}} = \\frac{${numeratorCoeff * xValue} - ${constant}}{${denominator}} = \\frac{${numeratorValue}}{${denominator}} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$ gives $f(${xValue}) = \\frac{${numeratorCoeff}(${xValue}) - ${constant}}{${denominator}} = \\frac{${numeratorCoeff * xValue} - ${constant}}{${denominator}} = \\frac{${numeratorValue}}{${denominator}} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
