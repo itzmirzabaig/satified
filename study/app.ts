@@ -655,6 +655,7 @@ class QuestionTester {
     const fillIn=isFillIn(d);
     let ok=false, correctDisplay='';
     let answerGraph:{id:string;code:string}|null=null;
+    let answerFigure:string|null=null;
 
     if(fillIn){
       const norm=(s:string)=>s.trim().toLowerCase().replace(/\.0+$/,'');
@@ -672,6 +673,11 @@ class QuestionTester {
         // source code, which used to appear here as raw Mafs markup.
         answerGraph={id:`ag-${Date.now()}`,code:ctxt};
         correctDisplay=`${letter}. <span class="option-text">the graph shown below</span>`;
+      } else if(/^\s*<(svg|div)/i.test(ctxt)){
+        // A figure drawn as SVG goes below the line too: inline inside it,
+        // the line's text sat at the figure's bottom edge, out of view.
+        answerFigure=ctxt;
+        correctDisplay=`${letter}. <span class="option-text">the graph shown below</span>`;
       } else {
         correctDisplay=`${letter}. <span class="option-text">${autoWrap(ctxt)}</span>`;
       }
@@ -682,6 +688,8 @@ class QuestionTester {
       <p class="correct-answer-display"><strong>Correct Answer:</strong> ${correctDisplay}</p>`;
     if(answerGraph)
       h+=`<div class="figure mafs-container answer-graph" id="${answerGraph.id}"></div>`;
+    if(answerFigure)
+      h+=`<div class="figure answer-figure">${answerFigure}</div>`;
     if(fillIn&&!ok)
       h+=`<p class="your-answer-display"><strong>Your Answer:</strong> ${this.userInput||'(blank)'}</p>`;
     if(d.explanation)
@@ -1937,7 +1945,7 @@ class PracticeTestEngine {
             if (i === null) return '(none)';
             const txt = getOptText(d.options[i]);
             const letter = String.fromCharCode(65 + i);
-            return isGraphCode(txt) ? `${letter} (graph)` : autoWrap(String(txt));
+            return isGraphCode(txt) || /^\s*<(svg|div)/i.test(txt) ? `${letter} (graph)` : autoWrap(String(txt));
           };
           // Show all options with highlighting
           const optionsHTML = d.options.map((opt, i) => {

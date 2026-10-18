@@ -79,7 +79,7 @@ export const generator_1426 = {
     // STEP: Build the data table (values match the math for every draw).
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto; text-align: center; font-family: serif;">
   <thead>
-    <tr style="border-bottom: 2px solid #000;">
+    <tr style="border-bottom: 2px solid currentColor;">
       <th style="padding: 8px; border-right: 1px solid #ccc;">Tax Type</th>
       <th style="padding: 8px; border-right: 1px solid #ccc;">State sales tax</th>
       <th style="padding: 8px;">No state sales tax</th>

@@ -54,7 +54,7 @@ export const generator_1429 = {
     // STEP 3: Build HTML table
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto; text-align: center; font-family: serif;">
   <thead>
-    <tr style="border-bottom: 2px solid #000;">
+    <tr style="border-bottom: 2px solid currentColor;">
       <th style="padding: 8px; border-right: 1px solid #ccc;">Rhesus factor</th>
       <th style="padding: 8px; border-right: 1px solid #ccc;">A</th>
       <th style="padding: 8px; border-right: 1px solid #ccc;">B</th>

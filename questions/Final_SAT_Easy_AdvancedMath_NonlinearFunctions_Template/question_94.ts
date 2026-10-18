@@ -38,20 +38,22 @@ export const generator_94 = {
 
       let grid = '';
       for (let gx = xMin; gx <= xMax; gx++) {
-        grid += `<line x1="${X(gx)}" y1="${p}" x2="${X(gx)}" y2="${H - p}" stroke="#e2e8f0" stroke-width="1"/>`;
+        grid += `<line x1="${X(gx)}" y1="${p}" x2="${X(gx)}" y2="${H - p}" stroke="currentColor" stroke-opacity="0.14" stroke-width="1"/>`;
       }
       for (let gy = yMin; gy <= yMax; gy++) {
-        grid += `<line x1="${p}" y1="${Y(gy)}" x2="${W - p}" y2="${Y(gy)}" stroke="#e2e8f0" stroke-width="1"/>`;
+        grid += `<line x1="${p}" y1="${Y(gy)}" x2="${W - p}" y2="${Y(gy)}" stroke="currentColor" stroke-opacity="0.14" stroke-width="1"/>`;
       }
 
-      const axes = `<line x1="${p}" y1="${Y(0)}" x2="${W - p}" y2="${Y(0)}" stroke="#0f172a" stroke-width="1.5"/><line x1="${X(0)}" y1="${p}" x2="${X(0)}" y2="${H - p}" stroke="#0f172a" stroke-width="1.5"/>`;
+      // Colors follow the page (currentColor) so the figure reads on the dark
+      // theme; fixed light theme colors made the grid glare and the axes vanish.
+      const axes = `<line x1="${p}" y1="${Y(0)}" x2="${W - p}" y2="${Y(0)}" stroke="currentColor" stroke-opacity="0.8" stroke-width="1.5"/><line x1="${X(0)}" y1="${p}" x2="${X(0)}" y2="${H - p}" stroke="currentColor" stroke-opacity="0.8" stroke-width="1.5"/>`;
 
       let labels = '';
       for (let gx = xMin; gx <= xMax; gx++) {
-        if (gx !== 0) labels += `<text x="${X(gx)}" y="${Y(0) + 14}" font-size="11" fill="#64748b" text-anchor="middle">${gx}</text>`;
+        if (gx !== 0) labels += `<text x="${X(gx)}" y="${Y(0) + 14}" font-size="12" fill="currentColor" fill-opacity="0.8" text-anchor="middle">${gx}</text>`;
       }
       for (let gy = yMin; gy <= yMax; gy++) {
-        if (gy !== 0) labels += `<text x="${X(0) + 6}" y="${Y(gy) + 4}" font-size="11" fill="#64748b">${gy}</text>`;
+        if (gy !== 0) labels += `<text x="${X(0) + 6}" y="${Y(gy) + 4}" font-size="12" fill="currentColor" fill-opacity="0.8">${gy}</text>`;
       }
 
       let d = '';
