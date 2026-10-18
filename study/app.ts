@@ -138,7 +138,15 @@ const autoWrap = (t: string): string => {
   const triggers = ['\\frac','\\sqrt','\\text','\\cdot','\\times','\\div',
     '\\alpha','\\beta','\\gamma','\\theta','\\pi','\\sum','\\int','\\infty',
     '\\pm','\\leq','\\geq','\\neq','\\approx','^{','_{'];
-  return triggers.some(k => t.includes(k)) ? `\\(${t}\\)` : t;
+  if (triggers.some(k => t.includes(k))) return `\\(${t}\\)`;
+  // A bare equation or inequality written as plain text, such as the choice
+  // "f(x)=5x+2" or "y = x - 83", would otherwise show unformatted beside
+  // typeset choices. Typeset it when it has a relation sign and no words
+  // (no run of three or more letters), so prose answers are left alone.
+  if (/[=<>≤≥]/.test(t) && /^[\s\w().,+\-−*/^=<>≤≥]+$/.test(t) && !/[A-Za-z]{3,}/.test(t)) {
+    return `\\(${t}\\)`;
+  }
+  return t;
 };
 
 const getOptText = (o: string | {text:string}): string =>
