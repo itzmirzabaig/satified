@@ -23,30 +23,31 @@ export const generator_220 = {
   },
 
   generate: (): QuestionData => {
-    const rate = getRandomInt(30, 50);
+    // A rate that is a multiple of 5 puts the line on a gridline (every 5) at
+    // each whole second, so the reading is exact. (Answer-aligned gridlines for
+    // a prime rate such as 37 meant a gridline at every unit, a dense block.)
+    const rate = getRandomInt(6, 10) * 5;
     const time1 = getRandomInt(2, 4);
     const amount1 = rate * time1;
 
-    // viewBox: x from 0 to time1+1, y from 0 to yMax with a little headroom
+    // x from just left of 0 to time1+1; y from just below 0 to yMax, so the
+    // x-axis labels (needed to read the seconds) are not cut off at the bottom.
     const xMax = time1 + 1;
     const yMax = amount1 + rate; // = rate * (time1 + 1)
 
-    // data-answer tells GraphRenderer to align y-gridlines so `rate` lands
-    // exactly on a labeled line. The renderer's computeAnswerAlignedStep handles
-    // all values including primes automatically.
-    // We only set xAxis explicitly; yAxis is computed by the renderer from data-answer.
-    const mafsCode = `<Mafs data-answer="${rate}" viewBox={{ x: [0, ${xMax}], y: [0, ${yMax}] }}>
+    const mafsCode = `<Mafs viewBox={{ x: [-0.4, ${xMax}], y: [${-Math.round(yMax * 0.08)}, ${yMax}] }}>
   <Coordinates.Cartesian
-    xAxis={{ lines: 1, labels: (n) => Number.isInteger(n) && n >= 0 ? n : "" }}
+    xAxis={{ lines: 1, labels: (n) => Number.isInteger(n) && n > 0 ? n : "" }}
+    yAxis={{ lines: 5, labels: (n) => n > 0 && n % 20 === 0 ? n : "" }}
   />
   <Plot.OfX y={(x) => ${rate} * x} color="var(--mafs-blue)" />
 </Mafs>`;
 
     const optionsData = [
-      { text: time1.toString(), isCorrect: false, reason: "is the time in seconds, not the rate" },
-      { text: rate.toString(), isCorrect: true },
-      { text: (amount1 - 2).toString(), isCorrect: false, reason: "is an arbitrary value" },
-      { text: amount1.toString(), isCorrect: false, reason: "is the total amount, not the rate" }
+      { text: time1.toString(), isCorrect: false, reason: `is a number of seconds, not the number of candy bars wrapped per second` },
+      { text: rate.toString(), isCorrect: true, reason: '' },
+      { text: (amount1 + rate).toString(), isCorrect: false, reason: `is the total number of candy bars wrapped in ${time1 + 1} seconds, not the number wrapped per second` },
+      { text: amount1.toString(), isCorrect: false, reason: `is the total number of candy bars wrapped in ${time1} seconds, not the number wrapped per second` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -62,7 +63,7 @@ export const generator_220 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: rate.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The slope represents the rate of candy bars wrapped per second. Using points $(0, 0)$ and $(${time1}, ${amount1})$, the slope is $\\frac{${amount1} - 0}{${time1} - 0} = ${rate}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The slope represents the rate of candy bars wrapped per second. Using points $(0, 0)$ and $(${time1}, ${amount1})$, the slope is $\\frac{${amount1} - 0}{${time1} - 0} = ${rate}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
