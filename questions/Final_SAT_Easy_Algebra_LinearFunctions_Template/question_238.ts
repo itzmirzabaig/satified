@@ -5,9 +5,9 @@ import type { QuestionData } from '../../study/types';
  * Question 238
  *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [slope: 1-4, intercept: 2-5]
+ * - Number ranges: [slope: 1.5-3.5 in steps of 0.5, intercept: 2-6]
  * - Difficulty factors: [Calculating slope from graph]
- * - Distractor patterns: [miscalculation, y-intercept as slope, total cost for one mile]
+ * - Distractor patterns: [rise not divided by run, y-intercept, total cost for two miles]
  * - Constraints: [None]
  * - Question type: [Figure→Multiple Choice Text]
  * - Figure generation: [Plot.OfX]
@@ -33,39 +33,40 @@ export const generator_238 = {
   },
 
   generate: (): QuestionData => {
-    const slope = getRandomInt(1, 4);
-    // intercept in [2,5] but never equal to slope, so the "y-intercept"
-    // distractor can never collide with the correct slope value.
-    let intercept = getRandomInt(2, 5);
-    let tries = 0;
-    while (intercept === slope && tries++ < 50) {
-      intercept = getRandomInt(2, 5);
-    }
+    // The rate is a multiple of 0.50 dollars and the graph marks the points at
+    // x = 0 and x = 2, both on $1 gridlines. The old graph labeled the y-axis
+    // only every 4 dollars, so the marked values could not be read, and one
+    // choice was the slope plus 0.60 ("a miscalculation").
+    // Redraw until the base fare differs from the rate and from twice the rate.
+    let slope = 2, intercept = 3;
+    do {
+      slope = getRandomInt(3, 7) / 2;
+      intercept = getRandomInt(2, 6);
+    } while (intercept === slope || intercept === 2 * slope);
+    const cost2 = intercept + 2 * slope;
 
     // ── Plain SVG line graph of y = slope*x + intercept over x in [0, 4] ──
     const xMaxData = 4;
     const yMaxData = slope * xMaxData + intercept;
 
     const width = 450;
-    const height = 250;
+    const height = 300;
     const margin = { top: 20, right: 20, bottom: 40, left: 45 };
     const graphWidth = width - margin.left - margin.right;
     const graphHeight = height - margin.top - margin.bottom;
 
-    // Round the y-axis up to a tidy maximum for gridlines.
-    const yTop = Math.ceil(yMaxData / 4) * 4;
+    // Gridlines every dollar, labeled every 2 dollars.
+    const yTop = Math.ceil(yMaxData / 2) * 2;
 
     const getX = (x: number) => margin.left + (x / xMaxData) * graphWidth;
     const getY = (y: number) => margin.top + graphHeight - (y / yTop) * graphHeight;
 
-    // Horizontal gridlines + y labels (0 .. yTop in 4 steps).
     const yGrid: string[] = [];
-    for (let k = 0; k <= 4; k++) {
-      const yVal = (yTop / 4) * k;
+    for (let yVal = 0; yVal <= yTop; yVal++) {
       const y = getY(yVal);
       yGrid.push(
-        `<line x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" stroke="currentColor" stroke-opacity="0.12" stroke-width="1" />` +
-        `<text x="${margin.left - 8}" y="${y + 4}" text-anchor="end" font-size="12" fill="currentColor">${yVal}</text>`
+        `<line x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" stroke="currentColor" stroke-opacity="${yVal % 2 === 0 ? 0.2 : 0.1}" stroke-width="1" />` +
+        (yVal % 2 === 0 ? `<text x="${margin.left - 8}" y="${y + 4}" text-anchor="end" font-size="12" fill="currentColor">${yVal}</text>` : '')
       );
     }
 
@@ -74,16 +75,16 @@ export const generator_238 = {
     for (let x = 0; x <= xMaxData; x++) {
       const px = getX(x);
       xGrid.push(
-        `<line x1="${px}" y1="${margin.top}" x2="${px}" y2="${height - margin.bottom}" stroke="currentColor" stroke-opacity="0.12" stroke-width="1" />` +
+        `<line x1="${px}" y1="${margin.top}" x2="${px}" y2="${height - margin.bottom}" stroke="currentColor" stroke-opacity="0.2" stroke-width="1" />` +
         `<text x="${px}" y="${height - margin.bottom + 18}" text-anchor="middle" font-size="12" fill="currentColor">${x}</text>`
       );
     }
 
-    // The line and its two labelled reference points (0, intercept) and (1, slope+intercept).
+    // The line and its two marked points (0, intercept) and (2, cost2).
     const x1 = getX(0), y1 = getY(intercept);
     const x2 = getX(xMaxData), y2 = getY(yMaxData);
     const p0x = getX(0), p0y = getY(intercept);
-    const p1x = getX(1), p1y = getY(slope + intercept);
+    const p1x = getX(2), p1y = getY(cost2);
 
     const figureCode = `<div style="width:100%;max-width:${width}px;margin:0 auto;">
   <svg viewBox="0 0 ${width} ${height}" style="width:100%;height:auto;font-family:sans-serif;user-select:none;">
@@ -99,11 +100,12 @@ export const generator_238 = {
   </svg>
 </div>`;
 
+    const money = (n: number) => `\\$${n.toFixed(2)}`;
     const optionsData = [
-      { text: slope.toFixed(2), isCorrect: true },
-      { text: (slope + 0.6).toFixed(2), isCorrect: false, reason: "results from a miscalculation of the slope" },
-      { text: intercept.toFixed(2), isCorrect: false, reason: "is the y-intercept (base cost), not the cost per mile" },
-      { text: (slope + intercept).toFixed(2), isCorrect: false, reason: "is the total cost for one mile, not the rate" }
+      { text: slope.toFixed(2), isCorrect: true, reason: '' },
+      { text: (2 * slope).toFixed(2), isCorrect: false, reason: `it is the increase in cost over 2 miles, from $x = 0$ to $x = 2$; that increase must be divided by 2 to find the cost for each mile` },
+      { text: intercept.toFixed(2), isCorrect: false, reason: `it is the cost of a ride of 0 miles, the $y$-intercept of the graph, not the cost for each additional mile` },
+      { text: cost2.toFixed(2), isCorrect: false, reason: `it is the total cost of a 2-mile ride, the $y$-coordinate of the point $(2, ${cost2})$, not the cost for each additional mile` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -115,11 +117,11 @@ export const generator_238 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `The line graphed in the $xy$-plane above models the total cost, in dollars, for a cab ride, $y$, based on the number of miles traveled, $x$. What is the cost for each additional mile traveled?`,
+      questionText: `The line graphed in the $xy$-plane models the total cost $y$, in dollars, of a cab ride of $x$ miles. According to the graph, what is the cost, in dollars, for each additional mile traveled?`,
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: slope.toFixed(2),
-      explanation: `Choice ${correctOption.letter} is correct. The cost for each additional mile is represented by the slope of the line. Using the points $(0, ${intercept})$ and $(1, ${slope + intercept})$, the slope is $\\frac{${slope + intercept} - ${intercept}}{1 - 0} = ${slope}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The cost for each additional mile is the slope of the line. The graph passes through the points $(0, ${intercept})$ and $(2, ${cost2})$, so the slope is $\\frac{${cost2} - ${intercept}}{2} = \\frac{${cost2 - intercept}}{2} = ${slope}$. Therefore, each additional mile costs ${money(slope)}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
