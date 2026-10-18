@@ -166,6 +166,31 @@ const numericallyEqual = (a: string, b: string): boolean => {
   return na !== null && nb !== null && Math.abs(na - nb) < 1e-9;
 };
 
+// Grades a student produced response the way the SAT does. Besides an exact
+// value, an answer that does not terminate may be entered as a decimal that
+// fills the answer field, truncated or rounded: 2/3 as .6666, .6667, 0.666 or
+// 0.667, but not .66 or 0.67. The field holds 5 characters for a positive
+// answer and 6 for a negative one. Used only for grading what a student typed;
+// matching an answer key to the choices still needs an exact value.
+const sprMatches = (input: string, correct: string): boolean => {
+  if (numericallyEqual(input, correct)) return true;
+  const fills = (entry: string, value: number): boolean => {
+    const s = entry.trim().replace(/^\+/, '');
+    const m = /^(-?)(\d*)\.(\d+)$/.exec(s);
+    if (!m) return false;
+    const decimals = m[3].length;
+    if (s.length < (m[1] ? 6 : 5)) return false;
+    const f = Math.pow(10, decimals);
+    const v = parseFloat(s);
+    return Math.abs(v - Math.trunc(value * f) / f) < 1e-9 || Math.abs(v - Math.round(value * f) / f) < 1e-9;
+  };
+  const ni = parseNumeric(input), nc = parseNumeric(correct);
+  if (ni === null || nc === null) return false;
+  // Either side may be the decimal: the student's entry, or a key stored
+  // as a rounded decimal that the student entered as a fraction.
+  return fills(input, nc) || fills(correct, ni);
+};
+
 const resolveCorrect = (ca: any, opts: (string|{text:string})[]): number => {
   if (typeof ca === 'number') return ca;
   const s = String(ca).trim();
@@ -635,7 +660,7 @@ class QuestionTester {
       const norm=(s:string)=>s.trim().toLowerCase().replace(/\.0+$/,'');
       const correct=String(d.correctAnswer).trim();
       // Exact match first, then numeric equivalence so "3/4", "0.75" and ".75" all grade correct
-      ok=norm(this.userInput)===norm(correct) || numericallyEqual(this.userInput, correct);
+      ok=norm(this.userInput)===norm(correct) || sprMatches(this.userInput, correct);
       correctDisplay=autoWrap(correct);
     } else {
       const ci=resolveCorrect(d.correctAnswer,d.options);
@@ -1652,7 +1677,7 @@ class PracticeTestEngine {
       const fillIn = !q.data.options || q.data.options.length === 0;
       const norm = (s: string) => s.trim().toLowerCase().replace(/\.0+$/, '');
       const correct = fillIn
-        ? (norm(q.userInput) === norm(String(q.data.correctAnswer)) || numericallyEqual(q.userInput, String(q.data.correctAnswer)))
+        ? (norm(q.userInput) === norm(String(q.data.correctAnswer)) || sprMatches(q.userInput, String(q.data.correctAnswer)))
         : q.selectedOpt === resolveCorrect(q.data.correctAnswer, q.data.options);
       return sum + (correct ? (pts[q.difficulty] ?? 10) : 0);
     }, 0);
@@ -1703,7 +1728,7 @@ class PracticeTestEngine {
       const fillIn = !q.data.options || q.data.options.length === 0;
       const norm = (s: string) => s.trim().toLowerCase().replace(/\.0+$/, '');
       const correct = fillIn
-        ? (norm(q.userInput) === norm(String(q.data.correctAnswer)) || numericallyEqual(q.userInput, String(q.data.correctAnswer)))
+        ? (norm(q.userInput) === norm(String(q.data.correctAnswer)) || sprMatches(q.userInput, String(q.data.correctAnswer)))
         : q.selectedOpt === resolveCorrect(q.data.correctAnswer, q.data.options);
       if (correct) domainStats[q.domain].correct++;
     }
@@ -1880,7 +1905,7 @@ class PracticeTestEngine {
         const fillIn = !d.options || d.options.length === 0;
         const norm = (s: string) => s.trim().toLowerCase().replace(/\.0+$/, '');
         const correct = fillIn
-          ? (norm(q.userInput) === norm(String(d.correctAnswer)) || numericallyEqual(q.userInput, String(d.correctAnswer)))
+          ? (norm(q.userInput) === norm(String(d.correctAnswer)) || sprMatches(q.userInput, String(d.correctAnswer)))
           : q.selectedOpt === resolveCorrect(d.correctAnswer, d.options);
 
         const iconColor = correct ? '#27ae60' : '#e74c3c';
