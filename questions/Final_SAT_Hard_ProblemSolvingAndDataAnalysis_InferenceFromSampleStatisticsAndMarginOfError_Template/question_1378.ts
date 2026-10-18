@@ -44,10 +44,10 @@ export const generator_1378 = {
     const distractorD = totalStudents; // Wrong: total without adjustment
     
     const optionsData = [
-      { text: `${distractorA.toLocaleString()}`, isCorrect: false, type: "atLeast" },
-      { text: `${distractorB.toLocaleString()}`, isCorrect: false, type: "half" },
-      { text: `${estimateFewerThanTwo.toLocaleString()}`, isCorrect: true, type: "correct" },
-      { text: `${distractorD.toLocaleString()}`, isCorrect: false, type: "total" }
+      { text: `${distractorA.toLocaleString('en-US')}`, isCorrect: false, type: "atLeast" },
+      { text: `${distractorB.toLocaleString('en-US')}`, isCorrect: false, type: "half" },
+      { text: `${estimateFewerThanTwo.toLocaleString('en-US')}`, isCorrect: true, type: "correct" },
+      { text: `${distractorD.toLocaleString('en-US')}`, isCorrect: false, type: "total" }
     ];
     
     // STEP 4: Shuffle and assign letters
@@ -66,13 +66,13 @@ export const generator_1378 = {
     });
     
     // STEP 5: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. It is given that ${percentAtLeastTwo}% of ${classSize} students in the class reported that they had at least two siblings. Since ${percentAtLeastTwo}% of ${classSize} is ${studentsWithAtLeastTwo.toFixed(1).replace('.0', '')}, there must have been ${studentsWithAtLeastTwo} students in the class who reported having at least two siblings and ${studentsWithFewerThanTwo} students who reported that they had fewer than two siblings. It is also given that the average class size in the state is ${classSize} and that the class is representative of all classes in the state. This means that in each class in the state there are about ${studentsWithFewerThanTwo} students who have fewer than two siblings. Therefore, the best estimate of the number of students in the state who have fewer than two siblings is ${studentsWithFewerThanTwo} × (number of classes in the state), or ${studentsWithFewerThanTwo} × ${totalClasses.toLocaleString()} = ${estimateFewerThanTwo.toLocaleString()}. Choice ${incorrectByType['atLeast']} is incorrect because ${distractorA.toLocaleString()} is the best estimate for the number of students in the state who have at least, not fewer than, two siblings. Choice ${incorrectByType['half']} is incorrect because ${distractorB.toLocaleString()} is half of the estimated total number of students in the state; however, since the students in the class are representative of students in the classes in the state and more than half of the students have fewer than two siblings, more than half of the students in each class in the state have fewer than two siblings, too. Choice ${incorrectByType['total']} is incorrect because ${distractorD.toLocaleString()} is the estimated total number of students in the state.`;
+    const explanation = `Choice ${correctLetter} is correct. It is given that ${percentAtLeastTwo}% of ${classSize} students in the class reported that they had at least two siblings. Since ${percentAtLeastTwo}% of ${classSize} is ${studentsWithAtLeastTwo.toFixed(1).replace('.0', '')}, there must have been ${studentsWithAtLeastTwo} students in the class who reported having at least two siblings and ${studentsWithFewerThanTwo} students who reported that they had fewer than two siblings. It is also given that the average class size in the state is ${classSize} and that the class is representative of all classes in the state. This means that in each class in the state there are about ${studentsWithFewerThanTwo} students who have fewer than two siblings. Therefore, the best estimate of the number of students in the state who have fewer than two siblings is ${studentsWithFewerThanTwo} × (number of classes in the state), or ${studentsWithFewerThanTwo} × ${totalClasses.toLocaleString('en-US')} = ${estimateFewerThanTwo.toLocaleString('en-US')}. Choice ${incorrectByType['atLeast']} is incorrect because ${distractorA.toLocaleString('en-US')} is the best estimate for the number of students in the state who have at least, not fewer than, two siblings. Choice ${incorrectByType['half']} is incorrect because ${distractorB.toLocaleString('en-US')} is half of the estimated total number of students in the state; however, since the students in the class are representative of students in the classes in the state and more than half of the students have fewer than two siblings, more than half of the students in each class in the state have fewer than two siblings, too. Choice ${incorrectByType['total']} is incorrect because ${distractorD.toLocaleString('en-US')} is the estimated total number of students in the state.`;
     
     return {
-      questionText: `In State X, a class consisting of ${classSize} students was surveyed and ${percentAtLeastTwo} percent of the students reported that they had at least two siblings. The average class size in the state is ${classSize}. If the students in this class are representative of students in the state's classes and there are ${totalClasses.toLocaleString()} classes in the state, which of the following best estimates the number of students in the state who have fewer than two siblings?`,
+      questionText: `In State X, a class consisting of ${classSize} students was surveyed and ${percentAtLeastTwo} percent of the students reported that they had at least two siblings. The average class size in the state is ${classSize}. If the students in this class are representative of students in the state's classes and there are ${totalClasses.toLocaleString('en-US')} classes in the state, which of the following best estimates the number of students in the state who have fewer than two siblings?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `${estimateFewerThanTwo.toLocaleString()}`,
+      correctAnswer: `${estimateFewerThanTwo.toLocaleString('en-US')}`,
       explanation: explanation
     };
   }

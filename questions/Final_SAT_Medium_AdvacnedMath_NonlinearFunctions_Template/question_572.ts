@@ -29,13 +29,13 @@ export const generator_572 = {
     const numDoublings = totalHours / doublingPeriod;
     const finalAmount = initialAmount * Math.pow(2, numDoublings);
     
-    const questionText = `Bacteria are growing in a liquid growth medium. There were $${initialAmount.toLocaleString()}$ cells per milliliter during an initial observation. The number of cells per milliliter doubles every $${doublingPeriod}$ hours. How many cells per milliliter will there be $${totalHours}$ hours after the initial observation?`;
+    const questionText = `Bacteria are growing in a liquid growth medium. There were $${initialAmount.toLocaleString('en-US')}$ cells per milliliter during an initial observation. The number of cells per milliliter doubles every $${doublingPeriod}$ hours. How many cells per milliliter will there be $${totalHours}$ hours after the initial observation?`;
     
-    const correctAnswer = finalAmount.toLocaleString();
+    const correctAnswer = finalAmount.toLocaleString('en-US');
     
-    const distractor1 = (initialAmount * numDoublings).toLocaleString(); // Linear growth
-    const distractor2 = (initialAmount * Math.pow(2, numDoublings - 1)).toLocaleString(); // One less doubling
-    const distractor3 = (initialAmount + finalAmount / 2).toLocaleString(); // Nonsense calculation
+    const distractor1 = (initialAmount * numDoublings).toLocaleString('en-US'); // Linear growth
+    const distractor2 = (initialAmount * Math.pow(2, numDoublings - 1)).toLocaleString('en-US'); // One less doubling
+    const distractor3 = (initialAmount + finalAmount / 2).toLocaleString('en-US'); // Nonsense calculation
     
     const optionsData = [
       { text: distractor1, isCorrect: false, reason: "treats growth as linear instead of exponential" },
@@ -53,7 +53,7 @@ export const generator_572 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. The number of doubling periods is $${totalHours}/${doublingPeriod} = ${numDoublings}$. The final amount is $${initialAmount.toLocaleString()} \\times 2^{${numDoublings}} = ${initialAmount.toLocaleString()} \\times ${Math.pow(2, numDoublings)} = ${finalAmount.toLocaleString()}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The number of doubling periods is $${totalHours}/${doublingPeriod} = ${numDoublings}$. The final amount is $${initialAmount.toLocaleString('en-US')} \\times 2^{${numDoublings}} = ${initialAmount.toLocaleString('en-US')} \\times ${Math.pow(2, numDoublings)} = ${finalAmount.toLocaleString('en-US')}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText,

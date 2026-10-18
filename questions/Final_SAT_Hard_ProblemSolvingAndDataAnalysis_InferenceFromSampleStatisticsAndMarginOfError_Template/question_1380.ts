@@ -47,10 +47,10 @@ export const generator_1380 = {
     const distractorD = totalVoters - cruzExpected; // Smith's votes instead of margin (wrong)
     
     const optionsData = [
-      { text: `${distractorA.toLocaleString()}`, isCorrect: false, type: "rawDiff" },
-      { text: `${marginOfVictory.toLocaleString()}`, isCorrect: true, type: "correct" },
-      { text: `${distractorC.toLocaleString()}`, isCorrect: false, type: "cruzOnly" },
-      { text: `${distractorD.toLocaleString()}`, isCorrect: false, type: "smithVotes" }
+      { text: `${distractorA.toLocaleString('en-US')}`, isCorrect: false, type: "rawDiff" },
+      { text: `${marginOfVictory.toLocaleString('en-US')}`, isCorrect: true, type: "correct" },
+      { text: `${distractorC.toLocaleString('en-US')}`, isCorrect: false, type: "cruzOnly" },
+      { text: `${distractorD.toLocaleString('en-US')}`, isCorrect: false, type: "smithVotes" }
     ];
     
     // STEP 4: Shuffle and assign letters
@@ -89,13 +89,13 @@ export const generator_1380 = {
     </table>`;
     
     // STEP 6: Build explanation with detailed reasoning
-    const explanation = `Choice ${correctLetter} is correct. It's given that ${cruzVotesPoll} out of ${pollSize} voters responded that they would vote for Angel Cruz. Therefore, the proportion of voters from the poll who responded they would vote for Angel Cruz is \\\\frac{${cruzVotesPoll}}{${pollSize}}. It's also given that there are a total of ${totalVoters.toLocaleString()} voters in the election. Therefore, the total number of people who would be expected to vote for Angel Cruz is ${totalVoters.toLocaleString()} \\\\times \\\\frac{${cruzVotesPoll}}{${pollSize}}, or ${cruzExpected.toLocaleString()}. Since ${cruzExpected.toLocaleString()} of the ${totalVoters.toLocaleString()} total voters would be expected to vote for Angel Cruz, it follows that ${totalVoters.toLocaleString()} - ${cruzExpected.toLocaleString()}, or ${smithExpected.toLocaleString()} voters would be expected not to vote for Angel Cruz. The difference in the number of votes for and against Angel Cruz is ${cruzExpected.toLocaleString()} - ${smithExpected.toLocaleString()}, or ${marginOfVictory.toLocaleString()} votes. Therefore, if ${totalVoters.toLocaleString()} people vote in the election, Angel Cruz would be expected to win by ${marginOfVictory.toLocaleString()} votes.`;
+    const explanation = `Choice ${correctLetter} is correct. It's given that ${cruzVotesPoll} out of ${pollSize} voters responded that they would vote for Angel Cruz. Therefore, the proportion of voters from the poll who responded they would vote for Angel Cruz is \\\\frac{${cruzVotesPoll}}{${pollSize}}. It's also given that there are a total of ${totalVoters.toLocaleString('en-US')} voters in the election. Therefore, the total number of people who would be expected to vote for Angel Cruz is ${totalVoters.toLocaleString('en-US')} \\\\times \\\\frac{${cruzVotesPoll}}{${pollSize}}, or ${cruzExpected.toLocaleString('en-US')}. Since ${cruzExpected.toLocaleString('en-US')} of the ${totalVoters.toLocaleString('en-US')} total voters would be expected to vote for Angel Cruz, it follows that ${totalVoters.toLocaleString('en-US')} - ${cruzExpected.toLocaleString('en-US')}, or ${smithExpected.toLocaleString('en-US')} voters would be expected not to vote for Angel Cruz. The difference in the number of votes for and against Angel Cruz is ${cruzExpected.toLocaleString('en-US')} - ${smithExpected.toLocaleString('en-US')}, or ${marginOfVictory.toLocaleString('en-US')} votes. Therefore, if ${totalVoters.toLocaleString('en-US')} people vote in the election, Angel Cruz would be expected to win by ${marginOfVictory.toLocaleString('en-US')} votes.`;
     
     return {
-      questionText: `The table shows the results of a poll. A total of ${pollSize} voters selected at random were asked which candidate they would vote for in the upcoming election. According to the poll, if ${totalVoters.toLocaleString()} people vote in the election, by how many votes would Angel Cruz be expected to win?`,
+      questionText: `The table shows the results of a poll. A total of ${pollSize} voters selected at random were asked which candidate they would vote for in the upcoming election. According to the poll, if ${totalVoters.toLocaleString('en-US')} people vote in the election, by how many votes would Angel Cruz be expected to win?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `${marginOfVictory.toLocaleString()}`,
+      correctAnswer: `${marginOfVictory.toLocaleString('en-US')}`,
       explanation: explanation
     };
   }

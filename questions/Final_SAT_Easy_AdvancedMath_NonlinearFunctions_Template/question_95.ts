@@ -29,10 +29,10 @@ export const generator_95 = {
     const finalVal = Math.round(initial * Math.pow(growthRate, years));
 
     const optionsData = [
-      { text: `${years} years after the company started selling jewelry online, its predicted annual revenue is approximately ${finalVal.toLocaleString()} dollars.`, isCorrect: true },
-      { text: `${years} years after the company started selling jewelry online, its predicted annual revenue will have increased by a total of approximately ${finalVal.toLocaleString()} dollars.`, isCorrect: false },
-      { text: `When the company's predicted annual revenue is approximately ${finalVal.toLocaleString()} dollars, it is ${years} times the predicted annual revenue for the previous year.`, isCorrect: false },
-      { text: `When the company's predicted annual revenue is approximately ${finalVal.toLocaleString()} dollars, it is ${years}% greater than the predicted annual revenue for the previous year.`, isCorrect: false }
+      { text: `${years} years after the company started selling jewelry online, its predicted annual revenue is approximately ${finalVal.toLocaleString('en-US')} dollars.`, isCorrect: true },
+      { text: `${years} years after the company started selling jewelry online, its predicted annual revenue will have increased by a total of approximately ${finalVal.toLocaleString('en-US')} dollars.`, isCorrect: false },
+      { text: `When the company's predicted annual revenue is approximately ${finalVal.toLocaleString('en-US')} dollars, it is ${years} times the predicted annual revenue for the previous year.`, isCorrect: false },
+      { text: `When the company's predicted annual revenue is approximately ${finalVal.toLocaleString('en-US')} dollars, it is ${years}% greater than the predicted annual revenue for the previous year.`, isCorrect: false }
     ];
 
     const shuffled = shuffle(optionsData).map((opt, i) => ({ ...opt, letter: String.fromCharCode(65 + i) }));
@@ -40,7 +40,7 @@ export const generator_95 = {
     const correctOption = shuffled.find(o => o.isCorrect)!;
 
     return {
-      questionText: `The function $f(x)=${initial.toLocaleString()}(${growthRate.toFixed(2)})^{x}$ gives a company's predicted annual revenue, in dollars, $x$ years after the company started selling jewelry online, where $0 < x < 10$. What is the best interpretation of the statement $f(${years}) \\approx ${finalVal.toLocaleString()}$?`,
+      questionText: `The function $f(x)=${initial.toLocaleString('en-US')}(${growthRate.toFixed(2)})^{x}$ gives a company's predicted annual revenue, in dollars, $x$ years after the company started selling jewelry online, where $0 < x < 10$. What is the best interpretation of the statement $f(${years}) \\approx ${finalVal.toLocaleString('en-US')}$?`,
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: correctOption.text,

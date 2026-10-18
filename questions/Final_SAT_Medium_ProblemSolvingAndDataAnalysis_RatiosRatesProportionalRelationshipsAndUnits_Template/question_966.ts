@@ -39,7 +39,7 @@ export const generator_966 = {
       { text: density.toString(), isCorrect: true },
       { text: distractorB.toString(), isCorrect: false, reason: "is the result of subtracting the volume from the mass" },
       { text: distractorC.toString(), isCorrect: false, reason: "is the result of adding the mass and the volume" },
-      { text: distractorD.toLocaleString(), isCorrect: false, reason: "is the result of multiplying the mass by the volume" }
+      { text: distractorD.toLocaleString('en-US'), isCorrect: false, reason: "is the result of multiplying the mass by the volume" }
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({

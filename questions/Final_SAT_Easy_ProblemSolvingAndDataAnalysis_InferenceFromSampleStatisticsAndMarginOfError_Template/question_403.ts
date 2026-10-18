@@ -38,7 +38,7 @@ export const generator_403 = {
     const rangeSize = 1000;
     const rangeStart = Math.floor(estimatedTotal / rangeSize) * rangeSize;
     const rangeEnd = rangeStart + rangeSize;
-    const correctRange = `$${rangeStart.toLocaleString()}$ to $${rangeEnd.toLocaleString()}$`;
+    const correctRange = `$${rangeStart.toLocaleString('en-US')}$ to $${rangeEnd.toLocaleString('en-US')}$`;
 
     const locationTypes = ["forest", "park", "nature reserve", "woodland"];
     const location = getRandomElement(locationTypes);
@@ -47,9 +47,9 @@ export const generator_403 = {
     const objectTypes = ["trees", "birds", "plants", "flowers"];
     const objectType = getRandomElement(objectTypes);
 
-    const distractorARange = `$${(rangeStart - 3000).toLocaleString()}$ to $${(rangeEnd - 3000).toLocaleString()}$`;
-    const distractorBRange = `$${(rangeStart - 1500).toLocaleString()}$ to $${(rangeEnd - 1500).toLocaleString()}$`;
-    const distractorDRange = `$${(rangeStart + 4000).toLocaleString()}$ to $${(rangeEnd + 4000).toLocaleString()}$`;
+    const distractorARange = `$${(rangeStart - 3000).toLocaleString('en-US')}$ to $${(rangeEnd - 3000).toLocaleString('en-US')}$`;
+    const distractorBRange = `$${(rangeStart - 1500).toLocaleString('en-US')}$ to $${(rangeEnd - 1500).toLocaleString('en-US')}$`;
+    const distractorDRange = `$${(rangeStart + 4000).toLocaleString('en-US')}$ to $${(rangeEnd + 4000).toLocaleString('en-US')}$`;
 
     const optionsData = [
       { text: distractorARange, isCorrect: false, reason: "is too low" },

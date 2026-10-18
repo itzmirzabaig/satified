@@ -50,10 +50,10 @@ export const generator_160 = {
     }
 
     const optionsData = [
-      { text: rate.toLocaleString(), isCorrect: true },
-      { text: distractorB.toLocaleString(), isCorrect: false, reason: "divides remaining by time" },
-      { text: distractorC.toLocaleString(), isCorrect: false, reason: "miscalculation" },
-      { text: distractorD.toLocaleString(), isCorrect: false, reason: "total burned, not rate per second" }
+      { text: rate.toLocaleString('en-US'), isCorrect: true },
+      { text: distractorB.toLocaleString('en-US'), isCorrect: false, reason: "divides remaining by time" },
+      { text: distractorC.toLocaleString('en-US'), isCorrect: false, reason: "miscalculation" },
+      { text: distractorD.toLocaleString('en-US'), isCorrect: false, reason: "total burned, not rate per second" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -65,10 +65,10 @@ export const generator_160 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `A rocket contained ${initial.toLocaleString()} kg of propellant. After ${time} seconds, ${remaining.toLocaleString()} kg remained. On average, how much propellant burned each second?`,
+      questionText: `A rocket contained ${initial.toLocaleString('en-US')} kg of propellant. After ${time} seconds, ${remaining.toLocaleString('en-US')} kg remained. On average, how much propellant burned each second?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: rate.toLocaleString(),
+      correctAnswer: rate.toLocaleString('en-US'),
       explanation: `Burned: ${initial} - ${remaining} = ${initial - remaining}. Rate: ${initial - remaining}/${time} = ${rate}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
     };
   }

@@ -51,11 +51,11 @@ export const generator_443 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `Of $${total.toLocaleString()}$ beads, $${part.toLocaleString()}$ are silver. What percentage of the beads are silver?`,
+      questionText: `Of $${total.toLocaleString('en-US')}$ beads, $${part.toLocaleString('en-US')}$ are silver. What percentage of the beads are silver?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${calculatedPercent}%`,
-      explanation: `Choice ${correctOption.letter} is correct. To find the percentage of beads that are silver, divide the number of silver beads by the total number of beads and multiply by one hundred: $\\frac{${part.toLocaleString()}}{${total.toLocaleString()}} \\times 100 = ${calculatedPercent}$, so ${calculatedPercent}% of the beads are silver. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the percentage of beads that are silver, divide the number of silver beads by the total number of beads and multiply by one hundred: $\\frac{${part.toLocaleString('en-US')}}{${total.toLocaleString('en-US')}} \\times 100 = ${calculatedPercent}$, so ${calculatedPercent}% of the beads are silver. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
     };
   }
 };

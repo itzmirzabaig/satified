@@ -17,7 +17,7 @@ export const generator_537 = {
     const rate = getRandomInt(5, 12);
     const growthFactor = (100 + rate) / 100;
     
-    const questionText = `A company has a newsletter. In January 2018, there were $${initial.toLocaleString()}$ customers subscribed to the newsletter. For the next $24$ months after January 2018, the total number of customers subscribed to the newsletter each month was ${rate}% greater than the total number subscribed the previous month. Which equation gives the total number of customers, $c$, subscribed to the company's newsletter $m$ months after January 2018, where $m \\le 24$?`;
+    const questionText = `A company has a newsletter. In January 2018, there were $${initial.toLocaleString('en-US')}$ customers subscribed to the newsletter. For the next $24$ months after January 2018, the total number of customers subscribed to the newsletter each month was ${rate}% greater than the total number subscribed the previous month. Which equation gives the total number of customers, $c$, subscribed to the company's newsletter $m$ months after January 2018, where $m \\le 24$?`;
     
     const rateDecimal = (rate / 100).toFixed(2).replace(/^0\./, '0.');
     

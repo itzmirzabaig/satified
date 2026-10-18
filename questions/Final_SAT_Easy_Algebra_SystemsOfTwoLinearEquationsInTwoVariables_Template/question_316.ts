@@ -30,12 +30,12 @@ export const generator_316 = {
     const total = num1 + num2;
     const revenue = price1 * num1 + price2 * num2;
 
-    const correctAnswer = `$\\begin{aligned} x + y &= ${total} \\\\ ${price1}x + ${price2}y &= ${revenue.toLocaleString()} \\end{aligned}$`;
+    const correctAnswer = `$\\begin{aligned} x + y &= ${total} \\\\ ${price1}x + ${price2}y &= ${revenue.toLocaleString('en-US')} \\end{aligned}$`;
     const optionsData = [
       { text: correctAnswer, isCorrect: true },
       { text: `$\\begin{aligned} x + y &= ${total} \\\\ ${price1}x + ${price2}y &= ${total * revenue} \\end{aligned}$`, isCorrect: false, reason: "multiplies the totals incorrectly" },
-      { text: `$\\begin{aligned} x + y &= ${revenue.toLocaleString()} \\\\ ${price1}x + ${price2}y &= ${total * revenue} \\end{aligned}$`, isCorrect: false, reason: "swaps the total tickets with total revenue" },
-      { text: `$\\begin{aligned} ${price1}x &= ${price2}y \\\\ ${total}x + ${total}y &= ${revenue.toLocaleString()} \\end{aligned}$`, isCorrect: false, reason: "sets up incorrect equations" }
+      { text: `$\\begin{aligned} x + y &= ${revenue.toLocaleString('en-US')} \\\\ ${price1}x + ${price2}y &= ${total * revenue} \\end{aligned}$`, isCorrect: false, reason: "swaps the total tickets with total revenue" },
+      { text: `$\\begin{aligned} ${price1}x &= ${price2}y \\\\ ${total}x + ${total}y &= ${revenue.toLocaleString('en-US')} \\end{aligned}$`, isCorrect: false, reason: "sets up incorrect equations" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -49,7 +49,7 @@ export const generator_316 = {
     const explanation = `Choice ${correctOption.letter} is correct. The total number of tickets is $x + y = ${total}$. The revenue from $x$ tickets at $${price1}$ and $y$ tickets at $${price2}$ is $${price1}x + ${price2}y = ${revenue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `A discount airline sells a certain number of tickets, $x$, for a flight for $${price1}$ each. It sells the number of remaining tickets, $y$, for $${price2}$ each. For a particular flight, the airline sold ${total} tickets and collected a total of $${revenue.toLocaleString()}$ from the sale of those tickets. Which system of equations represents this relationship between $x$ and $y$?`,
+      questionText: `A discount airline sells a certain number of tickets, $x$, for a flight for $${price1}$ each. It sells the number of remaining tickets, $y$, for $${price2}$ each. For a particular flight, the airline sold ${total} tickets and collected a total of $${revenue.toLocaleString('en-US')}$ from the sale of those tickets. Which system of equations represents this relationship between $x$ and $y$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,

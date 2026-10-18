@@ -41,13 +41,13 @@ export const generator_935 = {
     const distractorB = monthlyReturns * (months - 1); // Forgets first month
     const distractorD = baseSales * months; // Total sales (ignores return rate completely)
     
-    const correctText = totalReturns.toLocaleString();
+    const correctText = totalReturns.toLocaleString('en-US');
     
     const optionsData = [
-      { text: monthlyReturns.toLocaleString(), isCorrect: false, reason: "represents the number of units returned in just one month, not the full period" },
-      { text: (monthlyReturns * (months - 1)).toLocaleString(), isCorrect: false, reason: "only counts the additional months, ignoring the first month" },
-      { text: totalReturns.toLocaleString(), isCorrect: true },
-      { text: (baseSales * months).toLocaleString(), isCorrect: false, reason: "represents total sales, not returns" }
+      { text: monthlyReturns.toLocaleString('en-US'), isCorrect: false, reason: "represents the number of units returned in just one month, not the full period" },
+      { text: (monthlyReturns * (months - 1)).toLocaleString('en-US'), isCorrect: false, reason: "only counts the additional months, ignoring the first month" },
+      { text: totalReturns.toLocaleString('en-US'), isCorrect: true },
+      { text: (baseSales * months).toLocaleString('en-US'), isCorrect: false, reason: "represents total sales, not returns" }
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -60,11 +60,11 @@ export const generator_935 = {
     
     // STEP 4: Return question data
     return {
-      questionText: `During the first month of sales, a company sold ${baseSales.toLocaleString()} units of a certain type of smartphone. During the same month, ${returnRate}% of the units sold were returned. If sales and the return rate remain the same for each of the next ${months - 1} months, about how many units of this smartphone will be returned to the company during this ${months}-month period?`,
+      questionText: `During the first month of sales, a company sold ${baseSales.toLocaleString('en-US')} units of a certain type of smartphone. During the same month, ${returnRate}% of the units sold were returned. If sales and the return rate remain the same for each of the next ${months - 1} months, about how many units of this smartphone will be returned to the company during this ${months}-month period?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. To determine the total number of returned units, first calculate the number of units returned in a single month: ${baseSales.toLocaleString()} × 0.${returnRate} = ${monthlyReturns.toLocaleString()}. Since this occurs over ${months} months (${months === 6 ? 'the first month plus the next 5 months' : 'the entire period'}), multiply by ${months}: ${monthlyReturns.toLocaleString()} × ${months} = ${correctText}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To determine the total number of returned units, first calculate the number of units returned in a single month: ${baseSales.toLocaleString('en-US')} × 0.${returnRate} = ${monthlyReturns.toLocaleString('en-US')}. Since this occurs over ${months} months (${months === 6 ? 'the first month plus the next 5 months' : 'the entire period'}), multiply by ${months}: ${monthlyReturns.toLocaleString('en-US')} × ${months} = ${correctText}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

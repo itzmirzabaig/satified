@@ -88,7 +88,7 @@ export const generator_907 = {
       figureCode: tableCode, // Table is embedded in questionText
       options: [], // Fill-in-the-blank
       correctAnswer: estimatedTotalForA.toString(),
-      explanation: `The correct answer is ${estimatedTotalForA.toLocaleString()}. According to the table, of ${sampleSize} voters randomly sampled, the total number of ${gender1.toLowerCase()} and ${gender2.toLowerCase()} voters who plan to vote for ${candidate.a} is ${totalForA}. The best estimate of the total number of voters in the town who plan to vote for ${candidate.a} is the fraction of voters in the sample who plan to vote for ${candidate.a}, ${totalForA}/${sampleSize}, multiplied by the total voter population of ${totalPopulation.toLocaleString()}. Therefore, the answer is (${totalForA}/${sampleSize})(${totalPopulation.toLocaleString()}) = ${estimatedTotalForA.toLocaleString()}.`
+      explanation: `The correct answer is ${estimatedTotalForA.toLocaleString('en-US')}. According to the table, of ${sampleSize} voters randomly sampled, the total number of ${gender1.toLowerCase()} and ${gender2.toLowerCase()} voters who plan to vote for ${candidate.a} is ${totalForA}. The best estimate of the total number of voters in the town who plan to vote for ${candidate.a} is the fraction of voters in the sample who plan to vote for ${candidate.a}, ${totalForA}/${sampleSize}, multiplied by the total voter population of ${totalPopulation.toLocaleString('en-US')}. Therefore, the answer is (${totalForA}/${sampleSize})(${totalPopulation.toLocaleString('en-US')}) = ${estimatedTotalForA.toLocaleString('en-US')}.`
     };
   }
 };

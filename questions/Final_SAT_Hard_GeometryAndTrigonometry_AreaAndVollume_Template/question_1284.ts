@@ -37,7 +37,7 @@ export const generator_1284 = {
     const distractorB = Math.round((hemisphereVolume / 5) / 100) * 100; // Wrong formula
     const distractorC = Math.round(fullSphereVolume / 100) * 100; // Full sphere
     
-    const correctText = correctVolume.toLocaleString();
+    const correctText = correctVolume.toLocaleString('en-US');
 
     // Guard: ensure all four values are distinct so no distractor collides with
     // the correct answer (or another distractor) for any draw.
@@ -50,9 +50,9 @@ export const generator_1284 = {
     // Tag each option with a stable identity so distractor reasons stay bound to
     // the correct value after shuffling (never to a shuffle-slot index).
     const optionsData = [
-      { text: distractorA.toLocaleString(), isCorrect: false, id: 'tooSmall' },
-      { text: distractorB.toLocaleString(), isCorrect: false, id: 'wrongFormula' },
-      { text: distractorC.toLocaleString(), isCorrect: false, id: 'fullSphere' },
+      { text: distractorA.toLocaleString('en-US'), isCorrect: false, id: 'tooSmall' },
+      { text: distractorB.toLocaleString('en-US'), isCorrect: false, id: 'wrongFormula' },
+      { text: distractorC.toLocaleString('en-US'), isCorrect: false, id: 'fullSphere' },
       { text: correctText, isCorrect: true, id: 'correct' }
     ];
 
@@ -69,7 +69,7 @@ export const generator_1284 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. The volume of a hemisphere is $V = \\frac{2}{3}\\pi r^3 = \\frac{2}{3}\\pi(${radius})^3 = \\frac{2}{3}\\pi(${Math.pow(radius, 3).toLocaleString()}) \\approx ${Math.round((2/3) * Math.pow(radius, 3) * 3.14159).toLocaleString()} \\approx ${correctVolume.toLocaleString()}$ cubic inches. Choice ${letterOf('tooSmall')} is incorrect because it is far too small. Choice ${letterOf('wrongFormula')} is incorrect because it uses the wrong formula. Choice ${letterOf('fullSphere')} is incorrect because it calculates the volume of a full sphere instead of a hemisphere.`
+      explanation: `Choice ${correctOption.letter} is correct. The volume of a hemisphere is $V = \\frac{2}{3}\\pi r^3 = \\frac{2}{3}\\pi(${radius})^3 = \\frac{2}{3}\\pi(${Math.pow(radius, 3).toLocaleString('en-US')}) \\approx ${Math.round((2/3) * Math.pow(radius, 3) * 3.14159).toLocaleString('en-US')} \\approx ${correctVolume.toLocaleString('en-US')}$ cubic inches. Choice ${letterOf('tooSmall')} is incorrect because it is far too small. Choice ${letterOf('wrongFormula')} is incorrect because it uses the wrong formula. Choice ${letterOf('fullSphere')} is incorrect because it calculates the volume of a full sphere instead of a hemisphere.`
     };
   }
 };

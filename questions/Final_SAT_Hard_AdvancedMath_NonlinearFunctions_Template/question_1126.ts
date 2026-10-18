@@ -34,7 +34,7 @@ export const generator_1126 = {
     const signA = `+${a}`;
     
     return {
-      questionText: `The function $g$ is defined by $g(x)=(x${signA})(t-x)$, where $t$ is a constant. In the xy-plane, the graph of $y=g(x)$ passes through the point $(${p},0)$. What is the value of $g(0)$?`,
+      questionText: `The function $g$ is defined by $g(x)=(x${signA})(t-x)$, where $t$ is a constant. In the xy-plane, the graph of $y=g(x)$ passes through the point $(${p}, 0)$. What is the value of $g(0)$?`,
       figureCode: null,
       options: [],
       correctAnswer: g0.toString(),

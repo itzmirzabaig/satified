@@ -33,7 +33,7 @@ export const generator_504 = {
 
     // Fixed: Changed to template literals (backticks) for reason strings with ${}
     const optionsData = [
-      { text: massGrams.toLocaleString(), isCorrect: true, reason: null },
+      { text: massGrams.toLocaleString('en-US'), isCorrect: true, reason: null },
       { text: distractor1.toString(), isCorrect: false, reason: `This answer is incorrect. It appears to result from adding ${massKg} to ${gramsPerKg} instead of multiplying.` },
       { text: distractor2.toString(), isCorrect: false, reason: `This answer is incorrect. It appears to result from subtracting ${massKg} from ${gramsPerKg}.` },
       { text: distractor3.toString(), isCorrect: false, reason: `This answer is incorrect. It is a seemingly random number unrelated to the correct conversion calculation.` }
@@ -49,11 +49,11 @@ export const generator_504 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // Fixed: Proper array access [0], [1], [2] and simplified text
-    const explanation = `To convert kilograms to grams, you multiply the number of kilograms by ${gramsPerKg.toLocaleString()}. ${massKg} kilograms × ${gramsPerKg.toLocaleString()} grams/kilogram = ${massGrams.toLocaleString()} grams. Therefore, the correct answer is ${massGrams.toLocaleString()}. Why other options are incorrect: Choice ${incorrectOptions[0].letter}: ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter}: ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter}: ${incorrectOptions[2].reason}`;
+    const explanation = `To convert kilograms to grams, you multiply the number of kilograms by ${gramsPerKg.toLocaleString('en-US')}. ${massKg} kilograms × ${gramsPerKg.toLocaleString('en-US')} grams/kilogram = ${massGrams.toLocaleString('en-US')} grams. Therefore, the correct answer is ${massGrams.toLocaleString('en-US')}. Why other options are incorrect: Choice ${incorrectOptions[0].letter}: ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter}: ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter}: ${incorrectOptions[2].reason}`;
 
     return {
       // Fixed: Plain text for units, no \\text{} needed
-      questionText: `A kangaroo has a mass of ${massKg} kilograms. What is the kangaroo's mass, in grams? (1 kilogram = ${gramsPerKg.toLocaleString()} grams)`,
+      questionText: `A kangaroo has a mass of ${massKg} kilograms. What is the kangaroo's mass, in grams? (1 kilogram = ${gramsPerKg.toLocaleString('en-US')} grams)`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: massGrams.toString(),

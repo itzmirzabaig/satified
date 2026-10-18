@@ -34,7 +34,7 @@ export const generator_1117 = {
     const y_point = a * a + b;
     
     return {
-      questionText: `The function $f$ is defined by $f(x)=a^{x}+b$, where $a$ and $b$ are constants and $a>0$. The graph has a y-intercept at $(0,${y_int})$ and passes through $(2,${y_point})$. What is the value of $a+b$?`,
+      questionText: `The function $f$ is defined by $f(x)=a^{x}+b$, where $a$ and $b$ are constants and $a>0$. The graph has a y-intercept at $(0, ${y_int})$ and passes through $(2, ${y_point})$. What is the value of $a+b$?`,
       figureCode: null,
       options: [],
       correctAnswer: (a + b).toString(),

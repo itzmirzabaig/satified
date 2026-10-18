@@ -32,12 +32,12 @@ export const generator_840 = {
     
     // STEP 3: Create options with tracking. Each distractor carries its own
     // reason so the explanation stays correct regardless of shuffle order.
-    const correctText = area.toLocaleString();
+    const correctText = area.toLocaleString('en-US');
 
     // Distractors
     const distractorA = (base + height).toString(); // Sum
-    const distractorB = (area / 2).toLocaleString(); // Quartered
-    const distractorD = (base * height).toLocaleString(); // No 1/2
+    const distractorB = (area / 2).toLocaleString('en-US'); // Quartered
+    const distractorD = (base * height).toLocaleString('en-US'); // No 1/2
 
     const optionsData = [
       { text: distractorA, isCorrect: false, reason: `this is the sum of the base and height, not the area` },

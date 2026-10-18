@@ -47,7 +47,7 @@ export const generator_445 = {
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
-    const formatNumber = (n: number) => n.toLocaleString();
+    const formatNumber = (n: number) => n.toLocaleString('en-US');
 
     return {
       questionText: `Of $${formatNumber(total)}$ paper clips, $${formatNumber(large)}$ are size large. What percentage of the paper clips are size large?`,

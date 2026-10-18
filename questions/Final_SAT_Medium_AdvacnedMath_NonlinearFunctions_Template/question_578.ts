@@ -17,7 +17,7 @@ export const generator_578 = {
     const rate = getRandomInt(10, 20);
     const decayFactor = (100 - rate) / 100;
     
-    const questionText = `From 2005 through 2014, the number of music CDs sold in the United States declined each year by approximately ${rate}\\% of the number sold the preceding year. In 2005, approximately $${initial.toLocaleString()}$ million CDs were sold in the United States. Of the following, which best models $C$, the number of millions of CDs sold in the United States, $t$ years after 2005?`;
+    const questionText = `From 2005 through 2014, the number of music CDs sold in the United States declined each year by approximately ${rate}\\% of the number sold the preceding year. In 2005, approximately $${initial.toLocaleString('en-US')}$ million CDs were sold in the United States. Of the following, which best models $C$, the number of millions of CDs sold in the United States, $t$ years after 2005?`;
     
     const rateDecimal = (rate / 100).toFixed(2).replace(/^0\./, '0.');
     

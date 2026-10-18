@@ -30,8 +30,8 @@ export const generator_501 = {
     const yardsPerHour = Math.round(mph * yardsPerMile);
     const correctMph = yardsPerHour / yardsPerMile;
 
-    const questionText = `A participant in a bicycle race completes the race with an average speed of ${yardsPerHour.toLocaleString()} yards per hour. What is this average speed, in miles per hour? (1 mile = ${yardsPerMile.toLocaleString()} yards)`;
-    const explanation = `The correct answer is ${correctMph}. This average speed is equivalent to \\(\\left(\\frac{${yardsPerHour.toLocaleString()} \\text{ yards}}{1 \\text{ hour}}\\right)\\left(\\frac{1 \\text{ mile}}{${yardsPerMile.toLocaleString()} \\text{ yards}}\\right)\\), which yields ${correctMph} miles per hour.`;
+    const questionText = `A participant in a bicycle race completes the race with an average speed of ${yardsPerHour.toLocaleString('en-US')} yards per hour. What is this average speed, in miles per hour? (1 mile = ${yardsPerMile.toLocaleString('en-US')} yards)`;
+    const explanation = `The correct answer is ${correctMph}. This average speed is equivalent to \\(\\left(\\frac{${yardsPerHour.toLocaleString('en-US')} \\text{ yards}}{1 \\text{ hour}}\\right)\\left(\\frac{1 \\text{ mile}}{${yardsPerMile.toLocaleString('en-US')} \\text{ yards}}\\right)\\), which yields ${correctMph} miles per hour.`;
 
     return {
       questionText: questionText,

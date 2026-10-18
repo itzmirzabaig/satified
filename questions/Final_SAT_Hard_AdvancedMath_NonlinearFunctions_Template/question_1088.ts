@@ -70,7 +70,7 @@ export const generator_1088 = {
       figureCode: tableCode,
       options: [],
       correctAnswer: f0.toString(),
-      explanation: `The table is symmetric about $x=${h}$, so the vertex of $y=f(x)+4$ is at $(${h},${k})$. Writing $y=A(x-${h})^2+${k}$ and substituting the point $(${x1},${y1})$: $A(${x1-h})^2+${k}=${y1}$, so $A(${(x1-h)*(x1-h)})=${y1-k}$, giving $A=${(y1-k)/((x1-h)*(x1-h))}$.
+      explanation: `The table is symmetric about $x=${h}$, so the vertex of $y=f(x)+4$ is at $(${h}, ${k})$. Writing $y=A(x-${h})^2+${k}$ and substituting the point $(${x1}, ${y1})$: $A(${x1-h})^2+${k}=${y1}$, so $A(${(x1-h)*(x1-h)})=${y1-k}$, giving $A=${(y1-k)/((x1-h)*(x1-h))}$.
       <br/>
       Thus $y=-(x-${h})^2+${k}$. Since $y=f(x)+4$, we have $f(x)=y-4=-(x-${h})^2+${k-4}$.
       <br/>

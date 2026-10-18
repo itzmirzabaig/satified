@@ -134,7 +134,7 @@ export const generator_600 = {
     
     // STEP 7: Build explanation with dynamic letters
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. The y-intercept is $(0,${y0})$ because $y=${coeff}(${base}^0)=${coeff}$. For each increase of 1 in $x$, $y$ is multiplied by ${base}. Thus, the graph passes through $(1, ${y1})$, $(2, ${y2})$, $(3, ${y3})$, and $(4, ${y4})$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The y-intercept is $(0, ${y0})$ because $y=${coeff}(${base}^0)=${coeff}$. For each increase of 1 in $x$, $y$ is multiplied by ${base}. Thus, the graph passes through $(1, ${y1})$, $(2, ${y2})$, $(3, ${y3})$, and $(4, ${y4})$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
     
     // STEP 8: Return question data
     return {

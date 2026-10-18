@@ -30,9 +30,9 @@ export const generator_49 = {
     const energy = Math.round((mass / 2) * velocity * velocity);
 
     const optionsData = [
-      { text: `The object traveling at ${velocity} meters per second has a kinetic energy of ${energy.toLocaleString()} joules.`, isCorrect: true },
-      { text: `The object traveling at ${velocity * 10} meters per second has a kinetic energy of ${energy.toLocaleString()} joules.`, isCorrect: false },
-      { text: `The object traveling at ${energy.toLocaleString()} meters per second has a kinetic energy of ${velocity} joules.`, isCorrect: false },
+      { text: `The object traveling at ${velocity} meters per second has a kinetic energy of ${energy.toLocaleString('en-US')} joules.`, isCorrect: true },
+      { text: `The object traveling at ${velocity * 10} meters per second has a kinetic energy of ${energy.toLocaleString('en-US')} joules.`, isCorrect: false },
+      { text: `The object traveling at ${energy.toLocaleString('en-US')} meters per second has a kinetic energy of ${velocity} joules.`, isCorrect: false },
       { text: `The object traveling at ${velocity * velocity} meters per second has a kinetic energy of ${mass} joules.`, isCorrect: false }
     ];
 
@@ -41,11 +41,11 @@ export const generator_49 = {
     const correctOption = shuffled.find(o => o.isCorrect)!;
 
     return {
-      questionText: `The kinetic energy, in joules, of an object with mass ${mass} kilograms traveling at a speed of $v$ meters per second is given by the function $K$, where $K(v)=\\frac{${mass}}{2} v^{2}$. Which of the following is the best interpretation of $K(${velocity})=${energy.toLocaleString()}$ in this context?`,
+      questionText: `The kinetic energy, in joules, of an object with mass ${mass} kilograms traveling at a speed of $v$ meters per second is given by the function $K$, where $K(v)=\\frac{${mass}}{2} v^{2}$. Which of the following is the best interpretation of $K(${velocity})=${energy.toLocaleString('en-US')}$ in this context?`,
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. In $K(${velocity})=${energy.toLocaleString()}$, ${velocity} is the speed $v$ (in m/s) and ${energy.toLocaleString()} is the energy $K$ (in joules).`
+      explanation: `Choice ${correctOption.letter} is correct. In $K(${velocity})=${energy.toLocaleString('en-US')}$, ${velocity} is the speed $v$ (in m/s) and ${energy.toLocaleString('en-US')} is the energy $K$ (in joules).`
     };
   }
 };

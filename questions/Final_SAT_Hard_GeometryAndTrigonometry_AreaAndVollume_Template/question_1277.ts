@@ -71,7 +71,7 @@ export const generator_1277 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The volume of the cube is $${edge}^3 = ${cubeVolume.toLocaleString()}$ cubic inches. The volume of the sphere is $\\frac{4}{3}\\pi(${radius})^3 \\approx ${sphereVolumeRounded.toLocaleString()}$ cubic inches. The remaining volume is approximately $${cubeVolume.toLocaleString()} - ${sphereVolumeRounded.toLocaleString()} \\approx ${roundedRemaining.toLocaleString()}$ cubic inches. Choice ${sphereOption.letter} is incorrect because it represents only the volume of the sphere. Choice ${miscalcOption.letter} is incorrect due to a calculation error. Choice ${cubeOption.letter} is incorrect because it represents only the volume of the cube.`
+      explanation: `Choice ${correctOption.letter} is correct. The volume of the cube is $${edge}^3 = ${cubeVolume.toLocaleString('en-US')}$ cubic inches. The volume of the sphere is $\\frac{4}{3}\\pi(${radius})^3 \\approx ${sphereVolumeRounded.toLocaleString('en-US')}$ cubic inches. The remaining volume is approximately $${cubeVolume.toLocaleString('en-US')} - ${sphereVolumeRounded.toLocaleString('en-US')} \\approx ${roundedRemaining.toLocaleString('en-US')}$ cubic inches. Choice ${sphereOption.letter} is incorrect because it represents only the volume of the sphere. Choice ${miscalcOption.letter} is incorrect due to a calculation error. Choice ${cubeOption.letter} is incorrect because it represents only the volume of the cube.`
     };
   }
 };

@@ -37,7 +37,7 @@ export const generator_1192 = {
     const optionsData = [
       { text: `$x+y=${yInt}$`, isCorrect: false, reason: `keeps line $k$'s slope of $-1$ instead of using the perpendicular slope $+1$, so it is parallel to line $k$` },
       { text: `$x+y=-${yInt}$`, isCorrect: false, reason: `also keeps the slope $-1$ of line $k$ and has the wrong $y$-intercept, $(0,-${yInt})$` },
-      { text: `$x-y=${yInt}$`, isCorrect: false, reason: `has the correct slope $+1$ but its $y$-intercept is $(0,-${yInt})$, not $(0,${yInt})$` },
+      { text: `$x-y=${yInt}$`, isCorrect: false, reason: `has the correct slope $+1$ but its $y$-intercept is $(0,-${yInt})$, not $(0, ${yInt})$` },
       { text: `$x-y=-${yInt}$`, isCorrect: true }
     ];
 
@@ -53,11 +53,11 @@ export const generator_1192 = {
     const displayOptions = shuffledOptions.map(o => ({ text: `${o.letter}. ${o.text}` }));
 
     return {
-      questionText: `In the $xy$-plane, line $k$ is defined by $x+y=0$. Line $j$ is perpendicular to line $k$, and the $y$-intercept of line $j$ is $(0,${yInt})$. Which of the following is an equation of line $j$?`,
+      questionText: `In the $xy$-plane, line $k$ is defined by $x+y=0$. Line $j$ is perpendicular to line $k$, and the $y$-intercept of line $j$ is $(0, ${yInt})$. Which of the following is an equation of line $j$?`,
       figureCode: null,
       options: displayOptions,
       correctAnswer: `${correctOption.letter}. ${correctOption.text}`,
-      explanation: `Choice ${correctLetter} is correct. Line $k$, $x+y=0$, can be written as $y=-x$, so it has slope $-1$. A line perpendicular to it has slope $+1$ (the negative reciprocal). With $y$-intercept $(0,${yInt})$, line $j$ is $y = x + ${yInt}$, which rearranges to $x - y = -${yInt}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Line $k$, $x+y=0$, can be written as $y=-x$, so it has slope $-1$. A line perpendicular to it has slope $+1$ (the negative reciprocal). With $y$-intercept $(0, ${yInt})$, line $j$ is $y = x + ${yInt}$, which rearranges to $x - y = -${yInt}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

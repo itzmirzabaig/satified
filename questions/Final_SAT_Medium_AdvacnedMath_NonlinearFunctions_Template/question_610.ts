@@ -29,11 +29,11 @@ export const generator_610 = {
     const input2 = 4;
     const value2 = coefficient * Math.pow(base, input2); // 19 * 625 = 11875
     
-    const questionText = `The exponential function $g$ is defined by $g(x)=${coefficient} \\cdot a^{x}$, where $a$ is a positive constant. If $g(${input1})=${value1.toLocaleString()}$, what is the value of $g(${input2})$?`;
+    const questionText = `The exponential function $g$ is defined by $g(x)=${coefficient} \\cdot a^{x}$, where $a$ is a positive constant. If $g(${input1})=${value1.toLocaleString('en-US')}$, what is the value of $g(${input2})$?`;
     
     const correctAnswer = value2.toString();
     
-    const explanation = `First, find $a$ using $g(${input1})=${value1.toLocaleString()}$: ${coefficient} \\cdot a^{${input1}} = ${value1.toLocaleString()}, so $a^{${input1}} = ${value1/coefficient} = ${base}^{${input1}}$, thus $a = ${base}$. Then $g(${input2}) = ${coefficient} \\cdot ${base}^{${input2}} = ${coefficient} \\cdot ${Math.pow(base, input2)} = ${value2.toLocaleString()}$.`;
+    const explanation = `First, find $a$ using $g(${input1})=${value1.toLocaleString('en-US')}$: ${coefficient} \\cdot a^{${input1}} = ${value1.toLocaleString('en-US')}, so $a^{${input1}} = ${value1/coefficient} = ${base}^{${input1}}$, thus $a = ${base}$. Then $g(${input2}) = ${coefficient} \\cdot ${base}^{${input2}} = ${coefficient} \\cdot ${Math.pow(base, input2)} = ${value2.toLocaleString('en-US')}$.`;
     
     return {
       questionText,

@@ -65,7 +65,7 @@ export const generator_1198 = {
     }
     
     return {
-      questionText: `In the xy-plane, line $k$ intersects the $y$-axis at the point $(0,${yIntercept})$ and passes through the point $(${xPoint},${yPoint})$. If the point $(${targetX}, w)$ lies on line $k$, what is the value of $w$?`,
+      questionText: `In the xy-plane, line $k$ intersects the $y$-axis at the point $(0, ${yIntercept})$ and passes through the point $(${xPoint}, ${yPoint})$. If the point $(${targetX}, w)$ lies on line $k$, what is the value of $w$?`,
       figureCode: null,
       options: [],
       correctAnswer: w.toString(),

@@ -75,10 +75,10 @@ export const generator_1201 = {
       if (!allPositive || !allDistinct) continue;
 
       const optionsData = [
-        { text: targetDemand.toLocaleString(), isCorrect: true },
-        { text: distractorB.toLocaleString(), isCorrect: false, reason: "results from applying the slope with the wrong sign (adding instead of subtracting units as the price rises)" },
-        { text: distractorC.toLocaleString(), isCorrect: false, reason: "could come from an interpolation or rounding error in the final step" },
-        { text: distractorD.toLocaleString(), isCorrect: false, reason: "would be the demand only if the target price were exactly halfway between the two given prices, giving the midpoint of the two demands" }
+        { text: targetDemand.toLocaleString('en-US'), isCorrect: true },
+        { text: distractorB.toLocaleString('en-US'), isCorrect: false, reason: "results from applying the slope with the wrong sign (adding instead of subtracting units as the price rises)" },
+        { text: distractorC.toLocaleString('en-US'), isCorrect: false, reason: "could come from an interpolation or rounding error in the final step" },
+        { text: distractorD.toLocaleString('en-US'), isCorrect: false, reason: "would be the demand only if the target price were exactly halfway between the two given prices, giving the midpoint of the two demands" }
       ];
 
       const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -93,7 +93,7 @@ export const generator_1201 = {
       correctText = correctOption.text;
       options = shuffledOptions.map(o => o.text);
 
-      questionText = `An economist modeled the demand $Q$ for a certain product as a linear function of the selling price $P$ (in dollars). The demand was ${demand1.toLocaleString()} units when the selling price was \\$${price1} per unit, and the demand was ${demand2.toLocaleString()} units when the selling price was \\$${price2} per unit. Based on the model, what is the demand, in units, when the selling price is \\$${targetPrice} per unit?`;
+      questionText = `An economist modeled the demand $Q$ for a certain product as a linear function of the selling price $P$ (in dollars). The demand was ${demand1.toLocaleString('en-US')} units when the selling price was \\$${price1} per unit, and the demand was ${demand2.toLocaleString('en-US')} units when the selling price was \\$${price2} per unit. Based on the model, what is the demand, in units, when the selling price is \\$${targetPrice} per unit?`;
 
       const bSign = yIntercept < 0 ? '-' : '+';
       const bAbs = Math.abs(yIntercept);

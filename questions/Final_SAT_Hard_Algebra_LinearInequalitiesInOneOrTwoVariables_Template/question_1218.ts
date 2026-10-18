@@ -63,11 +63,11 @@ export const generator_1218 = {
     const correctLetter = correctOption.letter;
     
     return {
-      questionText: `A business owner plans to purchase the same model of chair for each of the $${employees}$ employees. The total budget to spend on these chairs is \\$${budget.toLocaleString()}, which includes a $${taxRate}\\%$ sales tax. Which of the following is closest to the maximum possible price per chair, before sales tax, the business owner could pay based on this budget?`,
+      questionText: `A business owner plans to purchase the same model of chair for each of the $${employees}$ employees. The total budget to spend on these chairs is \\$${budget.toLocaleString('en-US')}, which includes a $${taxRate}\\%$ sales tax. Which of the following is closest to the maximum possible price per chair, before sales tax, the business owner could pay based on this budget?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: shuffledOptions.find(o => o.isCorrect).text,
-      explanation: `Choice ${correctLetter} is correct. Let $x$ be the price per chair before tax. The total cost for $${employees}$ chairs with $${taxRate}\\%$ tax is $${employees}x(${taxMultiplier.toFixed(2)}) = ${(employees * taxMultiplier).toFixed(2)}x$. Setting this $\\leq \\$${budget.toLocaleString()}$: $x \\leq \\frac{${budget}}{${(employees * taxMultiplier).toFixed(2)}} \\approx ${maxPrice.toFixed(2)}$.`
+      explanation: `Choice ${correctLetter} is correct. Let $x$ be the price per chair before tax. The total cost for $${employees}$ chairs with $${taxRate}\\%$ tax is $${employees}x(${taxMultiplier.toFixed(2)}) = ${(employees * taxMultiplier).toFixed(2)}x$. Setting this $\\leq \\$${budget.toLocaleString('en-US')}$: $x \\leq \\frac{${budget}}{${(employees * taxMultiplier).toFixed(2)}} \\approx ${maxPrice.toFixed(2)}$.`
     };
   }
 };

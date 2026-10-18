@@ -35,7 +35,7 @@ export const generator_1113 = {
     const y_int = 1 + b;
     
     return {
-      questionText: `The function $f$ is defined by $f(x)=a^{x}+b$, where $a$ and $b$ are constants. In the $xy$-plane, the graph of $y=f(x)$ has an $x$ intercept at $(${x_int},0)$ and a $y$-intercept at $(0,${y_int})$. What is the value of $b$?`,
+      questionText: `The function $f$ is defined by $f(x)=a^{x}+b$, where $a$ and $b$ are constants. In the $xy$-plane, the graph of $y=f(x)$ has an $x$ intercept at $(${x_int}, 0)$ and a $y$-intercept at $(0, ${y_int})$. What is the value of $b$?`,
       figureCode: null,
       options: [],
       correctAnswer: b.toString(),

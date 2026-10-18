@@ -102,28 +102,28 @@ export const generator_1232 = {
       ? `
         The correct answer is ${maxLarge}.
         <br/><br/>
-        Let $s$ be the number of small candles and $\\ell$ be the number of large candles. Every plan must satisfy three conditions: $s \\ge 0$, the quantity minimum $s + \\ell \\ge ${minCandles}$, and the budget $${smallPrice.toFixed(2)}s + ${largePrice.toFixed(2)}\\ell \\le ${budget.toLocaleString()}$.
+        Let $s$ be the number of small candles and $\\ell$ be the number of large candles. Every plan must satisfy three conditions: $s \\ge 0$, the quantity minimum $s + \\ell \\ge ${minCandles}$, and the budget $${smallPrice.toFixed(2)}s + ${largePrice.toFixed(2)}\\ell \\le ${budget.toLocaleString('en-US')}$.
         <br/><br/>
         To buy as many large candles as possible, buy no small candles, so let $s = 0$. The quantity condition then reads $\\ell \\ge ${minCandles}$, and the budget condition becomes:
-        $$ ${largePrice.toFixed(2)}\\ell \\le ${budget.toLocaleString()} $$
+        $$ ${largePrice.toFixed(2)}\\ell \\le ${budget.toLocaleString('en-US')} $$
         <br/>
         Divide by ${largePrice.toFixed(2)}:
         $$ \\ell \\le ${budgetOnlyExact.toFixed(2)} $$
         <br/>
-        The greatest whole number satisfying this is ${maxLarge}. Since $${maxLarge} \\ge ${minCandles}$, the quantity minimum is already met with $s = 0$. The cost is then \\$${largePrice.toFixed(2)} times ${maxLarge}, or \\$${costAtAnswer.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}, which stays within the \\$${budget.toLocaleString()} budget.
+        The greatest whole number satisfying this is ${maxLarge}. Since $${maxLarge} \\ge ${minCandles}$, the quantity minimum is already met with $s = 0$. The cost is then \\$${largePrice.toFixed(2)} times ${maxLarge}, or \\$${costAtAnswer.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}, which stays within the \\$${budget.toLocaleString('en-US')} budget.
         <br/><br/>
         The maximum number of large candles is ${maxLarge}.
       `
       : `
         The correct answer is ${maxLarge}.
         <br/><br/>
-        Let $s$ be the number of small candles and $\\ell$ be the number of large candles. Every plan must satisfy three conditions: $s \\ge 0$, the quantity minimum $s + \\ell \\ge ${minCandles}$, and the budget $${smallPrice.toFixed(2)}s + ${largePrice.toFixed(2)}\\ell \\le ${budget.toLocaleString()}$.
+        Let $s$ be the number of small candles and $\\ell$ be the number of large candles. Every plan must satisfy three conditions: $s \\ge 0$, the quantity minimum $s + \\ell \\ge ${minCandles}$, and the budget $${smallPrice.toFixed(2)}s + ${largePrice.toFixed(2)}\\ell \\le ${budget.toLocaleString('en-US')}$.
         <br/><br/>
         Buying only large candles cannot reach the ${minCandles}-candle minimum within budget, so the quantity condition is met exactly: $s + \\ell = ${minCandles}$, giving $s = ${minCandles} - \\ell$. Substitute this into the budget condition:
-        $$ ${smallPrice.toFixed(2)}(${minCandles} - \\ell) + ${largePrice.toFixed(2)}\\ell \\le ${budget.toLocaleString()} $$
-        $$ ${(smallPrice * minCandles).toFixed(2)} - ${smallPrice.toFixed(2)}\\ell + ${largePrice.toFixed(2)}\\ell \\le ${budget.toLocaleString()} $$
+        $$ ${smallPrice.toFixed(2)}(${minCandles} - \\ell) + ${largePrice.toFixed(2)}\\ell \\le ${budget.toLocaleString('en-US')} $$
+        $$ ${(smallPrice * minCandles).toFixed(2)} - ${smallPrice.toFixed(2)}\\ell + ${largePrice.toFixed(2)}\\ell \\le ${budget.toLocaleString('en-US')} $$
         Combine the $\\ell$ terms ($${largePrice.toFixed(2)} - ${smallPrice.toFixed(2)} = ${denominator.toFixed(2)}$):
-        $$ ${(smallPrice * minCandles).toFixed(2)} + ${denominator.toFixed(2)}\\ell \\le ${budget.toLocaleString()} $$
+        $$ ${(smallPrice * minCandles).toFixed(2)} + ${denominator.toFixed(2)}\\ell \\le ${budget.toLocaleString('en-US')} $$
         <br/>
         Subtract ${(smallPrice * minCandles).toFixed(2)} from both sides:
         $$ ${denominator.toFixed(2)}\\ell \\le ${(budget - (smallPrice * minCandles)).toFixed(2)} $$
@@ -131,13 +131,13 @@ export const generator_1232 = {
         Divide by ${denominator.toFixed(2)}:
         $$ \\ell \\le ${caseBExact.toFixed(2)} $$
         <br/>
-        The greatest whole number satisfying this is ${maxLarge}. This uses $s = ${minCandles} - ${maxLarge} = ${smallForAnswer}$ small candles, for a total cost of \\$${costAtAnswer.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}, within the \\$${budget.toLocaleString()} budget.
+        The greatest whole number satisfying this is ${maxLarge}. This uses $s = ${minCandles} - ${maxLarge} = ${smallForAnswer}$ small candles, for a total cost of \\$${costAtAnswer.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}, within the \\$${budget.toLocaleString('en-US')} budget.
         <br/><br/>
         The maximum number of large candles is ${maxLarge}.
       `;
 
     return {
-      questionText: `A small business owner budgets \\$${budget.toLocaleString()} to purchase candles. The owner must purchase a minimum of ${minCandles} candles to maintain the discounted pricing. If the owner pays \\$${smallPrice.toFixed(2)} per candle to purchase small candles and \\$${largePrice.toFixed(2)} per candle to purchase large candles, what is the maximum number of large candles the owner can purchase to stay within the budget and maintain the discounted pricing?`,
+      questionText: `A small business owner budgets \\$${budget.toLocaleString('en-US')} to purchase candles. The owner must purchase a minimum of ${minCandles} candles to maintain the discounted pricing. If the owner pays \\$${smallPrice.toFixed(2)} per candle to purchase small candles and \\$${largePrice.toFixed(2)} per candle to purchase large candles, what is the maximum number of large candles the owner can purchase to stay within the budget and maintain the discounted pricing?`,
       figureCode: null,
       options: [], // Fill-in-the-blank
       correctAnswer: maxLarge.toString(),

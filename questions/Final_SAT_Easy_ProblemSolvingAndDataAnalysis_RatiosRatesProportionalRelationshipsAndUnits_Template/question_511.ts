@@ -51,7 +51,7 @@ export const generator_511 = {
     const explanation = `To find the population density, you divide the total population by the area.\\n$$\\text{Population Density} = \\frac{\\text{Number of Raccoons}}{\\text{Area in Square Miles}}$$\\n$$\\text{Population Density} = \\frac{${population}}{${area}}$$\\n$$\\text{Population Density} = ${calculatedDensity}$$\\n\\nTherefore, the estimated population density is $${calculatedDensity}$ raccoons per square mile.\\n\\nWhy other options are incorrect:\\nChoice ${incorrectOptions[0].letter}: ${incorrectOptions[0].reason}\\nChoice ${incorrectOptions[1].letter}: ${incorrectOptions[1].reason}\\nChoice ${incorrectOptions[2].letter}: ${incorrectOptions[2].reason}`;
 
     return {
-      questionText: `The number of raccoons in a $${area}$-square-mile area is estimated to be $${population.toLocaleString()}$. What is the estimated population density, in raccoons per square mile, of this area?`,
+      questionText: `The number of raccoons in a $${area}$-square-mile area is estimated to be $${population.toLocaleString('en-US')}$. What is the estimated population density, in raccoons per square mile, of this area?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: calculatedDensity.toString(),

@@ -55,7 +55,7 @@ export const generator_498 = {
 
     return {
       // Fixed: Simplified math notation
-      questionText: `A fish swam a distance of ${yards.toLocaleString()} yards. How far did the fish swim, in miles? (1 mile = ${yardsPerMile.toLocaleString()} yards)`,
+      questionText: `A fish swam a distance of ${yards.toLocaleString('en-US')} yards. How far did the fish swim, in miles? (1 mile = ${yardsPerMile.toLocaleString('en-US')} yards)`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: correctMiles.toString(),

@@ -61,7 +61,7 @@ export const generator_934 = {
     // C: Halfway between the linear result and the correct compound result.
     const distractorC = Math.round((distractorA + finalValue) / 2);
 
-    const money = (n: number) => `\\$${n.toLocaleString()}`;
+    const money = (n: number) => `\\$${n.toLocaleString('en-US')}`;
     const correctText = money(finalValue);
 
     const optionsData = [

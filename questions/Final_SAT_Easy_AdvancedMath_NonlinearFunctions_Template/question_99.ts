@@ -79,14 +79,14 @@ export const generator_99 = {
       return `
         <line x1="${px}" y1="${margin.top}" x2="${px}" y2="${height - margin.bottom}" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" />
         <line x1="${px}" y1="${height - margin.bottom}" x2="${px}" y2="${height - margin.bottom + 5}" stroke="currentColor" stroke-width="1" />
-        <text x="${px}" y="${height - margin.bottom + 18}" text-anchor="middle" font-size="11" fill="currentColor">${x.toLocaleString()}</text>`;
+        <text x="${px}" y="${height - margin.bottom + 18}" text-anchor="middle" font-size="11" fill="currentColor">${x.toLocaleString('en-US')}</text>`;
     }).join('');
 
     const yTickMarkup = yTicks.map(y => {
       const py = sy(y).toFixed(1);
       return `
         <line x1="${margin.left}" y1="${py}" x2="${width - margin.right}" y2="${py}" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" />
-        <text x="${margin.left - 8}" y="${(sy(y) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="currentColor">${y.toLocaleString()}</text>`;
+        <text x="${margin.left - 8}" y="${(sy(y) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="currentColor">${y.toLocaleString('en-US')}</text>`;
     }).join('');
 
     const figureCode = `<div>
@@ -109,8 +109,8 @@ export const generator_99 = {
     </thead>
     <tbody>
       ${tableRows.map(row => `<tr>
-        <td style="border:1px solid #ddd;padding:8px 12px;text-align:center;">${row.x.toLocaleString()}</td>
-        <td style="border:1px solid #ddd;padding:8px 12px;text-align:center;">${row.y.toLocaleString()}</td>
+        <td style="border:1px solid #ddd;padding:8px 12px;text-align:center;">${row.x.toLocaleString('en-US')}</td>
+        <td style="border:1px solid #ddd;padding:8px 12px;text-align:center;">${row.y.toLocaleString('en-US')}</td>
       </tr>`).join('')}
     </tbody>
   </table>
@@ -122,24 +122,24 @@ export const generator_99 = {
 
     const optionsData = [
       {
-        text: `${vertexX.toLocaleString()}`,
+        text: `${vertexX.toLocaleString('en-US')}`,
         isCorrect: true,
         reason: ''
       },
       {
-        text: `${vertexY.toLocaleString()}`,
+        text: `${vertexY.toLocaleString('en-US')}`,
         isCorrect: false,
-        reason: `${vertexY.toLocaleString()} is the greatest measure of plant diversity itself, not the elevation at which it occurs`
+        reason: `${vertexY.toLocaleString('en-US')} is the greatest measure of plant diversity itself, not the elevation at which it occurs`
       },
       {
-        text: `${firstX.toLocaleString()}`,
+        text: `${firstX.toLocaleString('en-US')}`,
         isCorrect: false,
-        reason: `${firstX.toLocaleString()} meters is the smallest elevation shown in the table, where the measure of diversity is less than its maximum`
+        reason: `${firstX.toLocaleString('en-US')} meters is the smallest elevation shown in the table, where the measure of diversity is less than its maximum`
       },
       {
-        text: `${altX.toLocaleString()}`,
+        text: `${altX.toLocaleString('en-US')}`,
         isCorrect: false,
-        reason: `the model does not reach its greatest measure of diversity at an elevation of ${altX.toLocaleString()} meters`
+        reason: `the model does not reach its greatest measure of diversity at an elevation of ${altX.toLocaleString('en-US')} meters`
       }
     ];
 
@@ -152,7 +152,7 @@ export const generator_99 = {
       figureCode: figureCode,
       options: shuffled.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The model is a downward-opening parabola, so the measure of plant diversity is greatest at the vertex of the graph. The table shows the greatest measure of diversity, ${vertexY.toLocaleString()}, occurs at an elevation of ${vertexX.toLocaleString()} meters. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
+      explanation: `Choice ${correctOption.letter} is correct. The model is a downward-opening parabola, so the measure of plant diversity is greatest at the vertex of the graph. The table shows the greatest measure of diversity, ${vertexY.toLocaleString('en-US')}, occurs at an elevation of ${vertexX.toLocaleString('en-US')} meters. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };

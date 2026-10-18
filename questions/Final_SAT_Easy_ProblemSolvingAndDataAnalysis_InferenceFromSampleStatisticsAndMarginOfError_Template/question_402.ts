@@ -46,10 +46,10 @@ export const generator_402 = {
     const distractorD = Math.round(population * 0.7 / 100) * 100;
 
     const optionsData = [
-      { text: `$${distractorA.toLocaleString()}$`, isCorrect: false, reason: "results from setting up the proportion incorrectly" },
-      { text: `$${correctAnswerRounded.toLocaleString()}$`, isCorrect: true },
-      { text: `$${distractorC.toLocaleString()}$`, isCorrect: false, reason: "is not supported by the sample data" },
-      { text: `$${distractorD.toLocaleString()}$`, isCorrect: false, reason: "is not supported by the sample data" }
+      { text: `$${distractorA.toLocaleString('en-US')}$`, isCorrect: false, reason: "results from setting up the proportion incorrectly" },
+      { text: `$${correctAnswerRounded.toLocaleString('en-US')}$`, isCorrect: true },
+      { text: `$${distractorC.toLocaleString('en-US')}$`, isCorrect: false, reason: "is not supported by the sample data" },
+      { text: `$${distractorD.toLocaleString('en-US')}$`, isCorrect: false, reason: "is not supported by the sample data" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -61,10 +61,10 @@ export const generator_402 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Set up a proportion: $\\frac{${successesInSample}}{${sampleSize}} = \\frac{x}{${population.toLocaleString()}}$. This gives $x = \\frac{${successesInSample}}{${sampleSize}} \\times ${population.toLocaleString()} \\approx ${estimatedTotal.toLocaleString()}$, which rounds to $${correctAnswerRounded.toLocaleString()}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Set up a proportion: $\\frac{${successesInSample}}{${sampleSize}} = \\frac{x}{${population.toLocaleString('en-US')}}$. This gives $x = \\frac{${successesInSample}}{${sampleSize}} \\times ${population.toLocaleString('en-US')} \\approx ${estimatedTotal.toLocaleString('en-US')}$, which rounds to $${correctAnswerRounded.toLocaleString('en-US')}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `A random sample of $${sampleSize}$ people from a ${location} with a population of $${population.toLocaleString()}$ were asked to name their favorite flavor of ${food.item}. If $${successesInSample}$ people in the sample named ${food.flavor} as their favorite ${food.item} flavor, about how many people in the ${location} would be expected to name ${food.flavor}?`,
+      questionText: `A random sample of $${sampleSize}$ people from a ${location} with a population of $${population.toLocaleString('en-US')}$ were asked to name their favorite flavor of ${food.item}. If $${successesInSample}$ people in the sample named ${food.flavor} as their favorite ${food.item} flavor, about how many people in the ${location} would be expected to name ${food.flavor}?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,

@@ -13,7 +13,7 @@ import type { QuestionData } from '../../study/types';
  * - Figure generation: [None]
  *
  * FIXED:
- * - Fill-in answer is now a plain number string (was force.toLocaleString(),
+ * - Fill-in answer is now a plain number string (was force.toLocaleString('en-US'),
  *   which inserted a comma and failed the grader's typed-answer format).
  * - Explanation computation wrapped in proper inline math ($...$); removed the
  *   stray "/" and the \text{} command that was sitting in bare prose.
@@ -45,7 +45,7 @@ export const generator_982 = {
       options: [],
       // Fill-in: students type the answer, so it must be a plain number (no comma).
       correctAnswer: force.toString(),
-      explanation: `The correct answer is ${force.toLocaleString()}. It is given that one side of the board has an area of $${area}$ square inches, and a pressure of $${pressure}$ pounds per square inch is exerted on that side. Force is pressure multiplied by area, so the total force is $${pressure} \\times ${area} = ${force}$ pounds.`
+      explanation: `The correct answer is ${force.toLocaleString('en-US')}. It is given that one side of the board has an area of $${area}$ square inches, and a pressure of $${pressure}$ pounds per square inch is exerted on that side. Force is pressure multiplied by area, so the total force is $${pressure} \\times ${area} = ${force}$ pounds.`
     };
   }
 };

@@ -110,10 +110,10 @@ export const generator_408 = {
     //   q3  -> right edge of the box mistaken for the median line
     //   min -> left whisker end mistaken for the center
     const optionsData = [
-      { text: median.toLocaleString(), isCorrect: true },
-      { text: q1.toLocaleString(), isCorrect: false },
-      { text: q3.toLocaleString(), isCorrect: false },
-      { text: min.toLocaleString(), isCorrect: false }
+      { text: median.toLocaleString('en-US'), isCorrect: true },
+      { text: q1.toLocaleString('en-US'), isCorrect: false },
+      { text: q3.toLocaleString('en-US'), isCorrect: false },
+      { text: min.toLocaleString('en-US'), isCorrect: false }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -127,8 +127,8 @@ export const generator_408 = {
       questionText: "The number of acres of useful timberland in several counties is summarized in the box plot above. Which of the following is closest to the median number of acres?",
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: median.toLocaleString(),
-      explanation: `Choice ${correctOption.letter} is correct. In a box plot, the median is indicated by the vertical line inside the box (not the edges of the box or the ends of the whiskers). Reading the graph, that vertical line aligns with ${median.toLocaleString()} on the horizontal axis. The values ${q1.toLocaleString()} and ${q3.toLocaleString()} are the left and right edges of the box (the first and third quartiles), and ${min.toLocaleString()} is the left end of the whisker (the minimum).`
+      correctAnswer: median.toLocaleString('en-US'),
+      explanation: `Choice ${correctOption.letter} is correct. In a box plot, the median is indicated by the vertical line inside the box (not the edges of the box or the ends of the whiskers). Reading the graph, that vertical line aligns with ${median.toLocaleString('en-US')} on the horizontal axis. The values ${q1.toLocaleString('en-US')} and ${q3.toLocaleString('en-US')} are the left and right edges of the box (the first and third quartiles), and ${min.toLocaleString('en-US')} is the left end of the whisker (the minimum).`
     };
   }
 };

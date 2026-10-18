@@ -48,10 +48,10 @@ export const generator_502 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `To find the maximum number of people, divide the total area by the area required per person: $${totalArea.toLocaleString()} \\div ${spacePerPerson} = ${correctMaxPeople}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it represents ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it represents ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `To find the maximum number of people, divide the total area by the area required per person: $${totalArea.toLocaleString('en-US')} \\div ${spacePerPerson} = ${correctMaxPeople}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it represents ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it represents ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it results from ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `Makayla is planning an event in a $${totalArea.toLocaleString()}$-square-foot room. If there should be at least $${spacePerPerson}$ square feet per person, what is the maximum number of people that could attend this event?`,
+      questionText: `Makayla is planning an event in a $${totalArea.toLocaleString('en-US')}$-square-foot room. If there should be at least $${spacePerPerson}$ square feet per person, what is the maximum number of people that could attend this event?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: correctMaxPeople.toString(),

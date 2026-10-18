@@ -75,10 +75,10 @@ export const generator_1444 = {
     const correctLetter = correctOption!.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. Since $1 \\text{ mile} = 1,760 \\text{ yards}$, $1 \\text{ mi}^2 = 1,760^2 = 3,097,600 \\text{ yd}^2$. Converting: $\\frac{${areaSquareYards.toLocaleString()}}{3,097,600} = ${answer} \\text{ mi}^2$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Since $1 \\text{ mile} = 1,760 \\text{ yards}$, $1 \\text{ mi}^2 = 1,760^2 = 3,097,600 \\text{ yd}^2$. Converting: $\\frac{${areaSquareYards.toLocaleString('en-US')}}{3,097,600} = ${answer} \\text{ mi}^2$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
     
     return {
-      questionText: `A certain park has an area of $${areaSquareYards.toLocaleString()}$ square yards. What is the area, in square miles, of this park? ($1 \\text{ mile} = 1,760 \\text{ yards}$)`,
+      questionText: `A certain park has an area of $${areaSquareYards.toLocaleString('en-US')}$ square yards. What is the area, in square miles, of this park? ($1 \\text{ mile} = 1,760 \\text{ yards}$)`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,

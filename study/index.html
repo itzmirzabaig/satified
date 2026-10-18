@@ -31,7 +31,12 @@
         inlineMath: [['$', '$'], ['\\(', '\\)']],
         displayMath: [['$$', '$$'], ['\\[', '\\]']],
         processEscapes: true,
-        processEnvironments: true
+        processEnvironments: true,
+        // A comma followed by exactly three digits is a thousands separator,
+        // so 10,368 typesets as one number. By default TeX treats the comma
+        // as punctuation and adds space after it, which reads as "10, 368".
+        // Coordinate pairs are unaffected when written with a space, (7, 433).
+        digits: /^(?:[0-9]+(?:(?:\{,\}|,)[0-9]{3})*(?:\.[0-9]*)?|\.[0-9]+)/
       },
       options: {
         ignoreHtmlClass: 'mafs-container',

@@ -79,16 +79,16 @@ export const generator_910 = {
     }
 
     // STEP 2: Create options with tracking
-    const correctText = plausibleValue.toLocaleString();
+    const correctText = plausibleValue.toLocaleString('en-US');
 
     const optionsData = [
       {
-        text: percentOfSample.toLocaleString(),
+        text: percentOfSample.toLocaleString('en-US'),
         isCorrect: false,
         kind: "sample" as const
       },
       {
-        text: complementCount.toLocaleString(),
+        text: complementCount.toLocaleString('en-US'),
         isCorrect: false,
         kind: "complement" as const
       },
@@ -98,7 +98,7 @@ export const generator_910 = {
         kind: "correct" as const
       },
       {
-        text: wrongHighCount.toLocaleString(),
+        text: wrongHighCount.toLocaleString('en-US'),
         isCorrect: false,
         kind: "high" as const
       }
@@ -119,11 +119,11 @@ export const generator_910 = {
 
     // STEP 4: Return question data
     return {
-      questionText: `From a population of ${populationSize.toLocaleString()} people, ${sampleSize.toLocaleString()} were chosen at random and surveyed about a ${topic.issue}. Based on the survey, it is estimated that ${estimatedPercent}% of people in the population ${topic.support}, with an associated margin of error of ${marginOfError}%. Based on these results, which of the following is a plausible value for the total number of people in the population who ${topic.support}?`,
+      questionText: `From a population of ${populationSize.toLocaleString('en-US')} people, ${sampleSize.toLocaleString('en-US')} were chosen at random and surveyed about a ${topic.issue}. Based on the survey, it is estimated that ${estimatedPercent}% of people in the population ${topic.support}, with an associated margin of error of ${marginOfError}%. Based on these results, which of the following is a plausible value for the total number of people in the population who ${topic.support}?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. Based on the survey results, the estimated percentage of people in the population who ${topic.support} is ${estimatedPercent}%, with a margin of error of ${marginOfError}%. This means the true percentage of supporters in the population is likely between ${estimatedPercent}% - ${marginOfError}% = ${lowerPercent}% and ${estimatedPercent}% + ${marginOfError}% = ${upperPercent}%.\n\nTo find the plausible range for the total number of people who ${topic.support}, we apply these percentages to the total population (${populationSize.toLocaleString()}):\n\nLower bound: ${lowerPercent}% of ${populationSize.toLocaleString()} = ${(lowerPercent / 100).toFixed(2)} × ${populationSize.toLocaleString()} = ${lowerCount.toLocaleString()}\nUpper bound: ${upperPercent}% of ${populationSize.toLocaleString()} = ${(upperPercent / 100).toFixed(2)} × ${populationSize.toLocaleString()} = ${upperCount.toLocaleString()}\n\nTherefore, any plausible value for the total number of people who ${topic.support} must be between ${lowerCount.toLocaleString()} and ${upperCount.toLocaleString()}, and Choice ${correctLetter} (${correctText}) falls within this range.\n\nChoice ${sampleLetter} (${percentOfSample.toLocaleString()}): This applies ${estimatedPercent}% to the sample size (${sampleSize.toLocaleString()}) instead of the total population, so it is far too small.\n\nChoice ${complementLetter} (${complementCount.toLocaleString()}): This is ${complementPercent}% of the population, the number who do NOT ${topic.support}, so it lies outside the range.\n\nChoice ${highLetter} (${wrongHighCount.toLocaleString()}): This applies ${estimatedPercent + 20}% of the population, which is well above the plausible range.`
+      explanation: `Choice ${correctLetter} is correct. Based on the survey results, the estimated percentage of people in the population who ${topic.support} is ${estimatedPercent}%, with a margin of error of ${marginOfError}%. This means the true percentage of supporters in the population is likely between ${estimatedPercent}% - ${marginOfError}% = ${lowerPercent}% and ${estimatedPercent}% + ${marginOfError}% = ${upperPercent}%.\n\nTo find the plausible range for the total number of people who ${topic.support}, we apply these percentages to the total population (${populationSize.toLocaleString('en-US')}):\n\nLower bound: ${lowerPercent}% of ${populationSize.toLocaleString('en-US')} = ${(lowerPercent / 100).toFixed(2)} × ${populationSize.toLocaleString('en-US')} = ${lowerCount.toLocaleString('en-US')}\nUpper bound: ${upperPercent}% of ${populationSize.toLocaleString('en-US')} = ${(upperPercent / 100).toFixed(2)} × ${populationSize.toLocaleString('en-US')} = ${upperCount.toLocaleString('en-US')}\n\nTherefore, any plausible value for the total number of people who ${topic.support} must be between ${lowerCount.toLocaleString('en-US')} and ${upperCount.toLocaleString('en-US')}, and Choice ${correctLetter} (${correctText}) falls within this range.\n\nChoice ${sampleLetter} (${percentOfSample.toLocaleString('en-US')}): This applies ${estimatedPercent}% to the sample size (${sampleSize.toLocaleString('en-US')}) instead of the total population, so it is far too small.\n\nChoice ${complementLetter} (${complementCount.toLocaleString('en-US')}): This is ${complementPercent}% of the population, the number who do NOT ${topic.support}, so it lies outside the range.\n\nChoice ${highLetter} (${wrongHighCount.toLocaleString('en-US')}): This applies ${estimatedPercent + 20}% of the population, which is well above the plausible range.`
     };
   }
 };

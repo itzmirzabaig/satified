@@ -28,7 +28,7 @@ export const generator_607 = {
     const yearsNeeded = doublingsNeeded * doublingPeriod;
     const targetYear = startYear + yearsNeeded;
 
-    const questionText = `According to Moore's law, the number of transistors included on microprocessors doubles every ${doublingPeriod} years. In $${startYear}$, a microprocessor was introduced that had $${initialTransistors.toLocaleString()}$ transistors. Based on this information, in which of the following years does Moore's law estimate the number of transistors to reach $${(targetTransistors / 1000000).toFixed(1)}$ million?`;
+    const questionText = `According to Moore's law, the number of transistors included on microprocessors doubles every ${doublingPeriod} years. In $${startYear}$, a microprocessor was introduced that had $${initialTransistors.toLocaleString('en-US')}$ transistors. Based on this information, in which of the following years does Moore's law estimate the number of transistors to reach $${(targetTransistors / 1000000).toFixed(1)}$ million?`;
 
     const correctAnswer = targetYear.toString();
 
@@ -51,7 +51,7 @@ export const generator_607 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer,
-      explanation: `Choice ${correctLetter} is correct. Starting with $${initialTransistors.toLocaleString()}$ transistors in $${startYear}$: After ${doublingsNeeded} doubling periods (${yearsNeeded} years), the count doubles ${doublingsNeeded} times to reach $${targetTransistors.toLocaleString()}$ in $${targetYear}$.`
+      explanation: `Choice ${correctLetter} is correct. Starting with $${initialTransistors.toLocaleString('en-US')}$ transistors in $${startYear}$: After ${doublingsNeeded} doubling periods (${yearsNeeded} years), the count doubles ${doublingsNeeded} times to reach $${targetTransistors.toLocaleString('en-US')}$ in $${targetYear}$.`
     };
   }
 };

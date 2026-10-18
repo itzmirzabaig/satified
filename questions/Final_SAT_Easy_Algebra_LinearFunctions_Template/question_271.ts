@@ -52,7 +52,7 @@ export const generator_271 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `For the linear function $f$, the graph of $y=f(x)$ in the $xy$-plane has a slope of $${slope}$ and has a $y$-intercept at $(0,${yIntercept})$. Which equation defines $f$?`,
+      questionText: `For the linear function $f$, the graph of $y=f(x)$ in the $xy$-plane has a slope of $${slope}$ and has a $y$-intercept at $(0, ${yIntercept})$. Which equation defines $f$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,

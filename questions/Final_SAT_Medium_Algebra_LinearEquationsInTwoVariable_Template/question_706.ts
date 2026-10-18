@@ -28,7 +28,7 @@ export const generator_706 = {
     const intercept = getRandomInt(-10, 5);
     
     return {
-      questionText: `A line in the xy-plane has a slope of ${slope} and passes through the point \\( (0,${intercept}) \\). The equation \\( y=px+r \\) defines the line, where \\( p \\) and \\( r \\) are constants. What is the value of \\( p \\) ?`,
+      questionText: `A line in the xy-plane has a slope of ${slope} and passes through the point \\( (0, ${intercept}) \\). The equation \\( y=px+r \\) defines the line, where \\( p \\) and \\( r \\) are constants. What is the value of \\( p \\) ?`,
       figureCode: null,
       options: [],
       correctAnswer: slope.toString(),

@@ -44,7 +44,7 @@ export const generator_925 = {
       figureCode: null,
       options: [],
       correctAnswer: mean.toString(),
-      explanation: `The correct answer is ${mean.toLocaleString()}. The mean of a data set is the sum of the values in the data set divided by the number of values in the data set. The sum of the masses is ${sum.toLocaleString()} grams. The number of alpine marmots is 5. Therefore, the mean mass is $\\\\frac{${sum.toLocaleString()}}{5}$, or ${mean.toLocaleString()}.`
+      explanation: `The correct answer is ${mean.toLocaleString('en-US')}. The mean of a data set is the sum of the values in the data set divided by the number of values in the data set. The sum of the masses is ${sum.toLocaleString('en-US')} grams. The number of alpine marmots is 5. Therefore, the mean mass is $\\\\frac{${sum.toLocaleString('en-US')}}{5}$, or ${mean.toLocaleString('en-US')}.`
     };
   }
 };

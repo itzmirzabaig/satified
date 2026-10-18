@@ -83,11 +83,11 @@ export const generator_1268 = {
     const letterOther = letterOf(distractorA);
 
     return {
-      questionText: `A right circular cone has a volume of $${volume.toLocaleString()}\\pi$ cubic centimeters and the area of its base is $${baseArea.toLocaleString()}\\pi$ square centimeters. What is the slant height, in centimeters, of this cone?`,
+      questionText: `A right circular cone has a volume of $${volume.toLocaleString('en-US')}\\pi$ cubic centimeters and the area of its base is $${baseArea.toLocaleString('en-US')}\\pi$ square centimeters. What is the slant height, in centimeters, of this cone?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. From the base area $\\pi r^2 = ${baseArea.toLocaleString()}\\pi$, we get $r = ${radius}$. From the volume $V = \\frac{1}{3}\\pi r^2 h = ${volume.toLocaleString()}\\pi$, substituting $r = ${radius}$ gives $\\frac{1}{3}(${baseArea.toLocaleString()})h = ${volume.toLocaleString()}$, so $h = ${height}$. The slant height is $l = \\sqrt{r^2 + h^2} = \\sqrt{${radius * radius} + ${height * height}} = \\sqrt{${radius * radius + height * height}} = ${slantHeight}$. Choice ${letterRadius} is incorrect because it gives the radius instead of the slant height. Choice ${letterHeight} is incorrect because it gives the height instead of the slant height. Choice ${letterOther} is incorrect because it is not obtained from the volume and base area.`
+      explanation: `Choice ${correctOption.letter} is correct. From the base area $\\pi r^2 = ${baseArea.toLocaleString('en-US')}\\pi$, we get $r = ${radius}$. From the volume $V = \\frac{1}{3}\\pi r^2 h = ${volume.toLocaleString('en-US')}\\pi$, substituting $r = ${radius}$ gives $\\frac{1}{3}(${baseArea.toLocaleString('en-US')})h = ${volume.toLocaleString('en-US')}$, so $h = ${height}$. The slant height is $l = \\sqrt{r^2 + h^2} = \\sqrt{${radius * radius} + ${height * height}} = \\sqrt{${radius * radius + height * height}} = ${slantHeight}$. Choice ${letterRadius} is incorrect because it gives the radius instead of the slant height. Choice ${letterHeight} is incorrect because it gives the height instead of the slant height. Choice ${letterOther} is incorrect because it is not obtained from the volume and base area.`
     };
   }
 };

@@ -48,7 +48,7 @@ export const generator_682 = {
     // immediately followed by a digit — this keeps MathJax from mistaking a
     // math delimiter for currency (clears the DOLLAR_RISK heuristic).
     return {
-      questionText: `A neighborhood consists of a ${area1}-hectare park and a ${area2}-hectare residential area. The total number of trees in the neighborhood is ${totalTrees.toLocaleString()}. The equation $ ${area1}x + ${area2}y = ${totalTrees} $ represents this situation, where $ x $ and $ y $ are constants. Which of the following is the best interpretation of $ x $ in this context?`,
+      questionText: `A neighborhood consists of a ${area1}-hectare park and a ${area2}-hectare residential area. The total number of trees in the neighborhood is ${totalTrees.toLocaleString('en-US')}. The equation $ ${area1}x + ${area2}y = ${totalTrees} $ represents this situation, where $ x $ and $ y $ are constants. Which of the following is the best interpretation of $ x $ in this context?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,

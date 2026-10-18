@@ -43,7 +43,7 @@ export const generator_1144 = {
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
     
     return {
-      questionText: `$f(x)=a\\sqrt{x+b}$ passes through $(-${b},0)$ and $f(${evalPoint})<0$. Which must be true?`,
+      questionText: `$f(x)=a\\sqrt{x+b}$ passes through $(-${b}, 0)$ and $f(${evalPoint})<0$. Which must be true?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `$a<b$`,

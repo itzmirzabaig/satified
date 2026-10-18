@@ -65,11 +65,11 @@ export const generator_1401 = {
   <tbody>
     <tr>
       <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">2012</td>
-      <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${baseSubs.toLocaleString()}</td>
+      <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${baseSubs.toLocaleString('en-US')}</td>
     </tr>
     <tr>
       <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">2013</td>
-      <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${year2Subs.toLocaleString()}</td>
+      <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${year2Subs.toLocaleString('en-US')}</td>
     </tr>
   </tbody>
 </table>`;
@@ -83,10 +83,10 @@ export const generator_1401 = {
     const wrongAddPct = Math.round(baseSubs * (1 + (firstIncreasePct + secondIncreasePct) / 100));
 
     const optionsData = [
-      { text: year3Subs.toLocaleString(), isCorrect: true, reason: "" },
-      { text: wrongApplyFull.toLocaleString(), isCorrect: false, reason: "applies the 2012-to-2013 percent again instead of half of it" },
-      { text: wrongBase.toLocaleString(), isCorrect: false, reason: "applies the second increase to the 2012 total instead of the 2013 total" },
-      { text: wrongAddPct.toLocaleString(), isCorrect: false, reason: "adds both percents together and applies the sum to the 2012 total" }
+      { text: year3Subs.toLocaleString('en-US'), isCorrect: true, reason: "" },
+      { text: wrongApplyFull.toLocaleString('en-US'), isCorrect: false, reason: "applies the 2012-to-2013 percent again instead of half of it" },
+      { text: wrongBase.toLocaleString('en-US'), isCorrect: false, reason: "applies the second increase to the 2012 total instead of the 2013 total" },
+      { text: wrongAddPct.toLocaleString('en-US'), isCorrect: false, reason: "adds both percents together and applies the sum to the 2012 total" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -103,7 +103,7 @@ export const generator_1401 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. The percent increase from 2012 to 2013 is $\\frac{${year2Subs} - ${baseSubs}}{${baseSubs}} = ${firstIncreasePct}\\%$. Since this is double the increase from 2013 to 2014, the second increase is $\\frac{${firstIncreasePct}}{2} = ${secondIncreasePct}\\%$. Applying a ${secondIncreasePct}% increase to the ${year2Subs.toLocaleString()} subscriptions sold in 2013 gives $\\left(1 + \\frac{${secondIncreasePct}}{100}\\right)\\times ${year2Subs} = ${year3Subs}$, so the manager expected ${year3Subs.toLocaleString()} subscriptions in 2014. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The percent increase from 2012 to 2013 is $\\frac{${year2Subs} - ${baseSubs}}{${baseSubs}} = ${firstIncreasePct}\\%$. Since this is double the increase from 2013 to 2014, the second increase is $\\frac{${firstIncreasePct}}{2} = ${secondIncreasePct}\\%$. Applying a ${secondIncreasePct}% increase to the ${year2Subs.toLocaleString('en-US')} subscriptions sold in 2013 gives $\\left(1 + \\frac{${secondIncreasePct}}{100}\\right)\\times ${year2Subs} = ${year3Subs}$, so the manager expected ${year3Subs.toLocaleString('en-US')} subscriptions in 2014. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

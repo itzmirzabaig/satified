@@ -70,7 +70,7 @@ export const generator_856 = {
       
       Given:
       Edge length $s = ${edge}$ units.
-      Volume $V = ${volume.toLocaleString()}$ cubic units.
+      Volume $V = ${volume.toLocaleString('en-US')}$ cubic units.
       
       Substitute these values into the volume formula:
       $$${volume} = (${edge})^2 h$$
@@ -84,7 +84,7 @@ export const generator_856 = {
     `.trim();
     
     return {
-      questionText: `The length of the edge of the base of a right square prism is $${edge}$ units. The volume of the prism is $${volume.toLocaleString()}$ cubic units. What is the height, in units, of the prism?`,
+      questionText: `The length of the edge of the base of a right square prism is $${edge}$ units. The volume of the prism is $${volume.toLocaleString('en-US')}$ cubic units. What is the height, in units, of the prism?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,

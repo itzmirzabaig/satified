@@ -34,12 +34,12 @@ export const generator_855 = {
     // STEP 3: Create options with tracking
     // Each distractor carries its OWN rationale so the explanation stays
     // correct after shuffling (reason is bound to the value, not to a letter).
-    const correctText = volume.toLocaleString();
+    const correctText = volume.toLocaleString('en-US');
 
     // Distractors
     const distractorA = (4 * edge).toString(); // Perimeter of face
-    const distractorB = faceArea.toLocaleString(); // Face area
-    const distractorC = surfaceArea.toLocaleString(); // Surface area
+    const distractorB = faceArea.toLocaleString('en-US'); // Face area
+    const distractorC = surfaceArea.toLocaleString('en-US'); // Surface area
 
     const optionsData = [
       { text: distractorA, isCorrect: false, reason: `this is the perimeter of one face ($4 \\times ${edge} = ${4 * edge}$), not the volume` },

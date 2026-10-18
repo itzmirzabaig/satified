@@ -46,10 +46,10 @@ export const generator_1083 = {
     // Distractors — pairwise distinct from yInt and each other for every draw:
     // yInt >= 12 > |r| (6..10) > m (2..5) > 0 > r (-10..-6) > -yInt (<= -12).
     const optionsData = [
-      { key: 'correct', text: `$(0,${yInt})$`, isCorrect: true },
-      { key: 'slope', text: `$(0,${m})$`, isCorrect: false },
-      { key: 'sign', text: `$(0,${-yInt})$`, isCorrect: false },
-      { key: 'root', text: `$(0,${r})$`, isCorrect: false }
+      { key: 'correct', text: `$(0, ${yInt})$`, isCorrect: true },
+      { key: 'slope', text: `$(0, ${m})$`, isCorrect: false },
+      { key: 'sign', text: `$(0, ${-yInt})$`, isCorrect: false },
+      { key: 'root', text: `$(0, ${r})$`, isCorrect: false }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -83,8 +83,8 @@ export const generator_1083 = {
       questionText: `The table gives two values of $x$ and the corresponding values of $g(x)$, where $g(x)=\\frac{f(x)}{x+3}$ and $f$ is a linear function. What is the $y$-intercept of the graph of $y=f(x)$ in the $xy$-plane?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `$(0,${yInt})$`,
-      explanation: `Choice ${correctLetter} is correct. Because $g(x)=\\frac{f(x)}{x+3}$, it follows that $f(x)=g(x)(x+3)$ for each $x$-value in the table. From the table, $g(${x1})=${c}$, so $f(${x1})=${c}(${x1}+3)=${fX1}$; also $g(${r})=0$, so $f(${r})=0$. The slope of $f$ is therefore $\\frac{${fX1}-0}{${x1}-(${r})}=${m}$, and since $f(${r})=0$, we can write $f(x)=${m}(x+${-r})$. The $y$-intercept occurs where $x=0$: $f(0)=${m}(${-r})=${yInt}$, so the graph of $y=f(x)$ crosses the $y$-axis at $(0,${yInt})$. Choice ${letterOf('slope')} is incorrect; ${m} is the slope of $f$, not the $y$-coordinate of the $y$-intercept. Choice ${letterOf('sign')} is incorrect; it results from a sign error when evaluating $f(0)$. Choice ${letterOf('root')} is incorrect; $x=${r}$ is where $f(x)=0$, which gives the $x$-intercept of the graph, not the $y$-intercept.`
+      correctAnswer: `$(0, ${yInt})$`,
+      explanation: `Choice ${correctLetter} is correct. Because $g(x)=\\frac{f(x)}{x+3}$, it follows that $f(x)=g(x)(x+3)$ for each $x$-value in the table. From the table, $g(${x1})=${c}$, so $f(${x1})=${c}(${x1}+3)=${fX1}$; also $g(${r})=0$, so $f(${r})=0$. The slope of $f$ is therefore $\\frac{${fX1}-0}{${x1}-(${r})}=${m}$, and since $f(${r})=0$, we can write $f(x)=${m}(x+${-r})$. The $y$-intercept occurs where $x=0$: $f(0)=${m}(${-r})=${yInt}$, so the graph of $y=f(x)$ crosses the $y$-axis at $(0, ${yInt})$. Choice ${letterOf('slope')} is incorrect; ${m} is the slope of $f$, not the $y$-coordinate of the $y$-intercept. Choice ${letterOf('sign')} is incorrect; it results from a sign error when evaluating $f(0)$. Choice ${letterOf('root')} is incorrect; $x=${r}$ is where $f(x)=0$, which gives the $x$-intercept of the graph, not the $y$-intercept.`
     };
   }
 };

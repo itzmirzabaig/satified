@@ -56,10 +56,10 @@ export const generator_972 = {
     );
 
     const optionsData = [
-      { text: distractorA.toLocaleString(), isCorrect: false, reason: `results from subtracting the given numbers instead of multiplying by the conversion factors` },
-      { text: distractorB.toLocaleString(), isCorrect: false, reason: `results from adding a partial conversion instead of multiplying through both units` },
-      { text: distractorC.toLocaleString(), isCorrect: false, reason: `divides by $${feetPerYard}$ instead of multiplying, undoing the yards-to-feet step` },
-      { text: totalFeet.toLocaleString(), isCorrect: true }
+      { text: distractorA.toLocaleString('en-US'), isCorrect: false, reason: `results from subtracting the given numbers instead of multiplying by the conversion factors` },
+      { text: distractorB.toLocaleString('en-US'), isCorrect: false, reason: `results from adding a partial conversion instead of multiplying through both units` },
+      { text: distractorC.toLocaleString('en-US'), isCorrect: false, reason: `divides by $${feetPerYard}$ instead of multiplying, undoing the yards-to-feet step` },
+      { text: totalFeet.toLocaleString('en-US'), isCorrect: true }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -75,8 +75,8 @@ export const generator_972 = {
       questionText: `A distance of $${furlongs}$ furlongs is equivalent to how many feet? ($1\\text{ furlong} = ${yardsPerFurlong}\\text{ yards}$ and $1\\text{ yard} = ${feetPerYard}\\text{ feet}$)`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: totalFeet.toLocaleString(),
-      explanation: `Choice ${correctLetter} is correct. Convert in two steps. First convert furlongs to yards: $${furlongs} \\times ${yardsPerFurlong} = ${totalYards.toLocaleString()}$ yards. Then convert yards to feet: $${totalYards.toLocaleString()} \\times ${feetPerYard} = ${totalFeet.toLocaleString()}$ feet. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      correctAnswer: totalFeet.toLocaleString('en-US'),
+      explanation: `Choice ${correctLetter} is correct. Convert in two steps. First convert furlongs to yards: $${furlongs} \\times ${yardsPerFurlong} = ${totalYards.toLocaleString('en-US')}$ yards. Then convert yards to feet: $${totalYards.toLocaleString('en-US')} \\times ${feetPerYard} = ${totalFeet.toLocaleString('en-US')}$ feet. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

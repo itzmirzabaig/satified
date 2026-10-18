@@ -116,18 +116,18 @@ export const generator_1156 = {
     const explanation = `Set up the problem with the constant removal rate, then use that rate to find the total running time.
 
 1. Amount removed during the first $${hoursPassed}$ hours:
-$$${initialAmount.toLocaleString()} - ${remainingAfter.toLocaleString()} = ${removedFirst.toLocaleString()} \\text{ bushels}$$
+$$${initialAmount.toLocaleString('en-US')} - ${remainingAfter.toLocaleString('en-US')} = ${removedFirst.toLocaleString('en-US')} \\text{ bushels}$$
 
 2. Removal rate:
-$$\\text{rate} = \\frac{${removedFirst.toLocaleString()} \\text{ bushels}}{${hoursPassed} \\text{ hours}} = ${rate.toLocaleString()} \\text{ bushels per hour}$$
+$$\\text{rate} = \\frac{${removedFirst.toLocaleString('en-US')} \\text{ bushels}}{${hoursPassed} \\text{ hours}} = ${rate.toLocaleString('en-US')} \\text{ bushels per hour}$$
 
-3. Total amount that must be removed to leave $${targetRemaining.toLocaleString()}$ bushels:
-$$${initialAmount.toLocaleString()} - ${targetRemaining.toLocaleString()} = ${totalRemoved.toLocaleString()} \\text{ bushels}$$
+3. Total amount that must be removed to leave $${targetRemaining.toLocaleString('en-US')}$ bushels:
+$$${initialAmount.toLocaleString('en-US')} - ${targetRemaining.toLocaleString('en-US')} = ${totalRemoved.toLocaleString('en-US')} \\text{ bushels}$$
 
 4. Total running time at that rate:
-$$\\text{time} = \\frac{${totalRemoved.toLocaleString()}}{${rate.toLocaleString()}} = ${totalHours} \\text{ hours}$$
+$$\\text{time} = \\frac{${totalRemoved.toLocaleString('en-US')}}{${rate.toLocaleString('en-US')}} = ${totalHours} \\text{ hours}$$
 
-Choice ${correctLetter} ($${correctText}$) is correct: reducing the corn from $${initialAmount.toLocaleString()}$ to $${targetRemaining.toLocaleString()}$ bushels at $${rate.toLocaleString()}$ bushels per hour takes $${totalHours}$ hours in total.
+Choice ${correctLetter} ($${correctText}$) is correct: reducing the corn from $${initialAmount.toLocaleString('en-US')}$ to $${targetRemaining.toLocaleString('en-US')}$ bushels at $${rate.toLocaleString('en-US')}$ bushels per hour takes $${totalHours}$ hours in total.
 
 Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
 
@@ -136,7 +136,7 @@ Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}
 Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `A worker used a tool called an auger to remove corn from a storage bin at a constant rate. The bin contained $${initialAmount.toLocaleString()}$ bushels of corn when the worker began using the auger. After $${hoursPassed}$ hours of using the auger, $${remainingAfter.toLocaleString()}$ bushels of corn remained in the bin. If the auger continues to remove corn at this rate, what is the total number of hours the worker will have been using the auger when $${targetRemaining.toLocaleString()}$ bushels of corn remain in the bin?`,
+      questionText: `A worker used a tool called an auger to remove corn from a storage bin at a constant rate. The bin contained $${initialAmount.toLocaleString('en-US')}$ bushels of corn when the worker began using the auger. After $${hoursPassed}$ hours of using the auger, $${remainingAfter.toLocaleString('en-US')}$ bushels of corn remained in the bin. If the auger continues to remove corn at this rate, what is the total number of hours the worker will have been using the auger when $${targetRemaining.toLocaleString('en-US')}$ bushels of corn remain in the bin?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,

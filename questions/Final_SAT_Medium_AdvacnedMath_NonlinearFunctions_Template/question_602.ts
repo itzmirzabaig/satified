@@ -79,7 +79,7 @@ export const generator_602 = {
     const correctAnswer = `The estimated number of catalogs the company sent to its customers at the end of 1992 was ${initial},000.`;
     
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. The y-intercept of the graph is $(0,${initial})$. Since $x$ represents years after 1992, $x=0$ is the end of 1992. Since $y$ is in thousands, $y=${initial}$ represents ${initial},000 catalogs. Therefore, the estimated number of catalogs sent at the end of 1992 was ${initial},000. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The y-intercept of the graph is $(0, ${initial})$. Since $x$ represents years after 1992, $x=0$ is the end of 1992. Since $y$ is in thousands, $y=${initial}$ represents ${initial},000 catalogs. Therefore, the estimated number of catalogs sent at the end of 1992 was ${initial},000. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: questionText,

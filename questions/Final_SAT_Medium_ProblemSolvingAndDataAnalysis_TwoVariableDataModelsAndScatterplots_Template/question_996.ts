@@ -83,10 +83,10 @@ export const generator_996 = {
     })()}</svg></div>`;
     
     // STEP 3: Create options
-    const correctEquation = `n = ${intercept.toLocaleString()} + ${slope.toLocaleString()} t`;
-    const swappedEquation = `n = ${slope.toLocaleString()} + ${intercept.toLocaleString()} t`;
-    const wrongSlopeEquation = `n = ${intercept.toLocaleString()} + ${(slope * 2).toLocaleString()} t`;
-    const wrongEquation = `n = ${(slope * 2).toLocaleString()} + ${intercept.toLocaleString()} t`;
+    const correctEquation = `n = ${intercept.toLocaleString('en-US')} + ${slope.toLocaleString('en-US')} t`;
+    const swappedEquation = `n = ${slope.toLocaleString('en-US')} + ${intercept.toLocaleString('en-US')} t`;
+    const wrongSlopeEquation = `n = ${intercept.toLocaleString('en-US')} + ${(slope * 2).toLocaleString('en-US')} t`;
+    const wrongEquation = `n = ${(slope * 2).toLocaleString('en-US')} + ${intercept.toLocaleString('en-US')} t`;
     
     const optionsData = [
       { text: correctEquation, isCorrect: true, role: 'correct' },
@@ -117,7 +117,7 @@ export const generator_996 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctLetter} is correct. The $y$-intercept is approximately ${interceptApprox.toLocaleString()}. Using the points $(0, ${intercept.toLocaleString()})$ and $(5, ${yAt5.toLocaleString()})$, the slope $≈ (${yAt5.toLocaleString()} - ${intercept.toLocaleString()}) / 5 = ${slope.toLocaleString()}$. Choice ${correctLetter} matches these estimates. Choice ${swapLetter} is incorrect; it swaps the slope and the $y$-intercept. Choice ${doubleSlopeLetter} is incorrect; it keeps the correct $y$-intercept but uses a slope that is twice too large. Choice ${doubleSlopeSwapLetter} is incorrect; it uses that doubled slope as the constant and puts the $y$-intercept on $t$, so both values are wrong.`
+      explanation: `Choice ${correctLetter} is correct. The $y$-intercept is approximately ${interceptApprox.toLocaleString('en-US')}. Using the points $(0, ${intercept.toLocaleString('en-US')})$ and $(5, ${yAt5.toLocaleString('en-US')})$, the slope $≈ (${yAt5.toLocaleString('en-US')} - ${intercept.toLocaleString('en-US')}) / 5 = ${slope.toLocaleString('en-US')}$. Choice ${correctLetter} matches these estimates. Choice ${swapLetter} is incorrect; it swaps the slope and the $y$-intercept. Choice ${doubleSlopeLetter} is incorrect; it keeps the correct $y$-intercept but uses a slope that is twice too large. Choice ${doubleSlopeSwapLetter} is incorrect; it uses that doubled slope as the constant and puts the $y$-intercept on $t$, so both values are wrong.`
     };
   }
 };

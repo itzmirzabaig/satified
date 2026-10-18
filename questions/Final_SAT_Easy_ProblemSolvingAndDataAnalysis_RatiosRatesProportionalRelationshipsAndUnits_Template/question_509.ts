@@ -28,8 +28,8 @@ export const generator_509 = {
     const inches = yards * inchesPerYard;
     const correctYards = inches / inchesPerYard;
 
-    const questionText = `How many yards are equivalent to $${inches.toLocaleString()}$ inches? (1 yard = ${inchesPerYard} inches)`;
-    const explanation = `The correct answer is ${correctYards}. Since $1$ yard equals $${inchesPerYard}$ inches, $${inches.toLocaleString()}$ inches is equivalent to $${inches.toLocaleString()} \\div ${inchesPerYard} = ${correctYards}$ yards.`;
+    const questionText = `How many yards are equivalent to $${inches.toLocaleString('en-US')}$ inches? (1 yard = ${inchesPerYard} inches)`;
+    const explanation = `The correct answer is ${correctYards}. Since $1$ yard equals $${inchesPerYard}$ inches, $${inches.toLocaleString('en-US')}$ inches is equivalent to $${inches.toLocaleString('en-US')} \\div ${inchesPerYard} = ${correctYards}$ yards.`;
 
     return {
       questionText: questionText,

@@ -50,7 +50,7 @@ export const generator_939 = {
   <tbody>
     <tr>
       <td style="border: 1px solid currentColor; padding: 8px 16px;">A</td>
-      <td style="border: 1px solid currentColor; padding: 8px 16px; text-align: center;">${groupA.toLocaleString()}</td>
+      <td style="border: 1px solid currentColor; padding: 8px 16px; text-align: center;">${groupA.toLocaleString('en-US')}</td>
     </tr>
     <tr>
       <td style="border: 1px solid currentColor; padding: 8px 16px;">B</td>
@@ -58,7 +58,7 @@ export const generator_939 = {
     </tr>
     <tr>
       <td style="border: 1px solid currentColor; padding: 8px 16px;">C</td>
-      <td style="border: 1px solid currentColor; padding: 8px 16px; text-align: center;">${groupC.toLocaleString()}</td>
+      <td style="border: 1px solid currentColor; padding: 8px 16px; text-align: center;">${groupC.toLocaleString('en-US')}</td>
     </tr>
     <tr>
       <td style="border: 1px solid currentColor; padding: 8px 16px;">D</td>
@@ -66,7 +66,7 @@ export const generator_939 = {
     </tr>
     <tr style="border-top: 2px solid #333;">
       <td style="border: 1px solid currentColor; padding: 8px 16px; font-weight: bold;">Total</td>
-      <td style="border: 1px solid currentColor; padding: 8px 16px; text-align: center; font-weight: bold;">${total.toLocaleString()}</td>
+      <td style="border: 1px solid currentColor; padding: 8px 16px; text-align: center; font-weight: bold;">${total.toLocaleString('en-US')}</td>
     </tr>
   </tbody>
 </table>`;

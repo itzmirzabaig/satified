@@ -43,13 +43,13 @@ export const generator_915 = {
       <tbody>
         <tr>
           <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">A</td>
-          <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${sampleSize.toLocaleString()}</td>
+          <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${sampleSize.toLocaleString('en-US')}</td>
           <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${mean}</td>
           <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${stdDevA.toFixed(1)}</td>
         </tr>
         <tr>
           <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">B</td>
-          <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${sampleSize.toLocaleString()}</td>
+          <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${sampleSize.toLocaleString('en-US')}</td>
           <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${mean}</td>
           <td style="border: 1px solid currentColor; padding: 8px; text-align: center;">${stdDevB.toFixed(1)}</td>
         </tr>

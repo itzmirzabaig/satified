@@ -43,21 +43,21 @@ export const generator_804 = {
 
     // STEP 2: Build question text. Numbers are plain integers with thousands
     // separators (prose, not math), so no bare $ meets MathJax.
-    const questionText = `A proposal for a new library was included on an election ballot. A radio show stated that ${ratio} times as many people voted in favor of the proposal as voted against it. A social media post reported that ${diff.toLocaleString()} more people voted in favor of the proposal than voted against it. Based on these data, how many people voted against the proposal?`;
+    const questionText = `A proposal for a new library was included on an election ballot. A radio show stated that ${ratio} times as many people voted in favor of the proposal as voted against it. A social media post reported that ${diff.toLocaleString('en-US')} more people voted in favor of the proposal than voted against it. Based on these data, how many people voted against the proposal?`;
 
     // STEP 3: Options — {against, diff, favor, total}, distinct by construction.
-    const correctText = against.toLocaleString();
+    const correctText = against.toLocaleString('en-US');
     const reasons: Record<string, string> = {
-      [diff.toLocaleString()]: `is the reported difference between the in-favor and against counts, not the number who voted against.`,
-      [favor.toLocaleString()]: `is the number of people who voted in favor of the proposal, not against it.`,
-      [total.toLocaleString()]: `is the total number of people who voted, found by adding the in-favor and against counts.`,
+      [diff.toLocaleString('en-US')]: `is the reported difference between the in-favor and against counts, not the number who voted against.`,
+      [favor.toLocaleString('en-US')]: `is the number of people who voted in favor of the proposal, not against it.`,
+      [total.toLocaleString('en-US')]: `is the total number of people who voted, found by adding the in-favor and against counts.`,
     };
 
     const optionsData = [
       { text: correctText, isCorrect: true },
-      { text: diff.toLocaleString(), isCorrect: false },
-      { text: favor.toLocaleString(), isCorrect: false },
-      { text: total.toLocaleString(), isCorrect: false }
+      { text: diff.toLocaleString('en-US'), isCorrect: false },
+      { text: favor.toLocaleString('en-US'), isCorrect: false },
+      { text: total.toLocaleString('en-US'), isCorrect: false }
     ];
 
     // STEP 4: Shuffle and assign letters.
@@ -76,7 +76,7 @@ export const generator_804 = {
 
     // STEP 5: Explanation, computed from the same live variables. Math uses
     // \( ... \) inline delimiters; raw integers inside math, separators in prose.
-    const explanation = `Choice ${correctLetter} is correct. Let \\( f \\) be the number of people who voted in favor and \\( a \\) be the number who voted against. "\\( ${ratio} \\) times as many in favor as against" gives \\( f = ${ratio}a \\), and "\\( ${diff.toLocaleString()} \\) more in favor than against" gives \\( f = a + ${diff} \\). Substituting \\( ${ratio}a \\) for \\( f \\) yields \\( ${ratio}a = a + ${diff} \\). Subtracting \\( a \\) from both sides gives \\( ${ratio - 1}a = ${diff} \\), and dividing both sides by \\( ${ratio - 1} \\) gives \\( a = ${against} \\). So ${against.toLocaleString()} people voted against the proposal. (Check: \\( f = ${ratio}(${against}) = ${favor} \\), and \\( ${favor} - ${against} = ${diff} \\), as reported.) ${wrongExplanations}`;
+    const explanation = `Choice ${correctLetter} is correct. Let \\( f \\) be the number of people who voted in favor and \\( a \\) be the number who voted against. "\\( ${ratio} \\) times as many in favor as against" gives \\( f = ${ratio}a \\), and "\\( ${diff.toLocaleString('en-US')} \\) more in favor than against" gives \\( f = a + ${diff} \\). Substituting \\( ${ratio}a \\) for \\( f \\) yields \\( ${ratio}a = a + ${diff} \\). Subtracting \\( a \\) from both sides gives \\( ${ratio - 1}a = ${diff} \\), and dividing both sides by \\( ${ratio - 1} \\) gives \\( a = ${against} \\). So ${against.toLocaleString('en-US')} people voted against the proposal. (Check: \\( f = ${ratio}(${against}) = ${favor} \\), and \\( ${favor} - ${against} = ${diff} \\), as reported.) ${wrongExplanations}`;
 
     // STEP 6: Return question data.
     return {

@@ -86,7 +86,7 @@ export const generator_985 = {
     // STEP 2: Shuffle and assign letters AFTER shuffling.
     const shuffledOptions = shuffle(options).map((opt, index) => ({
       ...opt,
-      text: opt.value.toLocaleString(),
+      text: opt.value.toLocaleString('en-US'),
       letter: String.fromCharCode(65 + index)
     }));
 
@@ -96,11 +96,11 @@ export const generator_985 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.correct);
 
     return {
-      questionText: `The population density of a country, in people per square kilometer of land area, increased from $${density1}$ in $1990$ to $${density2}$ in $2014$. During this time period, the land area of the country was $${area.toLocaleString()}$ square kilometers. By how many people did the country's population increase from $1990$ to $2014$?`,
+      questionText: `The population density of a country, in people per square kilometer of land area, increased from $${density1}$ in $1990$ to $${density2}$ in $2014$. During this time period, the land area of the country was $${area.toLocaleString('en-US')}$ square kilometers. By how many people did the country's population increase from $1990$ to $2014$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. Population equals density multiplied by land area. In 1990 the population was $${density1} \\times ${area.toLocaleString()} = ${pop1990.toLocaleString()}$, and in 2014 it was $${density2} \\times ${area.toLocaleString()} = ${pop2014.toLocaleString()}$. The increase is $${pop2014.toLocaleString()} - ${pop1990.toLocaleString()} = ${correctText}$. Equivalently, multiply the change in density by the land area: $(${density2} - ${density1}) \\times ${area.toLocaleString()} = ${correctText}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Population equals density multiplied by land area. In 1990 the population was $${density1} \\times ${area.toLocaleString('en-US')} = ${pop1990.toLocaleString('en-US')}$, and in 2014 it was $${density2} \\times ${area.toLocaleString('en-US')} = ${pop2014.toLocaleString('en-US')}$. The increase is $${pop2014.toLocaleString('en-US')} - ${pop1990.toLocaleString('en-US')} = ${correctText}$. Equivalently, multiply the change in density by the land area: $(${density2} - ${density1}) \\times ${area.toLocaleString('en-US')} = ${correctText}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
     };
   }
 };

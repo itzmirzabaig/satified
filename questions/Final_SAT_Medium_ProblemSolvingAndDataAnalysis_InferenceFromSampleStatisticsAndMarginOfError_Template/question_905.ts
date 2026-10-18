@@ -80,23 +80,23 @@ export const generator_905 = {
     // Each incorrect option carries its OWN rebuttal so the explanation stays
     // correct no matter where the shuffle places it (reason is emitted per
     // shuffled option, never by positional index).
-    const correctText = `The best estimate for the number of customers who ${context.action} ${context.place} is ${estimatedTotal.toLocaleString()}.`;
+    const correctText = `The best estimate for the number of customers who ${context.action} ${context.place} is ${estimatedTotal.toLocaleString('en-US')}.`;
 
     const optionsData = [
       {
-        text: `Exactly ${wrongExact.toLocaleString()} customers must have ${context.action} ${context.place}.`,
+        text: `Exactly ${wrongExact.toLocaleString('en-US')} customers must have ${context.action} ${context.place}.`,
         isCorrect: false,
-        reason: `A random sample can only be used to estimate the number of customers who ${context.action}, not determine it exactly, so the word "exactly" is not appropriate. This value also does not match the estimate ${estimatedTotal.toLocaleString()} obtained from the sample proportion.`
+        reason: `A random sample can only be used to estimate the number of customers who ${context.action}, not determine it exactly, so the word "exactly" is not appropriate. This value also does not match the estimate ${estimatedTotal.toLocaleString('en-US')} obtained from the sample proportion.`
       },
       {
-        text: `Exactly ${estimatedTotal.toLocaleString()} customers must have ${context.action} ${context.place}.`,
+        text: `Exactly ${estimatedTotal.toLocaleString('en-US')} customers must have ${context.action} ${context.place}.`,
         isCorrect: false,
-        reason: `Although ${estimatedTotal.toLocaleString()} is the correct estimate, a random sample can only be used to estimate this number, not determine it exactly, so the word "exactly" makes this conclusion inappropriate.`
+        reason: `Although ${estimatedTotal.toLocaleString('en-US')} is the correct estimate, a random sample can only be used to estimate this number, not determine it exactly, so the word "exactly" makes this conclusion inappropriate.`
       },
       {
-        text: `The best estimate for the number of customers who ${context.action} ${context.place} is ${wrongFraction.toLocaleString()}.`,
+        text: `The best estimate for the number of customers who ${context.action} ${context.place} is ${wrongFraction.toLocaleString('en-US')}.`,
         isCorrect: false,
-        reason: `This value results from a calculation error. The correct estimate is (1/${denominator})(${totalPopulation.toLocaleString()}) = ${estimatedTotal.toLocaleString()}, not ${wrongFraction.toLocaleString()}.`
+        reason: `This value results from a calculation error. The correct estimate is (1/${denominator})(${totalPopulation.toLocaleString('en-US')}) = ${estimatedTotal.toLocaleString('en-US')}, not ${wrongFraction.toLocaleString('en-US')}.`
       },
       {
         text: correctText,
@@ -117,11 +117,11 @@ export const generator_905 = {
     
     // STEP 4: Return question data
     return {
-      questionText: `A store manager reviewed the ${context.item} from ${sampleSize} customers who were selected at random from all the customers who made purchases ${context.place}. Of those selected, ${sampleCount} ${context.item} showed that the customer had ${context.action}. If ${totalPopulation.toLocaleString()} customers made purchases ${context.place}, which of the following is the most appropriate conclusion?`,
+      questionText: `A store manager reviewed the ${context.item} from ${sampleSize} customers who were selected at random from all the customers who made purchases ${context.place}. Of those selected, ${sampleCount} ${context.item} showed that the customer had ${context.action}. If ${totalPopulation.toLocaleString('en-US')} customers made purchases ${context.place}, which of the following is the most appropriate conclusion?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. It's given that the manager took a random selection of the ${context.item} of ${sampleSize} customers from a total of ${totalPopulation.toLocaleString()}. It's also given that of those ${sampleSize} ${context.item}, ${sampleCount} showed that the customer had ${context.action}. This means that an appropriate estimate of the fraction of customers who ${context.action} is ${sampleCount}/${sampleSize}, or 1/${denominator}. Multiplying this fraction by the total number of customers yields (1/${denominator})(${totalPopulation.toLocaleString()}) = ${estimatedTotal.toLocaleString()}. Therefore, the best estimate for the number of customers who ${context.action} is ${estimatedTotal.toLocaleString()}.\n\nChoice ${incorrectOptions[0].letter} is incorrect. ${incorrectOptions[0].reason}\n\nChoice ${incorrectOptions[1].letter} is incorrect. ${incorrectOptions[1].reason}\n\nChoice ${incorrectOptions[2].letter} is incorrect. ${incorrectOptions[2].reason}`
+      explanation: `Choice ${correctLetter} is correct. It's given that the manager took a random selection of the ${context.item} of ${sampleSize} customers from a total of ${totalPopulation.toLocaleString('en-US')}. It's also given that of those ${sampleSize} ${context.item}, ${sampleCount} showed that the customer had ${context.action}. This means that an appropriate estimate of the fraction of customers who ${context.action} is ${sampleCount}/${sampleSize}, or 1/${denominator}. Multiplying this fraction by the total number of customers yields (1/${denominator})(${totalPopulation.toLocaleString('en-US')}) = ${estimatedTotal.toLocaleString('en-US')}. Therefore, the best estimate for the number of customers who ${context.action} is ${estimatedTotal.toLocaleString('en-US')}.\n\nChoice ${incorrectOptions[0].letter} is incorrect. ${incorrectOptions[0].reason}\n\nChoice ${incorrectOptions[1].letter} is incorrect. ${incorrectOptions[1].reason}\n\nChoice ${incorrectOptions[2].letter} is incorrect. ${incorrectOptions[2].reason}`
     };
   }
 };

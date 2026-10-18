@@ -30,7 +30,7 @@ export const generator_831 = {
     const k = scaleFactor * scaleFactor; // Area scales as square
     
     // STEP 3: Create options with tracking
-    const correctText = k.toLocaleString();
+    const correctText = k.toLocaleString('en-US');
     
     // Distractors
     const distractorB = (2 * scaleFactor).toString(); // 2×scale

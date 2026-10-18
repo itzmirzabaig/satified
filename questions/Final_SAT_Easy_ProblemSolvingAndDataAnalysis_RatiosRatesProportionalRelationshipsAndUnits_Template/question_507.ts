@@ -28,10 +28,10 @@ export const generator_507 = {
     const massGrams = massKg * gramsPerKg;
 
     // Fixed: Plain text for units, no \\text{} needed
-    const questionText = `A giant armadillo has a mass of ${massKg} kilograms. What is the giant armadillo's mass in grams? (1 kilogram = ${gramsPerKg.toLocaleString()} grams)`;
+    const questionText = `A giant armadillo has a mass of ${massKg} kilograms. What is the giant armadillo's mass in grams? (1 kilogram = ${gramsPerKg.toLocaleString('en-US')} grams)`;
     
     // Fixed: Plain text for words, $...$ only for math expressions
-    const explanation = `The correct answer is ${massGrams.toLocaleString()}. It's given that the giant armadillo has a mass of ${massKg} kilograms. Since 1 kilogram is equal to ${gramsPerKg.toLocaleString()} grams, ${massKg} kilograms is equal to ${massKg} × ${gramsPerKg.toLocaleString()} = ${massGrams.toLocaleString()} grams. Therefore, the giant armadillo's mass, in grams, is ${massGrams.toLocaleString()}.`;
+    const explanation = `The correct answer is ${massGrams.toLocaleString('en-US')}. It's given that the giant armadillo has a mass of ${massKg} kilograms. Since 1 kilogram is equal to ${gramsPerKg.toLocaleString('en-US')} grams, ${massKg} kilograms is equal to ${massKg} × ${gramsPerKg.toLocaleString('en-US')} = ${massGrams.toLocaleString('en-US')} grams. Therefore, the giant armadillo's mass, in grams, is ${massGrams.toLocaleString('en-US')}.`;
 
     return {
       questionText: questionText,
