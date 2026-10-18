@@ -27,12 +27,20 @@ export const generator_56 = {
 
     const hVal = getRandomInt(1, 5);
 
-    const kVal = getRandomInt(10, 40);
+    // The answer is read off the graph, so it has to land on a labeled
+    // gridline: pick the vertex height so the y-intercept is a multiple of 10,
+    // and draw the y gridlines 10 apart. Without this the y-axis put a label
+    // at every unit up to 120 or so and the labels piled into an unreadable
+    // column.
+    const lift = aVal * hVal * hVal;
+    const kChoices: number[] = [];
+    for (let k = 10; k <= 40; k++) if ((lift + k) % 10 === 0) kChoices.push(k);
+    const kVal = kChoices[getRandomInt(0, kChoices.length - 1)];
 
-    const yIntVal = aVal * hVal * hVal + kVal;
+    const yIntVal = lift + kVal;
 
-    const mafsCode = `<Mafs viewBox={{ x: [-2, 10], y: [0, ${yIntVal + 10}] }}>
-  <Coordinates.Cartesian />
+    const mafsCode = `<Mafs viewBox={{ x: [-2, 10], y: [0, ${yIntVal + 20}] }}>
+  <Coordinates.Cartesian xAxis={{ lines: 1 }} yAxis={{ lines: 10 }} />
   <Plot.OfX y={(x) => ${aVal} * Math.pow(x - ${hVal}, 2) + ${kVal}} color="var(--mafs-blue)" />
 </Mafs>`;
 
@@ -41,7 +49,7 @@ export const generator_56 = {
       figureCode: mafsCode,
       options: [],
       correctAnswer: yIntVal.toString(),
-      explanation: `The y-intercept is at $x=0$. Looking at the graph, the parabola crosses the y-axis at $y=${yIntVal}$.`
+      explanation: `The y-intercept is the point where the graph crosses the y-axis, which is where $x=0$. The graph shown crosses the y-axis at the point $(0, ${yIntVal})$, so the value of $y$ is $${yIntVal}$.`
     };
   }
 };

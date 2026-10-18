@@ -712,7 +712,30 @@ const GraphRenderer: React.FC<{ code: string; height?: number; zoom?: boolean }>
       };
     }
 
-    return { elements, viewBox: vb, needsWrapper, customHeight, wrapperCoordsProps };
+    // A bare <Coordinates.Cartesian /> draws a gridline and a label at every
+    // unit. Once an axis spans more than a couple dozen units the labels stack
+    // on top of one another and the graph cannot be read. Give such an axis a
+    // round spacing sized to the viewBox. An axis the question configures
+    // itself is left alone, and short ranges keep the one unit default.
+    const spacingFor = (range: number): number | null => {
+      if (!(range > 24)) return null;
+      const raw = range / 12;
+      const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+      for (const m of [1, 2, 5, 10]) if (m * pow >= raw) return m * pow;
+      return 10 * pow;
+    };
+    const xStep = spacingFor(vb.x[1] - vb.x[0]);
+    const yStep = spacingFor(vb.y[1] - vb.y[0]);
+    const spacedElements = (xStep || yStep) ? elements.map(el => {
+      if (!React.isValidElement(el) || el.type !== Coordinates.Cartesian) return el;
+      const props: any = el.props;
+      const extra: any = {};
+      if (xStep && props.xAxis === undefined) extra.xAxis = { lines: xStep };
+      if (yStep && props.yAxis === undefined) extra.yAxis = { lines: yStep };
+      return Object.keys(extra).length ? React.cloneElement(el, extra) : el;
+    }) : elements;
+
+    return { elements: spacedElements, viewBox: vb, needsWrapper, customHeight, wrapperCoordsProps };
   }, [code]);
 
   const effectiveHeight = customHeight ?? height;
