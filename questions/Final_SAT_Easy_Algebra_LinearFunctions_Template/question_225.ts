@@ -23,44 +23,22 @@ export const generator_225 = {
   },
 
   generate: (): QuestionData => {
-    // Draw parameters; retry the whole draw (bounded) until all four option
-    // values are pairwise distinct, so no distractor can equal the correct
-    // answer or another distractor for any draw.
-    let fee = 0;
-    let rate = 0;
-    let miles = 0;
-    let total = 0;
-    let over = 0;
-    let addMiles = 0;
-    let doubled = 0;
-    let tries = 0;
-    do {
-      fee = getRandomInt(15, 25);
-      rate = getRandomInt(6, 9) / 10;      // 0.60, 0.70, 0.80, 0.90 (exact to 2 dp)
-      miles = getRandomInt(30, 50);
-      const mileageCost = rate * miles;    // at most one decimal place -> exact at 2 dp
-      total = fee + mileageCost;           // correct: initial fee + mileage cost
-      over = total + 10;                   // overestimates the total
-      addMiles = fee + miles;              // adds miles instead of multiplying by rate
-      doubled = mileageCost * 2;           // doubles the mileage cost
-      tries++;
-    } while (
-      tries < 50 &&
-      new Set([
-        total.toFixed(2),
-        over.toFixed(2),
-        addMiles.toFixed(2),
-        doubled.toFixed(2)
-      ]).size !== 4
-    );
-
-    const mileageCost = rate * miles;
+    // Work in tenths of a dollar so every value is exact. The four choices are
+    // always distinct because the rate is below 1: rate * miles < rate * (fee +
+    // miles) < fee + rate * miles (the answer) and rate * (fee + miles) < fee + miles.
+    const fee = getRandomInt(15, 25);
+    const rateTenths = getRandomInt(6, 9);   // 0.60, 0.70, 0.80, 0.90
+    const rate = rateTenths / 10;
+    const miles = getRandomInt(30, 50);
+    const mileageCost = (rateTenths * miles) / 10;
+    const total = (10 * fee + rateTenths * miles) / 10;
+    const rateOnBoth = (rateTenths * (fee + miles)) / 10;
 
     const optionsData = [
-      { text: total.toFixed(2), isCorrect: true },
-      { text: over.toFixed(2), isCorrect: false, reason: "overestimates the total cost" },
-      { text: addMiles.toFixed(2), isCorrect: false, reason: "adds the miles instead of multiplying by the rate" },
-      { text: doubled.toFixed(2), isCorrect: false, reason: "doubles the mileage cost" }
+      { text: total.toFixed(2), isCorrect: true, reason: '' },
+      { text: mileageCost.toFixed(2), isCorrect: false, reason: `is the cost of the miles driven alone; it leaves out the initial fee of \\$${fee}` },
+      { text: (fee + miles).toFixed(2), isCorrect: false, reason: `results from adding the ${miles} miles to the \\$${fee} fee instead of multiplying the miles by \\$${rate.toFixed(2)}` },
+      { text: rateOnBoth.toFixed(2), isCorrect: false, reason: `results from multiplying both the fee and the miles by \\$${rate.toFixed(2)}; the rate applies only to the miles` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -72,11 +50,11 @@ export const generator_225 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `A customer rented a truck to transport materials purchased from a hardware store. The customer was charged an initial fee of ${fee} dollars plus an additional ${rate.toFixed(2)} dollars per mile driven. If the truck was driven ${miles} miles, what was the total amount, in dollars, the customer was charged?`,
+      questionText: `A customer rented a truck to transport materials purchased from a hardware store. The customer was charged an initial fee of \\$${fee} plus an additional \\$${rate.toFixed(2)} per mile driven. If the truck was driven ${miles} miles, what was the total amount, in dollars, the customer was charged?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: total.toFixed(2),
-      explanation: `Choice ${correctOption.letter} is correct. The total cost is the initial fee ($${fee}$) plus the mileage cost ($${rate.toFixed(2)} \\times ${miles} = ${mileageCost.toFixed(2)}$), giving $${fee} + ${mileageCost.toFixed(2)} = ${total.toFixed(2)}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The cost of driving ${miles} miles at \\$${rate.toFixed(2)} per mile is $${rate.toFixed(2)}(${miles}) = ${mileageCost.toFixed(2)}$ dollars. Adding the initial fee gives a total of $${fee} + ${mileageCost.toFixed(2)} = ${total.toFixed(2)}$ dollars. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
