@@ -7,8 +7,14 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [coeff: 2-9, rightSide: 6-72, targetCoeff: 4-45]
 * - Difficulty factors: [Expression evaluation, scaling]
-* - Distractor patterns: [A: subtraction error, C: wrong mult, D: no division]
+* - Distractor patterns: [value of x, adding the coefficient difference,
+*   substituting the given value for x]
 * - Constraints: [Clean integer result]
+*
+* FIX NOTES:
+* Two distractors were rightSide - coeff and 3(targetCoeff - coeff), labeled
+* "subtracting instead of dividing" and "wrong multiplication", which do not
+* produce the value asked for. Each distractor now matches its reason.
 * - Question type: [Multiple Choice]
 * - Figure generation: [None]
 */
@@ -23,37 +29,21 @@ export const generator_146 = {
   },
 
   generate: (): QuestionData => {
-    // Redraw until all four option values are distinct (collision only occurs
-    // when multiplier === 3 * scale - 2, so this converges immediately).
-    let coeff = 2, rightSide = 6, targetCoeff = 4, result = 12;
-    let distractorA = 0, distractorC = 0, distractorD = 0;
-    let tries = 0;
-    do {
-      coeff = getRandomInt(2, 9);
-      rightSide = coeff * getRandomInt(3, 8);
-      targetCoeff = getRandomInt(2, 5) * coeff;
-      result = (targetCoeff / coeff) * rightSide;
+    const coeff = getRandomInt(2, 9);
+    const x = getRandomInt(3, 8);
+    const rightSide = coeff * x;
+    const scale = getRandomInt(2, 5);
+    const targetCoeff = scale * coeff;
+    const result = scale * rightSide;
 
-      distractorA = rightSide - coeff;
-      distractorC = (targetCoeff - coeff) * 3;
-      distractorD = targetCoeff * rightSide;
-      tries++;
-    } while (
-      new Set([result, distractorA, distractorC, distractorD]).size < 4 &&
-      tries < 50
-    );
-
-    // Deterministic fallback: nudging C to 3 * targetCoeff cannot collide with
-    // result, A, or D anywhere in the declared ranges when the loop condition fired.
-    if (new Set([result, distractorA, distractorC, distractorD]).size < 4) {
-      distractorC = targetCoeff * 3;
-    }
-
+    // All distinct: x < rightSide < result; targetCoeff * rightSide = coeff * result
+    // > result; rightSide + (targetCoeff - coeff) = result only if coeff = rightSide,
+    // impossible since x >= 3.
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: "results from subtracting instead of dividing" },
-      { text: result.toString(), isCorrect: true },
-      { text: distractorC.toString(), isCorrect: false, reason: "results from wrong multiplication" },
-      { text: distractorD.toString(), isCorrect: false, reason: "multiplies without solving for x first" }
+      { text: x.toString(), isCorrect: false, reason: `it is the value of $x$, not the value of $${targetCoeff}x$` },
+      { text: result.toString(), isCorrect: true, reason: '' },
+      { text: (rightSide + targetCoeff - coeff).toString(), isCorrect: false, reason: `it results from adding ${targetCoeff - coeff}, the difference between ${targetCoeff} and ${coeff}, to ${rightSide} instead of multiplying ${rightSide} by ${scale}` },
+      { text: (targetCoeff * rightSide).toLocaleString('en-US'), isCorrect: false, reason: `it results from substituting ${rightSide} for $x$ in $${targetCoeff}x$, but ${rightSide} is the value of $${coeff}x$, not $x$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -69,7 +59,7 @@ export const generator_146 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `x = ${rightSide}/${coeff} = ${rightSide / coeff}, so ${targetCoeff}x = ${targetCoeff} × ${rightSide / coeff} = ${result}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Since $${targetCoeff} = ${scale}(${coeff})$, the expression $${targetCoeff}x$ is equivalent to $${scale}(${coeff}x)$. Substituting ${rightSide} for $${coeff}x$ gives $${scale}(${rightSide}) = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
