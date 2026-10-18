@@ -108,7 +108,7 @@ export const generator_182 = {
       figureCode,
       options: shuffled.map(o => o.text),
       correctAnswer: correct.text,
-      explanation: `Choice ${correct.letter} is correct. Find $x = ${x}$ on the horizontal axis, go up to the line, then read straight across to the vertical axis, which gives $y = ${y}$. (Using the equation of the line, $y = ${m}(${x}) + ${b} = ${y}$.) Choice ${letterOf('intercept')} is incorrect; ${b} is the value where the line meets the vertical axis (at $x = 0$), not at $x = ${x}$. Choice ${letterOf('stepHigh')} is incorrect and Choice ${letterOf('stepLow')} is incorrect; each is off by one step of the line's slope from the correct reading.`
+      explanation: `Choice ${correct.letter} is correct. Find $x = ${x}$ on the horizontal axis, go up to the line, then read straight across to the vertical axis, which gives $y = ${y}$. (Using the equation of the line, $y = ${m === -1 ? `-${x}` : `${m}(${x})`} + ${b} = ${y}$.) Choice ${letterOf('intercept')} is incorrect; ${b} is the value where the line meets the vertical axis (at $x = 0$), not at $x = ${x}$. Choice ${letterOf('stepHigh')} is incorrect because it is the number of pounds of lemons the shopper can buy with ${x - 1} pound${x - 1 === 1 ? '' : 's'} of tangerines, not ${x} pounds. Choice ${letterOf('stepLow')} is incorrect because it is the number of pounds of lemons the shopper can buy with ${x + 1} pounds of tangerines, not ${x} pounds.`
     };
   }
 };
