@@ -170,6 +170,8 @@ a{color:inherit}
 
 /* MathJax guards: never touch its font family; keep wide math inside panes */
 mjx-container{max-width:100%}
+/* Inline math plus the punctuation after it (wrapped by the MathJax startup hook) */
+.mjx-glue{white-space:nowrap}
 mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:2px 0}
 
 /* layout shell: full width workspace under the toolbar */

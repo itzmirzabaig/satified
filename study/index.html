@@ -42,6 +42,32 @@
         ignoreHtmlClass: 'mafs-container',
         processHtmlClass: 'content',
         skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      startup: {
+        // Chrome can break a line between inline math and the period or comma
+        // after it, leaving the punctuation alone at the start of a line. After
+        // every typeset, wrap each inline math element and the punctuation
+        // that follows it in a span that does not break (see .mjx-glue).
+        ready() {
+          const glue = () => {
+            document.querySelectorAll('mjx-container:not([display="true"])').forEach((m) => {
+              const t = m.nextSibling, parent = m.parentNode;
+              if (!t || t.nodeType !== 3 || !parent || parent.classList?.contains('mjx-glue')) return;
+              const p = /^[.,;:!?)\]]+/.exec(t.nodeValue);
+              if (!p) return;
+              const s = document.createElement('span');
+              s.className = 'mjx-glue';
+              parent.insertBefore(s, m);
+              s.appendChild(m);
+              s.appendChild(document.createTextNode(p[0]));
+              t.nodeValue = t.nodeValue.slice(p[0].length);
+            });
+          };
+          MathJax.startup.defaultReady();
+          const typeset = MathJax.typesetPromise;
+          MathJax.typesetPromise = (els) => typeset(els).then((r) => { glue(); return r; });
+          MathJax.startup.promise = MathJax.startup.promise.then(glue);
+        }
       }
     };
   </script>
