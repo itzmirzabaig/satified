@@ -7,8 +7,15 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [addend: 5-20, result: 200-400]
 * - Difficulty factors: [Simple subtraction]
-* - Distractor patterns: [A: division, C: addition, D: multiplication]
+* - Distractor patterns: [subtracting in the wrong order, adding instead of
+*   subtracting, the value of k + addend]
 * - Constraints: [Clean integer result]
+*
+* FIX NOTES:
+* The distractors were floor(rightSide / addend), rightSide + addend and
+* rightSide * addend, labeled "division error", "addition error" and
+* "multiplication error"; the floored quotient and the product are not
+* errors anyone makes solving k + a = b. Each choice now has a real reason.
 * - Question type: [Multiple Choice]
 * - Figure generation: [None]
 */
@@ -28,10 +35,10 @@ export const generator_150 = {
     const rightSide = result + addend;
 
     const optionsData = [
-      { text: Math.floor(rightSide / addend).toString(), isCorrect: false, reason: "division error" },
-      { text: result.toString(), isCorrect: true },
-      { text: (rightSide + addend).toString(), isCorrect: false, reason: "addition error" },
-      { text: (rightSide * addend).toString(), isCorrect: false, reason: "multiplication error" }
+      { text: (-result).toString(), isCorrect: false, reason: `it results from subtracting ${rightSide} from ${addend} instead of subtracting ${addend} from ${rightSide}` },
+      { text: result.toString(), isCorrect: true, reason: '' },
+      { text: (rightSide + addend).toString(), isCorrect: false, reason: `it results from adding ${addend} to ${rightSide} instead of subtracting it` },
+      { text: rightSide.toString(), isCorrect: false, reason: `it is the value of $k + ${addend}$, not the value of $k$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,7 +54,7 @@ export const generator_150 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Subtract ${addend}: k = ${rightSide} - ${addend} = ${result}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Subtracting ${addend} from both sides of the given equation yields $k = ${rightSide} - ${addend}$, or $k = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
