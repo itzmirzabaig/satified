@@ -34,12 +34,17 @@ export const generator_39 = {
     const bSum = b1 + b2;
     const cSum = c1 + c2;
 
-    const correctText = `$${aSum}x^2+${bSum}x${cSum >= 0 ? '+' : ''}${cSum}$`;
+    // Signed constant term: "+5" or "-5", never "+-5".
+    const sgn = (n: number) => (n < 0 ? `-${-n}` : `+${n}`);
+    // The x coefficient of the first polynomial can be 1, written as plain x.
+    const b1Term = b1 === 1 ? 'x' : `${b1}x`;
+
+    const correctText = `$${aSum}x^2+${bSum}x${sgn(cSum)}$`;
 
     const optionsData = [
-      { text: `$${a1}x^2+${bSum}x+${cSum + getRandomInt(2,4)}$`, isCorrect: false },
-      { text: `$${aSum}x^2+${b2}x${cSum >= 0 ? '+' : ''}${cSum}$`, isCorrect: false },
-      { text: `$${aSum}x^2+${bSum}x${-cSum >= 0 ? '+' : ''}${-cSum}$`, isCorrect: false },
+      { text: `$${a1}x^2+${bSum}x${sgn(cSum)}$`, isCorrect: false },
+      { text: `$${aSum}x^2+${b2}x${sgn(cSum)}$`, isCorrect: false },
+      { text: `$${aSum}x^2+${bSum}x${sgn(-cSum)}$`, isCorrect: false },
       { text: correctText, isCorrect: true }
     ];
 
@@ -49,13 +54,14 @@ export const generator_39 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+    const letterOf = (i: number) => shuffledOptions.find(o => o.text === optionsData[i].text)!.letter;
 
     return {
-      questionText: `Which expression is equivalent to $\\left(${a1}x^2 + ${b1}x ${c1}\\right) + \\left(x^2 + ${b2}x + ${c2}\\right)$?`,
+      questionText: `Which expression is equivalent to $\\left(${a1}x^2 + ${b1Term} ${c1}\\right) + \\left(x^2 + ${b2}x + ${c2}\\right)$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Combine like terms: $(${a1}+1)x^2 + (${b1}+${b2})x + (${c1}+${c2}) = ${correctText.replace(/\$/g, '')}$.`
+      explanation: `Choice ${correctOption.letter} is correct. Combine like terms: $(${a1}+1)x^2 + (${b1}+${b2})x + (${c1}+${c2}) = ${correctText.replace(/\$/g, '')}$. Choice ${letterOf(0)} is incorrect; it leaves out the $x^2$ term of the second expression. Choice ${letterOf(1)} is incorrect; it leaves out the $${b1Term}$ term of the first expression. Choice ${letterOf(2)} is incorrect; it has the wrong sign on the constant term, since $${c1}+${c2}=${cSum}$.`
     };
   }
 };
