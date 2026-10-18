@@ -23,25 +23,28 @@ export const generator_218 = {
   },
 
   generate: (): QuestionData => {
-    const slope = getRandomInt(2, 5);
-
-    const intercept = -getRandomInt(5, 10);
-
+    // Redraw until the four choices differ (h(2) equals the "added the
+    // constant" value when the constant is -2 times the slope).
     const xValue = -2;
-
-    const result = slope * xValue + intercept;
-
-    const distractor2 = result + slope;
-
-    const distractor3 = -result;
-
-    const distractor4 = slope + intercept;
+    let slope = 2, intercept = -5, values: number[] = [];
+    do {
+      slope = getRandomInt(2, 5);
+      intercept = -getRandomInt(5, 10);
+      values = [
+        slope * xValue + intercept,   // h(-2), the answer
+        slope * 2 + intercept,        // h(2): dropped the negative sign of the input
+        slope * xValue - intercept,   // added the constant instead of subtracting it
+        xValue + intercept            // substituted -2 for the whole term (slope)x
+      ];
+    } while (new Set(values).size < 4);
+    const result = values[0];
+    const c = Math.abs(intercept);
 
     const optionsData = [
-      { text: result.toString(), isCorrect: true },
-      { text: distractor2.toString(), isCorrect: false, reason: "results from an arithmetic error" },
-      { text: distractor3.toString(), isCorrect: false, reason: "has a sign error" },
-      { text: distractor4.toString(), isCorrect: false, reason: "adds instead of multiplying" }
+      { text: result.toString(), isCorrect: true, reason: '' },
+      { text: values[1].toString(), isCorrect: false, reason: `is the value of $h(2)$, not $h(-2)$` },
+      { text: values[2].toString(), isCorrect: false, reason: `results from adding ${c} instead of subtracting it` },
+      { text: values[3].toString(), isCorrect: false, reason: `results from substituting $-2$ for $${slope}x$ instead of for $x$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -58,7 +61,7 @@ export const generator_218 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$: $h(${xValue}) = ${slope}(${xValue}) - ${Math.abs(intercept)} = ${slope * xValue} - ${Math.abs(intercept)} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting $${xValue}$ for $x$ in the given function yields $h(${xValue}) = ${slope}(${xValue}) - ${c}$, or $h(${xValue}) = ${slope * xValue} - ${c} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
