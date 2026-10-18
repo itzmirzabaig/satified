@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [slope: 10-50, intercept: 10-50, x: 2-5]
  * - Difficulty factors: [Simple function evaluation]
- * - Distractor patterns: [forgetting intercept, adding all numbers, doubling intercept]
+ * - Distractor patterns: [forgot intercept, added x instead of multiplying, multiplied both terms by x]
  * - Constraints: [None]
  * - Question type: [Function evaluation→Multiple Choice Text]
  * - Figure generation: [Plot.OfX]
@@ -28,40 +28,29 @@ export const generator_237 = {
   },
 
   generate: (): QuestionData => {
-    let slope = getRandomInt(10, 50);
-    let intercept = getRandomInt(10, 50);
-    let xValue = getRandomInt(2, 5);
-
-    // Guarantee the four displayed values are all distinct. distractor1 and
-    // distractor2 can collide (slope*x === slope+intercept+x for some draws),
-    // so re-draw until every value differs. Bounded to avoid any hang.
-    let tries = 0;
-    while (tries++ < 50) {
-      const values = [
-        slope * xValue + intercept,       // correct
-        slope * xValue,                   // distractor1
-        slope + intercept + xValue,       // distractor2
-        slope * xValue + intercept * 2,   // distractor3
-      ];
-      if (new Set(values).size === 4) break;
+    // Each wrong choice is a real evaluation slip. The old "doubling the
+    // y-intercept" choice, slope * x + 2 * intercept, only matched an actual
+    // mistake when x was 2; it is now x * (slope + intercept), which comes from
+    // multiplying both terms by x. Redraw until the four values differ.
+    let slope = 10, intercept = 10, xValue = 2;
+    do {
       slope = getRandomInt(10, 50);
       intercept = getRandomInt(10, 50);
       xValue = getRandomInt(2, 5);
-    }
+    } while (new Set([
+      slope * xValue + intercept,
+      slope * xValue,
+      slope + intercept + xValue,
+      xValue * (slope + intercept)
+    ]).size < 4);
 
     const correctValue = slope * xValue + intercept;
 
-    const distractor1 = slope * xValue;
-
-    const distractor2 = slope + intercept + xValue;
-
-    const distractor3 = slope * xValue + intercept * 2;
-
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "results from forgetting to add the y-intercept" },
-      { text: distractor2.toString(), isCorrect: false, reason: "results from incorrectly adding all numbers together" },
-      { text: correctValue.toString(), isCorrect: true },
-      { text: distractor3.toString(), isCorrect: false, reason: "results from doubling the y-intercept" }
+      { text: (slope * xValue).toString(), isCorrect: false, reason: `it is the value of $${slope}(${xValue})$; ${intercept} must still be added` },
+      { text: (slope + intercept + xValue).toString(), isCorrect: false, reason: `it results from adding ${xValue} to ${slope} instead of multiplying ${slope} by ${xValue}` },
+      { text: correctValue.toString(), isCorrect: true, reason: '' },
+      { text: (xValue * (slope + intercept)).toString(), isCorrect: false, reason: `it results from multiplying both ${slope} and ${intercept} by ${xValue}, which gives $${xValue}(${slope} + ${intercept})$; only ${slope} is multiplied by ${xValue}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -78,7 +67,7 @@ export const generator_237 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctValue.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. To find the value of $f(x)$ when $x = ${xValue}$, substitute ${xValue} for $x$ in the given function: $f(${xValue}) = ${slope}(${xValue}) + ${intercept} = ${slope * xValue} + ${intercept} = ${correctValue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the value of $f(x)$ when $x = ${xValue}$, substitute ${xValue} for $x$ in the given function, which yields $f(${xValue}) = ${slope}(${xValue}) + ${intercept}$, or $f(${xValue}) = ${slope * xValue} + ${intercept} = ${correctValue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
