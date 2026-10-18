@@ -25,11 +25,11 @@ export const generator_187 = {
     const b = -getRandomInt(10, 50); // negative y-intercept
 
     return {
-      questionText: `The y-intercept of $y = ${m}x ${b < 0 ? b : `+ ${b}`}$ is $(0, y)$. What is $y$?`,
+      questionText: `The graph of $y = ${m}x - ${-b}$ in the $xy$-plane has a $y$-intercept at $(0, b)$. What is the value of $b$?`,
       figureCode: null,
       options: [],
       correctAnswer: b.toString(),
-      explanation: `Set $x=0$ to find $y=${b}$.`
+      explanation: `The $y$-intercept of a graph is the point where $x = 0$. Substituting 0 for $x$ in the given equation yields $y = ${m}(0) - ${-b}$, or $y = ${b}$. So the $y$-intercept is $(0, ${b})$, and the value of $b$ is $${b}$.`
     };
   }
 };
