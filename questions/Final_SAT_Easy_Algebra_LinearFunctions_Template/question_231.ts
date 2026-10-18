@@ -29,24 +29,26 @@ export const generator_231 = {
     const interceptMultiplier = getRandomInt(3, 5); // 3→15, 4→20, 5→25
     const intercept = interceptMultiplier * 5;
 
-    // viewBox: x from 0 (deposits start at time=0), y from 0 to yMax with headroom.
-    // data-answer aligns y-gridlines so the intercept value is always labeled.
+    // Gridlines every 5 dollars (labels every 10) put the intercept on a line.
+    // The window starts a little below and left of the axes so the x-axis labels
+    // are not cut off at the bottom edge (it used to start at exactly 0).
     const xMax = 10;
     const yMax = slope * xMax + intercept + 10;
 
-    const mafsCode = `<Mafs data-answer="${intercept}" viewBox={{ x: [0, ${xMax}], y: [0, ${yMax}] }}>
+    const mafsCode = `<Mafs viewBox={{ x: [-0.6, ${xMax}], y: [${-Math.round(yMax * 0.08)}, ${yMax}] }}>
   <Coordinates.Cartesian
-    xAxis={{ lines: 1, labels: (n) => Number.isInteger(n) && n >= 0 ? n : "" }}
+    xAxis={{ lines: 1, labels: (n) => Number.isInteger(n) && n > 0 ? n : "" }}
+    yAxis={{ lines: 5, labels: (n) => n > 0 && n % 10 === 0 ? n : "" }}
   />
   <Plot.OfX y={(x) => ${slope} * x + ${intercept}} color="var(--mafs-blue)" />
 </Mafs>`;
 
     return {
-      questionText: `To the nearest whole dollar, what is the amount of the initial deposit estimated by the graph?`,
+      questionText: `A savings account was opened with an initial deposit, and then the same amount was deposited into the account each week. The graph shows the estimated balance $y$, in dollars, in the account $x$ weeks after it was opened. To the nearest whole dollar, what is the amount of the initial deposit estimated by the graph?`,
       figureCode: mafsCode,
       options: [],
       correctAnswer: intercept.toString(),
-      explanation: `The initial deposit is the y-intercept, which is the y-coordinate when $x=0$. From the graph, when $x=0$, $y=${intercept}$. Therefore, the initial deposit is $${intercept}$.`
+      explanation: `The initial deposit is the balance when $x = 0$, which is the $y$-coordinate of the $y$-intercept of the graph. The graph crosses the $y$-axis at $(0, ${intercept})$, so the initial deposit is ${intercept} dollars.`
     };
   }
 };
