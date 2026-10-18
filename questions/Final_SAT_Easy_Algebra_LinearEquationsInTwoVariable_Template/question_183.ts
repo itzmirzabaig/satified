@@ -41,9 +41,9 @@ export const generator_183 = {
 
     const optionsData = [
       { text: "Table A", tableCode: createTable(yValsCorrect), isCorrect: true },
-      { text: "Table B", tableCode: createTable(yValsD1), isCorrect: false, reason: "shows a decreasing relationship" },
-      { text: "Table C", tableCode: createTable(yValsD2), isCorrect: false, reason: "has an incorrect y-intercept" },
-      { text: "Table D", tableCode: createTable(yValsD3), isCorrect: false, reason: "uses an incorrect slope" }
+      { text: "Table B", tableCode: createTable(yValsD1), isCorrect: false, reason: `its values of $y$ decrease by ${slope} each time $x$ increases by 1, so it corresponds to a slope of $-${slope}$, not ${slope}` },
+      { text: "Table C", tableCode: createTable(yValsD2), isCorrect: false, reason: `its value of $y$ when $x = 0$ is ${intercept + 2}, not ${intercept}` },
+      { text: "Table D", tableCode: createTable(yValsD3), isCorrect: false, reason: `its values of $y$ increase by ${slope + 1} each time $x$ increases by 1, so it corresponds to a slope of ${slope + 1}, not ${slope}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -59,7 +59,7 @@ export const generator_183 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.tableCode),
       correctAnswer: shuffledOptions.find(o => o.isCorrect)!.tableCode,
-      explanation: `Choice ${correctLetter} is correct. Substituting $x=0$ yields $y=${intercept}$. Substituting $x=1$ yields $y=${slope + intercept}$, and substituting $x=2$ yields $y=${2 * slope + intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Substituting $x=0$ yields $y=${intercept}$. Substituting $x=1$ yields $y=${slope + intercept}$, and substituting $x=2$ yields $y=${2 * slope + intercept}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
