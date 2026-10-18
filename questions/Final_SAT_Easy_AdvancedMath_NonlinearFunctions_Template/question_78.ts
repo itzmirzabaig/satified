@@ -83,7 +83,7 @@ export const generator_78 = {
         reason: ''
       },
       {
-        text: `The estimated value of the tablet was \\$${initialValue} 24 months after it was purchased.`,
+        text: `24 months after it was purchased, the estimated value of the tablet was \\$${initialValue}.`,
         isCorrect: false,
         reason: 'the y-intercept corresponds to 0 months after purchase, not 24 months'
       },
