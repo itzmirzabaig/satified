@@ -37,47 +37,28 @@ export const generator_199 = {
     while (w2 === w1 && wGuard++ < 50) w2 = getRandomInt(9, 15);
 
     const n2 = getRandomInt(8, 18);  // number of heavier boxes (given)
-    const n1 = getRandomInt(10, 30); // number of lighter boxes (the answer)
+    // Number of lighter boxes (the answer). Redraw until the four choices
+    // n1, n2, n1 + n2 and w1 * n1 all differ.
+    let n1 = 10;
+    do { n1 = getRandomInt(10, 30); } while (new Set([n1, n2, n1 + n2, w1 * n1]).size < 4);
     const total = w1 * n1 + w2 * n2; // total weight (integer by construction)
 
-    // Build options, guarding every distractor against the correct answer and
-    // against previously added distractors.
-    const used = new Set<number>([n1]);
-    const distractors: { value: number; reason: string }[] = [];
-    const addDistractor = (value: number, reason: string) => {
-      if (Number.isInteger(value) && value > 0 && !used.has(value)) {
-        used.add(value);
-        distractors.push({ value, reason });
-      }
-    };
-
-    addDistractor(n2, "reports the number of heavier boxes instead of lighter boxes");
-    addDistractor(w1, "uses the lighter box weight as a count");
-    addDistractor(w2, "uses the heavier box weight as a count");
-    addDistractor(n1 + 1, "results from an arithmetic slip when dividing the remaining weight");
-    addDistractor(n1 - 1, "results from an arithmetic slip when dividing the remaining weight");
-
-    // Fill to exactly 3 distractors with safe nearby integers if guards rejected some.
-    let filler = n1 + 2;
-    while (distractors.length < 3) {
-      addDistractor(filler, "does not satisfy the weight equation");
-      filler++;
-    }
-
     const optionsData = [
-      { text: n1.toString(), isCorrect: true },
-      ...distractors.slice(0, 3).map(d => ({ text: d.value.toString(), isCorrect: false, reason: d.reason }))
+      { text: n1.toString(), isCorrect: true, reason: '' },
+      { text: n2.toString(), isCorrect: false, reason: `it is the number of ${w2}-pound boxes, not ${w1}-pound boxes` },
+      { text: (n1 + n2).toString(), isCorrect: false, reason: `it is the total number of boxes in the shipment` },
+      { text: (w1 * n1).toString(), isCorrect: false, reason: `it is the total weight, in pounds, of the ${w1}-pound boxes; this weight must still be divided by ${w1}` }
     ];
 
     const shuffled = shuffle(optionsData).map((opt, i) => ({ ...opt, letter: String.fromCharCode(65 + i) }));
     const correctLetter = shuffled.find(o => o.isCorrect)!.letter;
 
     return {
-      questionText: `A shipment of ${w1}-lb and ${w2}-lb boxes totals ${total} lbs. If there are ${n2} of the ${w2}-lb boxes, how many ${w1}-lb boxes are there?`,
+      questionText: `A shipment contains only ${w1}-pound boxes and ${w2}-pound boxes and weighs a total of ${total} pounds. If the shipment contains ${n2} of the ${w2}-pound boxes, how many ${w1}-pound boxes does it contain?`,
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: n1.toString(),
-      explanation: `Choice ${correctLetter} is correct. The ${n2} boxes weighing ${w2} lbs each account for $${w2} \\times ${n2} = ${w2 * n2}$ lbs. The remaining weight is $${total} - ${w2 * n2} = ${total - w2 * n2}$ lbs, so the number of ${w1}-lb boxes is $${total - w2 * n2} \\div ${w1} = ${n1}$.`
+      explanation: `Choice ${correctLetter} is correct. The ${n2} boxes that weigh ${w2} pounds each weigh $${w2}(${n2}) = ${w2 * n2}$ pounds in total. That leaves $${total} - ${w2 * n2} = ${total - w2 * n2}$ pounds for the ${w1}-pound boxes, so the shipment contains $\\frac{${total - w2 * n2}}{${w1}} = ${n1}$ of the ${w1}-pound boxes. ${shuffled.filter(o => !o.isCorrect).map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
