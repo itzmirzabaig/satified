@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [slope: non-zero, intercept: 5-15]
  * - Difficulty factors: [Evaluating at zero - y-intercept]
- * - Distractor patterns: [sign error, input value, half value]
+ * - Distractor patterns: [g(1), the input 0, x-intercept]
  * - Constraints: [None]
  * - Question type: [Function evaluation→Multiple Choice Text]
  * - Figure generation: null
@@ -23,21 +23,23 @@ export const generator_275 = {
   },
 
   generate: (): QuestionData => {
-    const slope = getRandomInt(-3, 3, );
-
-    const intercept = getRandomInt(5, 15);
-
-    const distractor1 = -intercept;
-
-    const distractor2 = 0;
-
-    const distractor3 = Math.floor(intercept / 2);
+    // The slope used to be drawn from -3 to 3, so it could be 0 ("0x + 8") or
+    // plus or minus 1. It is now 2 or 3 in size, with either sign, and divides
+    // the intercept so the x-intercept choice is a whole number. The old
+    // choices included "approximately half the correct value" and a made-up
+    // sign error.
+    let slope = -2, intercept = 8;
+    do {
+      slope = (Math.random() < 0.5 ? -1 : 1) * getRandomInt(2, 3);
+      intercept = getRandomInt(5, 15);
+    } while (intercept % slope !== 0 || new Set([intercept, 0, -intercept / slope, slope + intercept]).size < 4);
+    const xIntercept = -intercept / slope;
 
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "results from a sign error" },
-      { text: distractor2.toString(), isCorrect: false, reason: "is the input value, not the output" },
-      { text: distractor3.toString(), isCorrect: false, reason: "is approximately half the correct value" },
-      { text: intercept.toString(), isCorrect: true }
+      { text: (slope + intercept).toString(), isCorrect: false, reason: `it is the value of $g(1)$, not $g(0)$` },
+      { text: '0', isCorrect: false, reason: `0 is the input, not the output; $g(0)$ is the value of $g(x)$ when $x = 0$` },
+      { text: xIntercept.toString(), isCorrect: false, reason: `it is the value of $x$ for which $g(x) = 0$, not the value of $g(0)$` },
+      { text: intercept.toString(), isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,11 +52,11 @@ export const generator_275 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `The function $g$ is defined by $g(x) = ${slope === 1 ? '' : slope === -1 ? '-' : slope}x + ${intercept}$. What is the value of $g(0)$?`,
+      questionText: `The function $g$ is defined by $g(x) = ${slope}x + ${intercept}$. What is the value of $g(0)$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: intercept.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting 0 for $x$: $g(0) = ${slope}(0) + ${intercept} = ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting 0 for $x$ in the given function yields $g(0) = ${slope}(0) + ${intercept}$, or $g(0) = ${intercept}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
