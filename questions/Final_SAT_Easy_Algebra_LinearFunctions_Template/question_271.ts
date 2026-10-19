@@ -27,19 +27,19 @@ export const generator_271 = {
 
     const yIntercept = -getRandomInt(3, 8);
 
-    const correctEquation = `f(x)=${slope}x-${Math.abs(yIntercept)}`;
+    const correctEquation = `$f(x) = ${slope}x - ${Math.abs(yIntercept)}$`;
 
-    const distractorA = `f(x)=\\frac{1}{${slope}}x-${Math.abs(yIntercept)}`;
+    const distractorA = `$f(x) = \\frac{1}{${slope}}x - ${Math.abs(yIntercept)}$`;
 
-    const distractorB = `f(x)=-\\frac{1}{${slope}}x-${Math.abs(yIntercept)}`;
+    const distractorB = `$f(x) = -\\frac{1}{${slope}}x - ${Math.abs(yIntercept)}$`;
 
-    const distractorC = `f(x)=-${slope}x-${Math.abs(yIntercept)}`;
+    const distractorC = `$f(x) = -${slope}x - ${Math.abs(yIntercept)}$`;
 
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "uses the reciprocal of the slope" },
-      { text: distractorB, isCorrect: false, reason: "uses the negative reciprocal of the slope" },
-      { text: distractorC, isCorrect: false, reason: "uses the negative of the slope" },
-      { text: correctEquation, isCorrect: true }
+      { text: distractorA, isCorrect: false, reason: `the slope of its graph is the reciprocal of ${slope}, not ${slope}` },
+      { text: distractorB, isCorrect: false, reason: `the slope of its graph is the negative reciprocal of ${slope}, not ${slope}; lines with these two slopes are perpendicular` },
+      { text: distractorC, isCorrect: false, reason: `the slope of its graph is $-${slope}$, not ${slope}` },
+      { text: correctEquation, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -56,7 +56,7 @@ export const generator_271 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. Using slope-intercept form $f(x)=mx+b$ with slope $m=${slope}$ and y-intercept $b=${yIntercept}$ gives $f(x)=${slope}x-${Math.abs(yIntercept)}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. A linear function can be written in slope-intercept form, $f(x) = mx + b$, where $m$ is the slope of its graph and $(0, b)$ is its $y$-intercept. Substituting $m = ${slope}$ and $b = ${yIntercept}$ gives $f(x) = ${slope}x - ${Math.abs(yIntercept)}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
