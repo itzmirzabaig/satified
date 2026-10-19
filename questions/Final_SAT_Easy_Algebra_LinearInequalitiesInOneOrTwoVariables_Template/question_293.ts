@@ -27,9 +27,9 @@ export const generator_293 = {
 
     const optionsData = [
       { text: `$f+h \\leq ${maxPlaces}$`, isCorrect: true },
-      { text: `$f+h \\ge ${maxPlaces}$`, isCorrect: false, reason: "uses 'at least' instead of 'at most'" },
-      { text: `$f-h \\leq ${maxPlaces}$`, isCorrect: false, reason: "subtracts instead of adding the locations" },
-      { text: `$f-h \\ge ${maxPlaces}$`, isCorrect: false, reason: "subtracts and uses wrong inequality direction" }
+      { text: `$f+h \\ge ${maxPlaces}$`, isCorrect: false, reason: `it says the service cleans at least ${maxPlaces} places per day; "at most" means the total is less than or equal to ${maxPlaces}` },
+      { text: `$f-h \\leq ${maxPlaces}$`, isCorrect: false, reason: `$f - h$ is the difference between the numbers of offices and homes, not the total number of places cleaned, which is $f + h$` },
+      { text: `$f-h \\ge ${maxPlaces}$`, isCorrect: false, reason: `$f - h$ is not the total number of places cleaned, and this inequality says at least ${maxPlaces} instead of at most ${maxPlaces}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -41,7 +41,7 @@ export const generator_293 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The service cleans $f$ offices and $h$ homes, at most ${maxPlaces} places total: $f+h \\leq ${maxPlaces}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The total number of places cleaned in a day is the number of offices plus the number of homes, $f + h$. The service can clean at most ${maxPlaces} places, so this total must be less than or equal to ${maxPlaces}: $f + h \\leq ${maxPlaces}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A cleaning service that cleans both offices and homes can clean at most ${maxPlaces} places per day. Which inequality represents this situation, where $f$ is the number of offices and $h$ is the number of homes?`,
