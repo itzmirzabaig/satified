@@ -45,16 +45,13 @@ export const generator_349 = {
 
     // STEP 2: Determine correct answer and distractors.
     const correctAnswer = radius.toString();
-    const lowCoord = Math.min(h, k);
-    const highCoord = Math.max(h, k);
-
     // STEP 3: Create options with tracking. Each distractor is a distinct value
     // by construction (guarded above), so no option can collide.
     const optionsData = [
-      { text: lowCoord.toString(), isCorrect: false, reason: "confuses a center coordinate with the radius" },
-      { text: highCoord.toString(), isCorrect: false, reason: "confuses a center coordinate with the radius" },
-      { text: correctAnswer, isCorrect: true },
-      { text: rSquared.toString(), isCorrect: false, reason: "reports $r^2$ instead of taking its square root" }
+      { text: h.toString(), isCorrect: false, reason: `${h} is the $x$-coordinate of the center of the circle, $(${h}, ${k})$, not the radius` },
+      { text: k.toString(), isCorrect: false, reason: `${k} is the $y$-coordinate of the center of the circle, $(${h}, ${k})$, not the radius` },
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: rSquared.toString(), isCorrect: false, reason: `${rSquared} is the square of the radius, $r^2$, not the radius` }
     ];
 
     // STEP 4: Shuffle and assign letters.
@@ -68,11 +65,11 @@ export const generator_349 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // STEP 5: Build explanation with dynamic letters computed from live values.
-    const explanation = `Choice ${correctLetter} is correct. The standard equation of a circle with center $(h, k)$ and radius $r$ is $(x-h)^2+(y-k)^2=r^2$. Comparing $(x-${h})^2+(y-${k})^2=${rSquared}$ to standard form, the value ${rSquared} corresponds to $r^2$, so $r=\\sqrt{${rSquared}}=${radius}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The standard equation of a circle with center $(h, k)$ and radius $r$ is $(x-h)^2+(y-k)^2=r^2$. Comparing $(x-${h})^2+(y-${k})^2=${rSquared}$ to standard form, the value ${rSquared} corresponds to $r^2$, so $r=\\sqrt{${rSquared}}=${radius}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     // STEP 6: Return question data.
     return {
-      questionText: `$(x-${h})^2+(y-${k})^2=${rSquared}$ The graph of the given equation in the $xy$-plane is a circle. What is the length of the radius of this circle?`,
+      questionText: `$$(x-${h})^2+(y-${k})^2=${rSquared}$$ The graph of the given equation in the $xy$-plane is a circle. What is the length of the radius of this circle?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
