@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [sides 3-8, ensuring valid triangle]
 * - Difficulty factors: [Triangle perimeter, solving for third side]
-* - Distractor patterns: [subtracts given sides, adds given sides, adds all numbers]
+* - Distractor patterns: [subtracts only one given side, adds given sides]
 * - Constraints: [Third side = perimeter - side1 - side2, must satisfy triangle inequality]
 * - Question type: [No figure, Multiple Choice Text]
 * - Figure generation: [None]
@@ -23,16 +23,22 @@ export const generator_339 = {
   },
 
   generate: (): QuestionData => {
-    const side1 = getRandomInt(3, 6);
-    const side2 = getRandomInt(4, 8);
-    const side3 = getRandomInt(Math.abs(side1 - side2) + 1, side1 + side2 - 1);
+    // The old wrong choices included side2 - side1, which was 0 or negative
+    // when side1 >= side2, and the sum of every number in the problem. Each
+    // wrong choice is now a real slip. Redraw until the four values differ.
+    let side1 = 3, side2 = 4, side3 = 5;
+    do {
+      side1 = getRandomInt(3, 6);
+      side2 = getRandomInt(4, 8);
+      side3 = getRandomInt(Math.abs(side1 - side2) + 1, side1 + side2 - 1);
+    } while (new Set([side3, side2 + side3, side1 + side3, side1 + side2]).size < 4);
     const perimeter = side1 + side2 + side3;
 
     const optionsData = [
-      { text: (side2 - side1).toString(), isCorrect: false, reason: "subtracts the two given sides" },
-      { text: side3.toString(), isCorrect: true },
-      { text: (side1 + side2).toString(), isCorrect: false, reason: "adds the two given sides" },
-      { text: (side1 + side2 + perimeter).toString(), isCorrect: false, reason: "adds all numbers in the problem" }
+      { text: (perimeter - side1).toString(), isCorrect: false, reason: `it results from subtracting only ${side1} from the perimeter; both known sides, ${side1} and ${side2}, must be subtracted` },
+      { text: side3.toString(), isCorrect: true, reason: '' },
+      { text: (side1 + side2).toString(), isCorrect: false, reason: `it is the sum of the two given sides, $${side1} + ${side2}$, not the length of the third side` },
+      { text: (perimeter - side2).toString(), isCorrect: false, reason: `it results from subtracting only ${side2} from the perimeter; both known sides, ${side1} and ${side2}, must be subtracted` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -48,7 +54,7 @@ export const generator_339 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: side3.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The third side is found by subtracting the two known sides from the perimeter: $${perimeter} - ${side1} - ${side2} = ${side3}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The perimeter of a triangle is the sum of the lengths of its three sides. If $x$ is the length of the third side, then $${side1} + ${side2} + x = ${perimeter}$, so $x = ${perimeter} - ${side1} - ${side2} = ${side3}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
