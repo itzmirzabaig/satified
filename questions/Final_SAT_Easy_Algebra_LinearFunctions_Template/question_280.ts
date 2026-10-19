@@ -110,10 +110,10 @@ export const generator_280 = {
     const svgCode = buildSvg();
 
     const optionsData = [
-      { text: Math.floor(pressure / 2).toString(), isCorrect: false, reason: "is approximately half the correct pressure" },
-      { text: pressure.toString(), isCorrect: true },
-      { text: (temp / 2).toString(), isCorrect: false, reason: "is approximately half the temperature" },
-      { text: temp.toString(), isCorrect: false, reason: "confuses temperature with pressure" }
+      { text: '0', isCorrect: false, reason: `0 is the estimated pressure when the temperature is 0 kelvins, at the origin, not when the temperature is ${temp} kelvins` },
+      { text: pressure.toString(), isCorrect: true, reason: '' },
+      { text: String(rate), isCorrect: false, reason: `${rate} is the slope of the line, the increase in pressure, in psi, for each increase of 1 kelvin, not the pressure at ${temp} kelvins` },
+      { text: temp.toString(), isCorrect: false, reason: `${temp} is the temperature, the $x$-coordinate of the point, not the pressure` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -129,7 +129,7 @@ export const generator_280 = {
       figureCode: svgCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: pressure.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. From the graph, when the temperature is ${temp} kelvins, the point on the line has a y-coordinate of ${pressure}. Therefore, the estimated pressure is ${pressure} psi. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. From the graph, when the temperature is ${temp} kelvins, the point on the line has a $y$-coordinate of ${pressure}. Therefore, the estimated pressure is ${pressure} psi. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
