@@ -73,9 +73,20 @@ export const generator_297 = {
       correctIdx = 2; // I and II only
     }
 
+    // Each wrong choice either includes a point that fails the inequality or
+    // leaves out one that satisfies it. The wrong choices used to have no
+    // explanations.
+    const ptTex = (i: number) => `$(${points[i].x}, ${points[i].y})$`;
+    const wrongReason = (set: number[]) => {
+      const badIn = set.find(i => !checks[i]);
+      if (badIn !== undefined) return `point ${roman[badIn]}, ${ptTex(badIn)}, does not satisfy the inequality`;
+      const missing = checks.findIndex((ok, i) => ok && !set.includes(i));
+      return `it leaves out point ${roman[missing]}, ${ptTex(missing)}, which also satisfies the inequality`;
+    };
     const optionsData = optionSets.map((set, i) => ({
       text: subsetLabel(set),
-      isCorrect: i === correctIdx
+      isCorrect: i === correctIdx,
+      reason: i === correctIdx ? '' : wrongReason(set)
     }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -88,10 +99,13 @@ export const generator_297 = {
     const vals = points.map(p => a * p.x + b * p.y);
     const bSign = b >= 0 ? "+" : "-";
 
-    const explanation = `Choice ${correctLetter} is correct. Testing each point in $${a}x ${bSign} ${Math.abs(b)}y < ${c}$: I. (${points[0].x}, ${points[0].y}): ${vals[0]} < ${c} is ${vals[0] < c}. II. (${points[1].x}, ${points[1].y}): ${vals[1]} < ${c} is ${vals[1] < c}. III. (${points[2].x}, ${points[2].y}): ${vals[2]} < ${c} is ${vals[2] < c}. Therefore, ${correctOption.text}.`;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+    const test = (i: number) => `Substituting ${points[i].x} for $x$ and ${points[i].y} for $y$ gives $${a}(${points[i].x}) ${bSign} ${Math.abs(b)}(${points[i].y}) = ${vals[i]}$, and $${vals[i]} ${checks[i] ? '<' : '\\ge'} ${c}$, so point ${roman[i]} ${checks[i] ? 'satisfies' : 'does not satisfy'} the inequality.`;
+
+    const explanation = `Choice ${correctLetter} is correct. ${test(0)} ${test(1)} ${test(2)} Therefore, the answer is ${correctOption.text}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `Which of the following ordered pairs $(x, y)$ satisfies the inequality $${a}x ${bSign} ${Math.abs(b)}y < ${c}$ ?\nI. $(${points[0].x}, ${points[0].y})$\nII. $(${points[1].x}, ${points[1].y})$\nIII. $(${points[2].x}, ${points[2].y})$`,
+      questionText: `Which of the following ordered pairs $(x, y)$ satisfy the inequality $${a}x ${bSign} ${Math.abs(b)}y < ${c}$?\nI. $(${points[0].x}, ${points[0].y})$\nII. $(${points[1].x}, ${points[1].y})$\nIII. $(${points[2].x}, ${points[2].y})$`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
