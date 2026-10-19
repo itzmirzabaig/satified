@@ -30,10 +30,10 @@ export const generator_352 = {
     const correctAnswer = angleC.toString();
 
     const optionsData = [
-      { text: `${distractorA}^{\\circ}`, isCorrect: false, reason: "is the measure of angle A, not angle F" },
-      { text: `${correctAnswer}^{\\circ}`, isCorrect: true },
-      { text: `${distractorC}^{\\circ}`, isCorrect: false, reason: "is the measure of the right angle, not angle F" },
-      { text: `${distractorD}^{\\circ}`, isCorrect: false, reason: "is the sum of angles A and the right angle, not angle F" }
+      { text: `${distractorA}^{\\circ}`, isCorrect: false, reason: `$${angleA}^{\\circ}$ is the measure of angle $A$, which corresponds to angle $D$, not angle $F$` },
+      { text: `${correctAnswer}^{\\circ}`, isCorrect: true, reason: '' },
+      { text: `${distractorC}^{\\circ}`, isCorrect: false, reason: `$90^{\\circ}$ is the measure of right angles $B$ and $E$, not angle $F$` },
+      { text: `${distractorD}^{\\circ}`, isCorrect: false, reason: `$${distractorD}^{\\circ}$ is the sum of the measures of angle $A$ and a right angle, $${angleA}^{\\circ} + 90^{\\circ}$, not the measure of angle $F$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -49,7 +49,7 @@ export const generator_352 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${correctAnswer}^{\\circ}`,
-      explanation: `Choice ${correctOption.letter} is correct. In right triangle $ABC$, $\\angle C = 180^{\\circ} - 90^{\\circ} - ${angleA}^{\\circ} = ${correctAnswer}^{\\circ}$. Since triangles $ABC$ and $DEF$ are congruent with $C$ corresponding to $F$, we have $\\angle F = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The sum of the measures of the angles of a triangle is $180^{\\circ}$. In right triangle $ABC$, the measure of angle $C$ is $180^{\\circ} - 90^{\\circ} - ${angleA}^{\\circ} = ${correctAnswer}^{\\circ}$. Since triangles $ABC$ and $DEF$ are congruent with $C$ corresponding to $F$, the measure of angle $F$ is also $${correctAnswer}^{\\circ}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
