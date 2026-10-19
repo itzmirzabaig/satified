@@ -5,9 +5,9 @@ import type { QuestionData } from '../../study/types';
 * Question 363
 *
 * ORIGINAL ANALYSIS:
-* - Number ranges: [exteriorAngle: 100-130]
+* - Number ranges: [exteriorAngle: 100-130, not 120]
 * - Difficulty factors: [Isosceles triangle, exterior angle, linear pair]
-* - Distractor patterns: [Select exterior angle, find base angle, halves base angle]
+* - Distractor patterns: [Exterior angle, one base angle, sum of base angles]
 * - Constraints: [Base angles equal, x = 180 - 2*baseAngle]
 * - Question type: [Figure→Multiple Choice Text]
 *
@@ -27,64 +27,55 @@ export const generator_363 = {
   },
 
   generate: (): QuestionData => {
-    const exteriorAngle = getRandomInt(100, 130);
+    // 120 is skipped: it makes the apex angle equal a base angle (60) and the
+    // exterior angle equal the sum of the base angles (120).
+    let exteriorAngle = 120;
+    while (exteriorAngle === 120) exteriorAngle = getRandomInt(100, 130);
     const baseAngle = 180 - exteriorAngle;   // interior base angle at A and C (50-80)
     const vertexAngle = 180 - 2 * baseAngle; // apex angle x (20-80)
     const correctAnswer = vertexAngle.toString();
 
     // --- Figure: isosceles triangle ABC with base AC extended to D (plain SVG) ---
-    const width = 450;
-    const height = 250;
-    // Fixed schematic coordinates (apex B on top, base A-C, extended to D).
-    const Ax = 90, Ay = 190;
-    const Cx = 300, Cy = 190;
-    const Bx = 195, By = 55;   // apex, horizontally centered over AC
-    const Dx = 400, Dy = 190;  // extension of AC beyond C
+    // The triangle used to be a fixed shape (base angles near 51 degrees
+    // whatever the draw). It is now built in units with AC = 2 and base
+    // angles of baseAngle, then scaled to fit the box.
+    const width = 450, height = 250, PAD = 28;
+    const rad = (d: number) => (d * Math.PI) / 180;
+    const apexH = Math.tan(rad(baseAngle));
+    const U = { A: [0, 0], C: [2, 0], B: [1, apexH], D: [3.1, 0] };
+    const sc = Math.min((width - 2 * PAD) / 3.1, (height - 2 * PAD) / apexH);
+    const ox = (width - 3.1 * sc) / 2, oy = height - PAD;
+    const r1 = (v: number) => Math.round(v * 10) / 10;
+    const P = (p: number[]) => [r1(ox + p[0] * sc), r1(oy - p[1] * sc)];
+    const [Ax, Ay] = P(U.A), [Cx, Cy] = P(U.C), [Bx, By] = P(U.B), [Dx, Dy] = P(U.D);
+    const at = (x: number, y: number, deg: number, d: number) => [r1(x + d * Math.cos(rad(deg))), r1(y - d * Math.sin(rad(deg)))];
+    // Apex label goes straight down, farther when the apex angle is narrow.
+    const [xlx, xly] = at(Bx, By, 270, Math.max(30, 14 / Math.sin(rad(vertexAngle / 2))));
+    const [elx, ely] = at(Cx, Cy, exteriorAngle / 2, 30);                // bisector of angle BCD
     const figureCode = `
       <div style="text-align:center;">
-        <svg viewBox="0 0 ${width} ${height}" style="width:100%; max-width:${width}px; height:auto; font-family:sans-serif; user-select:none;">
-          <!-- Triangle sides -->
+        <svg viewBox="0 0 ${width} ${height}" style="width:100%; max-width:${width}px; height:auto; font-family:serif; user-select:none;">
           <line x1="${Ax}" y1="${Ay}" x2="${Bx}" y2="${By}" stroke="currentColor" stroke-width="2"/>
           <line x1="${Cx}" y1="${Cy}" x2="${Bx}" y2="${By}" stroke="currentColor" stroke-width="2"/>
-          <!-- Base AC extended to D -->
           <line x1="${Ax}" y1="${Ay}" x2="${Dx}" y2="${Dy}" stroke="currentColor" stroke-width="2"/>
-          <!-- Vertex labels -->
-          <text x="${Ax - 18}" y="${Ay + 6}" font-size="16" font-style="italic" fill="currentColor">A</text>
-          <text x="${Cx - 4}" y="${Cy + 20}" font-size="16" font-style="italic" fill="currentColor">C</text>
-          <text x="${Bx - 6}" y="${By - 8}" font-size="16" font-style="italic" fill="currentColor">B</text>
-          <text x="${Dx + 6}" y="${Dy + 6}" font-size="16" font-style="italic" fill="currentColor">D</text>
-          <!-- Exterior angle BCD label (between CB and CD, above the extension at C) -->
-          <text x="${Cx + 16}" y="${Cy - 14}" font-size="15" fill="currentColor">${exteriorAngle}&#176;</text>
-          <!-- Apex angle x label just below B -->
-          <text x="${Bx - 4}" y="${By + 26}" font-size="15" font-style="italic" fill="currentColor">x</text>
+          <text x="${Ax - 14}" y="${Ay + 6}" text-anchor="middle" font-size="16" font-style="italic" fill="currentColor">A</text>
+          <text x="${Cx}" y="${Cy + 20}" text-anchor="middle" font-size="16" font-style="italic" fill="currentColor">C</text>
+          <text x="${Bx}" y="${By - 8}" text-anchor="middle" font-size="16" font-style="italic" fill="currentColor">B</text>
+          <text x="${Dx + 14}" y="${Dy + 6}" text-anchor="middle" font-size="16" font-style="italic" fill="currentColor">D</text>
+          <text x="${elx}" y="${ely + 5}" text-anchor="middle" font-size="15" fill="currentColor">${exteriorAngle}&#176;</text>
+          <text x="${xlx}" y="${xly + 5}" text-anchor="middle" font-size="15" font-style="italic" fill="currentColor">x&#176;</text>
         </svg>
       </div>
     `;
 
-    // Candidate distractors with reasons; dedupe against the correct answer and
-    // each other so no collision (e.g. exteriorAngle == 120 gives vertex == base,
-    // exteriorAngle == 108 gives vertex == round(base/2)) can occur.
-    const candidates: { val: number; reason: string }[] = [
-      { val: exteriorAngle, reason: "selects the exterior angle instead of the interior angle x" },
-      { val: baseAngle, reason: "finds a base angle instead of the vertex angle x" },
-      { val: Math.round(baseAngle / 2), reason: "incorrectly halves a base angle" },
-      { val: vertexAngle + 10, reason: "results from an arithmetic error" },
-      { val: vertexAngle - 5, reason: "results from an arithmetic error" }
-    ];
-
-    const usedVals = new Set<number>([vertexAngle]);
-    const distractors: { text: string; isCorrect: boolean; reason: string }[] = [];
-    for (const c of candidates) {
-      if (distractors.length === 3) break;
-      if (c.val > 0 && !usedVals.has(c.val)) {
-        usedVals.add(c.val);
-        distractors.push({ text: c.val.toString(), isCorrect: false, reason: c.reason });
-      }
-    }
-
+    // Each wrong choice is a real slip; the old ones included half a base
+    // angle (rounded) and the answer plus 10 or minus 5. With 120 skipped,
+    // x, the exterior angle, a base angle, and twice a base angle never collide.
     const optionsData = [
       { text: correctAnswer, isCorrect: true, reason: "" },
-      ...distractors
+      { text: exteriorAngle.toString(), isCorrect: false, reason: `${exteriorAngle} is the measure of exterior angle $BCD$, not of angle $ABC$` },
+      { text: baseAngle.toString(), isCorrect: false, reason: `${baseAngle} is the measure of each base angle, $BAC$ and $BCA$, not of angle $ABC$` },
+      { text: (2 * baseAngle).toString(), isCorrect: false, reason: `${2 * baseAngle} is the sum of the measures of the two base angles, $2(${baseAngle})$; this sum must be subtracted from 180` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -100,7 +91,7 @@ export const generator_363 = {
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. Angles $BCA$ and $BCD$ form a linear pair, so $\\angle BCA = 180^{\\circ} - ${exteriorAngle}^{\\circ} = ${baseAngle}^{\\circ}$. Because $\\angle BAC = \\angle BCA$, we have $\\angle BAC = ${baseAngle}^{\\circ}$. The three interior angles of $\\triangle ABC$ sum to a straight angle, so $x = 180^{\\circ} - ${baseAngle}^{\\circ} - ${baseAngle}^{\\circ} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Angles $BCA$ and $BCD$ form a linear pair, so the measure of angle $BCA$ is $180^{\\circ} - ${exteriorAngle}^{\\circ} = ${baseAngle}^{\\circ}$. Since the measure of angle $BAC$ is equal to the measure of angle $BCA$, angle $BAC$ also measures ${baseAngle}°. The sum of the measures of the angles of a triangle is $180^{\\circ}$, so $x = 180 - ${baseAngle} - ${baseAngle} = ${correctAnswer}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
