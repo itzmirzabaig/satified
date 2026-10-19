@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [width 7-12, length 50-80]
 * - Difficulty factors: [Finding width from area, division]
-* - Distractor patterns: [length, area/2, area-length]
+* - Distractor patterns: [length, area × length, area - length]
 * - Constraints: [Width = Area/Length, must divide evenly]
 * - Question type: [No figure, Multiple Choice Text]
 * - Figure generation: [None]
@@ -27,11 +27,14 @@ export const generator_347 = {
     const length = getRandomInt(50, 80);
     const area = length * width;
 
+    // Each wrong choice is a real slip; the old area / 2 choice was not one,
+    // and it ended in .5 whenever the area was odd.
+    const fmt = (n: number) => n.toLocaleString('en-US');
     const optionsData = [
-      { text: width.toString(), isCorrect: true },
-      { text: length.toString(), isCorrect: false, reason: "states the length instead of width" },
-      { text: (area / 2).toString(), isCorrect: false, reason: "divides area by 2" },
-      { text: (area - length).toString(), isCorrect: false, reason: "subtracts length from area" }
+      { text: width.toString(), isCorrect: true, reason: '' },
+      { text: length.toString(), isCorrect: false, reason: `${length} inches is the length of the rectangle, which is given, not its width` },
+      { text: fmt(area * length), isCorrect: false, reason: `it results from multiplying the area by the length, $${area}(${length})$, instead of dividing the area by the length` },
+      { text: (area - length).toString(), isCorrect: false, reason: `it results from subtracting the length from the area, $${area} - ${length}$, instead of dividing the area by the length` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,7 +50,7 @@ export const generator_347 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: width.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The width is $${area} \\div ${length} = ${width}$ inches. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The area of a rectangle is its length times its width. If $w$ is the width, in inches, then $${length}w = ${area}$. Dividing both sides by ${length} gives $w = ${width}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
