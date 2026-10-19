@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [slope: 8-12, intercept: 5-10, x: 6-10]
  * - Difficulty factors: [Simple evaluation]
- * - Distractor patterns: [zero, input value, slope]
+ * - Distractor patterns: [added instead of multiplied, forgot constant, multiplied both terms]
  * - Constraints: [None]
  * - Question type: [Function evaluation→Multiple Choice Text]
  * - Figure generation: null
@@ -27,20 +27,19 @@ export const generator_265 = {
 
     const intercept = getRandomInt(5, 10);
 
-    // xValue and slope both act as distractors, so keep them distinct to avoid
-    // duplicate options (their ranges overlap on 8-10). Bounded retry.
-    let xValue = getRandomInt(6, 10);
-    for (let tries = 0; xValue === slope && tries < 50; tries++) {
-      xValue = getRandomInt(6, 10);
-    }
+    const xValue = getRandomInt(6, 10);
 
     const result = slope * xValue + intercept;
+    const product = slope * xValue;
 
+    // Every wrong choice is a real evaluation slip. The old choices were 0,
+    // the input and the slope. The four values are always distinct:
+    // slope + intercept + x <= 32 < product < result < slope * (x + intercept).
     const optionsData = [
-      { text: "0", isCorrect: false, reason: "is not the result of the function evaluation" },
-      { text: xValue.toString(), isCorrect: false, reason: "is just the input value" },
-      { text: slope.toString(), isCorrect: false, reason: "is the slope, not the result" },
-      { text: result.toString(), isCorrect: true }
+      { text: (slope + intercept + xValue).toString(), isCorrect: false, reason: `it results from adding ${xValue} to ${slope} instead of multiplying ${slope} by ${xValue}` },
+      { text: product.toString(), isCorrect: false, reason: `it is the value of $${slope}(${xValue})$; ${intercept} must still be added` },
+      { text: (slope * (xValue + intercept)).toString(), isCorrect: false, reason: `it results from multiplying both ${xValue} and ${intercept} by ${slope}, which gives $${slope}(${xValue} + ${intercept})$; only ${xValue} is multiplied by ${slope}` },
+      { text: result.toString(), isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -57,7 +56,7 @@ export const generator_265 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$: $g(${xValue}) = ${slope}(${xValue}) + ${intercept} = ${slope * xValue} + ${intercept} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$ in the given function yields $g(${xValue}) = ${slope}(${xValue}) + ${intercept}$, or $g(${xValue}) = ${product} + ${intercept} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
