@@ -23,17 +23,22 @@ export const generator_306 = {
   },
 
   generate: (): QuestionData => {
-    const minVolume = (getRandomInt(10, 20) + getRandomInt(0, 9) / 10).toFixed(1);
+    const minVolume = (getRandomInt(10, 20) + getRandomInt(1, 9) / 10).toFixed(1); // never "12.0"
     const maxVolume = (parseFloat(minVolume) + getRandomInt(2, 5)).toFixed(1);
     const density = getRandomInt(100, 200);
-    const minWeight = (density * parseFloat(minVolume)).toFixed(0);
-    const maxWeight = (density * parseFloat(maxVolume)).toFixed(0);
+    // The weights used to be rounded to whole pounds (169 x 15.3 = 2,585.7
+    // was shown as 2586). Compute in tenths so the products are exact, and
+    // add thousands commas.
+    const fmtTenths = (tenths: number) => (tenths / 10).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 1 });
+    const minWeight = fmtTenths(density * Math.round(parseFloat(minVolume) * 10));
+    const maxWeight = fmtTenths(density * Math.round(parseFloat(maxVolume) * 10));
 
+    // The wrong choices used to have no explanations.
     const optionsData = [
-      { text: `$${density} - ${maxVolume} < x < ${density} - ${minVolume}$`, isCorrect: false },
-      { text: `$${density} + ${minVolume} < x < ${density} + ${maxVolume}$`, isCorrect: false },
-      { text: `$${density}(${minVolume}) < x < ${density}(${maxVolume})$`, isCorrect: true },
-      { text: `$\\frac{${density}}{${maxVolume}} < x < \\frac{${density}}{${minVolume}}$`, isCorrect: false }
+      { text: `$${density} - ${maxVolume} < x < ${density} - ${minVolume}$`, isCorrect: false, reason: `it subtracts the volumes from ${density}; the weight is ${density} pounds for each cubic foot, so the volume must be multiplied by ${density}` },
+      { text: `$${density} + ${minVolume} < x < ${density} + ${maxVolume}$`, isCorrect: false, reason: `it adds the volumes to ${density}; the weight is ${density} pounds for each cubic foot, so the volume must be multiplied by ${density}` },
+      { text: `$${density}(${minVolume}) < x < ${density}(${maxVolume})$`, isCorrect: true, reason: '' },
+      { text: `$\\frac{${density}}{${maxVolume}} < x < \\frac{${density}}{${minVolume}}$`, isCorrect: false, reason: `it divides ${density} by the volumes; the weight is the number of cubic feet times ${density} pounds per cubic foot` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -43,8 +48,9 @@ export const generator_306 = {
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Weight = density × volume. With volume between ${minVolume} and ${maxVolume} and density ${density} lb/ft³, the weight $x$ satisfies $${density}(${minVolume}) < x < ${density}(${maxVolume})$, or $${minWeight} < x < ${maxWeight}$.`;
+    const explanation = `Choice ${correctLetter} is correct. The slab weighs ${density} pounds for each cubic foot of volume, so a slab with a volume of $v$ cubic feet weighs $${density}v$ pounds. Since $${minVolume} < v < ${maxVolume}$, multiplying each part of this inequality by ${density} gives $${density}(${minVolume}) < x < ${density}(${maxVolume})$, or $${minWeight} < x < ${maxWeight}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A geologist estimates that the volume of a slab of granite is greater than ${minVolume} cubic feet but less than ${maxVolume} cubic feet. The geologist also estimates that the slab of granite weighs ${density} pounds per cubic foot of volume. Which inequality represents this situation, where $x$ represents the estimated total weight, in pounds, of the slab of granite?`,
