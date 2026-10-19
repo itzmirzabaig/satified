@@ -22,9 +22,14 @@ export const generator_252 = {
   },
 
   generate: (): QuestionData => {
-    const numerator = getRandomInt(3, 9);
-
-    const denominator = getRandomInt(5, 11);
+    // The slope is a fraction in lowest terms other than 1; drawing the two
+    // parts independently used to give slopes such as 6/9 or 5/5.
+    const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+    let numerator = 3, denominator = 5;
+    do {
+      numerator = getRandomInt(3, 9);
+      denominator = getRandomInt(5, 11);
+    } while (gcd(numerator, denominator) !== 1);
 
     const intercept = getRandomInt(40, 70);
 
