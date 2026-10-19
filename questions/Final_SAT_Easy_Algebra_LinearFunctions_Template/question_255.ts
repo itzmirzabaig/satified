@@ -27,7 +27,8 @@ export const generator_255 = {
 
     const growthRate = getRandomInt(8, 12);
 
-    const years = 30;
+    // The number of years used to be fixed at 30.
+    const years = [20, 25, 30][getRandomInt(0, 2)];
 
     const finalPop = initialPop + growthRate * years;
 
@@ -36,10 +37,10 @@ export const generator_255 = {
     const correctInterpretation = `The snow leopard population in this area is predicted to be ${finalPop} in the year ${correctYear}.`;
 
     const optionsData = [
-      { text: `The snow leopard population in this area is predicted to be ${years} in the year ${correctYear}.`, isCorrect: false, reason: "reverses the interpretation of input and output" },
-      { text: `The snow leopard population in this area is predicted to be ${years} in the year ${correctYear + 10}.`, isCorrect: false, reason: "reverses the interpretation and uses wrong year" },
-      { text: correctInterpretation, isCorrect: true },
-      { text: `The snow leopard population in this area is predicted to be ${finalPop} in the year ${correctYear + 10}.`, isCorrect: false, reason: "uses the wrong year" }
+      { text: `The snow leopard population in this area is predicted to be ${years} in the year ${correctYear}.`, isCorrect: false, reason: `${years} is the number of years after 1990, the value of $t$, not the population; the predicted population is the output, ${finalPop}` },
+      { text: `The snow leopard population in this area is predicted to be ${years} in the year ${correctYear + 10}.`, isCorrect: false, reason: `${years} is the number of years after 1990, not the population, and ${years} years after 1990 is the year ${correctYear}, not ${correctYear + 10}` },
+      { text: correctInterpretation, isCorrect: true, reason: '' },
+      { text: `The snow leopard population in this area is predicted to be ${finalPop} in the year ${correctYear + 10}.`, isCorrect: false, reason: `${years} years after 1990 is the year ${correctYear}, not ${correctYear + 10}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -56,7 +57,7 @@ export const generator_255 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctInterpretation,
-      explanation: `Choice ${correctOption.letter} is correct. $P(${years})=${finalPop}$ means that ${years} years after 1990 (in year ${correctYear}), the population is predicted to be ${finalPop}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In the equation $P(${years}) = ${finalPop}$, the input ${years} is the value of $t$, the number of years after 1990, and the output ${finalPop} is the predicted population. Since ${years} years after 1990 is the year ${correctYear}, the equation means that the snow leopard population in this area is predicted to be ${finalPop} in the year ${correctYear}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
