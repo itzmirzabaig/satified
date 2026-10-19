@@ -30,10 +30,10 @@ export const generator_269 = {
     const optionD = `The estimated height of the tree was ${initialHeight} feet when it was first measured.`;
 
     const optionsData = [
-      { text: `The tree will be measured each year for ${initialHeight} years.`, isCorrect: false, reason: "confuses the intercept with a time period" },
-      { text: `The tree is estimated to grow to a maximum height of ${initialHeight} feet.`, isCorrect: false, reason: "linear functions do not have maximum values in this context" },
-      { text: `The estimated height of the tree increased by ${initialHeight} feet each year.`, isCorrect: false, reason: "describes the slope, not the y-intercept" },
-      { text: optionD, isCorrect: true }
+      { text: `The tree will be measured each year for ${initialHeight} years.`, isCorrect: false, reason: `${initialHeight} is a height in feet, not a number of years; the function does not say how long the tree will be measured` },
+      { text: `The tree is estimated to grow to a maximum height of ${initialHeight} feet.`, isCorrect: false, reason: `the estimated height increases by ${growthRate} feet each year, so ${initialHeight} feet is the smallest estimated height, at $x = 0$, not the largest` },
+      { text: `The estimated height of the tree increased by ${initialHeight} feet each year.`, isCorrect: false, reason: `the estimated height increases by ${growthRate} feet each year, the coefficient of $x$, not by ${initialHeight} feet` },
+      { text: optionD, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,7 +50,7 @@ export const generator_269 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: optionD,
-      explanation: `Choice ${correctOption.letter} is correct. In $f(x) = ${growthRate}x + ${initialHeight}$, the value ${initialHeight} is the y-intercept, representing the height when $x=0$ (when first measured). Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The tree was first measured at $x = 0$ years. Substituting 0 for $x$ in the given function yields $f(0) = ${growthRate}(0) + ${initialHeight}$, or $f(0) = ${initialHeight}$. Therefore, ${initialHeight} is the estimated height, in feet, of the tree when it was first measured. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
