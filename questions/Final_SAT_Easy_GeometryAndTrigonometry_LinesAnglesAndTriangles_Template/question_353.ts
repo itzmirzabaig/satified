@@ -5,23 +5,15 @@ import type { QuestionData } from '../../study/types';
 * Question 353
 *
 * ORIGINAL ANALYSIS:
-* - Number ranges: [angle: 25-50]
+* - Number ranges: [angle: 25-50, not 45]
 * - Difficulty factors: [Parallel lines, same-side exterior angles, supplementary angles]
-* - Distractor patterns: [Same angle, complementary assumption, calculation error]
+* - Distractor patterns: [Same angle, complementary assumption, subtracts from 360]
 * - Constraints: [x + givenAngle = 180]
 * - Question type: [Figure→Multiple Choice Text]
 *
 * FIXED:
-* - Old distractors collided at givenAngle = 45: (90 - g) equaled g, and
-*   (90 + g) equaled the correct answer (180 - g), causing DUP_OPTIONS and the
-*   downstream LETTER_MISMATCH. Rebuilt so all four options are distinct for
-*   every draw in [25, 50]:
-*     correct = 180 - g            (in [130, 155])
-*     d1      = g                  (congruent misconception, in [25, 50])
-*     d2      = 90 - g             (complementary misconception, in [40, 65];
-*                                   nudged if it equals d1 at g = 45)
-*     d3      = arithmetic slip on the correct answer, kept >= 100 so it can
-*               never collide with d1/d2, and != correct.
+* - Options are g, 90 - g, 360 - g, and the correct 180 - g. A given angle
+*   of 45 is skipped because 90 - 45 = 45, so the four are always distinct.
 *
 * FIXED (figure — given-angle label sat on the transversal):
 * - The old Mafs figure placed the given-angle label exactly ON the transversal
@@ -54,7 +46,9 @@ export const generator_353 = {
   },
 
   generate: (): QuestionData => {
-    const givenAngle = getRandomInt(25, 50);
+    // 45 is skipped: its complement, 45, would repeat the given angle.
+    let givenAngle = 45;
+    while (givenAngle === 45) givenAngle = getRandomInt(25, 50);
     const xValue = 180 - givenAngle; // correct answer, in [130, 155]
 
     // STEP 3 — figure, derived from givenAngle so the drawing cannot contradict
@@ -125,33 +119,14 @@ export const generator_353 = {
 
     const correctAnswer = xValue.toString();
 
-    // Concept distractors (both always < correct).
-    const dCongruent = givenAngle;          // thinks the angles are congruent
-    let dComplement = 90 - givenAngle;      // wrongly assumes a complementary pair
-    if (dComplement === dCongruent) dComplement += 5; // only at g = 45; stays in range and distinct
-
-    // Arithmetic-slip distractor near the correct answer, guaranteed distinct
-    // from correct and kept >= 100 so it cannot collide with the two concept
-    // distractors (which are <= 65).
-    const used = new Set<number>([xValue, dCongruent, dComplement]);
-    let dSlip = 0;
-    let tries = 0;
-    while (tries++ < 50) {
-      const delta = getRandomInt(1, 9) * (Math.random() < 0.5 ? -1 : 1);
-      const candidate = xValue + delta;
-      if (candidate >= 100 && candidate < 180 && !used.has(candidate)) { dSlip = candidate; break; }
-    }
-    if (dSlip === 0) {
-      let filler = 1;
-      while (used.has(xValue + filler)) filler++;
-      dSlip = xValue + filler;
-    }
-
+    // Each wrong choice is a real slip; the old third choice was the answer
+    // plus or minus a random amount. With g in [25, 50] and not 45, the values
+    // g, 90 - g, 360 - g, and 180 - g never collide.
     const optionsData = [
-      { text: dCongruent.toString(), isCorrect: false, reason: "uses the given angle, assuming the two angles are congruent rather than supplementary" },
-      { text: dComplement.toString(), isCorrect: false, reason: "incorrectly assumes the two angles are complementary" },
-      { text: dSlip.toString(), isCorrect: false, reason: "makes an arithmetic error when subtracting from 180" },
-      { text: correctAnswer, isCorrect: true }
+      { text: givenAngle.toString(), isCorrect: false, reason: `it assumes the two angles are congruent; same-side exterior angles are supplementary, not congruent` },
+      { text: (90 - givenAngle).toString(), isCorrect: false, reason: `it assumes the two angles are complementary, with measures that add to 90 degrees; same-side exterior angles are supplementary` },
+      { text: (360 - givenAngle).toString(), isCorrect: false, reason: `it results from subtracting ${givenAngle} from 360 instead of 180` },
+      { text: correctAnswer, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -167,7 +142,7 @@ export const generator_353 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. When two parallel lines are cut by a transversal, same-side exterior angles are supplementary, so their measures add to 180 degrees. This gives $x + ${givenAngle} = 180$, so $x = 180 - ${givenAngle} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. When two parallel lines are cut by a transversal, same-side exterior angles are supplementary, so their measures add to 180 degrees. This gives $x + ${givenAngle} = 180$, so $x = 180 - ${givenAngle} = ${correctAnswer}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
