@@ -33,7 +33,7 @@ export const generator_327 = {
       figureCode: null,
       options: [],
       correctAnswer: volume.toString(),
-      explanation: `The volume of a right rectangular prism is calculated by multiplying length × width × height. Therefore, the volume is $${length} \\times ${width} \\times ${height} = ${volume}$ cubic meters.`
+      explanation: `The correct answer is ${volume.toLocaleString('en-US')}. The volume of a right rectangular prism is its length times its width times its height. Therefore, the volume of this prism is $${length}(${width})(${height}) = ${volume.toLocaleString('en-US')}$ cubic meters.`
     };
   }
 };
