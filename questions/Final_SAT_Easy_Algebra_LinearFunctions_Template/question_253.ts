@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [intercept: 150-250, x: 40-60]
  * - Difficulty factors: [Simple evaluation]
- * - Distractor patterns: [intercept value, multiplied values, concatenated digits]
+ * - Distractor patterns: [constant only, multiplied, subtracted]
  * - Constraints: [None]
  * - Question type: [Function evaluation→Multiple Choice Text]
  * - Figure generation: null
@@ -29,11 +29,16 @@ export const generator_253 = {
 
     const result = xValue + intercept;
 
+    const fmt = (n: number) => n.toLocaleString('en-US');
+
+    // The old fourth choice glued the digits together (55 and 206 gave 55206).
+    // It is now the result of subtracting x from the constant. All four values
+    // differ: 206 - 55 < 206 < 261 < 55 * 206.
     const optionsData = [
-      { text: intercept.toString(), isCorrect: false, reason: "is the constant term, not the result" },
-      { text: result.toString(), isCorrect: true },
-      { text: (xValue * intercept).toString(), isCorrect: false, reason: "multiplies instead of adding" },
-      { text: (parseInt(xValue.toString() + intercept.toString())).toString(), isCorrect: false, reason: "concatenates digits instead of adding" }
+      { text: fmt(intercept), isCorrect: false, reason: `${intercept} is the value of $h(0)$; it leaves out the ${xValue} that is substituted for $x$` },
+      { text: fmt(result), isCorrect: true, reason: '' },
+      { text: fmt(xValue * intercept), isCorrect: false, reason: `it results from multiplying ${xValue} by ${intercept} instead of adding them` },
+      { text: fmt(intercept - xValue), isCorrect: false, reason: `it results from subtracting ${xValue} from ${intercept} instead of adding them` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,7 +55,7 @@ export const generator_253 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$: $h(${xValue}) = ${xValue} + ${intercept} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$ in the given function yields $h(${xValue}) = ${xValue} + ${intercept}$, or $h(${xValue}) = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
