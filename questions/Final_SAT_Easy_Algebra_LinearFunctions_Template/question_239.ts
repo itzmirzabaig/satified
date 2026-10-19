@@ -35,7 +35,7 @@ export const generator_239 = {
       figureCode: null,
       options: [],
       correctAnswer: result.toString(),
-      explanation: `Substituting ${xValue} for $x$ in the equation: $f(${xValue}) = ${slope}(${xValue}) + ${intercept} = ${slope * xValue} + ${intercept} = ${result}$.`
+      explanation: `The correct answer is ${result}. Substituting ${xValue} for $x$ in the given equation yields $f(${xValue}) = ${slope}(${xValue}) + ${intercept}$, or $f(${xValue}) = ${slope * xValue} + ${intercept} = ${result}$. Therefore, the value of $f(x)$ when $x = ${xValue}$ is ${result}.`
     };
   }
 };
