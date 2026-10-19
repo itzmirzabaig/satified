@@ -121,10 +121,10 @@ export const generator_257 = {
       grid + axes + ticks + lineSvg + dot + `</svg></div>`;
 
     const optionsData = [
-      { text: "0", isCorrect: false, reason: "is the value at the origin" },
-      { text: `$\\frac{${yValue}}{${xValue}}$`, isCorrect: false, reason: "represents the rate, not the volume" },
+      { text: "0", isCorrect: false, reason: `0 is the volume when the temperature is 0 kelvins, at the origin, not when the temperature is ${xValue} kelvins` },
+      { text: `$\\frac{${yValue}}{${xValue}}$`, isCorrect: false, reason: `it is the volume divided by the temperature at this point, which is the slope of the line, not the volume` },
       { text: yValue.toString(), isCorrect: true },
-      { text: `$\\frac{${xValue}}{${yValue}}$`, isCorrect: false, reason: "is the reciprocal of the rate" }
+      { text: `$\\frac{${xValue}}{${yValue}}$`, isCorrect: false, reason: `it is the temperature divided by the volume at this point, which is the reciprocal of the slope of the line, not the volume` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -140,7 +140,7 @@ export const generator_257 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: yValue.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. From the graph, when the temperature is ${xValue} kelvins, the point on the line has a y-coordinate of ${yValue}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. From the graph, when the temperature is ${xValue} kelvins, the point on the line has a $y$-coordinate of ${yValue}. Therefore, the estimated volume is ${yValue} liters. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
