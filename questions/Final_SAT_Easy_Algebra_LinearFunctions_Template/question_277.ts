@@ -8,7 +8,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [slope: 1-4, xInt: 8-20]
  * - Difficulty factors: [Reading x-intercept from table]
- * - Distractor patterns: [origin, reciprocal slope, positive version of negative intercept]
+ * - Distractor patterns: [reversed coordinates, y-intercept, opposite sign]
  * - Constraints: [Ensure negative x-intercept]
  * - Question type: [Table reading→Multiple Choice Text]
  * - Figure generation: [HTML Table]
@@ -34,18 +34,18 @@ export const generator_277 = {
       points.push({ x, y });
     }
 
-    // Added border styles to table, th, and td - NO background colors
-    const tableCode = `<table style="border-collapse: collapse; margin: 0 auto;"><thead><tr><th style="border: 1px solid black; padding: 8px 12px;">$x$</th><th style="border: 1px solid black; padding: 8px 12px;">$f(x)$</th></tr></thead><tbody>${points.map(p => `<tr><td style="border: 1px solid black; padding: 8px 12px;">${p.x}</td><td style="border: 1px solid black; padding: 8px 12px;">${p.y}</td></tr>`).join('')}</tbody></table>`;
+    // Light gray borders: the old black borders were nearly invisible on the dark theme.
+    const tableCode = `<table style="border-collapse: collapse; margin: 0 auto;"><thead><tr><th style="border: 1px solid #ccc; padding: 8px 12px;">$x$</th><th style="border: 1px solid #ccc; padding: 8px 12px;">$f(x)$</th></tr></thead><tbody>${points.map(p => `<tr><td style="border: 1px solid #ccc; padding: 8px 12px;">${p.x}</td><td style="border: 1px solid #ccc; padding: 8px 12px;">${p.y}</td></tr>`).join('')}</tbody></table>`;
 
-    const distractor1 = `(0, 0)`;
-    const distractor2 = `(\\frac{1}{${slope}}, 0)`;
-    const distractor3 = `(${-xIntercept}, 0)`;
+    const yInterceptValue = slope * -xIntercept;
 
+    // Every wrong choice is a real slip. The old choices were the origin and
+    // (1/slope, 0), "the reciprocal of the slope".
     const optionsData = [
-      { text: `(${xIntercept}, 0)`, isCorrect: true },
-      { text: distractor1, isCorrect: false, reason: "is the origin, not where the function crosses the x-axis" },
-      { text: distractor2, isCorrect: false, reason: "uses the reciprocal of the slope" },
-      { text: distractor3, isCorrect: false, reason: "uses the positive version of the x-intercept" }
+      { text: `$(${xIntercept}, 0)$`, isCorrect: true, reason: '' },
+      { text: `$(0, ${xIntercept})$`, isCorrect: false, reason: `it reverses the coordinates of the $x$-intercept; the point $(0, ${xIntercept})$ is on the $y$-axis, not the $x$-axis` },
+      { text: `$(0, ${yInterceptValue})$`, isCorrect: false, reason: `$(0, ${yInterceptValue})$ is the $y$-intercept of the graph, where $x = 0$, not the $x$-intercept` },
+      { text: `$(${-xIntercept}, 0)$`, isCorrect: false, reason: `the table shows that $f(x) = 0$ when $x = ${xIntercept}$, not when $x = ${-xIntercept}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -57,11 +57,11 @@ export const generator_277 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `The table above shows several values of $x$ and their corresponding values of $f(x)$ for the linear function $f$. What is the $x$-intercept of the graph of $y=f(x)$ in the $xy$-plane?`,
+      questionText: `The table shows several values of $x$ and their corresponding values of $f(x)$ for the linear function $f$. What is the $x$-intercept of the graph of $y=f(x)$ in the $xy$-plane?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: `(${xIntercept}, 0)`,
-      explanation: `Choice ${correctOption.letter} is correct. The $x$-intercept is the point where $f(x) = 0$. From the table, when $x = ${xIntercept}$, $f(x) = 0$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      correctAnswer: `$(${xIntercept}, 0)$`,
+      explanation: `Choice ${correctOption.letter} is correct. The $x$-intercept is the point where $f(x) = 0$. The table shows that when $x = ${xIntercept}$, $f(x) = 0$. Therefore, the $x$-intercept of the graph is $(${xIntercept}, 0)$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
