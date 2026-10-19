@@ -5,10 +5,10 @@ import type { QuestionData } from '../../study/types';
  * Question 248
  *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [slope: 1-3, intercept: 80-120, xValue: 50-70 ending in 0 or 5]
+ * - Number ranges: [slope: 2.5 or 5, intercept: 75-150 in steps of 25, xValue: 40-70 in steps of 10]
  * - Difficulty factors: [Reading value from graph]
- * - Distractor patterns: [rings-only cost, doubled fixed cost, gridline misread]
- * - Constraints: [xValue must end in 0 or 5 to align with grid lines]
+ * - Distractor patterns: [neighboring gridline on either side, cost without the y-intercept]
+ * - Constraints: [every value lands on a gridline]
  * - Question type: [Figure→Multiple Choice Text]
  * - Figure generation: [SVG line graph]
  */
@@ -23,25 +23,27 @@ export const generator_248 = {
   },
 
   generate: (): QuestionData => {
-    const slope = getRandomInt(1, 3);
-    const intercept = getRandomInt(80, 120);
-    // xValue ends in 0 or 5 so it lands on an x grid line: 50, 55, 60, 65, 70
-    const xValue = getRandomInt(10, 14) * 5;
+    // Every value the student reads lands on a gridline: x gridlines every 10
+    // rings and y gridlines every 25 dollars. The old graph had y gridlines
+    // every 50 with costs such as 295 between them, x values such as 55
+    // between x gridlines, and it marked the answer with dashed guide lines.
+    const slope = getRandomInt(1, 2) * 2.5;
+    const intercept = getRandomInt(3, 6) * 25;
+    const xValue = getRandomInt(4, 7) * 10;
     const yValue = slope * xValue + intercept;
 
-    // ── Distractors as offsets from the correct value, so they are provably
-    //    distinct from the answer and from each other for every draw:
-    //    intercept ∈ [80,120] and slope*5 ∈ {5,10,15}, so the three offsets
-    //    (-intercept, +intercept, +slope*5) are pairwise distinct and nonzero.
-    const ringsOnly = yValue - intercept;   // forgot the fixed startup cost (= slope*xValue)
-    const doubleFixed = yValue + intercept; // added the fixed startup cost twice
-    const gridMisread = yValue + slope * 5; // read one x grid line (5 rings) too far
+    // Distinct for every draw: the neighbors differ from the answer by
+    // 10 * slope (25 or 50), and slope * xValue differs from the answer by the
+    // intercept (at least 75).
+    const nextLine = yValue + 10 * slope;
+    const prevLine = yValue - 10 * slope;
+    const noIntercept = slope * xValue;
 
     const optionsData = [
-      { text: yValue.toString(), isCorrect: true },
-      { text: ringsOnly.toString(), isCorrect: false, reason: "is the cost of the rings alone, without the fixed startup cost" },
-      { text: doubleFixed.toString(), isCorrect: false, reason: "adds the fixed startup cost a second time" },
-      { text: gridMisread.toString(), isCorrect: false, reason: "reads the line one grid line too far along the horizontal axis" }
+      { text: yValue.toString(), isCorrect: true, reason: '' },
+      { text: nextLine.toString(), isCorrect: false, reason: `it is the cost to make ${xValue + 10} rings, read at the next vertical gridline` },
+      { text: prevLine.toString(), isCorrect: false, reason: `it is the cost to make ${xValue - 10} rings, read at the previous vertical gridline` },
+      { text: noIntercept.toString(), isCorrect: false, reason: `it is only the increase in cost from 0 rings to ${xValue} rings; it leaves out the cost of ${intercept} dollars shown at 0 rings` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -52,50 +54,42 @@ export const generator_248 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    // ── Figure: compact SVG line graph of y = slope*x + intercept, with the
-    //    data point (xValue, yValue) highlighted by dashed guide lines. Every
-    //    drawn value is derived from the same live variables as the question.
+    // ── Figure: SVG line graph of y = slope*x + intercept.
     const width = 460;
-    const height = 260;
+    const height = 320;
     const margin = { top: 20, right: 24, bottom: 40, left: 56 };
     const graphW = width - margin.left - margin.right;
     const graphH = height - margin.top - margin.bottom;
 
-    // Axis maxima give a little headroom past the plotted point.
-    const xMax = xValue + 10;
-    const yMax = yValue + 20;
+    const xMax = 90;
+    const yMax = Math.ceil((slope * xMax + intercept) / 50) * 50;
 
     const px = (x: number) => margin.left + (x / xMax) * graphW;
     const py = (y: number) => margin.top + graphH - (y / yMax) * graphH;
 
-    // Grid + labels: x every 10, y every 50.
-    const xTicks: number[] = [];
-    for (let x = 0; x <= xMax; x += 10) xTicks.push(x);
-    const yTicks: number[] = [];
-    for (let y = 0; y <= yMax; y += 50) yTicks.push(y);
-
-    const xGrid = xTicks.map(x => `
-      <line x1="${px(x).toFixed(1)}" y1="${py(0).toFixed(1)}" x2="${px(x).toFixed(1)}" y2="${margin.top}" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" />
-      <text x="${px(x).toFixed(1)}" y="${(height - margin.bottom + 18).toFixed(1)}" text-anchor="middle" font-size="11" fill="currentColor">${x}</text>`).join('');
-
-    const yGrid = yTicks.map(y => `
-      <line x1="${margin.left}" y1="${py(y).toFixed(1)}" x2="${width - margin.right}" y2="${py(y).toFixed(1)}" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" />
-      <text x="${(margin.left - 8).toFixed(1)}" y="${(py(y) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="currentColor">${y}</text>`).join('');
-
-    // The line from x=0 to x=xMax.
-    const lineX1 = px(0), lineY1 = py(intercept);
-    const lineX2 = px(xMax), lineY2 = py(slope * xMax + intercept);
+    // Grid: x every 10 (labeled), y every 25 (labeled every 50).
+    const xGrid: string[] = [];
+    for (let x = 0; x <= xMax; x += 10) {
+      xGrid.push(`
+      <line x1="${px(x).toFixed(1)}" y1="${py(0).toFixed(1)}" x2="${px(x).toFixed(1)}" y2="${margin.top}" stroke="currentColor" stroke-opacity="0.18" stroke-width="1" />
+      <text x="${px(x).toFixed(1)}" y="${(height - margin.bottom + 18).toFixed(1)}" text-anchor="middle" font-size="11" fill="currentColor">${x}</text>`);
+    }
+    const yGrid: string[] = [];
+    for (let y = 0; y <= yMax; y += 25) {
+      const labeled = y % 50 === 0;
+      yGrid.push(`
+      <line x1="${margin.left}" y1="${py(y).toFixed(1)}" x2="${width - margin.right}" y2="${py(y).toFixed(1)}" stroke="currentColor" stroke-opacity="${labeled ? 0.18 : 0.09}" stroke-width="1" />` +
+        (labeled ? `
+      <text x="${(margin.left - 8).toFixed(1)}" y="${(py(y) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="currentColor">${y}</text>` : ''));
+    }
 
     const figureCode = `<div style="width:100%;max-width:${width}px;margin:0 auto;">
   <svg viewBox="0 0 ${width} ${height}" style="width:100%;height:auto;font-family:sans-serif;user-select:none;" role="img" aria-label="Line graph of cost versus number of rings">
-    ${yGrid}
-    ${xGrid}
+    ${yGrid.join('')}
+    ${xGrid.join('')}
     <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${(height - margin.bottom).toFixed(1)}" stroke="currentColor" stroke-width="2" />
     <line x1="${margin.left}" y1="${(height - margin.bottom).toFixed(1)}" x2="${(width - margin.right).toFixed(1)}" y2="${(height - margin.bottom).toFixed(1)}" stroke="currentColor" stroke-width="2" />
-    <line x1="${lineX1.toFixed(1)}" y1="${lineY1.toFixed(1)}" x2="${lineX2.toFixed(1)}" y2="${lineY2.toFixed(1)}" stroke="#3b82f6" stroke-width="3" />
-    <line x1="${px(xValue).toFixed(1)}" y1="${py(yValue).toFixed(1)}" x2="${px(xValue).toFixed(1)}" y2="${py(0).toFixed(1)}" stroke="#3b82f6" stroke-opacity="0.5" stroke-width="1.5" stroke-dasharray="4 3" />
-    <line x1="${px(xValue).toFixed(1)}" y1="${py(yValue).toFixed(1)}" x2="${margin.left}" y2="${py(yValue).toFixed(1)}" stroke="#3b82f6" stroke-opacity="0.5" stroke-width="1.5" stroke-dasharray="4 3" />
-    <circle cx="${px(xValue).toFixed(1)}" cy="${py(yValue).toFixed(1)}" r="5" fill="#3b82f6" stroke="white" stroke-width="2" />
+    <line x1="${px(0).toFixed(1)}" y1="${py(intercept).toFixed(1)}" x2="${px(xMax).toFixed(1)}" y2="${py(slope * xMax + intercept).toFixed(1)}" stroke="#3b82f6" stroke-width="3" />
     <text x="${((margin.left + width - margin.right) / 2).toFixed(1)}" y="${(height - 6).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Number of rings</text>
     <text transform="rotate(-90, 14, ${(margin.top + graphH / 2).toFixed(1)})" x="14" y="${(margin.top + graphH / 2).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Cost (dollars)</text>
   </svg>
@@ -106,7 +100,7 @@ export const generator_248 = {
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: yValue.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. From the graph, when $x = ${xValue}$ rings, follow the vertical grid line up to the line and across to the vertical axis to read the cost of \\$${yValue}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The vertical gridline at ${xValue} rings meets the line at a cost of ${yValue} dollars, so the line passes through the point $(${xValue}, ${yValue})$. Therefore, the cost to make ${xValue} rings is \\$${yValue}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
