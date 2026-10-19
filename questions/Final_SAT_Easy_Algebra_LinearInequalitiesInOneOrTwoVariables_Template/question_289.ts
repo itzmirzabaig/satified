@@ -33,11 +33,14 @@ export const generator_289 = {
     const tooHigh1 = maxTotal + getRandomInt(5, 15);
     const tooHigh2 = maxTotal + getRandomInt(20, 50);
 
+    // The wrong choices used to have no explanations.
+    const below = (v: number) => `${v} is less than the fewest possible cookies on ${numTrays} trays, $${numTrays}(${minPerTray}) = ${minTotal}$`;
+    const above = (v: number) => `${v} is greater than the most possible cookies on ${numTrays} trays, $${numTrays}(${maxPerTray}) = ${maxTotal}$`;
     const optionsData = [
-      { text: `${tooLow}`, isCorrect: false },
-      { text: `${correctValue}`, isCorrect: true },
-      { text: `${tooHigh1}`, isCorrect: false },
-      { text: `${tooHigh2}`, isCorrect: false }
+      { text: `${tooLow}`, isCorrect: false, reason: below(tooLow) },
+      { text: `${correctValue}`, isCorrect: true, reason: '' },
+      { text: `${tooHigh1}`, isCorrect: false, reason: above(tooHigh1) },
+      { text: `${tooHigh2}`, isCorrect: false, reason: above(tooHigh2) }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,8 +50,9 @@ export const generator_289 = {
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Each tray contains at least ${minPerTray} and at most ${maxPerTray} cookies. For ${numTrays} trays, the minimum is ${minTotal} and maximum is ${maxTotal}. Only ${correctValue} falls within this range.`;
+    const explanation = `Choice ${correctLetter} is correct. Each tray contains at least ${minPerTray} and at most ${maxPerTray} cookies, so ${numTrays} trays contain at least $${numTrays}(${minPerTray}) = ${minTotal}$ cookies and at most $${numTrays}(${maxPerTray}) = ${maxTotal}$ cookies. If $c$ is the total number of cookies, then $${minTotal} \\le c \\le ${maxTotal}$. Of the choices, only ${correctValue} satisfies this inequality. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A bakery sells trays of cookies. Each tray contains at least $${minPerTray}$ cookies but no more than $${maxPerTray}$. Which of the following could be the total number of cookies on $${numTrays}$ trays of cookies?`,
