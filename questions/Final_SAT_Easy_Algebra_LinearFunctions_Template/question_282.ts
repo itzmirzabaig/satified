@@ -23,7 +23,8 @@ export const generator_282 = {
   },
 
   generate: (): QuestionData => {
-    const initialWageNum = getRandomInt(8, 12) + 0.25;
+    // The cents used to be .25 every time.
+    const initialWageNum = getRandomInt(8, 12) + [0.25, 0.5, 0.75][getRandomInt(0, 2)];
 
     const initialWage = initialWageNum.toFixed(2);
 
@@ -33,19 +34,21 @@ export const generator_282 = {
 
     const years = getRandomInt(4, 6);
 
-    const correctEquation = `f(x)=${initialWage}+${increase}x`;
+    const correctEquation = `$f(x) = ${initialWage} + ${increase}x$`;
 
-    const distractorA = `f(x)=${initialWage}-${increase}x`;
+    const distractorA = `$f(x) = ${initialWage} - ${increase}x$`;
 
-    const distractorB = `f(x)=${initialWage}x-${increase}`;
+    const distractorB = `$f(x) = ${initialWage}x - ${increase}$`;
 
-    const distractorD = `f(x)=${initialWage}x+${increase}`;
+    const distractorD = `$f(x) = ${initialWage}x + ${increase}$`;
 
+    // The two choices that multiply x by the starting wage used to share one
+    // vague reason.
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "subtracts the increase instead of adding" },
-      { text: distractorB, isCorrect: false, reason: "incorrectly applies the initial wage as a rate" },
-      { text: correctEquation, isCorrect: true },
-      { text: distractorD, isCorrect: false, reason: "incorrectly applies the initial wage as a rate" }
+      { text: distractorA, isCorrect: false, reason: `it subtracts \\$${increase} each year, so the wage would decrease, but the wage increases by \\$${increase} each year` },
+      { text: distractorB, isCorrect: false, reason: `it multiplies the number of years by the starting wage, \\$${initialWage}, and subtracts \\$${increase}; the wage increases by \\$${increase} each year from a starting value of \\$${initialWage}` },
+      { text: correctEquation, isCorrect: true, reason: '' },
+      { text: distractorD, isCorrect: false, reason: `it reverses the two amounts: it gives a wage that increases by \\$${initialWage} each year from a starting value of \\$${increase}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -58,11 +61,11 @@ export const generator_282 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `On January 1, 2015, a city's minimum hourly wage was $${initialWage}$. It will increase by $${increase}$ on the first day of the year for the next ${years} years. Which of the following functions best models the minimum hourly wage, in dollars, $x$ years after January 1, 2015, where $x = 1, 2, 3, 4, 5$?`,
+      questionText: `On January 1, 2015, a city's minimum hourly wage was \\$${initialWage}. It will increase by \\$${increase} on the first day of the year for the next ${years} years. Which of the following functions best models the minimum hourly wage, in dollars, $x$ years after January 1, 2015, where $x = ${Array.from({ length: years }, (_, i) => i + 1).join(', ')}$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. The initial wage is $${initialWage}$ and it increases by $${increase}$ each year, giving $f(x) = ${initialWage} + ${increase}x$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The wage starts at \\$${initialWage} and increases by \\$${increase} each year, so $x$ years after January 1, 2015, it has increased by $${increase}x$ dollars. Therefore, the wage is modeled by $f(x) = ${initialWage} + ${increase}x$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
