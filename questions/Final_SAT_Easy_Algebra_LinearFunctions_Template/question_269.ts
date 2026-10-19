@@ -23,9 +23,14 @@ export const generator_269 = {
   },
 
   generate: (): QuestionData => {
-    const growthRate = getRandomInt(6, 12);
-
-    const initialHeight = getRandomInt(2, 6);
+    // The rate and the starting height must differ: when both were 6, the
+    // "increased by 6 feet each year" choice was also true, giving two correct
+    // answers.
+    let growthRate = 7, initialHeight = 2;
+    do {
+      growthRate = getRandomInt(6, 12);
+      initialHeight = getRandomInt(2, 6);
+    } while (growthRate === initialHeight);
 
     const optionD = `The estimated height of the tree was ${initialHeight} feet when it was first measured.`;
 
