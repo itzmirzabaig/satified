@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [length 10-20, width 4-8]
 * - Difficulty factors: [Rectangle perimeter formula]
-* - Distractor patterns: [2×width, 2×length, 4×length]
+* - Distractor patterns: [length + width, area, 2 × length + width]
 * - Constraints: [Perimeter = 2(length + width)]
 * - Question type: [No figure, Multiple Choice Text]
 * - Figure generation: [None]
@@ -27,11 +27,13 @@ export const generator_342 = {
     const width = getRandomInt(4, 8);
     const perimeter = 2 * (length + width);
 
+    // Each wrong choice is a real slip. With a length of at least 10 and a
+    // width of at most 8, the four values never collide.
     const optionsData = [
-      { text: (2 * width).toString(), isCorrect: false, reason: "calculates only 2 times the width" },
-      { text: (2 * length).toString(), isCorrect: false, reason: "calculates only 2 times the length" },
-      { text: perimeter.toString(), isCorrect: true },
-      { text: (4 * length).toString(), isCorrect: false, reason: "treats as square with side equal to length" }
+      { text: (length + width).toString(), isCorrect: false, reason: `it is the sum of one length and one width, $${length} + ${width}$; a rectangle has two lengths and two widths, so this is only half the perimeter` },
+      { text: (length * width).toString(), isCorrect: false, reason: `it is the area of the rectangle, $${length}(${width})$, not its perimeter` },
+      { text: perimeter.toString(), isCorrect: true, reason: '' },
+      { text: (2 * length + width).toString(), isCorrect: false, reason: `it includes both lengths but only one width, $2(${length}) + ${width}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,7 +49,7 @@ export const generator_342 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: perimeter.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The perimeter is $2(${length} + ${width}) = 2(${length + width}) = ${perimeter}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The perimeter of a rectangle is the sum of the lengths of its four sides: two lengths and two widths. Therefore, the perimeter is $2(${length} + ${width}) = 2(${length + width}) = ${perimeter}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
