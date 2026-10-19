@@ -53,7 +53,7 @@ export const generator_886 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: XY.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Since triangle $ABC$ is similar to triangle $XYZ$ with corresponding vertices $A \\\\leftrightarrow X$ and $B \\\\leftrightarrow Y$, side $AB$ corresponds to side $XY$. The scale factor is ${scaleFactor}, so $XY = ${scaleFactor} \\\\times AB = ${scaleFactor} \\\\times ${AB} = ${XY}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Since triangle $ABC$ is similar to triangle $XYZ$ with corresponding vertices $A \\\\leftrightarrow X$ and $B \\\\leftrightarrow Y$, side $AB$ corresponds to side $XY$. The scale factor is ${scaleFactor}, so $XY = ${scaleFactor} \\\\times AB = ${scaleFactor} \\\\times ${AB} = ${XY}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

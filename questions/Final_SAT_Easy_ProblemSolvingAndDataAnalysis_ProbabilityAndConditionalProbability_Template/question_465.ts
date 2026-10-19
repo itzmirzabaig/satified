@@ -88,7 +88,7 @@ export const generator_465 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     const reduction = divisor > 1 ? `, or $\\frac{${simplifiedNum}}{${simplifiedDen}}$` : ``;
-    const explanation = `Choice ${correctOption.letter} is correct. If one of these students is selected at random, the probability of selecting a student who voted for a lion equals the number of votes for a lion divided by the total number of votes. The table shows ${lionTotal} votes for a lion out of ${grandTotal} total votes. Therefore, the probability is $\\frac{${lionTotal}}{${grandTotal}}$${reduction}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. If one of these students is selected at random, the probability of selecting a student who voted for a lion equals the number of votes for a lion divided by the total number of votes. The table shows ${lionTotal} votes for a lion out of ${grandTotal} total votes. Therefore, the probability is $\\frac{${lionTotal}}{${grandTotal}}$${reduction}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `If one of these students is selected at random, what is the probability of selecting a student whose vote for new mascot was for a lion?`,

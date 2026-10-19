@@ -65,7 +65,7 @@ export const generator_987 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. To convert miles per second to miles per hour, multiply by 3,600 (60 seconds × 60 minutes): $${speed} \\times 3,600 = ${correctText}$ miles per hour. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. To convert miles per second to miles per hour, multiply by 3,600 (60 seconds × 60 minutes): $${speed} \\times 3,600 = ${correctText}$ miles per hour. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

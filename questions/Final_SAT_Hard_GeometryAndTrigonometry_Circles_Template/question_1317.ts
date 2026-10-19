@@ -125,9 +125,9 @@ export const generator_1317 = {
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
       explanation: `Choice ${correctLetter} is correct. Circle A has center $(${h}, ${k})$ and radius $r=${r}$. Shifting a graph down ${shift} units subtracts ${shift} from the $y$-coordinate of the center, leaving the radius unchanged: the new center is $(${h}, ${k}-${shift})=(${h}, ${newK})$. Substituting into the standard form $x^{2}+(y-k)^{2}=r^{2}$ gives $${correctText}$. `
-        + `Choice ${letterOf(distractorB)} is incorrect; it shifts circle A up ${shift} units (adding to the $y$-coordinate) instead of down. `
-        + `Choice ${letterOf(distractorC)} is incorrect; it shifts circle A right ${shift} units, changing the $x$-coordinate instead of the $y$-coordinate. `
-        + `Choice ${letterOf(distractorD)} is incorrect; it shifts circle A left ${shift} units, again changing the $x$-coordinate instead of the $y$-coordinate.`
+        + `Choice ${letterOf(distractorB)} is incorrect because it shifts circle A up ${shift} units (adding to the $y$-coordinate) instead of down. `
+        + `Choice ${letterOf(distractorC)} is incorrect because it shifts circle A right ${shift} units, changing the $x$-coordinate instead of the $y$-coordinate. `
+        + `Choice ${letterOf(distractorD)} is incorrect because it shifts circle A left ${shift} units, again changing the $x$-coordinate instead of the $y$-coordinate.`
     };
   }
 };

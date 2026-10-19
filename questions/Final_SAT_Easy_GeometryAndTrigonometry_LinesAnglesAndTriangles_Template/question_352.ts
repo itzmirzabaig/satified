@@ -49,7 +49,7 @@ export const generator_352 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${correctAnswer}^{\\circ}`,
-      explanation: `Choice ${correctOption.letter} is correct. In right triangle $ABC$, $\\angle C = 180^{\\circ} - 90^{\\circ} - ${angleA}^{\\circ} = ${correctAnswer}^{\\circ}$. Since triangles $ABC$ and $DEF$ are congruent with $C$ corresponding to $F$, we have $\\angle F = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In right triangle $ABC$, $\\angle C = 180^{\\circ} - 90^{\\circ} - ${angleA}^{\\circ} = ${correctAnswer}^{\\circ}$. Since triangles $ABC$ and $DEF$ are congruent with $C$ corresponding to $F$, we have $\\angle F = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

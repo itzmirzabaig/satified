@@ -78,7 +78,7 @@ export const generator_1360 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The two acute angles of a right triangle are complementary, and the tangents of complementary angles are reciprocals of each other. The reciprocal of $\\frac{\\sqrt{3}}{3}$ is $\\frac{3}{\\sqrt{3}}$, which simplifies to $\\sqrt{3}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The two acute angles of a right triangle are complementary, and the tangents of complementary angles are reciprocals of each other. The reciprocal of $\\frac{\\sqrt{3}}{3}$ is $\\frac{3}{\\sqrt{3}}$, which simplifies to $\\sqrt{3}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `In a right triangle, the tangent of one of the two acute angles is $\\frac{\\sqrt{3}}{3}$. What is the tangent of the other acute angle?`,

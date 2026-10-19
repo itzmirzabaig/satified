@@ -38,7 +38,7 @@ export const generator_537 = {
     const correctAnswer = `$c = ${initial}(${growthFactor})^m$`;
     
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. This is an exponential growth situation. The initial number of subscribers in January 2018 is $${initial}$, so this is the starting value. The number increases by ${rate}% each month, so the growth factor is $1 + \\frac{${rate}}{100} = ${growthFactor}$. The general form is $c = \\text{initial} \\times (\\text{growth factor})^{\\text{time}}$, which gives $c = ${initial}(${growthFactor})^m$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. This is an exponential growth situation. The initial number of subscribers in January 2018 is $${initial}$, so this is the starting value. The number increases by ${rate}% each month, so the growth factor is $1 + \\frac{${rate}}{100} = ${growthFactor}$. The general form is $c = \\text{initial} \\times (\\text{growth factor})^{\\text{time}}$, which gives $c = ${initial}(${growthFactor})^m$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: questionText,

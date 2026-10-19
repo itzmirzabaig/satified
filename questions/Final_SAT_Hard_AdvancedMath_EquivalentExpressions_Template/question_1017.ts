@@ -191,9 +191,9 @@ For $y$: $\\frac{y^{\\frac{${E}}{${F}}}}{y^{-${G}}} = y^{\\frac{${E}}{${F}} + ${
 
 Because the exponent on $x$ is negative, the $x$ factor moves to the denominator with a positive exponent, giving $\\frac{${renderPow('y', yNum, yDen)}}{${renderPow('x', xMagNum, xMagDen)}}$.
 
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: questionText,

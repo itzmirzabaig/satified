@@ -69,7 +69,7 @@ export const generator_738 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The $x$-intercept is where $h(x) = ${m}x + ${b} = 0$, so $x = -\\frac{${b}}{${m}} = ${a}$; thus $a = ${a}$. The $y$-intercept is the constant term, so $b = ${b}$. Therefore $a + b = ${a} + ${b} = ${answer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The $x$-intercept is where $h(x) = ${m}x + ${b} = 0$, so $x = -\\frac{${b}}{${m}} = ${a}$; thus $a = ${a}$. The $y$-intercept is the constant term, so $b = ${b}$. Therefore $a + b = ${a} + ${b} = ${answer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

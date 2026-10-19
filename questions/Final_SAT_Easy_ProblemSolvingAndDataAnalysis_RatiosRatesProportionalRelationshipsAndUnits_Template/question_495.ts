@@ -72,7 +72,7 @@ export const generator_495 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Since $x$ to $y$ has the same ratio as the numbers given, you can write $\\frac{x}{y} = \\frac{${ratioFirst}}{t}$. Substituting $x = ${xValue}$ gives $\\frac{${xValue}}{y} = \\frac{${ratioFirst}}{t}$. Solving for $y$: $y = \\frac{${xValue}\\,t}{${ratioFirst}} = ${correctCoefficient}t$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `Since $x$ to $y$ has the same ratio as the numbers given, you can write $\\frac{x}{y} = \\frac{${ratioFirst}}{t}$. Substituting $x = ${xValue}$ gives $\\frac{${xValue}}{y} = \\frac{${ratioFirst}}{t}$. Solving for $y$: $y = \\frac{${xValue}\\,t}{${ratioFirst}} = ${correctCoefficient}t$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `The ratio $x$ to $y$ is equivalent to $x : y = ${ratioFirst} : t$. When $x = ${xValue}$, what is the value of $y$ in terms of $t$?`,

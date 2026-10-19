@@ -127,7 +127,7 @@ export const generator_992 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: slopeValue.toFixed(1),
-      explanation: `Choice ${correctLetter} is correct. The line passes through approximately $(1, ${y1})$ and $(11, ${y11})$. Slope $= (${y11} - ${y1}) / (11 - 1) = ${y11 - y1} / 10 = ${((y11 - y1) / 10).toFixed(1)}$, which is closest to ${slopeValue.toFixed(1)}. Choice ${incorrectOptions[0].letter} is incorrect; it is too steep. Choice ${incorrectOptions[1].letter} is incorrect; it has the wrong sign. Choice ${incorrectOptions[2].letter} is incorrect; it has both the wrong sign and magnitude.`
+      explanation: `Choice ${correctLetter} is correct. The line passes through approximately $(1, ${y1})$ and $(11, ${y11})$. Slope $= (${y11} - ${y1}) / (11 - 1) = ${y11 - y1} / 10 = ${((y11 - y1) / 10).toFixed(1)}$, which is closest to ${slopeValue.toFixed(1)}. Choice ${incorrectOptions[0].letter} is incorrect because it is too steep. Choice ${incorrectOptions[1].letter} is incorrect because it has the wrong sign. Choice ${incorrectOptions[2].letter} is incorrect because it has both the wrong sign and magnitude.`
     };
   }
 };

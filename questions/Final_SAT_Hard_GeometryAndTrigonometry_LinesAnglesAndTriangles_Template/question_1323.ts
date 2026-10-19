@@ -111,7 +111,7 @@ export const generator_1323 = {
       figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Since quadrilaterals $PQRS$ and $WXYZ$ are similar and $P$, $Q$, $R$ correspond to $W$, $X$, $Y$, vertex $S$ corresponds to vertex $Z$. Corresponding angles of similar polygons are congruent, so $m\\angle Z = m\\angle S = ${angleS}^\\circ$. The side lengths $PS=${PS}$ and $WZ=${WZ}$ are extraneous information. Thus Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Since quadrilaterals $PQRS$ and $WXYZ$ are similar and $P$, $Q$, $R$ correspond to $W$, $X$, $Y$, vertex $S$ corresponds to vertex $Z$. Corresponding angles of similar polygons are congruent, so $m\\angle Z = m\\angle S = ${angleS}^\\circ$. The side lengths $PS=${PS}$ and $WZ=${WZ}$ are extraneous information. Thus Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

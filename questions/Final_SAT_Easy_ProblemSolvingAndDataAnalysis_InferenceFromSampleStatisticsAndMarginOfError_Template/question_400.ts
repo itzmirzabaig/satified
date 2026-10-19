@@ -67,7 +67,7 @@ export const generator_400 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The sample proportion is $\\frac{${successesInSample}}{${sampleSize}}$. Multiply by the total: $${totalPopulation} \\times \\frac{${successesInSample}}{${sampleSize}} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The sample proportion is $\\frac{${successesInSample}}{${sampleSize}}$. Multiply by the total: $${totalPopulation} \\times \\frac{${successesInSample}}{${sampleSize}} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `A manager selected $${sampleSize}$ ${group} at random from all $${totalPopulation}$ ${group} at a ${org}. They found that $${successesInSample}$ of the ${group} in this sample are ${activity.activity} this year. Based on these findings, which of the following is the best estimate of the number of ${group} at the ${org} who are ${activity.activity} this year?`,

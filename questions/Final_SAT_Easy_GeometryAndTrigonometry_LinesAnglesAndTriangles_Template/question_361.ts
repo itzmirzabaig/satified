@@ -68,7 +68,7 @@ export const generator_361 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. In a right triangle, the two acute angles are complementary (their measures sum to $90^{\\circ}$). Therefore, the other acute angle is $90^{\\circ} - ${givenAngle}^{\\circ} = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In a right triangle, the two acute angles are complementary (their measures sum to $90^{\\circ}$). Therefore, the other acute angle is $90^{\\circ} - ${givenAngle}^{\\circ} = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

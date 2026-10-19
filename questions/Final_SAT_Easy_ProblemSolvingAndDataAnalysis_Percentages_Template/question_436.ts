@@ -62,7 +62,7 @@ export const generator_436 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `\\$${salePrice}`,
-      explanation: `Choice ${correctOption.letter} is correct. The discount is ${discountPercent}% of \\$${originalPrice}, which is \\$${discountAmount}. Subtracting the discount from the original price gives \\$${originalPrice} - \\$${discountAmount} = \\$${salePrice}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The discount is ${discountPercent}% of \\$${originalPrice}, which is \\$${discountAmount}. Subtracting the discount from the original price gives \\$${originalPrice} - \\$${discountAmount} = \\$${salePrice}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

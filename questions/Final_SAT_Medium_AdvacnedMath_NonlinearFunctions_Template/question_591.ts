@@ -34,7 +34,7 @@ export const generator_591 = {
     const correctAnswer = correctOption!.text;
     
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. The problem states that "A rectangle has a length that is $${multiplier}$ times its width." In the function $y = (${multiplier}w)(w)$, the term $w$ represents the width. Since the length is $${multiplier}$ times the width, the expression for length is $${multiplier}w$. This is one of the factors being multiplied to give the area $y$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The problem states that "A rectangle has a length that is $${multiplier}$ times its width." In the function $y = (${multiplier}w)(w)$, the term $w$ represents the width. Since the length is $${multiplier}$ times the width, the expression for length is $${multiplier}w$. This is one of the factors being multiplied to give the area $y$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: questionText,

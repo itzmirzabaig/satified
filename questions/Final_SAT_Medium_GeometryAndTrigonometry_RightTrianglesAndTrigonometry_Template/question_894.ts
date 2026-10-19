@@ -95,7 +95,7 @@ export const generator_894 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // STEP 6: Build explanation.
-    const explanation = `Choice ${correctLetter} is correct. The tangent of an acute angle in a right triangle is the ratio of the length of the side opposite the angle to the length of the side adjacent to the angle. For angle $A$, the opposite side is ${oppositeLeg} and the adjacent side is ${adjacentLeg}, so $\\tan A = \\frac{${oppositeLeg}}{${adjacentLeg}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The tangent of an acute angle in a right triangle is the ratio of the length of the side opposite the angle to the length of the side adjacent to the angle. For angle $A$, the opposite side is ${oppositeLeg} and the adjacent side is ${adjacentLeg}, so $\\tan A = \\frac{${oppositeLeg}}{${adjacentLeg}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     // STEP 7: Return question data.
     return {

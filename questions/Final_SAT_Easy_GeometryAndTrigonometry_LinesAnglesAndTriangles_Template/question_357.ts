@@ -94,7 +94,7 @@ export const generator_357 = {
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The given angle, which measures $a = ${givenAngle}^{\\circ}$, and the angle labeled $b$ are consecutive interior angles (same-side interior angles). Because lines $m$ and $n$ are parallel, consecutive interior angles are supplementary, so their measures add to a straight angle: $b + a = 180^{\\circ}$, which gives $b = 180 - ${givenAngle} = ${correctAnswerVal}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The given angle, which measures $a = ${givenAngle}^{\\circ}$, and the angle labeled $b$ are consecutive interior angles (same-side interior angles). Because lines $m$ and $n$ are parallel, consecutive interior angles are supplementary, so their measures add to a straight angle: $b + a = 180^{\\circ}$, which gives $b = 180 - ${givenAngle} = ${correctAnswerVal}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

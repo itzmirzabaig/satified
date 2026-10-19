@@ -54,7 +54,7 @@ export const generator_747 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The function $w(t) = ${initial} - ${rate}t$ is in the form $y = mt + b$ where $m = -${rate}$ is the rate of change. The negative indicates decreasing volume, so ${rate} milliliters drain each second. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The function $w(t) = ${initial} - ${rate}t$ is in the form $y = mt + b$ where $m = -${rate}$ is the rate of change. The negative indicates decreasing volume, so ${rate} milliliters drain each second. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -57,7 +57,7 @@ export const generator_379 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${correctAnswer}^{\\circ}`,
-      explanation: `Choice ${correctOption.letter} is correct. In right triangle $PQR$, $\\angle P + \\angle Q = 90^{\\circ}$, so $\\angle P = 90^{\\circ} - ${angleQ}^{\\circ} = ${correctAnswer}^{\\circ}$. Since triangles $PQR$ and $STU$ are similar with $P$ corresponding to $S$, we have $\\angle S = \\angle P = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In right triangle $PQR$, $\\angle P + \\angle Q = 90^{\\circ}$, so $\\angle P = 90^{\\circ} - ${angleQ}^{\\circ} = ${correctAnswer}^{\\circ}$. Since triangles $PQR$ and $STU$ are similar with $P$ corresponding to $S$, we have $\\angle S = \\angle P = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -97,7 +97,7 @@ export const generator_354 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. Lines $m$ and $n$ are parallel and line $t$ is a transversal, so the marked angles are corresponding angles. Corresponding angles formed by a transversal cutting parallel lines are congruent, so the two angle measures are equal and $w = ${givenAngle}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Lines $m$ and $n$ are parallel and line $t$ is a transversal, so the marked angles are corresponding angles. Corresponding angles formed by a transversal cutting parallel lines are congruent, so the two angle measures are equal and $w = ${givenAngle}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

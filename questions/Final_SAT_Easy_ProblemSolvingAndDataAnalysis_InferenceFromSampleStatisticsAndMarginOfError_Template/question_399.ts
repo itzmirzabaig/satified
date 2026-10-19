@@ -77,7 +77,7 @@ export const generator_399 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Set up a proportion using the sample rate: $\\frac{${supportersInSample}}{${sampleSize}} = \\frac{x}{${totalPopulation}}$. Solving gives $x = \\frac{${supportersInSample}}{${sampleSize}} \\times ${totalPopulation} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Set up a proportion using the sample rate: $\\frac{${supportersInSample}}{${sampleSize}} = \\frac{x}{${totalPopulation}}$. Solving gives $x = \\frac{${supportersInSample}}{${sampleSize}} \\times ${totalPopulation} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `A city has $${totalPopulation}$ ${group}. A ${observer} polled a random sample of $${sampleSize}$ ${group} and found that $${supportersInSample}$ of those polled supported a ${bill}. Based on the sample, which of the following is the best estimate of the number of ${group} in the city who support the ${bill}?`,

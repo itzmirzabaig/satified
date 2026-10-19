@@ -49,9 +49,9 @@ export const generator_1040 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     const explanation = `Choice ${correctLetter} is correct. For a quadratic equation $px^2+qx+r=0$, the product of the solutions is $\\frac{r}{p}$. Here $p=${A}$, $q=${A}b+a$, and $r=ab$, so the product of the solutions is $\\frac{ab}{${A}}$. Since this product is given as $kab$, it follows that $k=\\frac{1}{${A}}$.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `$ ${A}x^2 + (${A}b + a)x + ab = 0$\n\nIn the given equation, $a$ and $b$ are positive constants. The product of the solutions to the given equation is $kab$, where $k$ is a constant. What is the value of $k$?`,

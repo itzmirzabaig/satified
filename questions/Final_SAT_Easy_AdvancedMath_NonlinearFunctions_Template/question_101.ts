@@ -58,7 +58,7 @@ export const generator_101 = {
       figureCode: mafsCode,
       options: shuffled.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The y-intercept is the point where the graph crosses the y-axis, which occurs where $x = 0$. The graph shown crosses the y-axis at $(0, ${yInt})$. Choice ${letterOf('xFlip')} is incorrect; it places the point on the x-axis, but the graph shown stays above the x-axis for every value of $x$. Choice ${letterOf('xSix')} is incorrect for the same reason; the graph never crosses the x-axis. Choice ${letterOf('asymptote')} is incorrect; $y = 6$ is the value the graph approaches as $x$ decreases, not the value where it crosses the y-axis.`
+      explanation: `Choice ${correctOption.letter} is correct. The y-intercept is the point where the graph crosses the y-axis, which occurs where $x = 0$. The graph shown crosses the y-axis at $(0, ${yInt})$. Choice ${letterOf('xFlip')} is incorrect because it places the point on the x-axis, but the graph shown stays above the x-axis for every value of $x$. Choice ${letterOf('xSix')} is incorrect for the same reason; the graph never crosses the x-axis. Choice ${letterOf('asymptote')} is incorrect; $y = 6$ is the value the graph approaches as $x$ decreases, not the value where it crosses the y-axis.`
     };
   }
 };

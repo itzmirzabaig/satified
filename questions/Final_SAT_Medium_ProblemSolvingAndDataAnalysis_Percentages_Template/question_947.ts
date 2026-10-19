@@ -60,7 +60,7 @@ export const generator_947 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. An increase of ${percent}% means the 2016 population is ${100 + percent}% of the 2015 population. Writing ${100 + percent}% as a decimal gives $\\frac{${100 + percent}}{100} = ${multiplier}$, so $k = ${multiplier}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. An increase of ${percent}% means the 2016 population is ${100 + percent}% of the 2015 population. Writing ${100 + percent}% as a decimal gives $\\frac{${100 + percent}}{100} = ${multiplier}$, so $k = ${multiplier}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

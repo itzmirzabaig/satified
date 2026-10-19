@@ -67,7 +67,7 @@ export const generator_1 = {
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const distractorNotes = shuffledOptions
       .filter(opt => !opt.isCorrect)
-      .map(opt => `Choice ${opt.letter} is incorrect; it comes from ${opt.reason}.`)
+      .map(opt => `Choice ${opt.letter} is incorrect because it comes from ${opt.reason}.`)
       .join(' ');
 
     return {

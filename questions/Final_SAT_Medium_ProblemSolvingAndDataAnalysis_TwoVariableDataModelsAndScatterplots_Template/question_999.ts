@@ -110,7 +110,7 @@ export const generator_999 = {
     };
     const distractorNotes = shuffledOptions
       .filter(opt => !opt.isCorrect)
-      .map(opt => `Choice ${opt.letter} is incorrect; it ${reasonFor(opt.text)}.`)
+      .map(opt => `Choice ${opt.letter} is incorrect because it ${reasonFor(opt.text)}.`)
       .join(' ');
 
     return {

@@ -71,9 +71,9 @@ export const generator_1062 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
     const explanation = `Choice ${correctLetter} is correct. Setting the expressions equal: $x+${c1}=x^2+${b}x+${c2}$, so $x^2+${b-1}x+${cDiff}=0$. This factors as $(x+${p})(x+${q})=0$. The solutions are $x=-${p}$ and $x=-${q}$. The greatest value is $${greatestX}$.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: `$y = x + ${c1}$\n$y = x^2 + ${b}x + ${c2}$\n\nA solution to the given system of equations is $(x,y)$. What is the greatest possible value of $x$?`,

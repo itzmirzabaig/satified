@@ -58,7 +58,7 @@ export const generator_740 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The $x$-intercept occurs when $y = 0$, meaning 0 tons of cargo remain. This represents the time when all cargo has been moved. Substituting $y = 0$ into $y = ${initial} - ${rate}x$ gives $x = ${xIntercept}$ hours. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The $x$-intercept occurs when $y = 0$, meaning 0 tons of cargo remain. This represents the time when all cargo has been moved. Substituting $y = 0$ into $y = ${initial} - ${rate}x$ gives $x = ${xIntercept}$ hours. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

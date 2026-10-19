@@ -63,7 +63,7 @@ export const generator_1370 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. In a 45-45-90 triangle each leg equals the hypotenuse divided by $\\sqrt{2}$, so the leg length is $\\frac{${hypotenuse}}{\\sqrt{2}} = ${prime}\\sqrt{2}$. The perimeter is the two equal legs plus the hypotenuse: $2(${prime}\\sqrt{2}) + ${hypotenuse} = ${hypotenuse} + ${hypotenuse}\\sqrt{2}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. In a 45-45-90 triangle each leg equals the hypotenuse divided by $\\sqrt{2}$, so the leg length is $\\frac{${hypotenuse}}{\\sqrt{2}} = ${prime}\\sqrt{2}$. The perimeter is the two equal legs plus the hypotenuse: $2(${prime}\\sqrt{2}) + ${hypotenuse} = ${hypotenuse} + ${hypotenuse}\\sqrt{2}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `An isosceles right triangle has a hypotenuse of length ${hypotenuse} inches. What is the perimeter, in inches, of this triangle?`,

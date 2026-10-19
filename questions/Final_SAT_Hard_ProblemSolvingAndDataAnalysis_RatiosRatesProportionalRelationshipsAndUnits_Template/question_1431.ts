@@ -80,7 +80,7 @@ export const generator_1431 = {
     const correctLetter = correctOption!.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The volume of the cube is $(${edgeLength})^3 \\approx ${volumeShown}$ cubic meters. Mass equals density times volume, so the mass is about $${density} \\times ${volumeShown} \\approx ${massRounded}$ kilograms. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The volume of the cube is $(${edgeLength})^3 \\approx ${volumeShown}$ cubic meters. Mass equals density times volume, so the mass is about $${density} \\times ${volumeShown} \\approx ${massRounded}$ kilograms. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `The density of a certain solid substance is $${density}$ kilograms per cubic meter. A sample of this substance is in the shape of a cube, where each edge has a length of $${edgeLength}$ meters. To the nearest whole number, what is the mass, in kilograms, of this sample?`,

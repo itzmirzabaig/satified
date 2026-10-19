@@ -88,7 +88,7 @@ export const generator_964 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: roundedDensity.toLocaleString('en-US'),
-      explanation: `Choice ${correctLetter} is correct. To find the population density in people per square mile of land area, first find the land area by subtracting the water area from the total area: $${totalArea} - ${waterArea} = ${landArea}$ square miles. Then divide the population by the land area: $${population.toLocaleString('en-US')} \\div ${landArea} \\approx ${density.toFixed(0)}$ people per square mile, which is closest to $${roundedDensity.toLocaleString('en-US')}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. To find the population density in people per square mile of land area, first find the land area by subtracting the water area from the total area: $${totalArea} - ${waterArea} = ${landArea}$ square miles. Then divide the population by the land area: $${population.toLocaleString('en-US')} \\div ${landArea} \\approx ${density.toFixed(0)}$ people per square mile, which is closest to $${roundedDensity.toLocaleString('en-US')}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

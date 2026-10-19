@@ -51,7 +51,7 @@ export const generator_119 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `$${multiplier}x + ${addend} = ${total}$`,
-      explanation: `The phrase "${multiplier} times a number x" translates to $${multiplier}x$, and "${addend} more than" means ${addend} is added to that product. Setting this equal to ${total} gives $${multiplier}x + ${addend} = ${total}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `The phrase "${multiplier} times a number x" translates to $${multiplier}x$, and "${addend} more than" means ${addend} is added to that product. Setting this equal to ${total} gives $${multiplier}x + ${addend} = ${total}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

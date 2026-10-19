@@ -113,7 +113,7 @@ export const generator_388 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. The sine of an acute angle in a right triangle is the ratio of the length of the side opposite that angle to the length of the hypotenuse. In right triangle $ABC$, side $BC$ is the side opposite angle $A$ and side $AB$ is the hypotenuse. It is given that the length of side $BC$ is ${opposite} units and the length of side $AB$ is ${hypotenuse} units. Therefore, the value of $\\sin A$ is $\\frac{${opposite}}{${hypotenuse}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The sine of an acute angle in a right triangle is the ratio of the length of the side opposite that angle to the length of the hypotenuse. In right triangle $ABC$, side $BC$ is the side opposite angle $A$ and side $AB$ is the hypotenuse. It is given that the length of side $BC$ is ${opposite} units and the length of side $AB$ is ${hypotenuse} units. Therefore, the value of $\\sin A$ is $\\frac{${opposite}}{${hypotenuse}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

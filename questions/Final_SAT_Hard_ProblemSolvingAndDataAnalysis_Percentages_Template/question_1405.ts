@@ -67,7 +67,7 @@ export const generator_1405 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: removed.toString(),
-      explanation: `Choice ${correctLetter} is correct. If ${pctRemoved}% of the marbles were removed, then ${remainingPct}% of the marbles remained. Let $x$ be the original number of marbles. Then $\\frac{${remainingPct}}{100}\\,x = ${remaining}$, so $x = ${remaining} \\times \\frac{100}{${remainingPct}} = ${original}$. The number removed is $x - ${remaining} = ${original} - ${remaining} = ${removed}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. If ${pctRemoved}% of the marbles were removed, then ${remainingPct}% of the marbles remained. Let $x$ be the original number of marbles. Then $\\frac{${remainingPct}}{100}\\,x = ${remaining}$, so $x = ${remaining} \\times \\frac{100}{${remainingPct}} = ${original}$. The number removed is $x - ${remaining} = ${original} - ${remaining} = ${removed}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

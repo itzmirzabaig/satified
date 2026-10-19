@@ -60,7 +60,7 @@ export const generator_950 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. The equation is $${aprilPrice.toFixed(2)} = \\frac{p}{100} \\times ${marchPrice.toFixed(2)}$. Solving for $p$: $p = \\frac{${aprilPrice.toFixed(2)} \\times 100}{${marchPrice.toFixed(2)}} = ${correctText}$. This means the April price was ${correctText}\\% of the March price, or a ${percentIncrease}\\% increase. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The equation is $${aprilPrice.toFixed(2)} = \\frac{p}{100} \\times ${marchPrice.toFixed(2)}$. Solving for $p$: $p = \\frac{${aprilPrice.toFixed(2)} \\times 100}{${marchPrice.toFixed(2)}} = ${correctText}$. This means the April price was ${correctText}\\% of the March price, or a ${percentIncrease}\\% increase. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -68,7 +68,7 @@ export const generator_323 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: sideBC.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The perimeter is the sum of the three side lengths, so $BC = ${perimeter} - ${sideAB} - ${sideAC} = ${sideBC}$ inches. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The perimeter is the sum of the three side lengths, so $BC = ${perimeter} - ${sideAB} - ${sideAC} = ${sideBC}$ inches. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

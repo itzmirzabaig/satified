@@ -85,7 +85,7 @@ export const generator_895 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
     // STEP 5: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. By the Pythagorean theorem: $${leg1}^2 + ${leg2}^2 = c^2$, so $c^2 = ${leg1 * leg1} + ${leg2 * leg2} = ${sumSquares}$. Taking the square root: $c = \\sqrt{${sumSquares}} = ${answer}$ (since $\\sqrt{${sumSquares}} = \\sqrt{${perfectSquareFactor} \\times ${radicand}} = ${coefficient}\\sqrt{${radicand}}$). Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. By the Pythagorean theorem: $${leg1}^2 + ${leg2}^2 = c^2$, so $c^2 = ${leg1 * leg1} + ${leg2 * leg2} = ${sumSquares}$. Taking the square root: $c = \\sqrt{${sumSquares}} = ${answer}$ (since $\\sqrt{${sumSquares}} = \\sqrt{${perfectSquareFactor} \\times ${radicand}} = ${coefficient}\\sqrt{${radicand}}$). Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     // STEP 6: Return question data
     return {

@@ -74,7 +74,7 @@ export const generator_366 = {
       figureCode: mafsCode, // Fixed: passing the code instead of null
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. The sum of the interior angles of a triangle is $180^{\\circ}$. In a right triangle, the two acute angles are complementary (sum to $90^{\\circ}$). Therefore, $${acuteAngle1} + a = 90$, which results in $a = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The sum of the interior angles of a triangle is $180^{\\circ}$. In a right triangle, the two acute angles are complementary (sum to $90^{\\circ}$). Therefore, $${acuteAngle1} + a = 90$, which results in $a = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

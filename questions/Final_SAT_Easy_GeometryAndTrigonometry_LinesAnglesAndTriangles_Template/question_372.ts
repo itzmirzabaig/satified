@@ -92,7 +92,7 @@ export const generator_372 = {
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. The three angles $x^{\\circ}$, $y^{\\circ}$, and $z^{\\circ}$ are the interior angles of the triangle, so by the triangle angle-sum theorem $x + y + z = 180$. Substituting the given values, $x = 180 - (${y} + ${z}) = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The three angles $x^{\\circ}$, $y^{\\circ}$, and $z^{\\circ}$ are the interior angles of the triangle, so by the triangle angle-sum theorem $x + y + z = 180$. Substituting the given values, $x = 180 - (${y} + ${z}) = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

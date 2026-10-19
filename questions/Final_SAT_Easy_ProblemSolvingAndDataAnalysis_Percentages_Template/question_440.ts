@@ -57,7 +57,7 @@ export const generator_440 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. Taking 10% of a quantity means multiplying it by $\\frac{10}{100}$. Therefore, 10% of ${roundedBase} is $\\frac{10}{100} \\times ${roundedBase} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Taking 10% of a quantity means multiplying it by $\\frac{10}{100}$. Therefore, 10% of ${roundedBase} is $\\frac{10}{100} \\times ${roundedBase} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -66,7 +66,7 @@ export const generator_467 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The probability of selecting an igneous rock is the number of igneous rocks divided by the total number of rocks. From the table there are ${igneousCount} igneous rocks and ${totalRocks} rocks in all, so the probability is $\\frac{${igneousCount}}{${totalRocks}}$. Choice ${incorrectOptions[0].letter} is incorrect; it is ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it is ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it is ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The probability of selecting an igneous rock is the number of igneous rocks divided by the total number of rocks. From the table there are ${igneousCount} igneous rocks and ${totalRocks} rocks in all, so the probability is $\\frac{${igneousCount}}{${totalRocks}}$. Choice ${incorrectOptions[0].letter} is incorrect because it is ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it is ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it is ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `The table shows the classification of every rock in a collection. If one of these rocks is selected at random, what is the probability of selecting a rock that is igneous?`,

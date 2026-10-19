@@ -113,7 +113,7 @@ export const generator_1173 = {
       figureCode,
       options: displayOptions,
       correctAnswer: correctOption ? `${correctOption.letter}. ${correctOption.text}` : "",
-      explanation: `Choice ${correctLetter} is correct. The line shown has slope $${slopeStr}$ and passes through $(0, ${bShifted})$, so its equation is $y = ${slopeStr}x + ${bShifted}$. Since $y = f(x) + ${shift}$, we have $f(x) + ${shift} = ${slopeStr}x + ${bShifted}$, so $f(x) = ${slopeStr}x + ${bShifted} - ${shift} = ${slopeStr}x ${term(bOriginal)}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The line shown has slope $${slopeStr}$ and passes through $(0, ${bShifted})$, so its equation is $y = ${slopeStr}x + ${bShifted}$. Since $y = f(x) + ${shift}$, we have $f(x) + ${shift} = ${slopeStr}x + ${bShifted}$, so $f(x) = ${slopeStr}x + ${bShifted} - ${shift} = ${slopeStr}x ${term(bOriginal)}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

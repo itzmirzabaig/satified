@@ -76,7 +76,7 @@ export const generator_893 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
     // STEP 5: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. Using the Pythagorean theorem $a^2 + b^2 = c^2$ with given leg ${givenLeg} and hypotenuse ${givenHypotenuse}: the missing leg is $\\sqrt{${givenHypotenuse}^2 - ${givenLeg}^2} = \\sqrt{${(hypotenuse * hypotenuse).toFixed(2)} - ${(leg1 * leg1).toFixed(2)}} = \\sqrt{${(hypotenuse * hypotenuse - leg1 * leg1).toFixed(2)}} = ${answer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Using the Pythagorean theorem $a^2 + b^2 = c^2$ with given leg ${givenLeg} and hypotenuse ${givenHypotenuse}: the missing leg is $\\sqrt{${givenHypotenuse}^2 - ${givenLeg}^2} = \\sqrt{${(hypotenuse * hypotenuse).toFixed(2)} - ${(leg1 * leg1).toFixed(2)}} = \\sqrt{${(hypotenuse * hypotenuse - leg1 * leg1).toFixed(2)}} = ${answer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     // STEP 6: Return question data
     return {

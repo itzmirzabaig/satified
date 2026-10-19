@@ -65,7 +65,7 @@ export const generator_224 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. The total cost is the monthly cost, \\$${monthlyCost}, times the number of months, $t$, plus the one-time activation fee, \\$${activationFee}. This gives $c = ${monthlyCost}t + ${activationFee}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The total cost is the monthly cost, \\$${monthlyCost}, times the number of months, $t$, plus the one-time activation fee, \\$${activationFee}. This gives $c = ${monthlyCost}t + ${activationFee}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -65,7 +65,7 @@ export const generator_448 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. First, find the number of hours spent in meetings: $${workdayHours} \\times ${multiplier} = ${hoursInMeetings}$ hours. Since there are 60 minutes in an hour, convert hours to minutes: $${hoursInMeetings} \\times 60 = ${result}$ minutes. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. First, find the number of hours spent in meetings: $${workdayHours} \\times ${multiplier} = ${hoursInMeetings}$ hours. Since there are 60 minutes in an hour, convert hours to minutes: $${hoursInMeetings} \\times 60 = ${result}$ minutes. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

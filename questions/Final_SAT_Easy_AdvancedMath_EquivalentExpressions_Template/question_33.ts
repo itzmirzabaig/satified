@@ -58,7 +58,7 @@ export const generator_33 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. The expression inside the parentheses is a difference of squares, since $${square}y^{2} = (${base}y)^{2}$. Therefore $x^{2}-${square}y^{2} = (x-${base}y)(x+${base}y)$, and $${outer}\\left(x^{2}-${square}y^{2}\\right) = ${outer}(x-${base}y)(x+${base}y)$. Choice ${letterOf(0)} is incorrect; expanding it gives a nonzero $xy$ term. Choice ${letterOf(1)} is incorrect; it uses $${square}$ instead of its square root, $${base}$. Choice ${letterOf(2)} is incorrect; $(x-${base}y)(x-${base}y)$ expands to $x^{2}-${2 * base}xy+${square}y^{2}$.`
+      explanation: `Choice ${correctOption.letter} is correct. The expression inside the parentheses is a difference of squares, since $${square}y^{2} = (${base}y)^{2}$. Therefore $x^{2}-${square}y^{2} = (x-${base}y)(x+${base}y)$, and $${outer}\\left(x^{2}-${square}y^{2}\\right) = ${outer}(x-${base}y)(x+${base}y)$. Choice ${letterOf(0)} is incorrect; expanding it gives a nonzero $xy$ term. Choice ${letterOf(1)} is incorrect because it uses $${square}$ instead of its square root, $${base}$. Choice ${letterOf(2)} is incorrect; $(x-${base}y)(x-${base}y)$ expands to $x^{2}-${2 * base}xy+${square}y^{2}$.`
     };
   }
 };

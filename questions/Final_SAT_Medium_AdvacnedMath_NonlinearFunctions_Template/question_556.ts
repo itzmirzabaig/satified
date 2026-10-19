@@ -51,7 +51,7 @@ export const generator_556 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Set up the equation: $x(x+${difference}) = ${targetProduct}$. This becomes $x^2 + ${difference}x - ${targetProduct} = 0$. Factoring: $(x+${solution + difference})(x-${solution}) = 0$. Since $x$ is positive, $x = ${solution}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Set up the equation: $x(x+${difference}) = ${targetProduct}$. This becomes $x^2 + ${difference}x - ${targetProduct} = 0$. Factoring: $(x+${solution + difference})(x-${solution}) = 0$. Since $x$ is positive, $x = ${solution}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText,

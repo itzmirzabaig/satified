@@ -70,7 +70,7 @@ export const generator_752 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,
-      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${p2} - ${p1}}{${c2} - ${c1}} = \\frac{${p2 - p1}}{${c2 - c1}} = ${m}$. Using point (${c3}, ${p3}): ${p3} = ${m}(${c3}) + b, so b = ${p3 - m * c3} = ${b}$. The equation is $p = ${m}c + ${b}$, which rearranges to ${m}c - p = ${-b}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${p2} - ${p1}}{${c2} - ${c1}} = \\frac{${p2 - p1}}{${c2 - c1}} = ${m}$. Using point (${c3}, ${p3}): ${p3} = ${m}(${c3}) + b, so b = ${p3 - m * c3} = ${b}$. The equation is $p = ${m}c + ${b}$, which rearranges to ${m}c - p = ${-b}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

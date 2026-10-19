@@ -94,7 +94,7 @@ export const generator_990 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: ratioText,
-      explanation: `Choice ${correctLetter} is correct. In $${m1}k$ hours the car travels $d_1 = ${speed}(${m1}k)$ miles, and in $${m2}k$ hours it travels $d_2 = ${speed}(${m2}k)$ miles. The number of times as far is $\\frac{d_1}{d_2} = \\frac{${speed}(${m1}k)}{${speed}(${m2}k)} = \\frac{${m1}}{${m2}} = ${ratioText}$, since the speed $${speed}$ and the constant $k$ cancel. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. In $${m1}k$ hours the car travels $d_1 = ${speed}(${m1}k)$ miles, and in $${m2}k$ hours it travels $d_2 = ${speed}(${m2}k)$ miles. The number of times as far is $\\frac{d_1}{d_2} = \\frac{${speed}(${m1}k)}{${speed}(${m2}k)} = \\frac{${m1}}{${m2}} = ${ratioText}$, since the speed $${speed}$ and the constant $k$ cancel. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -100,7 +100,7 @@ export const generator_441 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${roundedPercent}%`,
-      explanation: `Choice ${correctOption.letter} is correct. To find the percent of Employee A's calls that received a one-star rating, divide the number of one-star calls by Employee A's total number of calls and multiply by one hundred: $\\frac{${star1}}{${rowTotalA}} \\times 100 \\approx ${round(percentage, 2)}$, which rounds to ${roundedPercent}% to the nearest whole percent. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the percent of Employee A's calls that received a one-star rating, divide the number of one-star calls by Employee A's total number of calls and multiply by one hundred: $\\frac{${star1}}{${rowTotalA}} \\times 100 \\approx ${round(percentage, 2)}$, which rounds to ${roundedPercent}% to the nearest whole percent. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

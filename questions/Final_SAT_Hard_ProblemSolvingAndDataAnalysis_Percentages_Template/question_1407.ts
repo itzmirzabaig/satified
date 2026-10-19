@@ -65,7 +65,7 @@ export const generator_1407 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. An item is green, rectangular, and metal only if it passes all three steps, so the fraction that are all three is $\\frac{${pct1}}{100} \\times \\frac{${pct2}}{100} \\times \\frac{${pct3}}{100} \\approx ${arePct.toFixed(2)}\\%$. The percentage that are NOT all three is the complement: $\\left(100 - ${arePct.toFixed(2)}\\right)\\% = ${complement.toFixed(2)}\\%$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. An item is green, rectangular, and metal only if it passes all three steps, so the fraction that are all three is $\\frac{${pct1}}{100} \\times \\frac{${pct2}}{100} \\times \\frac{${pct3}}{100} \\approx ${arePct.toFixed(2)}\\%$. The percentage that are NOT all three is the complement: $\\left(100 - ${arePct.toFixed(2)}\\right)\\% = ${complement.toFixed(2)}\\%$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

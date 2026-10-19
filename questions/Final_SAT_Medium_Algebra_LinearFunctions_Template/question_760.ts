@@ -62,7 +62,7 @@ export const generator_760 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The perimeter formula is $P = 2l + 2w$. Comparing $f(x) = ${coef}x + ${constant}$ with this, the constant term equals twice the width, so $w = \\frac{${constant}}{2} = ${width}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The perimeter formula is $P = 2l + 2w$. Comparing $f(x) = ${coef}x + ${constant}$ with this, the constant term equals twice the width, so $w = \\frac{${constant}}{2} = ${width}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

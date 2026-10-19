@@ -82,7 +82,7 @@ export const generator_1411 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. Increasing $x$ by ${increasePct}% means $x + \\frac{${increasePct}}{100}x = ${result}$, which is $\\left(1 + \\frac{${increasePct}}{100}\\right)x = ${result}$, or $x \\cdot ${multiplier} = ${result}$. Dividing both sides by ${multiplier} gives $x = \\frac{${result}}{${multiplier}} = ${x}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Increasing $x$ by ${increasePct}% means $x + \\frac{${increasePct}}{100}x = ${result}$, which is $\\left(1 + \\frac{${increasePct}}{100}\\right)x = ${result}$, or $x \\cdot ${multiplier} = ${result}$. Dividing both sides by ${multiplier} gives $x = \\frac{${result}}{${multiplier}} = ${x}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

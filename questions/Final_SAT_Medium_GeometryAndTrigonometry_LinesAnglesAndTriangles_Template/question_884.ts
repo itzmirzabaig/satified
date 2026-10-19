@@ -64,7 +64,7 @@ export const generator_884 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: k.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The sum of the interior angles of a triangle is $180^{\\circ}$. The interior angles of triangle $ABC$ are $${angleA}^{\\circ}$, $90^{\\circ}$, and $\\left(\\frac{k}{2}\\right)^{\\circ}$, so $${angleA}+90+\\frac{k}{2}=180$, or $${angleA + 90}+\\frac{k}{2}=180$. Subtracting $${angleA + 90}$ from each side gives $\\frac{k}{2}=${halfK}$, and multiplying each side by $2$ gives $k=${k}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The sum of the interior angles of a triangle is $180^{\\circ}$. The interior angles of triangle $ABC$ are $${angleA}^{\\circ}$, $90^{\\circ}$, and $\\left(\\frac{k}{2}\\right)^{\\circ}$, so $${angleA}+90+\\frac{k}{2}=180$, or $${angleA + 90}+\\frac{k}{2}=180$. Subtracting $${angleA + 90}$ from each side gives $\\frac{k}{2}=${halfK}$, and multiplying each side by $2$ gives $k=${k}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

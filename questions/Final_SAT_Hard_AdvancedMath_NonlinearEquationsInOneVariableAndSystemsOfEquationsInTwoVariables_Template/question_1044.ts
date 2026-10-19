@@ -49,9 +49,9 @@ export const generator_1044 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     const explanation = `Choice ${correctLetter} is correct. The number of distinct real solutions of $px^2 + qx + r = 0$ is determined by the discriminant $\\Delta = q^2 - 4pr$. Here $\\Delta = (${b})^2 - 4(${a})(${finalC}) = ${b * b} - ${4 * a * finalC} = ${finalDisc}$. Since $\\Delta < 0$, the equation has zero distinct real solutions.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `$ ${a}x^2 + ${b}x + ${finalC} = 0$\n\nHow many distinct real solutions does the given equation have?`,

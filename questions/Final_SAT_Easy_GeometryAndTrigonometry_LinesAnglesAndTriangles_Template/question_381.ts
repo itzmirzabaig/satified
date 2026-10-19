@@ -160,7 +160,7 @@ export const generator_381 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. Dilation is a transformation that changes the size of a figure but not its shape, producing similar figures. In similar triangles, corresponding angles are congruent (equal in measure). Angle $A$ corresponds to angle $X$. Therefore, the measure of angle $X$ is equal to the measure of angle $A$, which is $${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Dilation is a transformation that changes the size of a figure but not its shape, producing similar figures. In similar triangles, corresponding angles are congruent (equal in measure). Angle $A$ corresponds to angle $X$. Therefore, the measure of angle $X$ is equal to the measure of angle $A$, which is $${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

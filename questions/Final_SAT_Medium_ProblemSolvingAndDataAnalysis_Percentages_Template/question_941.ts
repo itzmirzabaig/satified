@@ -80,7 +80,7 @@ export const generator_941 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. To find the percentage of items that are both red and have stripes, take ${percent2}% of ${percent1}%. In decimal form: $${p1Decimal} \\times ${p2Decimal} = ${productDecimal}$, which equals ${result}%. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the percentage of items that are both red and have stripes, take ${percent2}% of ${percent1}%. In decimal form: $${p1Decimal} \\times ${p2Decimal} = ${productDecimal}$, which equals ${result}%. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

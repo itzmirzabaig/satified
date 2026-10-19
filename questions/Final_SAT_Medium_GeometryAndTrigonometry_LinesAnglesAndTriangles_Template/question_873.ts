@@ -48,7 +48,7 @@ export const generator_873 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: "No additional information is needed.",
-      explanation: `Choice ${correctOption.letter} is correct. To determine if two triangles are similar, we can use the Angle-Angle (AA) Similarity Postulate. Since angle $D$ (${angleD}°) corresponds to angle $R$ (${angleD}°) and angle $E$ (${angleE}°) corresponds to angle $S$ (${angleE}°), we have two pairs of congruent angles. Therefore, the triangles are similar by AA, and no additional information is required. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To determine if two triangles are similar, we can use the Angle-Angle (AA) Similarity Postulate. Since angle $D$ (${angleD}°) corresponds to angle $R$ (${angleD}°) and angle $E$ (${angleE}°) corresponds to angle $S$ (${angleE}°), we have two pairs of congruent angles. Therefore, the triangles are similar by AA, and no additional information is required. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

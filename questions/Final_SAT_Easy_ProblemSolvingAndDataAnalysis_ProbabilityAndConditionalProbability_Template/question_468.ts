@@ -60,7 +60,7 @@ export const generator_468 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The probability is the number of favorable outcomes divided by the total number of outcomes. With ${saxPlayers} saxophone players out of ${totalMembers} total members, the probability of selecting a saxophone player is $\\frac{${saxPlayers}}{${totalMembers}}$. Choice ${incorrectOptions[0].letter} is incorrect; it is ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it is ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it is ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The probability is the number of favorable outcomes divided by the total number of outcomes. With ${saxPlayers} saxophone players out of ${totalMembers} total members, the probability of selecting a saxophone player is $\\frac{${saxPlayers}}{${totalMembers}}$. Choice ${incorrectOptions[0].letter} is incorrect because it is ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it is ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it is ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `A band with $${totalMembers}$ members has $${saxPlayers}$ members who play saxophone. If one band member is selected at random, what is the probability of selecting a band member who plays saxophone?`,

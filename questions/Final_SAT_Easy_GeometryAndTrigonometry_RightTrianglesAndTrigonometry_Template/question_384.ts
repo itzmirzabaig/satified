@@ -74,7 +74,7 @@ export const generator_384 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The figure shows a right triangle with one acute angle measuring $45^{\\circ}$. Since the sum of angles in a triangle is $180^{\\circ}$ and the right angle is $90^{\\circ}$, the third angle must be $180 - 90 - 45 = 45^{\\circ}$. A triangle with two equal angles is isosceles, meaning its two legs are equal in length. Therefore, $x = ${legValue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The figure shows a right triangle with one acute angle measuring $45^{\\circ}$. Since the sum of angles in a triangle is $180^{\\circ}$ and the right angle is $90^{\\circ}$, the third angle must be $180 - 90 - 45 = 45^{\\circ}$. A triangle with two equal angles is isosceles, meaning its two legs are equal in length. Therefore, $x = ${legValue}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

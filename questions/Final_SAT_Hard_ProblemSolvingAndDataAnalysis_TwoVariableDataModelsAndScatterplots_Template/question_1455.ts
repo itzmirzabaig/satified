@@ -141,7 +141,7 @@ export const generator_1455 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `$y=${aCoeff}x^{2}+${bCoeff}x+${cConst}$`,
-      explanation: `Choice ${correctLetter} is correct. The scatterplot shows a downward-opening parabola (negative $x^2$ coefficient) with a positive y-intercept around ${Math.round(cConst)}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The scatterplot shows a downward-opening parabola (negative $x^2$ coefficient) with a positive y-intercept around ${Math.round(cConst)}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

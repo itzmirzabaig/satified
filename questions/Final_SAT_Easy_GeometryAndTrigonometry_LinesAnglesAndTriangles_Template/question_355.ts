@@ -51,7 +51,7 @@ export const generator_355 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. Using similar triangles: $\\frac{\\text{monument height}}{\\text{monument shadow}} = \\frac{\\text{tree height}}{\\text{tree shadow}}$. So $\\frac{${tallHeight}}{${tallShadow}} = \\frac{h}{${smallShadow}}$. Cross-multiplying: $h = \\frac{${tallHeight} \\times ${smallShadow}}{${tallShadow}} \\approx ${correctAnswer}$ feet. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Using similar triangles: $\\frac{\\text{monument height}}{\\text{monument shadow}} = \\frac{\\text{tree height}}{\\text{tree shadow}}$. So $\\frac{${tallHeight}}{${tallShadow}} = \\frac{h}{${smallShadow}}$. Cross-multiplying: $h = \\frac{${tallHeight} \\times ${smallShadow}}{${tallShadow}} \\approx ${correctAnswer}$ feet. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

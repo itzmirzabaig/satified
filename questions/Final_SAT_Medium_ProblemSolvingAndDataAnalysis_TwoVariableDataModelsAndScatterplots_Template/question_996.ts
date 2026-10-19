@@ -117,7 +117,7 @@ export const generator_996 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctLetter} is correct. The $y$-intercept is approximately ${interceptApprox.toLocaleString('en-US')}. Using the points $(0, ${intercept.toLocaleString('en-US')})$ and $(5, ${yAt5.toLocaleString('en-US')})$, the slope $≈ (${yAt5.toLocaleString('en-US')} - ${intercept.toLocaleString('en-US')}) / 5 = ${slope.toLocaleString('en-US')}$. Choice ${correctLetter} matches these estimates. Choice ${swapLetter} is incorrect; it swaps the slope and the $y$-intercept. Choice ${doubleSlopeLetter} is incorrect; it keeps the correct $y$-intercept but uses a slope that is twice too large. Choice ${doubleSlopeSwapLetter} is incorrect; it uses that doubled slope as the constant and puts the $y$-intercept on $t$, so both values are wrong.`
+      explanation: `Choice ${correctLetter} is correct. The $y$-intercept is approximately ${interceptApprox.toLocaleString('en-US')}. Using the points $(0, ${intercept.toLocaleString('en-US')})$ and $(5, ${yAt5.toLocaleString('en-US')})$, the slope $≈ (${yAt5.toLocaleString('en-US')} - ${intercept.toLocaleString('en-US')}) / 5 = ${slope.toLocaleString('en-US')}$. Choice ${correctLetter} matches these estimates. Choice ${swapLetter} is incorrect because it swaps the slope and the $y$-intercept. Choice ${doubleSlopeLetter} is incorrect because it keeps the correct $y$-intercept but uses a slope that is twice too large. Choice ${doubleSlopeSwapLetter} is incorrect because it uses that doubled slope as the constant and puts the $y$-intercept on $t$, so both values are wrong.`
     };
   }
 };

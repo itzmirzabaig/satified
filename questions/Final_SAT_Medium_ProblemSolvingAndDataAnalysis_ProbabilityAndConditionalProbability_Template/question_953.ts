@@ -72,7 +72,7 @@ export const generator_953 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctLetter} is correct. Since the probabilities must sum to 1, the probability of selecting a customer in theater C is $1 - ${probA} - ${probB} = ${probC}$. Therefore, the number of customers in theater C is $${probC} \\times ${totalCustomers} = ${countC}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Since the probabilities must sum to 1, the probability of selecting a customer in theater C is $1 - ${probA} - ${probB} = ${probC}$. Therefore, the number of customers in theater C is $${probC} \\times ${totalCustomers} = ${countC}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

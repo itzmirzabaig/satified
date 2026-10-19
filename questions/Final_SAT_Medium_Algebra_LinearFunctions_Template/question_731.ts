@@ -74,7 +74,7 @@ export const generator_731 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: result.toFixed(2),
-      explanation: `Choice ${correctLetter} is correct. Substituting ${x} for $x$: $f(${x}) = ${initial.toFixed(2)} - ${rate.toFixed(2)}(${x}) = ${initial.toFixed(2)} - ${(rate * x).toFixed(2)} = ${result.toFixed(2)}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Substituting ${x} for $x$: $f(${x}) = ${initial.toFixed(2)} - ${rate.toFixed(2)}(${x}) = ${initial.toFixed(2)} - ${(rate * x).toFixed(2)} = ${result.toFixed(2)}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

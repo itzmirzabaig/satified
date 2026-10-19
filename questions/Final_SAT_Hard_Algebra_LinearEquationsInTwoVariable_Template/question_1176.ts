@@ -62,7 +62,7 @@ export const generator_1176 = {
       figureCode: null,
       options: displayOptions,
       correctAnswer: correctOption ? `${correctOption.letter}. ${correctOption.text}` : "",
-      explanation: `Choice ${correctLetter} is correct. Solving line $h$ for $y$: $\\frac{1}{${den2}}y = -\\frac{1}{${den1}}x + ${c}$, so $y = -\\frac{${den2}}{${den1}}x + ${den2 * c}$. The slope of line $h$ is $-\\frac{${den2}}{${den1}}$. A perpendicular line has the negative reciprocal slope, which is $\\frac{${den1}}{${den2}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Solving line $h$ for $y$: $\\frac{1}{${den2}}y = -\\frac{1}{${den1}}x + ${c}$, so $y = -\\frac{${den2}}{${den1}}x + ${den2 * c}$. The slope of line $h$ is $-\\frac{${den2}}{${den1}}$. A perpendicular line has the negative reciprocal slope, which is $\\frac{${den1}}{${den2}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

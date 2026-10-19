@@ -118,7 +118,7 @@ export const generator_1307 = {
       figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. Circle A has center $(${h}, ${k})$ and radius $r=${r}$. A vertical shift changes only the $y$-coordinate of the center; shifting down ${shift} units gives $k_{new}=${k}-${shift}=${newK}$, so the new center is $(${h}, ${newK})$ with the same radius $r=${r}$. The equation is $${correctText}$. Choice ${letterOf('horiz')} is incorrect; it shifts the circle horizontally instead of vertically. Choice ${letterOf('up')} is incorrect; it shifts the circle up ${shift} units instead of down. Choice ${letterOf('over')} is incorrect; it moves the center too far down.`
+      explanation: `Choice ${correctLetter} is correct. Circle A has center $(${h}, ${k})$ and radius $r=${r}$. A vertical shift changes only the $y$-coordinate of the center; shifting down ${shift} units gives $k_{new}=${k}-${shift}=${newK}$, so the new center is $(${h}, ${newK})$ with the same radius $r=${r}$. The equation is $${correctText}$. Choice ${letterOf('horiz')} is incorrect because it shifts the circle horizontally instead of vertically. Choice ${letterOf('up')} is incorrect because it shifts the circle up ${shift} units instead of down. Choice ${letterOf('over')} is incorrect because it moves the center too far down.`
     };
   }
 };

@@ -61,7 +61,7 @@ export const generator_748 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,
-      explanation: `Choice ${correctLetter} is correct. Using point-slope form with slope ${m} and point (${x1}, ${y1}): $y - ${y1} = ${m}(x - ${x1})$. Solving for y: $y = ${m}x - ${m * x1} + ${y1} = ${m}x + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Using point-slope form with slope ${m} and point (${x1}, ${y1}): $y - ${y1} = ${m}(x - ${x1})$. Solving for y: $y = ${m}x - ${m * x1} + ${y1} = ${m}x + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

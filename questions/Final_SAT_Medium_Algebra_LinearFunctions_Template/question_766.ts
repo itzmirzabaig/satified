@@ -102,7 +102,7 @@ export const generator_766 = {
       figureCode: svgContent,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `The electrician's hourly rate`,
-      explanation: `Choice ${correctLetter} is correct. In a linear model $y = mx + b$, the slope $m$ is the rate of change of the total charge with respect to the number of hours. Here that rate is the additional cost per hour, which is the hourly rate of \\$${hourlyRate} per hour. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. In a linear model $y = mx + b$, the slope $m$ is the rate of change of the total charge with respect to the number of hours. Here that rate is the additional cost per hour, which is the hourly rate of \\$${hourlyRate} per hour. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

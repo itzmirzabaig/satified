@@ -96,7 +96,7 @@ export const generator_439 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. According to the table, ${doctorPct}% of survey respondents get most of their medical information from a doctor and ${internetPct}% get most of their medical information from the Internet. Together that is ${doctorPct}% + ${internetPct}% = ${combinedPct}% of the ${totalSurveyed} respondents, and ${combinedPct}% of ${totalSurveyed} is ${result}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. According to the table, ${doctorPct}% of survey respondents get most of their medical information from a doctor and ${internetPct}% get most of their medical information from the Internet. Together that is ${doctorPct}% + ${internetPct}% = ${combinedPct}% of the ${totalSurveyed} respondents, and ${combinedPct}% of ${totalSurveyed} is ${result}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

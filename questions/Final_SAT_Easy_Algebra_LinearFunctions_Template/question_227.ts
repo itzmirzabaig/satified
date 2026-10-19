@@ -50,7 +50,7 @@ export const generator_227 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: optionA,
-      explanation: `Choice ${correctOption.letter} is correct. In $f(t) = ${initial} + ${deposit}t$, the coefficient ${deposit} of $t$ represents the rate of change, which is the amount added to the account with each monthly deposit. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In $f(t) = ${initial} + ${deposit}t$, the coefficient ${deposit} of $t$ represents the rate of change, which is the amount added to the account with each monthly deposit. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

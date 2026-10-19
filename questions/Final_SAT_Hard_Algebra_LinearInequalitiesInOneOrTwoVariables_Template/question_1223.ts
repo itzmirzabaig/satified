@@ -57,7 +57,7 @@ export const generator_1223 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: shuffledOptions.find(o => o.isCorrect).text,
-      explanation: `Choice ${correctLetter} is correct. By the triangle inequality theorem: (1) $${sideA} + ${sideB} > x$, so $x < ${sideA + sideB}$; (2) $${sideA} + x > ${sideB}$, so $x > ${sideB - sideA}$; (3) $${sideB} + x > ${sideA}$ (always true since side lengths are positive). Combining: $${sideB - sideA} < x < ${sideA + sideB}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. By the triangle inequality theorem: (1) $${sideA} + ${sideB} > x$, so $x < ${sideA + sideB}$; (2) $${sideA} + x > ${sideB}$, so $x > ${sideB - sideA}$; (3) $${sideB} + x > ${sideA}$ (always true since side lengths are positive). Combining: $${sideB - sideA} < x < ${sideA + sideB}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

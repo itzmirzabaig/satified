@@ -48,7 +48,7 @@ export const generator_367 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `$${correctAnswer}$ mm`,
-      explanation: `Choice ${correctOption.letter} is correct. In an equilateral triangle, all three sides have the same length. Since $AB = ${sideLength}$ mm and $BC = ${sideLength}$ mm, if $AC = ${sideLength}$ mm, then all three sides are equal and triangle $ABC$ is equilateral. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In an equilateral triangle, all three sides have the same length. Since $AB = ${sideLength}$ mm and $BC = ${sideLength}$ mm, if $AC = ${sideLength}$ mm, then all three sides are equal and triangle $ABC$ is equilateral. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

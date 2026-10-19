@@ -94,7 +94,7 @@ export const generator_622 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
     
     // STEP 6: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. Using the power of a product rule and power of a power rule:\n\n$$(${coeff}${innerX}${innerY})^{${outerExp}} = (${coeff})^{${outerExp}} \\cdot (${innerX})^{${outerExp}} \\cdot (${innerY})^{${outerExp}} = ${resultCoeff} \\cdot ${resultX} \\cdot ${resultY} = ${correctAnswer}$$\n\nChoice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Using the power of a product rule and power of a power rule:\n\n$$(${coeff}${innerX}${innerY})^{${outerExp}} = (${coeff})^{${outerExp}} \\cdot (${innerX})^{${outerExp}} \\cdot (${innerY})^{${outerExp}} = ${resultCoeff} \\cdot ${resultX} \\cdot ${resultY} = ${correctAnswer}$$\n\nChoice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: `Which of the following is equivalent to $${originalExpr}$?`,

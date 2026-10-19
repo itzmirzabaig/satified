@@ -51,7 +51,7 @@ export const generator_547 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The estimated population was ${popProse} in ${startYear}, and an increase of ${growthPercent}% per year means the population is multiplied by the growth factor 1 + ${growthDecimalStr} = ${growthFactorStr} each year. After $x$ years of repeated growth, the estimated population is $p(x) = ${popTeX}(${growthFactorStr})^x$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The estimated population was ${popProse} in ${startYear}, and an increase of ${growthPercent}% per year means the population is multiplied by the growth factor 1 + ${growthDecimalStr} = ${growthFactorStr} each year. After $x$ years of repeated growth, the estimated population is $p(x) = ${popTeX}(${growthFactorStr})^x$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText,

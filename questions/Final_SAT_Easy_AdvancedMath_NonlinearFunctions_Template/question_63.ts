@@ -67,7 +67,7 @@ export const generator_63 = {
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xVal} for $x$ in $f(x)=\\frac{${numeratorVal}}{x}$ gives $f(${xVal})=\\frac{${numeratorVal}}{${xVal}}$. Since ${numeratorVal} and ${xVal} share no common factor greater than 1, this fraction is already in lowest terms. Choice ${letterOf('flipped')} is incorrect; it results from placing ${xVal} in the numerator instead of the denominator. Choice ${letterOf('numeratorOnly')} is incorrect; it is the numerator of $f(x)$, not the value of the function. Choice ${letterOf('xOnly')} is incorrect; it is the input value $x$, not $f(x)$.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xVal} for $x$ in $f(x)=\\frac{${numeratorVal}}{x}$ gives $f(${xVal})=\\frac{${numeratorVal}}{${xVal}}$. Since ${numeratorVal} and ${xVal} share no common factor greater than 1, this fraction is already in lowest terms. Choice ${letterOf('flipped')} is incorrect because it results from placing ${xVal} in the numerator instead of the denominator. Choice ${letterOf('numeratorOnly')} is incorrect because it is the numerator of $f(x)$, not the value of the function. Choice ${letterOf('xOnly')} is incorrect because it is the input value $x$, not $f(x)$.`
     };
   }
 };

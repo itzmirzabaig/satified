@@ -46,7 +46,7 @@ export const generator_492 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `If the worker works $${multiplier}$ times as long, they will earn $${multiplier}$ times as much money. Earnings = $${multiplier} \\times p = ${multiplier}p$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `If the worker works $${multiplier}$ times as long, they will earn $${multiplier}$ times as much money. Earnings = $${multiplier} \\times p = ${multiplier}p$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `A worker earns $p$ dollars for every $w$ hours of work. Which expression represents the amount of money, in dollars, the worker earns for $${multiplier}w$ hours of work?`,

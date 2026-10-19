@@ -68,7 +68,7 @@ export const generator_1220 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. To determine when walking is faster, compare the total time for each method. Walking takes $${walkTime}$ minutes. The bus takes $w$ minutes waiting plus $${busRideTime}$ minutes riding, for a total of $w + ${busRideTime}$ minutes. Walking is faster when the bus time exceeds the walking time: $w + ${busRideTime} > ${walkTime}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. To determine when walking is faster, compare the total time for each method. Walking takes $${walkTime}$ minutes. The bus takes $w$ minutes waiting plus $${busRideTime}$ minutes riding, for a total of $w + ${busRideTime}$ minutes. Walking is faster when the bus time exceeds the walking time: $w + ${busRideTime} > ${walkTime}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

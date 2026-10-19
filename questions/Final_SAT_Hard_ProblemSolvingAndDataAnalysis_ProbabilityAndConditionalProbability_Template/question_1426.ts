@@ -135,7 +135,7 @@ export const generator_1426 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctAnswerText,
-      explanation: `Choice ${correctLetter} is correct. Restrict to the states that have a sales tax: there are ${salesIncome} with an income tax and ${salesNoIncome} without, for a total of ${totalWithSales}. Of those, ${salesNoIncome} have no income tax, so the requested percent is $\\frac{${salesNoIncome}}{${totalWithSales}} \\times 100 \\approx ${roundTenth(correctPct).toFixed(1)}$ percent, which rounds to ${correctAnswerText}.\n\nChoice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.\nChoice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.\nChoice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`,
+      explanation: `Choice ${correctLetter} is correct. Restrict to the states that have a sales tax: there are ${salesIncome} with an income tax and ${salesNoIncome} without, for a total of ${totalWithSales}. Of those, ${salesNoIncome} have no income tax, so the requested percent is $\\frac{${salesNoIncome}}{${totalWithSales}} \\times 100 \\approx ${roundTenth(correctPct).toFixed(1)}$ percent, which rounds to ${correctAnswerText}.\n\nChoice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.\nChoice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.\nChoice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`,
     };
   }
 };

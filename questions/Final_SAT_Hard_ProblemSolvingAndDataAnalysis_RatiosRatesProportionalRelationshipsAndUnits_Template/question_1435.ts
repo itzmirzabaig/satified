@@ -95,7 +95,7 @@ export const generator_1435 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Speed of R = $\\frac{${distR}x}{${timeR}y}$. Since R is half as fast as S, speed of S = $\\frac{${2 * distR}x}{${timeR}y}$. Time for S to travel $${distS}x$ inches = $\\frac{${distS}x}{\\frac{${2 * distR}x}{${timeR}y}} = ${timeSCoefficient}y$ seconds. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Speed of R = $\\frac{${distR}x}{${timeR}y}$. Since R is half as fast as S, speed of S = $\\frac{${2 * distR}x}{${timeR}y}$. Time for S to travel $${distS}x$ inches = $\\frac{${distS}x}{\\frac{${2 * distR}x}{${timeR}y}} = ${timeSCoefficient}y$ seconds. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `Objects R and S each travel at a constant speed. The speed of object R is half the speed of object S. Object R travels a distance of $${distR}x$ inches in $${timeR}y$ seconds. Which expression represents the time, in seconds, it takes object S to travel a distance of $${distS}x$ inches?`,

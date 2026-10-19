@@ -61,7 +61,7 @@ export const generator_39 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Combine like terms: $(${a1}+1)x^2 + (${b1}+${b2})x + (${c1}+${c2}) = ${correctText.replace(/\$/g, '')}$. Choice ${letterOf(0)} is incorrect; it leaves out the $x^2$ term of the second expression. Choice ${letterOf(1)} is incorrect; it leaves out the $${b1Term}$ term of the first expression. Choice ${letterOf(2)} is incorrect; it has the wrong sign on the constant term, since $${c1}+${c2}=${cSum}$.`
+      explanation: `Choice ${correctOption.letter} is correct. Combine like terms: $(${a1}+1)x^2 + (${b1}+${b2})x + (${c1}+${c2}) = ${correctText.replace(/\$/g, '')}$. Choice ${letterOf(0)} is incorrect because it leaves out the $x^2$ term of the second expression. Choice ${letterOf(1)} is incorrect because it leaves out the $${b1Term}$ term of the first expression. Choice ${letterOf(2)} is incorrect because it has the wrong sign on the constant term, since $${c1}+${c2}=${cSum}$.`
     };
   }
 };

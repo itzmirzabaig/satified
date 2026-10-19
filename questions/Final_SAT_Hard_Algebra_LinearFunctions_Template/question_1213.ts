@@ -51,7 +51,7 @@ export const generator_1213 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The value ${stretchRate} is multiplied by $w$, the weight. When weight increases by 1 newton, length increases by ${stretchRate} centimeters. This is the rate of change of length with respect to weight. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The value ${stretchRate} is multiplied by $w$, the weight. When weight increases by 1 newton, length increases by ${stretchRate} centimeters. This is the rate of change of length with respect to weight. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

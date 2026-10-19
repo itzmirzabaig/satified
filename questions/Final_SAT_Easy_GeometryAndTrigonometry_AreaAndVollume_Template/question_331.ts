@@ -49,7 +49,7 @@ export const generator_331 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: height.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The base area is $${length} \\times ${width} = ${baseArea}$. The height is $${volume} \\div ${baseArea} = ${height}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The base area is $${length} \\times ${width} = ${baseArea}$. The height is $${volume} \\div ${baseArea} = ${height}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

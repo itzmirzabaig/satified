@@ -72,7 +72,7 @@ export const generator_466 = {
       ? `\\frac{${whiteCount}}{${totalCount}}`
       : `\\frac{${whiteCount}}{${totalCount}} = \\frac{${simplifiedNum}}{${simplifiedDen}}`;
 
-    const explanation = `Choice ${correctOption.letter} is correct. There are ${whiteCount} white buttons out of ${totalCount} total buttons, so the probability of selecting a white button is $${fractionText}$. Choice ${incorrectOptions[0].letter} is incorrect; it is ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it is ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it is ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. There are ${whiteCount} white buttons out of ${totalCount} total buttons, so the probability of selecting a white button is $${fractionText}$. Choice ${incorrectOptions[0].letter} is incorrect because it is ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it is ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it is ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `There are $${totalCount}$ buttons in a bag: $${whiteCount}$ white buttons, $${orangeCount}$ orange buttons, and $${brownCount}$ brown buttons. If one of these buttons is selected at random, what is the probability of selecting a white button?`,

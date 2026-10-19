@@ -47,7 +47,7 @@ export const generator_630 = {
    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
    
    // STEP 4: Build explanation
-   const explanation = `Choice ${correctLetter} is correct. Multiplying both sides of the given equation by $-${coeff}x$ yields $-${coeff}xv = w$, or $w = -${coeff}vx$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+   const explanation = `Choice ${correctLetter} is correct. Multiplying both sides of the given equation by $-${coeff}x$ yields $-${coeff}xv = w$, or $w = -${coeff}vx$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
    
    return {
      questionText: `$$v=-\\frac{w}{${coeff}x}$$\nThe given equation relates the distinct positive numbers $v, w$, and $x$. Which equation correctly expresses $w$ in terms of $v$ and $x$?`,

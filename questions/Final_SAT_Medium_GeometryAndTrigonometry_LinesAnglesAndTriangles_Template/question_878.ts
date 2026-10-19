@@ -161,7 +161,7 @@ export const generator_878 = {
       figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. Since $AE \\parallel BD$, corresponding angles are equal, so $m\\angle AEC = m\\angle BDC = ${angleBDC}^{\\circ}$. In $\\triangle ACE$, the sum of the angles is $180^{\\circ}$: $m\\angle CAE + m\\angle ACE + m\\angle AEC = 180^{\\circ}$. Substituting the known values gives $m\\angle CAE + ${angleACE} + ${angleBDC} = 180$, so $m\\angle CAE + ${angleACE + angleBDC} = 180$ and $m\\angle CAE = ${angleCAE}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Since $AE \\parallel BD$, corresponding angles are equal, so $m\\angle AEC = m\\angle BDC = ${angleBDC}^{\\circ}$. In $\\triangle ACE$, the sum of the angles is $180^{\\circ}$: $m\\angle CAE + m\\angle ACE + m\\angle AEC = 180^{\\circ}$. Substituting the known values gives $m\\angle CAE + ${angleACE} + ${angleBDC} = 180$, so $m\\angle CAE + ${angleACE + angleBDC} = 180$ and $m\\angle CAE = ${angleCAE}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -166,7 +166,7 @@ export const generator_876 = {
       figureCode: svg,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Since $\\triangle QPR \\sim \\triangle STR$, corresponding sides are proportional: $\\frac{QP}{ST} = \\frac{QR}{SR}$. Substituting the given values gives $\\frac{${QP}}{${ST}} = \\frac{${QR}}{SR}$. Cross-multiplying yields $SR \\cdot ${QP} = ${ST} \\cdot ${QR} = ${correctNum}$, so $SR = \\frac{${correctNum}}{${QP}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Since $\\triangle QPR \\sim \\triangle STR$, corresponding sides are proportional: $\\frac{QP}{ST} = \\frac{QR}{SR}$. Substituting the given values gives $\\frac{${QP}}{${ST}} = \\frac{${QR}}{SR}$. Cross-multiplying yields $SR \\cdot ${QP} = ${ST} \\cdot ${QR} = ${correctNum}$, so $SR = \\frac{${correctNum}}{${QP}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

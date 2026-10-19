@@ -80,7 +80,7 @@ export const generator_1417 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: x.toString(),
-      explanation: `Choice ${correctLetter} is correct. Increasing $x$ by ${increasePct}% gives $x + \\frac{${increasePct}}{100}\\,x = ${result}$. Since $\\frac{${increasePct}}{100} = ${multiplier - 1}$, this becomes $x + ${multiplier - 1}x = ${multiplier}x = ${result}$. Solving gives $x = \\frac{${result}}{${multiplier}} = ${x}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Increasing $x$ by ${increasePct}% gives $x + \\frac{${increasePct}}{100}\\,x = ${result}$. Since $\\frac{${increasePct}}{100} = ${multiplier - 1}$, this becomes $x + ${multiplier - 1}x = ${multiplier}x = ${result}$. Solving gives $x = \\frac{${result}}{${multiplier}} = ${x}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

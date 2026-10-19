@@ -65,7 +65,7 @@ export const generator_1292 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The standard form is $(x-h)^{2}+(y-k)^{2}=r^{2}$. Substituting the center $(${h}, ${k})$ and radius $${coeff}k$: $(x-${h})^{2}+(y-${k})^{2}=(${coeff}k)^{2}=${coeff * coeff}k^{2}$. Choice ${letterOf(distractorLinear)} ($${coeff}k$) is incorrect; it ${optionsData[2].reason}. Choice ${letterOf(distractorKonly)} ($${coeff}k^{2}$) is incorrect; it ${optionsData[3].reason}. Choice ${letterOf(distractorCoeffOnly)} ($${coeff * coeff}k$) is incorrect; it ${optionsData[0].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The standard form is $(x-h)^{2}+(y-k)^{2}=r^{2}$. Substituting the center $(${h}, ${k})$ and radius $${coeff}k$: $(x-${h})^{2}+(y-${k})^{2}=(${coeff}k)^{2}=${coeff * coeff}k^{2}$. Choice ${letterOf(distractorLinear)} ($${coeff}k$) is incorrect because it ${optionsData[2].reason}. Choice ${letterOf(distractorKonly)} ($${coeff}k^{2}$) is incorrect because it ${optionsData[3].reason}. Choice ${letterOf(distractorCoeffOnly)} ($${coeff * coeff}k$) is incorrect because it ${optionsData[0].reason}.`
     };
   }
 };

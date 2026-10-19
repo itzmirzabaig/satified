@@ -63,7 +63,7 @@ export const generator_871 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Since quadrilateral $P^{\\prime} Q^{\\prime} R^{\\prime} S^{\\prime}$ is similar to quadrilateral $PQRS$, the corresponding angles are congruent. Angle $P$ corresponds to angle $P^{\\prime}$, so $m\\angle P^{\\prime} = m\\angle P = ${angleP}^{\\circ}$. The scale factor changes only the side lengths, not the angle measures. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Since quadrilateral $P^{\\prime} Q^{\\prime} R^{\\prime} S^{\\prime}$ is similar to quadrilateral $PQRS$, the corresponding angles are congruent. Angle $P$ corresponds to angle $P^{\\prime}$, so $m\\angle P^{\\prime} = m\\angle P = ${angleP}^{\\circ}$. The scale factor changes only the side lengths, not the angle measures. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -78,7 +78,7 @@ export const generator_461 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The number of blue marbles equals the probability times the total number of marbles, so $x = ${selectedProb} \\times ${totalMarbles} = ${blueMarbles}$. You can check that $\\frac{${blueMarbles}}{${totalMarbles}} = ${selectedProb}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The number of blue marbles equals the probability times the total number of marbles, so $x = ${selectedProb} \\times ${totalMarbles} = ${blueMarbles}$. You can check that $\\frac{${blueMarbles}}{${totalMarbles}} = ${selectedProb}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `A bag contains a total of ${totalMarbles} marbles. A marble is to be chosen at random from the bag. If the probability that a blue marble will be chosen is ${selectedProb}, how many marbles in the bag are blue?`,

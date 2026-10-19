@@ -70,7 +70,7 @@ export const generator_1214 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The function is $f(x) = ${slope}x + ${intercept}$. The $x$-intercept occurs where $f(x) = 0$, so $0 = ${slope}x + ${intercept}$, which gives $${slope}x = -${intercept}$ and therefore $x = ${xInterceptStr}$. This is the value of the number for which the output $f(x)$ equals $0$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The function is $f(x) = ${slope}x + ${intercept}$. The $x$-intercept occurs where $f(x) = 0$, so $0 = ${slope}x + ${intercept}$, which gives $${slope}x = -${intercept}$ and therefore $x = ${xInterceptStr}$. This is the value of the number for which the output $f(x)$ equals $0$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

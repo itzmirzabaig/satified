@@ -100,9 +100,9 @@ export const generator_898 = {
       `$a^2 + b^2 = c^2$. Here the known leg has length $b = ${b}$ and the hypotenuse has ` +
       `length $c = ${c}$, so $a^2 + ${b}^2 = ${c}^2$. Solving for $a$ gives ` +
       `$a^2 = ${c}^2 - ${b}^2$, and therefore $a = \\sqrt{${c}^2 - ${b}^2}$. ` +
-      `Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. ` +
-      `Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. ` +
-      `Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+      `Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. ` +
+      `Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. ` +
+      `Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: "For the right triangle shown, which expression represents the value of $a$?",

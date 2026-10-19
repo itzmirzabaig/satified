@@ -76,7 +76,7 @@ export const generator_754 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,
-      explanation: `Choice ${correctLetter} is correct. The table shows a constant rate. Using the first two points: slope = $\\frac{${t2} - ${t1}}{${d2} - ${d1}} = \\frac{${t2 - t1}}{${(d2 - d1).toFixed(2)}} = ${rate}$. Thus $t = ${rate}d$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The table shows a constant rate. Using the first two points: slope = $\\frac{${t2} - ${t1}}{${d2} - ${d1}} = \\frac{${t2 - t1}}{${(d2 - d1).toFixed(2)}} = ${rate}$. Thus $t = ${rate}d$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

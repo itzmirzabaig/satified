@@ -50,7 +50,7 @@ export const generator_6 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. The terms are like terms, so subtract the coefficients and keep $x^2$ unchanged: $${a}x^2-${b}x^2=(${a}-${b})x^2=${diff}x^2$. Choice ${letterOf(0)} is incorrect; it multiplies the coefficients. Choice ${letterOf(2)} is incorrect; it adds the coefficients instead of subtracting them. Choice ${letterOf(3)} is incorrect; it adds the coefficients and also adds the exponents.`
+      explanation: `Choice ${correctOption.letter} is correct. The terms are like terms, so subtract the coefficients and keep $x^2$ unchanged: $${a}x^2-${b}x^2=(${a}-${b})x^2=${diff}x^2$. Choice ${letterOf(0)} is incorrect because it multiplies the coefficients. Choice ${letterOf(2)} is incorrect because it adds the coefficients instead of subtracting them. Choice ${letterOf(3)} is incorrect because it adds the coefficients and also adds the exponents.`
     };
   }
 };

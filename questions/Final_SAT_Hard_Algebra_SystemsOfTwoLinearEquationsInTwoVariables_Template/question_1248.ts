@@ -71,7 +71,7 @@ export const generator_1248 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: optCorrect,
-      explanation: `Choice ${correctLetter} is correct. The given equation has slope $-\\frac{${a}}{${b}}$, which reduces to $-\\frac{1}{${m}}$. A system has no solution when the two lines are parallel: they must have the same slope but different y-intercepts. Choice ${correctLetter}, $${optCorrect}$, has slope $-\\frac{1}{${m}}$ and a different constant, so the lines never meet. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The given equation has slope $-\\frac{${a}}{${b}}$, which reduces to $-\\frac{1}{${m}}$. A system has no solution when the two lines are parallel: they must have the same slope but different y-intercepts. Choice ${correctLetter}, $${optCorrect}$, has slope $-\\frac{1}{${m}}$ and a different constant, so the lines never meet. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

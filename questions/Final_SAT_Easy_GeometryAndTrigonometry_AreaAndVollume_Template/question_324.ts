@@ -46,7 +46,7 @@ export const generator_324 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${length} \\cdot ${width}`,
-      explanation: `Choice ${correctOption.letter} is correct. The area of a rectangle is found by multiplying length by width: $${length} \\times ${width}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The area of a rectangle is found by multiplying length by width: $${length} \\times ${width}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

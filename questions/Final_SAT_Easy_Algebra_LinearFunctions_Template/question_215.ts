@@ -55,7 +55,7 @@ export const generator_215 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: totalAmount.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The initial balance is \\$${initialAmount}. Over ${numWeeks} weeks, the student deposits \\$${weeklyDeposit} × ${numWeeks} = \\$${weeklyDeposit * numWeeks}. The total is \\$${initialAmount} + \\$${weeklyDeposit * numWeeks} = \\$${totalAmount}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The initial balance is \\$${initialAmount}. Over ${numWeeks} weeks, the student deposits \\$${weeklyDeposit} × ${numWeeks} = \\$${weeklyDeposit * numWeeks}. The total is \\$${initialAmount} + \\$${weeklyDeposit * numWeeks} = \\$${totalAmount}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

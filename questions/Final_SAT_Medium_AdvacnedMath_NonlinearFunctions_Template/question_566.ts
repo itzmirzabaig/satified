@@ -61,7 +61,7 @@ export const generator_566 = {
     // STEP 6: Build explanation with dynamic letters
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     // Fixed: \\frac instead of \\\\frac throughout
-    const explanation = `Choice ${correctLetter} is correct. The initial number of views is $${initial}$. The growth rate is ${rate}\\%, so the growth factor is $1 + \\frac{${rate}}{100} = ${growthFactor.toFixed(2)}$. Since the growth happens every ${period} days (not daily), the exponent must be $\\frac{x}{${period}}$ to count the number of ${period}-day periods. Therefore, $f(x) = ${initial}(${growthFactor.toFixed(2)})^{\\frac{x}{${period}}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The initial number of views is $${initial}$. The growth rate is ${rate}\\%, so the growth factor is $1 + \\frac{${rate}}{100} = ${growthFactor.toFixed(2)}$. Since the growth happens every ${period} days (not daily), the exponent must be $\\frac{x}{${period}}$ to count the number of ${period}-day periods. Therefore, $f(x) = ${initial}(${growthFactor.toFixed(2)})^{\\frac{x}{${period}}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     // STEP 7: Return question data
     return {

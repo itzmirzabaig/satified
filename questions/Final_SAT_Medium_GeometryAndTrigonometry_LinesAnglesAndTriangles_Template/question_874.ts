@@ -78,7 +78,7 @@ export const generator_874 = {
       figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Since $\\triangle CAE \\sim \\triangle CBD$, corresponding angles are congruent. Angle $CBD$ corresponds to angle $CAE$, so $m\\angle CAE = m\\angle CBD = ${angleCBD}^{\\circ}$. The relationship $AE = ${scaleFactor}(BD)$ scales the side lengths but leaves the angle measures unchanged. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Since $\\triangle CAE \\sim \\triangle CBD$, corresponding angles are congruent. Angle $CBD$ corresponds to angle $CAE$, so $m\\angle CAE = m\\angle CBD = ${angleCBD}^{\\circ}$. The relationship $AE = ${scaleFactor}(BD)$ scales the side lengths but leaves the angle measures unchanged. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

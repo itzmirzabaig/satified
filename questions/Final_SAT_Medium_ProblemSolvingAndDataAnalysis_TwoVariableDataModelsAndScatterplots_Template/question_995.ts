@@ -132,7 +132,7 @@ export const generator_995 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: slopeDisplay,
-      explanation: `Choice ${correctLetter} is correct. The line of best fit passes through approximately $(0, ${yAt0})$ and $(10, ${yAt10.toFixed(0)})$. Slope $= (${yAt10.toFixed(0)} - ${yAt0}) / (10 - 0) = ${(yAt10 - yAt0).toFixed(0)}/10 = ${slopeDisplay}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The line of best fit passes through approximately $(0, ${yAt0})$ and $(10, ${yAt10.toFixed(0)})$. Slope $= (${yAt10.toFixed(0)} - ${yAt0}) / (10 - 0) = ${(yAt10 - yAt0).toFixed(0)}/10 = ${slopeDisplay}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

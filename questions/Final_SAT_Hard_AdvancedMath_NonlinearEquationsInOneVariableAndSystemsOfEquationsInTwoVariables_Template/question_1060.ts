@@ -63,9 +63,9 @@ export const generator_1060 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     const explanation = `Choice ${correctLetter} is correct. Solving the first equation for $y$ gives $y = ${c1} - ${a}x$, and the second equation gives $y = ${d}x^2 - ${c2}$. Setting these equal: $${c1} - ${a}x = ${d}x^2 - ${c2}$. Moving every term to one side and dividing by ${d} yields $x^2 + ${m - n}x - ${m * n} = 0$, which factors as $(x + ${m})(x - ${n}) = 0$. So $x = ${-m}$ or $x = ${n}$, giving $x^2 = ${xSqBig}$ or $x^2 = ${xSqSmall}$. The greatest possible value is $x^2 = ${xSqBig}$.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `$y + ${a}x = ${c1}$\n$y = ${d}x^2 - ${c2}$\n\nIf $(x, y)$ is a solution to the given system of equations, what is the greatest possible value of $x^2$?`,

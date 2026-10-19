@@ -49,7 +49,7 @@ export const generator_581 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. Translating right by ${horizontalShift} replaces $x$ with $(x-${horizontalShift})$. Translating down by ${verticalShift} subtracts ${verticalShift} from the function. Starting from $f(x)=\\frac{a-${c}}{x}+${k}$, we get $g(x)=\\frac{a-${c}}{(x-${horizontalShift})}+${k}-${verticalShift}=\\frac{a-${c}}{x-${horizontalShift}}+${k-verticalShift}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Translating right by ${horizontalShift} replaces $x$ with $(x-${horizontalShift})$. Translating down by ${verticalShift} subtracts ${verticalShift} from the function. Starting from $f(x)=\\frac{a-${c}}{x}+${k}$, we get $g(x)=\\frac{a-${c}}{(x-${horizontalShift})}+${k}-${verticalShift}=\\frac{a-${c}}{x-${horizontalShift}}+${k-verticalShift}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText,

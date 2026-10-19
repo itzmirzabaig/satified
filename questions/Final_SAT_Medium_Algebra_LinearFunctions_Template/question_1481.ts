@@ -102,7 +102,7 @@ What is the value of $f(${targetX})$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The slope is $m = \\frac{${yVals[1]} - (${yVals[0]})}{2 - 0} = \\frac{${yVals[1] - yVals[0]}}{2} = ${m}$, and the row at $x = 0$ gives the intercept $b = ${yVals[0]}$, so $f(x) = ${m}x ${bSign} ${bAbs}$. Then $f(${targetX}) = ${m}(${targetX}) ${bSign} ${bAbs} = ${m * targetX} ${bSign} ${bAbs} = ${targetY}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The slope is $m = \\frac{${yVals[1]} - (${yVals[0]})}{2 - 0} = \\frac{${yVals[1] - yVals[0]}}{2} = ${m}$, and the row at $x = 0$ gives the intercept $b = ${yVals[0]}$, so $f(x) = ${m}x ${bSign} ${bAbs}$. Then $f(${targetX}) = ${m}(${targetX}) ${bSign} ${bAbs} = ${m * targetX} ${bSign} ${bAbs} = ${targetY}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

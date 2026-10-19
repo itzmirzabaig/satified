@@ -60,9 +60,9 @@ export const generator_1052 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     const explanation = `Choice ${correctLetter} is correct. A quadratic equation has more than one real solution exactly when its discriminant is positive: $b^2 - 4(${a})(${c}) > 0$, that is, $b^2 > ${4 * a * c}$. Since $\\sqrt{${4 * a * c}} = ${threshold}$, this requires $b < -${threshold}$ or $b > ${threshold}$. Of the choices, only $${correctB}$ satisfies this condition, because $|${correctB}| = ${-correctB} > ${threshold}$.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `$${a}x^2 + bx + ${c} = 0$\n\nIn the given equation, $b$ is a constant. For which of the following values of $b$ will the equation have more than one real solution?`,

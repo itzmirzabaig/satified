@@ -80,7 +80,7 @@ export const generator_971 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The ratio of length to width is $${ratioDisplay}$. To keep this ratio, any change in the width must be scaled by that ratio. Multiplying the width increase of ${widthIncrease} units by $\\frac{${p}}{${q}}$ gives a length increase of ${lengthIncrease} units, so the length must increase by ${lengthIncrease} units. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The ratio of length to width is $${ratioDisplay}$. To keep this ratio, any change in the width must be scaled by that ratio. Multiplying the width increase of ${widthIncrease} units by $\\frac{${p}}{${q}}$ gives a length increase of ${lengthIncrease} units, so the length must increase by ${lengthIncrease} units. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

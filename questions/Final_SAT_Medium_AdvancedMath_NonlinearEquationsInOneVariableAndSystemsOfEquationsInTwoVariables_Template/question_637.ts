@@ -78,7 +78,7 @@ export const generator_637 = {
 
    // STEP 3: explanation (numbers from live vars, letters post-shuffle).
    const distractorText = incorrectOptions
-     .map(o => `Choice ${o.letter} is incorrect; it ${o.reason}.`)
+     .map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`)
      .join(' ');
 
    const explanation = `Choice ${correctLetter} is correct. Using the quadratic formula, $x = \\frac{-(${p}) \\pm \\sqrt{(${p})^2 - 4(1)(${q})}}{2(1)} = \\frac{${negP} \\pm \\sqrt{${disc}}}{2}$. Since ${disc} is not a perfect square, the two solutions are $\\frac{${negP}+\\sqrt{${disc}}}{2}$ and $\\frac{${negP}-\\sqrt{${disc}}}{2}$. ${distractorText}`;

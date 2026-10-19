@@ -137,7 +137,7 @@ export const generator_993 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The data point with $x=1$ has a $y$-coordinate of ${actualY}. The line of best fit predicts $y \\approx ${predictedY.toFixed(1)}$ at $x=1$. The difference is $|${actualY} - ${predictedY.toFixed(1)}| \\approx ${difference.toFixed(1)}$, which is closest to ${correctText}. Choice ${letterOf('raw')} is incorrect; it is the raw $y$-coordinate of the data point, not the difference. Choice ${letterOf('pred')} is incorrect; it is the predicted $y$-value from the line, not the difference. Choice ${letterOf('over')} is incorrect; it overestimates the vertical gap between the point and the line.`
+      explanation: `Choice ${correctLetter} is correct. The data point with $x=1$ has a $y$-coordinate of ${actualY}. The line of best fit predicts $y \\approx ${predictedY.toFixed(1)}$ at $x=1$. The difference is $|${actualY} - ${predictedY.toFixed(1)}| \\approx ${difference.toFixed(1)}$, which is closest to ${correctText}. Choice ${letterOf('raw')} is incorrect because it is the raw $y$-coordinate of the data point, not the difference. Choice ${letterOf('pred')} is incorrect because it is the predicted $y$-value from the line, not the difference. Choice ${letterOf('over')} is incorrect because it overestimates the vertical gap between the point and the line.`
     };
   }
 };

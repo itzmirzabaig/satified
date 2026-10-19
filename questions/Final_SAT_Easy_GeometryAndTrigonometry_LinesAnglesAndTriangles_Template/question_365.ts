@@ -77,7 +77,7 @@ export const generator_365 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. When two lines intersect, the angles opposite each other (vertical angles) are congruent. In the figure, $w^\\circ$ and $z^\\circ$ are vertical angles, so $z = w = ${wValue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. When two lines intersect, the angles opposite each other (vertical angles) are congruent. In the figure, $w^\\circ$ and $z^\\circ$ are vertical angles, so $z = w = ${wValue}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

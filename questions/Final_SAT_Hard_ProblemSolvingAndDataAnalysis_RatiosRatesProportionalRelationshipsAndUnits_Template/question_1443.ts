@@ -91,7 +91,7 @@ export const generator_1443 = {
     const correctText = correctOption.text;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Since 1 mile = ${yardsPerMile.toLocaleString('en-US')} yards, 1 square mile = ${yardsPerMile.toLocaleString('en-US')}² = ${squareYardsPerSquareMile.toLocaleString('en-US')} square yards. Therefore, ${areaSquareMiles} square miles = ${areaSquareMiles} × ${squareYardsPerSquareMile.toLocaleString('en-US')} = ${correctText} square yards. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Since 1 mile = ${yardsPerMile.toLocaleString('en-US')} yards, 1 square mile = ${yardsPerMile.toLocaleString('en-US')}² = ${squareYardsPerSquareMile.toLocaleString('en-US')} square yards. Therefore, ${areaSquareMiles} square miles = ${areaSquareMiles} × ${squareYardsPerSquareMile.toLocaleString('en-US')} = ${correctText} square yards. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `A certain town has an area of $${areaSquareMiles}$ square miles. What is the area, in $\\underline{\\text{square yards}}$, of this town? $(1 \\text{ mile} = 1,760 \\text{ yards})$`,

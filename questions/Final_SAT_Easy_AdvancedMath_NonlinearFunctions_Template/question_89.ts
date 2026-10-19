@@ -70,7 +70,7 @@ export const generator_89 = {
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. Substituting $x = ${xInput}$ into the function gives $g(${xInput}) = |${xInput} ${signStr}| = |${sum}| = ${result}$. The absolute value of a number is its distance from zero, so it is never negative. Choice ${letterOf('neg')} is incorrect; it is the negation of the correct value, but an absolute value cannot be negative. Choice ${letterOf('opp')} is incorrect; it results from reversing the sign of the constant and evaluating $|${xInput} ${oppSignStr}|$ instead. Choice ${letterOf('off')} is incorrect; it does not result from correctly evaluating the function.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting $x = ${xInput}$ into the function gives $g(${xInput}) = |${xInput} ${signStr}| = |${sum}| = ${result}$. The absolute value of a number is its distance from zero, so it is never negative. Choice ${letterOf('neg')} is incorrect because it is the negation of the correct value, but an absolute value cannot be negative. Choice ${letterOf('opp')} is incorrect because it results from reversing the sign of the constant and evaluating $|${xInput} ${oppSignStr}|$ instead. Choice ${letterOf('off')} is incorrect because it does not result from correctly evaluating the function.`
     };
   }
 };

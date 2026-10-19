@@ -52,7 +52,7 @@ export const generator_538 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. Setting $p(n)$ equal to ${targetValue} gives $p(n) = ${coefficient}n^3 = ${targetValue}$. Dividing both sides by ${coefficient} gives $n^3 = ${nCubed}$. Taking the cube root of both sides gives $n = \\sqrt[3]{${nCubed}} = ${nValue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Setting $p(n)$ equal to ${targetValue} gives $p(n) = ${coefficient}n^3 = ${targetValue}$. Dividing both sides by ${coefficient} gives $n^3 = ${nCubed}$. Taking the cube root of both sides gives $n = \\sqrt[3]{${nCubed}} = ${nValue}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText,

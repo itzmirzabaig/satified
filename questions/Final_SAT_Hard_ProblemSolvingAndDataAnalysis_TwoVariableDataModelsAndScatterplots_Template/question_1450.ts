@@ -75,7 +75,7 @@ export const generator_1450 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: "Increasing linear",
-      explanation: `Choice ${correctLetter} is correct. Because $f(x)$ is ${percent}% of $x$ for $x>0$, this is equivalent to $f(x)=\\frac{${percent}}{100}x$, or $f(x)=${decimal}x$. As $x$ increases, $f(x)$ also increases, so $f$ is increasing. Moreover, $f(x)$ changes at the constant rate of ${decimal} for every increase of 1 in $x$, and a constant rate of change means the function is linear. Therefore $f$ is an increasing linear function. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Because $f(x)$ is ${percent}% of $x$ for $x>0$, this is equivalent to $f(x)=\\frac{${percent}}{100}x$, or $f(x)=${decimal}x$. As $x$ increases, $f(x)$ also increases, so $f$ is increasing. Moreover, $f(x)$ changes at the constant rate of ${decimal} for every increase of 1 in $x$, and a constant rate of change means the function is linear. Therefore $f$ is an increasing linear function. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

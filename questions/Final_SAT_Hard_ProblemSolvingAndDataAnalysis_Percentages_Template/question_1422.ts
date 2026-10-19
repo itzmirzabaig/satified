@@ -78,7 +78,7 @@ export const generator_1422 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: percentGreater.toString(),
-      explanation: `Choice ${correctLetter} is correct. Saying ${result} is $p$% greater than ${baseValue} means ${result} $= \\left(1 + \\frac{p}{100}\\right)(${baseValue})$. Dividing both sides by ${baseValue} gives $\\frac{${result}}{${baseValue}} = 1 + \\frac{p}{100}$, so $\\frac{p}{100} + 1 = ${multiplier}$. Then $\\frac{p}{100} = ${multiplier - 1}$, so $p = ${percentGreater}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Saying ${result} is $p$% greater than ${baseValue} means ${result} $= \\left(1 + \\frac{p}{100}\\right)(${baseValue})$. Dividing both sides by ${baseValue} gives $\\frac{${result}}{${baseValue}} = 1 + \\frac{p}{100}$, so $\\frac{p}{100} + 1 = ${multiplier}$. Then $\\frac{p}{100} = ${multiplier - 1}$, so $p = ${percentGreater}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

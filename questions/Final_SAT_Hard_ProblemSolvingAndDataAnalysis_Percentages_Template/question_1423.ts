@@ -64,7 +64,7 @@ export const generator_1423 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: totalMultiplier.toString(),
-      explanation: `Choice ${correctLetter} is correct. Let the 2007 earnings be $x$. Increasing by ${P1}% makes the 2008 earnings $(${multiplier1})x$, and increasing that by a further ${P2}% makes the 2009 earnings $(${multiplier2})(${multiplier1})x = ${totalMultiplier}x$. So $y = ${totalMultiplier}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Let the 2007 earnings be $x$. Increasing by ${P1}% makes the 2008 earnings $(${multiplier1})x$, and increasing that by a further ${P2}% makes the 2009 earnings $(${multiplier2})(${multiplier1})x = ${totalMultiplier}x$. So $y = ${totalMultiplier}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

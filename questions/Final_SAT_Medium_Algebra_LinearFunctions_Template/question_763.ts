@@ -68,7 +68,7 @@ export const generator_763 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. To find the $x$-intercept, set $f(x)=0$: $0=${m}x ${signStr} ${absB}$, so $${m}x=${absB}$, giving $x=${xInt}$. The $x$-intercept is $(${xInt}, 0)$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. To find the $x$-intercept, set $f(x)=0$: $0=${m}x ${signStr} ${absB}$, so $${m}x=${absB}$, giving $x=${xInt}$. The $x$-intercept is $(${xInt}, 0)$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

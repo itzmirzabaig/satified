@@ -53,7 +53,7 @@ export const generator_8 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Both terms are perfect squares, since $${square1}w^{2}=(${root1}w)^2$ and $${square2}=${root2}^2$, so this is a difference of squares: $(${root1}w)^2-(${root2})^2 = (${root1}w-${root2})(${root1}w+${root2})$. Choice ${letterOf(0)} is incorrect; $(${root1}w-${root2})(${root1}w-${root2})$ expands to $${square1}w^{2}-${2 * root1 * root2}w+${square2}$. Choice ${letterOf(1)} is incorrect; it halves the square roots, and expands to $${h1 * h1}w^{2}-${h2 * h2}$. Choice ${letterOf(2)} is incorrect; it halves the square roots and also uses the same sign in both factors.`
+      explanation: `Choice ${correctOption.letter} is correct. Both terms are perfect squares, since $${square1}w^{2}=(${root1}w)^2$ and $${square2}=${root2}^2$, so this is a difference of squares: $(${root1}w)^2-(${root2})^2 = (${root1}w-${root2})(${root1}w+${root2})$. Choice ${letterOf(0)} is incorrect; $(${root1}w-${root2})(${root1}w-${root2})$ expands to $${square1}w^{2}-${2 * root1 * root2}w+${square2}$. Choice ${letterOf(1)} is incorrect because it halves the square roots, and expands to $${h1 * h1}w^{2}-${h2 * h2}$. Choice ${letterOf(2)} is incorrect because it halves the square roots and also uses the same sign in both factors.`
     };
   }
 };

@@ -75,7 +75,7 @@ export const generator_1419 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: roundedResult.toString(),
-      explanation: `Choice ${correctLetter} is correct. From the given information, $a = \\frac{${P1}}{100}\\,b$ and $a = \\frac{${P2}}{100}\\,c$. Setting these equal gives $\\frac{${P1}}{100}\\,b = \\frac{${P2}}{100}\\,c$, so $c = \\frac{${P1}}{${P2}}\\,b$. Writing $c$ as a percent of $b$: $\\frac{${P1}}{${P2}} \\times 100 \\approx ${roundedResult}$, so $p \\approx ${roundedResult}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. From the given information, $a = \\frac{${P1}}{100}\\,b$ and $a = \\frac{${P2}}{100}\\,c$. Setting these equal gives $\\frac{${P1}}{100}\\,b = \\frac{${P2}}{100}\\,c$, so $c = \\frac{${P1}}{${P2}}\\,b$. Writing $c$ as a percent of $b$: $\\frac{${P1}}{${P2}} \\times 100 \\approx ${roundedResult}$, so $p \\approx ${roundedResult}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

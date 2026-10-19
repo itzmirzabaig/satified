@@ -65,7 +65,7 @@ export const generator_663 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. Let \\(u = x+${c}\\). The given equation becomes \\(${hi}u = ${lo}u + ${d}\\). Subtracting \\(${lo}u\\) from both sides yields \\(u = ${d}\\). Since \\(u = x+${c}\\), the value of \\(x+${c}\\) is \\(${uValue}\\). Choice ${letterX} is incorrect; it is the value of \\(x\\) itself (\\(x = ${d} - ${c} = ${xValue}\\)), not \\(x+${c}\\). Choice ${letterNegC} is incorrect; \\(-${c}\\) results from mishandling the constant term. Choice ${letterPlus} is incorrect; it adds \\(${c}\\) to the correct value instead of recognizing that \\(x+${c}=${uValue}\\).`
+      explanation: `Choice ${correctLetter} is correct. Let \\(u = x+${c}\\). The given equation becomes \\(${hi}u = ${lo}u + ${d}\\). Subtracting \\(${lo}u\\) from both sides yields \\(u = ${d}\\). Since \\(u = x+${c}\\), the value of \\(x+${c}\\) is \\(${uValue}\\). Choice ${letterX} is incorrect because it is the value of \\(x\\) itself (\\(x = ${d} - ${c} = ${xValue}\\)), not \\(x+${c}\\). Choice ${letterNegC} is incorrect; \\(-${c}\\) results from mishandling the constant term. Choice ${letterPlus} is incorrect because it adds \\(${c}\\) to the correct value instead of recognizing that \\(x+${c}=${uValue}\\).`
     };
   }
 };

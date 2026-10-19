@@ -77,7 +77,7 @@ export const generator_1319 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The original center is $(${h}, ${k})$. Translating ${shift} units to the right increases the x-coordinate by ${shift}: $${h}+${shift}=${newH}$, giving center $(${newH}, ${k})$. The y-coordinate and radius are unchanged. Choice ${letterOf('up')} is incorrect; it changes the y-coordinate instead of the x-coordinate, translating up. Choice ${letterOf('left')} is incorrect; it decreases the x-coordinate, translating left instead of right. Choice ${letterOf('down')} is incorrect; it changes the y-coordinate instead of the x-coordinate, translating down.`
+      explanation: `Choice ${correctLetter} is correct. The original center is $(${h}, ${k})$. Translating ${shift} units to the right increases the x-coordinate by ${shift}: $${h}+${shift}=${newH}$, giving center $(${newH}, ${k})$. The y-coordinate and radius are unchanged. Choice ${letterOf('up')} is incorrect because it changes the y-coordinate instead of the x-coordinate, translating up. Choice ${letterOf('left')} is incorrect because it decreases the x-coordinate, translating left instead of right. Choice ${letterOf('down')} is incorrect because it changes the y-coordinate instead of the x-coordinate, translating down.`
     };
   }
 };

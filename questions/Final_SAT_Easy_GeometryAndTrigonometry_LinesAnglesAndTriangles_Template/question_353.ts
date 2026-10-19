@@ -167,7 +167,7 @@ export const generator_353 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. When two parallel lines are cut by a transversal, same-side exterior angles are supplementary, so their measures add to 180 degrees. This gives $x + ${givenAngle} = 180$, so $x = 180 - ${givenAngle} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. When two parallel lines are cut by a transversal, same-side exterior angles are supplementary, so their measures add to 180 degrees. This gives $x + ${givenAngle} = 180$, so $x = 180 - ${givenAngle} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

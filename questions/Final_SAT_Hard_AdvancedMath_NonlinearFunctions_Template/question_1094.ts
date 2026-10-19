@@ -54,7 +54,7 @@ export const generator_1094 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. A ${decrease}% decrease for each increase of $x$ by $1$ means the value retains ${100 - decrease}% of its previous value, so the decay factor is $\\frac{${100 - decrease}}{100}=${decayStr}$. Since $q(0)=${initial}$, the initial value is ${initial}, giving $q(x)=${initial}(${decayStr})^x$. Choice ${swapDecayLetter} is incorrect; it swaps the initial value and the decay factor. Choice ${growthLetter} is incorrect because a base of ${growthStr} models a ${decrease}% increase, not a decrease. Choice ${swapGrowthLetter} is incorrect; it uses the growth factor ${growthStr} and also swaps it with the initial value.`
+      explanation: `Choice ${correctLetter} is correct. A ${decrease}% decrease for each increase of $x$ by $1$ means the value retains ${100 - decrease}% of its previous value, so the decay factor is $\\frac{${100 - decrease}}{100}=${decayStr}$. Since $q(0)=${initial}$, the initial value is ${initial}, giving $q(x)=${initial}(${decayStr})^x$. Choice ${swapDecayLetter} is incorrect because it swaps the initial value and the decay factor. Choice ${growthLetter} is incorrect because a base of ${growthStr} models a ${decrease}% increase, not a decrease. Choice ${swapGrowthLetter} is incorrect because it uses the growth factor ${growthStr} and also swaps it with the initial value.`
     };
   }
 };

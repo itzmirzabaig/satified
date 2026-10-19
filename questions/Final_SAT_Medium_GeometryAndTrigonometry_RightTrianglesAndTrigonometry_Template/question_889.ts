@@ -89,7 +89,7 @@ export const generator_889 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // STEP 6: Build explanation from the shuffled letters and live values.
-    const explanation = `Choice ${correctLetter} is correct. The cosine of an angle in a right triangle is the ratio of the length of the leg adjacent to the angle to the length of the hypotenuse. For angle $A$, the adjacent leg is ${adjacent} and the hypotenuse is ${hypotenuse}, so $\\cos A = \\frac{${adjacent}}{${hypotenuse}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The cosine of an angle in a right triangle is the ratio of the length of the leg adjacent to the angle to the length of the hypotenuse. For angle $A$, the adjacent leg is ${adjacent} and the hypotenuse is ${hypotenuse}, so $\\cos A = \\frac{${adjacent}}{${hypotenuse}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     // STEP 7: Return question data.
     return {

@@ -54,7 +54,7 @@ export const generator_126 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `To find the value of $(x - ${k})$, factor ${factor} from the left side: $${factor}(x - ${k}) = ${rightSide}$. Dividing both sides by ${factor} gives $(x - ${k}) = ${result}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `To find the value of $(x - ${k})$, factor ${factor} from the left side: $${factor}(x - ${k}) = ${rightSide}$. Dividing both sides by ${factor} gives $(x - ${k}) = ${result}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

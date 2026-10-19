@@ -116,7 +116,7 @@ export const generator_1448 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `y=${slope}x+${intercept}`,
-      explanation: `Choice ${correctLetter} is correct. The line of best fit passes through approximately $(1, ${y1})$ and $(3, ${y3})$, giving a slope of $\\frac{${y3}-${y1}}{3-1} = ${slope}$. Extending the line back to $x = 0$ gives a y-intercept of about $${intercept}$, so $y = ${slope}x + ${intercept}$ fits the data. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The line of best fit passes through approximately $(1, ${y1})$ and $(3, ${y3})$, giving a slope of $\\frac{${y3}-${y1}}{3-1} = ${slope}$. Extending the line back to $x = 0$ gives a y-intercept of about $${intercept}$, so $y = ${slope}x + ${intercept}$ fits the data. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

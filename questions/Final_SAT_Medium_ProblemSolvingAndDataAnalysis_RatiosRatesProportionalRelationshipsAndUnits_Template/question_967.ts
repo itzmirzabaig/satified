@@ -54,7 +54,7 @@ export const generator_967 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctLetter} is correct. The mass of one object is $\\frac{t}{r}$. The mass of $(${multiplier}r)$ objects is $(${multiplier}r) \\times \\frac{t}{r} = ${multiplier}t$. Equivalently, $(${multiplier}r)$ is ${multiplier} times as many objects, so the total mass is ${multiplier} times the original mass $t$, which is $(${multiplier}t)$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The mass of one object is $\\frac{t}{r}$. The mass of $(${multiplier}r)$ objects is $(${multiplier}r) \\times \\frac{t}{r} = ${multiplier}t$. Equivalently, $(${multiplier}r)$ is ${multiplier} times as many objects, so the total mass is ${multiplier} times the original mass $t$, which is $(${multiplier}t)$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

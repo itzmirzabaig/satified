@@ -67,7 +67,7 @@ export const generator_1433 = {
     const correctLetter = correctOption!.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. The rate is $\\frac{${rateNum}x}{${time1}y}$ ounces per minute. In ${time2}y minutes: $\\frac{${rateNum}x}{${time1}y} \\times ${time2}y = ${correctExpression}$ ounces. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The rate is $\\frac{${rateNum}x}{${time1}y}$ ounces per minute. In ${time2}y minutes: $\\frac{${rateNum}x}{${time1}y} \\times ${time2}y = ${correctExpression}$ ounces. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: `A landscaper uses a hose that puts $${rateNum}x$ ounces of water in a bucket in $${time1}y$ minutes. Which expression represents the number of ounces of water the hose puts in the bucket in $${time2}y$ minutes at this rate?`,

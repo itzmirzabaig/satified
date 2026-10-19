@@ -122,7 +122,7 @@ export const generator_892 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
     // STEP 6: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. In a right triangle, $\\sin(X) = \\frac{\\text{opposite}}{\\text{hypotenuse}} = \\frac{${legX}}{${hypotenuse.toFixed(2)}}$ and $\\cos(Y) = \\frac{\\text{adjacent to Y}}{\\text{hypotenuse}} = \\frac{${legX}}{${hypotenuse.toFixed(2)}}$. Since angles $X$ and $Y$ are complementary (add to $90^{\\circ}$), $\\sin(X) = \\cos(Y)$ by the cofunction identity. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. In a right triangle, $\\sin(X) = \\frac{\\text{opposite}}{\\text{hypotenuse}} = \\frac{${legX}}{${hypotenuse.toFixed(2)}}$ and $\\cos(Y) = \\frac{\\text{adjacent to Y}}{\\text{hypotenuse}} = \\frac{${legX}}{${hypotenuse.toFixed(2)}}$. Since angles $X$ and $Y$ are complementary (add to $90^{\\circ}$), $\\sin(X) = \\cos(Y)$ by the cofunction identity. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     // STEP 7: Return question data
     return {

@@ -172,9 +172,9 @@ export const generator_1243 = {
         `The solid line has ${describe(m1, b1)}, which in standard form is $${eq1}$. ` +
         `The dashed line has ${describe(m2, b2)}, which in standard form is $${eq2}$. ` +
         `The system made of these two equations is Choice ${correctLetter}. ` +
-        `Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. ` +
-        `Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. ` +
-        `Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+        `Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. ` +
+        `Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. ` +
+        `Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

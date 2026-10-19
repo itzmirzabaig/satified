@@ -71,7 +71,7 @@ export const generator_1445 = {
     const correctLetter = correctOption!.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. To convert ${acceleration} m/s² to mi/min², multiply by (1 mile / ${metersPerMile} meters) and by (${secondsPerMinute}²), since the time unit is squared. This gives ${acceleration} × (3600/${metersPerMile}) = ${acceleration} × ${conversionFactor.toFixed(4)} = ${resultRounded} mi/min². Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. To convert ${acceleration} m/s² to mi/min², multiply by (1 mile / ${metersPerMile} meters) and by (${secondsPerMinute}²), since the time unit is squared. This gives ${acceleration} × (3600/${metersPerMile}) = ${acceleration} × ${conversionFactor.toFixed(4)} = ${resultRounded} mi/min². Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `The speed of a vehicle is increasing at a rate of $${acceleration}$ meters per second squared. What is this rate, in <b>miles per minute squared</b>, rounded to the nearest tenth? (Use $1 \\text{ mile} = 1,609 \\text{ meters}$.)`,

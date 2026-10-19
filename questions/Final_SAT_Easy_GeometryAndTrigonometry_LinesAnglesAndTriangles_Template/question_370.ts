@@ -160,7 +160,7 @@ export const generator_370 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctCondition,
-      explanation: `Choice ${correctOption.letter} is correct. If $w = ${baseAngle}$, then $w$ and the angle measuring $${baseAngle}^{\\circ}$ are congruent corresponding angles. The converse of the Corresponding Angles Postulate states that if two lines are cut by a transversal so that corresponding angles are congruent, then the lines are parallel. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. If $w = ${baseAngle}$, then $w$ and the angle measuring $${baseAngle}^{\\circ}$ are congruent corresponding angles. The converse of the Corresponding Angles Postulate states that if two lines are cut by a transversal so that corresponding angles are congruent, then the lines are parallel. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

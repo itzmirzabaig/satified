@@ -64,7 +64,7 @@ export const generator_935 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. To determine the total number of returned units, first calculate the number of units returned in a single month: ${baseSales.toLocaleString('en-US')} × 0.${returnRate} = ${monthlyReturns.toLocaleString('en-US')}. Since this occurs over ${months} months (${months === 6 ? 'the first month plus the next 5 months' : 'the entire period'}), multiply by ${months}: ${monthlyReturns.toLocaleString('en-US')} × ${months} = ${correctText}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To determine the total number of returned units, first calculate the number of units returned in a single month: ${baseSales.toLocaleString('en-US')} × 0.${returnRate} = ${monthlyReturns.toLocaleString('en-US')}. Since this occurs over ${months} months (${months === 6 ? 'the first month plus the next 5 months' : 'the entire period'}), multiply by ${months}: ${monthlyReturns.toLocaleString('en-US')} × ${months} = ${correctText}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

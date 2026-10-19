@@ -53,7 +53,7 @@ export const generator_572 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. The number of doubling periods is $${totalHours}/${doublingPeriod} = ${numDoublings}$. The final amount is $${initialAmount.toLocaleString('en-US')} \\times 2^{${numDoublings}} = ${initialAmount.toLocaleString('en-US')} \\times ${Math.pow(2, numDoublings)} = ${finalAmount.toLocaleString('en-US')}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The number of doubling periods is $${totalHours}/${doublingPeriod} = ${numDoublings}$. The final amount is $${initialAmount.toLocaleString('en-US')} \\times 2^{${numDoublings}} = ${initialAmount.toLocaleString('en-US')} \\times ${Math.pow(2, numDoublings)} = ${finalAmount.toLocaleString('en-US')}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText,

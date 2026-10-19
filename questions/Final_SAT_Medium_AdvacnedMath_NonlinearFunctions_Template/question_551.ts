@@ -45,7 +45,7 @@ export const generator_551 = {
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. To find $f(0)$, substitute $x=0$: $f(0)=${coefficient}(${base})^{0}=${coefficient}(1)=${coefficient}$, since any non-zero number to the power of 0 equals 1. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. To find $f(0)$, substitute $x=0$: $f(0)=${coefficient}(${base})^{0}=${coefficient}(1)=${coefficient}$, since any non-zero number to the power of 0 equals 1. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText,

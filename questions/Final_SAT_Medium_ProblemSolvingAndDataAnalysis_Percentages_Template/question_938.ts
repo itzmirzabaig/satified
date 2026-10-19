@@ -54,7 +54,7 @@ export const generator_938 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. To find the result of increasing a quantity $w$ by ${percent}\\%, add the increase to the original amount. The increase is ${percent}\\% of $w$, or $${decimal}w$. The new quantity is $w + ${decimal}w = ${multiplier}w$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the result of increasing a quantity $w$ by ${percent}\\%, add the increase to the original amount. The increase is ${percent}\\% of $w$, or $${decimal}w$. The new quantity is $w + ${decimal}w = ${multiplier}w$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

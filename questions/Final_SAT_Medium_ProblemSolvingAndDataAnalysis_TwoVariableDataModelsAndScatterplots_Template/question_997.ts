@@ -122,7 +122,7 @@ export const generator_997 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctLetter} is correct. The data trend upward, so the line of best fit has a positive slope of about ${slope.toFixed(2)} and a small positive $y$-intercept of about ${intercept.toFixed(2)}. Only choice ${correctLetter}, $y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}$, has both. Choice ${swapLetter} is incorrect; it swaps the slope and the $y$-intercept, giving a nearly flat line. Choice ${wrongSignLetter} is incorrect; it uses the correct slope but makes the $y$-intercept negative. Choice ${negSlopeInterceptLetter} is incorrect; it keeps the correct slope but uses $-${slope.toFixed(2)}$ as the $y$-intercept.`
+      explanation: `Choice ${correctLetter} is correct. The data trend upward, so the line of best fit has a positive slope of about ${slope.toFixed(2)} and a small positive $y$-intercept of about ${intercept.toFixed(2)}. Only choice ${correctLetter}, $y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}$, has both. Choice ${swapLetter} is incorrect because it swaps the slope and the $y$-intercept, giving a nearly flat line. Choice ${wrongSignLetter} is incorrect because it uses the correct slope but makes the $y$-intercept negative. Choice ${negSlopeInterceptLetter} is incorrect because it keeps the correct slope but uses $-${slope.toFixed(2)}$ as the $y$-intercept.`
     };
   }
 };

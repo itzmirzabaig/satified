@@ -70,7 +70,7 @@ export const generator_343 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: width.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The width is found by dividing the area by the length: $${area} \\div ${length} = ${width}$ meters. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The width is found by dividing the area by the length: $${area} \\div ${length} = ${width}$ meters. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -55,7 +55,7 @@ export const generator_176 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `$${slopeJText}$`,
-      explanation: `Choice ${correctLetter} is correct. Perpendicular lines have slopes that are negative reciprocals. Since line $k$ has slope ${slopeK}, line $j$ must have slope $-\\frac{1}{${slopeK}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Perpendicular lines have slopes that are negative reciprocals. Since line $k$ has slope ${slopeK}, line $j$ must have slope $-\\frac{1}{${slopeK}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

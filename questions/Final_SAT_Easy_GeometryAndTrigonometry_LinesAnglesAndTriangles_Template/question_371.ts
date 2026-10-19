@@ -85,7 +85,7 @@ export const generator_371 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. When two lines intersect, vertical angles are congruent (equal in measure). Since $m\\angle 1 = ${angle1}^{\\circ}$, the vertical angle satisfies $m\\angle 2 = ${angle1}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. When two lines intersect, vertical angles are congruent (equal in measure). Since $m\\angle 1 = ${angle1}^{\\circ}$, the vertical angle satisfies $m\\angle 2 = ${angle1}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -49,7 +49,7 @@ export const generator_589 = {
     const correctAnswer = correctText;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The function $f$ gives the predicted value, in dollars, of the rare coin $x$ years after the collector purchased it. In the statement $f(${years}) \\approx ${finalValue}$, the input ${years} is a number of years after the purchase, and the output is the predicted value, in dollars, at that time. Therefore, the statement means that ${years} years after the collector purchased the rare coin, its predicted value is approximately \\$${finalValue}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The function $f$ gives the predicted value, in dollars, of the rare coin $x$ years after the collector purchased it. In the statement $f(${years}) \\approx ${finalValue}$, the input ${years} is a number of years after the purchase, and the output is the predicted value, in dollars, at that time. Therefore, the statement means that ${years} years after the collector purchased the rare coin, its predicted value is approximately \\$${finalValue}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText,

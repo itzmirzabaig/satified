@@ -95,7 +95,7 @@ export const generator_891 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // STEP 6: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. In right triangle $ABC$, $\\cos A = \\frac{AB}{AC} = \\frac{${ratioAdjacent}}{${ratioHypotenuse}}$. This means the sides are in the ratio $AB:BC:AC = ${ratioAdjacent}:${ratioOpposite}:${ratioHypotenuse}$. Given $BC = ${BC} = ${ratioOpposite} \\times ${scale}$, the scale factor is ${scale}. Therefore, $AB = ${ratioAdjacent} \\times ${scale} = ${answer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. In right triangle $ABC$, $\\cos A = \\frac{AB}{AC} = \\frac{${ratioAdjacent}}{${ratioHypotenuse}}$. This means the sides are in the ratio $AB:BC:AC = ${ratioAdjacent}:${ratioOpposite}:${ratioHypotenuse}$. Given $BC = ${BC} = ${ratioOpposite} \\times ${scale}$, the scale factor is ${scale}. Therefore, $AB = ${ratioAdjacent} \\times ${scale} = ${answer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     // STEP 7: Return question data
     return {

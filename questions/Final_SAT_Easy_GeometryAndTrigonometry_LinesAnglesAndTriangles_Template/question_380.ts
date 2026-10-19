@@ -115,7 +115,7 @@ export const generator_380 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. In $\\triangle ABC$, the three angles satisfy $\\angle A + \\angle B + \\angle BCA = 180^{\\circ}$, so $\\angle BCA = 180^{\\circ} - ${x}^{\\circ} - ${angle1}^{\\circ} = ${angleBCA}^{\\circ}$. Because $\\angle BCA$ and $\\angle DCE$ are vertical angles, $\\angle DCE = ${angleBCA}^{\\circ}$. In $\\triangle CDE$, $y = 180^{\\circ} - ${angleBCA}^{\\circ} - ${angle3}^{\\circ} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In $\\triangle ABC$, the three angles satisfy $\\angle A + \\angle B + \\angle BCA = 180^{\\circ}$, so $\\angle BCA = 180^{\\circ} - ${x}^{\\circ} - ${angle1}^{\\circ} = ${angleBCA}^{\\circ}$. Because $\\angle BCA$ and $\\angle DCE$ are vertical angles, $\\angle DCE = ${angleBCA}^{\\circ}$. In $\\triangle CDE$, $y = 180^{\\circ} - ${angleBCA}^{\\circ} - ${angle3}^{\\circ} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

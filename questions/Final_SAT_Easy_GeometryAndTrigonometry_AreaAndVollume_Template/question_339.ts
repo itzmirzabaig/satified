@@ -48,7 +48,7 @@ export const generator_339 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: side3.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The third side is found by subtracting the two known sides from the perimeter: $${perimeter} - ${side1} - ${side2} = ${side3}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The third side is found by subtracting the two known sides from the perimeter: $${perimeter} - ${side1} - ${side2} = ${side3}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

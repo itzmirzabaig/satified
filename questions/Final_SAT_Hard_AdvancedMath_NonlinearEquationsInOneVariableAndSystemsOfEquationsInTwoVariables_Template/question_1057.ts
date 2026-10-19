@@ -67,9 +67,9 @@ export const generator_1057 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     const explanation = `Choice ${correctLetter} is correct. A quadratic equation has no real solutions exactly when its discriminant $b^2-4ac$ is negative. For $ ${a4}x^2${b4}x+${c4}=0$, the discriminant is $(${b4})^2-4(${a4})(${c4})=${b4 * b4}-${4 * a4 * c4}=${discD}<0$, so the equation has no real solutions.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `Which of the following quadratic equations has no real solutions?`,

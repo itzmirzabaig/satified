@@ -82,7 +82,7 @@ export const generator_80 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To find $f(${x})$, substitute ${x} for $x$ in the equation $f(x) = \\frac{1}{${coeff}x}$: $f(${x}) = \\frac{1}{${coeff}(${x})} = \\frac{1}{${result}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find $f(${x})$, substitute ${x} for $x$ in the equation $f(x) = \\frac{1}{${coeff}x}$: $f(${x}) = \\frac{1}{${coeff}(${x})} = \\frac{1}{${result}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

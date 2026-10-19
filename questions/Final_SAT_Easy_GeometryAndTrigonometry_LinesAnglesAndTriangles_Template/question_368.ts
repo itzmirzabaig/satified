@@ -68,7 +68,7 @@ export const generator_368 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${correctAngle}^{\\circ}`,
-      explanation: `Choice ${correctOption.letter} is correct. Because triangle $EFG$ is congruent to triangle $JKL$ with correspondence $E \\leftrightarrow J$, $F \\leftrightarrow K$, $G \\leftrightarrow L$, corresponding angles are equal. Therefore $m\\angle J = m\\angle E = ${correctAngle}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Because triangle $EFG$ is congruent to triangle $JKL$ with correspondence $E \\leftrightarrow J$, $F \\leftrightarrow K$, $G \\leftrightarrow L$, corresponding angles are equal. Therefore $m\\angle J = m\\angle E = ${correctAngle}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

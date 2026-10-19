@@ -94,7 +94,7 @@ export const generator_1249 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correct.toString(),
-      explanation: `Choice ${correctLetter} is correct. Adding the first equation to twice the second equation gives $(${a1}x + ${b1}y) + 2(${a2}x + ${b2}y) = ${c1} + 2(${c2})$, which simplifies to $${targetCoeff}x + ${targetY}y = ${correct}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Adding the first equation to twice the second equation gives $(${a1}x + ${b1}y) + 2(${a2}x + ${b2}y) = ${c1} + 2(${c2})$, which simplifies to $${targetCoeff}x + ${targetY}y = ${correct}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

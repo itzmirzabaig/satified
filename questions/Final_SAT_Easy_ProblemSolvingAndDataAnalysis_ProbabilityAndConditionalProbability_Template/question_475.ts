@@ -52,7 +52,7 @@ export const generator_475 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. If one of these items is selected at random, the probability is the number with the characteristic divided by the total number. There are ${targetCount} with the characteristic out of ${totalCount} total, giving $\\frac{${targetCount}}{${totalCount}} = \\frac{1}{${ratio}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. If one of these items is selected at random, the probability is the number with the characteristic divided by the total number. There are ${targetCount} with the characteristic out of ${totalCount} total, giving $\\frac{${targetCount}}{${totalCount}} = \\frac{1}{${ratio}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `Of the $${totalCount}$ items in a group, $${targetCount}$ have a certain characteristic. If one item is selected at random from the group, what is the probability of selecting an item with that characteristic?`,

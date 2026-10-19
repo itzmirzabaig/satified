@@ -48,7 +48,7 @@ export const generator_500 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // Fixed: Plain text for words, $...$ only for math expressions
-    const explanation = `To find the depth in feet, multiply the depth in fathoms by the number of feet in one fathom. $${fathoms} \\times ${feetPerFathom} = ${feet}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `To find the depth in feet, multiply the depth in fathoms by the number of feet in one fathom. $${fathoms} \\times ${feetPerFathom} = ${feet}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
 
     return {
       // Fixed: Plain text for units, no \\text{} needed

@@ -48,7 +48,7 @@ export const generator_506 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // Fixed: Use $...$ only for math, plain text for words
-    const explanation = `To convert from yards per second to feet per second, multiply the number of yards by ${feetPerYard}. $${yardsPerSec} \\times ${feetPerYard} = ${feetPerSec}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `To convert from yards per second to feet per second, multiply the number of yards by ${feetPerYard}. $${yardsPerSec} \\times ${feetPerYard} = ${feetPerSec}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
 
     return {
       // Fixed: Plain text for units, no \\text{} needed

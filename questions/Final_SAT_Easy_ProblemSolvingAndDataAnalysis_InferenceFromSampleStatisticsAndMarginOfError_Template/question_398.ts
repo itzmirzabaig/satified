@@ -80,7 +80,7 @@ export const generator_398 = {
     const explanation = `Choice ${correctLetter} is correct. The confidence interval is calculated by subtracting and adding the margin of error to the mean. 
     Lower bound: \\$${meanPrice.toFixed(2)} - \\$${marginOfError.toFixed(2)} = \\$${lowerBound}. 
     Upper bound: \\$${meanPrice.toFixed(2)} + \\$${marginOfError.toFixed(2)} = \\$${upperBound}. 
-    Therefore, the plausible range for the mean price is between \\$${lowerBound} and \\$${upperBound}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    Therefore, the plausible range for the mean price is between \\$${lowerBound} and \\$${upperBound}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       // ✅ Use \\$ for currency values — not $ — to prevent LaTeX parsing

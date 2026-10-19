@@ -71,7 +71,7 @@ export const generator_383 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. The interior angles of a triangle satisfy $\\angle X + \\angle Y + \\angle Z = 180^{\\circ}$, so $\\angle Z = 180^{\\circ} - \\angle X - \\angle Y = 180^{\\circ} - ${angleX}^{\\circ} - ${angleY}^{\\circ} = ${angleZ}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The interior angles of a triangle satisfy $\\angle X + \\angle Y + \\angle Z = 180^{\\circ}$, so $\\angle Z = 180^{\\circ} - \\angle X - \\angle Y = 180^{\\circ} - ${angleX}^{\\circ} - ${angleY}^{\\circ} = ${angleZ}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

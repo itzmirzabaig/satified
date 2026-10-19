@@ -56,7 +56,7 @@ export const generator_217 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: optionD,
-      explanation: `Choice ${correctOption.letter} is correct. If $y$ is $${difference}$ less than $x$, then $y = x - ${difference}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. If $y$ is $${difference}$ less than $x$, then $y = x - ${difference}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

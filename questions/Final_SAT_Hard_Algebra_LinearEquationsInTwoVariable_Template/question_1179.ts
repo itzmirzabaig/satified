@@ -103,7 +103,7 @@ export const generator_1179 = {
       figureCode: null,
       options: displayOptions,
       correctAnswer: correctOption ? `${correctOption.letter}. ${correctOption.text}` : "",
-      explanation: `Choice ${correctLetter} is correct. Substituting the point $(0, ${y2})$ into $ax+ky=6$ gives $a(0)+k(${y2})=6$, so $k(${y2})=6$ and $k=\\frac{6}{${y2}}=${k}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Substituting the point $(0, ${y2})$ into $ax+ky=6$ gives $a(0)+k(${y2})=6$, so $k(${y2})=6$ and $k=\\frac{6}{${y2}}=${k}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

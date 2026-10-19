@@ -95,7 +95,7 @@ export const generator_1299 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The radius drawn to the point of tangency has slope $m_r = ${diffQuotient} = ${rawFrac} = ${radiusFracSimplified}$. A tangent line is perpendicular to the radius at the point of tangency, so line $k$ has the negative reciprocal slope, $m_k = ${tangentSlope}$. Choice ${radiusLetter} is incorrect; it is the slope of the radius itself, not its negative reciprocal. Choice ${reciprocalLetter} is incorrect; it is the reciprocal of the radius slope but keeps the wrong sign. Choice ${negRadiusLetter} is incorrect; it only negates the radius slope instead of taking the negative reciprocal.`
+      explanation: `Choice ${correctLetter} is correct. The radius drawn to the point of tangency has slope $m_r = ${diffQuotient} = ${rawFrac} = ${radiusFracSimplified}$. A tangent line is perpendicular to the radius at the point of tangency, so line $k$ has the negative reciprocal slope, $m_k = ${tangentSlope}$. Choice ${radiusLetter} is incorrect because it is the slope of the radius itself, not its negative reciprocal. Choice ${reciprocalLetter} is incorrect because it is the reciprocal of the radius slope but keeps the wrong sign. Choice ${negRadiusLetter} is incorrect because it only negates the radius slope instead of taking the negative reciprocal.`
     };
   }
 };

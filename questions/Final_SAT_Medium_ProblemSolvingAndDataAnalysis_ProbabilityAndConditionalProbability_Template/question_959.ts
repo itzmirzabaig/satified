@@ -123,7 +123,7 @@ export const generator_959 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correct.tex,
-      explanation: `Choice ${correctLetter} is correct. Of the ${totalCars} cars, ${hybridLowPrice} are hybrid cars priced at no more than \\$25,000, so the probability is $\\frac{${hybridLowPrice}}{${totalCars}} = \\frac{${simplifiedNum}}{${simplifiedDen}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Of the ${totalCars} cars, ${hybridLowPrice} are hybrid cars priced at no more than \\$25,000, so the probability is $\\frac{${hybridLowPrice}}{${totalCars}} = \\frac{${simplifiedNum}}{${simplifiedDen}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

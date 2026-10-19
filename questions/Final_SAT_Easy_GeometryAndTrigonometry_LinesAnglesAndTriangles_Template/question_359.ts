@@ -88,7 +88,7 @@ $$x + ${givenAngle} = 180$$
 $$x = 180 - ${givenAngle}$$
 $$x = ${correctVal}$$
 
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.`
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.`
     };
   }
 };

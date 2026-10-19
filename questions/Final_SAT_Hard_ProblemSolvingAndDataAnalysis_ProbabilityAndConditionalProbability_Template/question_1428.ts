@@ -187,7 +187,7 @@ export const generator_1428 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctAnswerText,
-      explanation: `Choice ${correctLetter} is correct. The participants at least 10 years old come from the 10-19 and 20+ columns, each of which totals ${totalPerGroup}, so there are ${total_atLeast10} such participants. Within Group A, ${groupA_10_19} + ${groupA_20_plus} = ${groupA_atLeast10} are at least 10 years old. The probability is $\\frac{${groupA_atLeast10}}{${total_atLeast10}} = \\frac{${simplifiedNum}}{${simplifiedDen}}$.\n\nChoice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.\nChoice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.\nChoice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The participants at least 10 years old come from the 10-19 and 20+ columns, each of which totals ${totalPerGroup}, so there are ${total_atLeast10} such participants. Within Group A, ${groupA_10_19} + ${groupA_20_plus} = ${groupA_atLeast10} are at least 10 years old. The probability is $\\frac{${groupA_atLeast10}}{${total_atLeast10}} = \\frac{${simplifiedNum}}{${simplifiedDen}}$.\n\nChoice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.\nChoice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.\nChoice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

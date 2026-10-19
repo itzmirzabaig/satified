@@ -69,7 +69,7 @@ export const generator_396 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. With an estimated ${samplePercent}% and margin of error of ${marginOfError}%, the plausible range is (${samplePercent} - ${marginOfError}) = ${lowerBound}% to (${samplePercent} + ${marginOfError}) = ${upperBound}%. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. With an estimated ${samplePercent}% and margin of error of ${marginOfError}%, the plausible range is (${samplePercent} - ${marginOfError}) = ${lowerBound}% to (${samplePercent} + ${marginOfError}) = ${upperBound}%. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `At a large ${institution}, ${sampleSize} students were selected at random and were asked in a survey about a ${change} in the ${location}. All ${sampleSize} students completed the survey. It was estimated that ${samplePercent}% of the students were in support of a ${change}, with a margin of error of ${marginOfError}%. Which of the following is the best interpretation of the survey results?`,

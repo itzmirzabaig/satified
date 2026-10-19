@@ -119,7 +119,7 @@ export const generator_981 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: fillCount.toString(),
-      explanation: `Choice ${correctLetter} is correct. To find how many times the glass can be filled, divide the total volume of water in the pitcher by the capacity of the glass: $${gallonOz} \\div ${glassOz} = ${fillCount}$. The glass can be completely filled ${fillCount} times. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. To find how many times the glass can be filled, divide the total volume of water in the pitcher by the capacity of the glass: $${gallonOz} \\div ${glassOz} = ${fillCount}$. The glass can be completely filled ${fillCount} times. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

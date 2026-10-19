@@ -100,7 +100,7 @@ export const generator_739 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `Each game costs \\$${perItemCost}.`,
-      explanation: `Choice ${correctLetter} is correct. The slope represents the change in total cost per game. The graph passes through $(0, ${fixedCost})$ and $(1, ${perItemCost + fixedCost})$, so for each additional game the cost increases by \\$${perItemCost} (${perItemCost + fixedCost} - ${fixedCost} = ${perItemCost}). Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The slope represents the change in total cost per game. The graph passes through $(0, ${fixedCost})$ and $(1, ${perItemCost + fixedCost})$, so for each additional game the cost increases by \\$${perItemCost} (${perItemCost + fixedCost} - ${fixedCost} = ${perItemCost}). Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

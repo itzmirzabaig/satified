@@ -73,7 +73,7 @@ export const generator_803 = {
 
     const wrongExplanations = shuffledOptions
       .filter(o => !o.isCorrect)
-      .map(o => `Choice ${o.letter} is incorrect; it ${reasons[o.text]}`)
+      .map(o => `Choice ${o.letter} is incorrect because it ${reasons[o.text]}`)
       .join(' ');
 
     // STEP 5: Return question data

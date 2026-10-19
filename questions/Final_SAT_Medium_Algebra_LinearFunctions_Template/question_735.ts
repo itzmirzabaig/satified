@@ -67,7 +67,7 @@ export const generator_735 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,
-      explanation: `Choice ${correctLetter} is correct. The slope is $m = \\frac{${y2} - ${y1}}{${x2} - ${x1}} = \\frac{${yDiff}}{-2} = -\\frac{${slopeNum}}{${slopeDenom}}$. Using point (${x2}, ${y2}): ${y2} = -\\frac{${slopeNum}}{${slopeDenom}}(${x2}) + b, so $b = ${y2} + \\frac{${slopeNum * x2}}{${slopeDenom}} = ${b}$. Thus $h(x) = -\\frac{${slopeNum}}{${slopeDenom}}x + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The slope is $m = \\frac{${y2} - ${y1}}{${x2} - ${x1}} = \\frac{${yDiff}}{-2} = -\\frac{${slopeNum}}{${slopeDenom}}$. Using point (${x2}, ${y2}): ${y2} = -\\frac{${slopeNum}}{${slopeDenom}}(${x2}) + b, so $b = ${y2} + \\frac{${slopeNum * x2}}{${slopeDenom}} = ${b}$. Thus $h(x) = -\\frac{${slopeNum}}{${slopeDenom}}x + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -58,9 +58,9 @@ export const generator_1038 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     const explanation = `Choice ${correctLetter} is correct. Dividing both sides of the equation by ${c} gives $\\frac{${lhsNum}x}{${lhsNum}y}=\\sqrt{w+${d}}$, which simplifies to $\\frac{x}{y}=\\sqrt{w+${d}}$. Squaring both sides gives $\\left(\\frac{x}{y}\\right)^2=w+${d}$. Subtracting ${d} from both sides gives $w=\\left(\\frac{x}{y}\\right)^2-${d}$.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `$\\frac{${lhsNum}x}{${b}y} = ${c}\\sqrt{w+${d}}$\n\nThe given equation relates the distinct positive real numbers $w$, $x$, and $y$. Which equation correctly expresses $w$ in terms of $x$ and $y$?`,

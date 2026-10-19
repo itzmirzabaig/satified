@@ -127,7 +127,7 @@ export const generator_621 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
     
     // STEP 6: Build explanation (fixed LaTeX formatting - removed $$ display math)
-    const explanation = `Choice ${correctLetter} is correct. The numerator $${originalNum}$ can be factored as $${commonFactor}(${simplifiedNum})$, and the denominator $${originalDen}$ can be factored as $${commonFactor}(${simplifiedDen})$. Therefore, $${originalExpr} = \\frac{${commonFactor}(${simplifiedNum})}{${commonFactor}(${simplifiedDen})} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The numerator $${originalNum}$ can be factored as $${commonFactor}(${simplifiedNum})$, and the denominator $${originalDen}$ can be factored as $${commonFactor}(${simplifiedDen})$. Therefore, $${originalExpr} = \\frac{${commonFactor}(${simplifiedNum})}{${commonFactor}(${simplifiedDen})} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: `Which of the following is equivalent to the expression below? $${originalExpr}$`,

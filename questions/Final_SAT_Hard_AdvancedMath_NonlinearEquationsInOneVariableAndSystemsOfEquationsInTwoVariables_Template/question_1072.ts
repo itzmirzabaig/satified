@@ -100,9 +100,9 @@ export const generator_1072 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     const explanation = `Choice ${correctLetter} is correct. Setting the two expressions for $y$ equal to each other gives $${quadExpr}=${lineExpr}$. Rearranging gives $${stdExpr}=0$, which factors as $${factored}=0$. The x-values of the solutions are $x_1=${r1}$ and $x_2=${r2}$. Substituting these into the linear equation gives $y_1=${fmtEval(r1)}=${y1}$ and $y_2=${fmtEval(r2)}=${y2}$. Therefore, $y_1+y_2=${sumStep}=${sumY}$.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `$y = ${quadExpr}$\n$y = ${lineExpr}$\n\nIf $(x_1, y_1)$ and $(x_2, y_2)$ are the two solutions to the system of equations above, what is the value of $y_1+y_2$?`,

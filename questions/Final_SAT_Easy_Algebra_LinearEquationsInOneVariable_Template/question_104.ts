@@ -59,7 +59,7 @@ export const generator_104 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Choice ${correctLetter} is correct. Dividing each term of the given equation by ${divisor} yields \\( \\frac{${divisor}x}{${divisor}} - \\frac{${const1}}{${divisor}} = -\\frac{${const2}}{${divisor}} \\), which simplifies to \\( x - ${k} = ${result} \\). Therefore, the value of \\( x - ${k} \\) is ${result}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Dividing each term of the given equation by ${divisor} yields \\( \\frac{${divisor}x}{${divisor}} - \\frac{${const1}}{${divisor}} = -\\frac{${const2}}{${divisor}} \\), which simplifies to \\( x - ${k} = ${result} \\). Therefore, the value of \\( x - ${k} \\) is ${result}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

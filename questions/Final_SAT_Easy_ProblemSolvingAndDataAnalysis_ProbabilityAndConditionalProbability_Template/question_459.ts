@@ -71,7 +71,7 @@ export const generator_459 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The probability is found by dividing the number of baritone singers by the total number of men registered for singing lessons. There are ${baritone} baritones out of ${totalSingers} total singers, so the probability is $\\frac{${baritone}}{${totalSingers}} = ${correctText}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The probability is found by dividing the number of baritone singers by the total number of men registered for singing lessons. There are ${baritone} baritones out of ${totalSingers} total singers, so the probability is $\\frac{${baritone}}{${totalSingers}} = ${correctText}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `A total of ${totalSingers} men registered for singing lessons. The frequency table shows how many of these singers have certain voice types. If one of these singers is selected at random, what is the probability he is a baritone?`,

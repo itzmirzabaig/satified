@@ -104,7 +104,7 @@ export const generator_393 = {
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. The Pythagorean theorem states that for a right triangle, $a^2 + b^2 = c^2$, where $c$ is the hypotenuse. The legs shown have lengths ${leg1} and ${leg2}, so $c^2 = ${leg1}^2 + ${leg2}^2 = ${leg1 * leg1} + ${leg2 * leg2} = ${hypotenuseSquared}$. Taking the positive square root gives $c = \\sqrt{${hypotenuseSquared}} \\approx ${hypotenuse}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The Pythagorean theorem states that for a right triangle, $a^2 + b^2 = c^2$, where $c$ is the hypotenuse. The legs shown have lengths ${leg1} and ${leg2}, so $c^2 = ${leg1}^2 + ${leg2}^2 = ${leg1 * leg1} + ${leg2 * leg2} = ${hypotenuseSquared}$. Taking the positive square root gives $c = \\sqrt{${hypotenuseSquared}} \\approx ${hypotenuse}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -81,7 +81,7 @@ export const generator_375 = {
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. The given angle of ${givenAngle}° and the angle $w$ lie in matching positions at the two intersections, so they are corresponding angles. When two parallel lines are cut by a transversal, corresponding angles are congruent, so $w = ${givenAngle}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The given angle of ${givenAngle}° and the angle $w$ lie in matching positions at the two intersections, so they are corresponding angles. When two parallel lines are cut by a transversal, corresponding angles are congruent, so $w = ${givenAngle}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

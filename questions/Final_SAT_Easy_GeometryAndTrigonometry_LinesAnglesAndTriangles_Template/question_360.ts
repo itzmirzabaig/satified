@@ -94,7 +94,7 @@ $$2b = 180 - ${a}$$
 $$2b = ${180 - a}$$
 $$b = ${bValue}$$
 
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.`
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.`
     };
   }
 };

@@ -58,7 +58,7 @@ export const generator_761 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,
-      explanation: `Choice ${correctLetter} is correct. At sea level ($x=0$), $B = ${initial}$. For every ${rateDenom} feet, $B$ decreases by 1, so the rate is $\\frac{1}{${rateDenom}}$ per foot. Since it decreases: $B = ${initial} - \\frac{x}{${rateDenom}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. At sea level ($x=0$), $B = ${initial}$. For every ${rateDenom} feet, $B$ decreases by 1, so the rate is $\\frac{1}{${rateDenom}}$ per foot. Since it decreases: $B = ${initial} - \\frac{x}{${rateDenom}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

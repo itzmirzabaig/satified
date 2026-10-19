@@ -156,7 +156,7 @@ export const generator_1397 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The median of a data set in a box plot is the vertical line within the box. Group 1's median is ${group1Median} kg, and Group 2's is ${group2Median} kg. Since ${group1Median} > ${group2Median}, the median mass of group 1 is greater. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The median of a data set in a box plot is the vertical line within the box. Group 1's median is ${group1Median} kg, and Group 2's is ${group2Median} kg. Since ${group1Median} > ${group2Median}, the median mass of group 1 is greater. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

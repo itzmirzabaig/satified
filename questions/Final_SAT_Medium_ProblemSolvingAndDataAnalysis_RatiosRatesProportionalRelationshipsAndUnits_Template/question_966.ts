@@ -56,7 +56,7 @@ export const generator_966 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: density.toString(),
-      explanation: `Choice ${correctLetter} is correct. The formula for density is: $\\text{Density} = \\frac{\\text{Mass}}{\\text{Volume}}$. Substituting the given values: $\\text{Density} = \\frac{${mass} \\text{ grams}}{${volume} \\text{ cubic centimeters}} = ${density}$ grams per cubic centimeter. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The formula for density is: $\\text{Density} = \\frac{\\text{Mass}}{\\text{Volume}}$. Substituting the given values: $\\text{Density} = \\frac{${mass} \\text{ grams}}{${volume} \\text{ cubic centimeters}} = ${density}$ grams per cubic centimeter. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

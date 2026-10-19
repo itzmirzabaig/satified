@@ -54,7 +54,7 @@ export const generator_940 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. To increase $x$ by ${percent}\\%, calculate the increase (${percent}\\% of $x$ = $${decimal}x$) and add to the original: $x + ${decimal}x = ${multiplier}x$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To increase $x$ by ${percent}\\%, calculate the increase (${percent}\\% of $x$ = $${decimal}x$) and add to the original: $x + ${decimal}x = ${multiplier}x$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

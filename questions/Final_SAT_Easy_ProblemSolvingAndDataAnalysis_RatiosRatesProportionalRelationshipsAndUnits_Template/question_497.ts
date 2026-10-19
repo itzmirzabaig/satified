@@ -48,7 +48,7 @@ export const generator_497 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `If $t = ${coefficient}u$, then $${multiplier}t = ${multiplier} \\cdot (${coefficient}u) = ${resultCoefficient}u$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `If $t = ${coefficient}u$, then $${multiplier}t = ${multiplier} \\cdot (${coefficient}u) = ${resultCoefficient}u$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `If $t=${coefficient}u$, which of the following is equivalent to $${multiplier}t$?`,

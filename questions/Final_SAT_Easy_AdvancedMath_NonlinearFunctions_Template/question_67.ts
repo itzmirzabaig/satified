@@ -87,7 +87,7 @@ export const generator_67 = {
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. Substituting $${xInput}$ for $x$, the numerator is $(${xInput})^2 ${bSign}(${xInput}) + ${c} = ${xInput * xInput} + ${b * xInput} + ${c} = ${numerVal}$, and the denominator is $${xInput} - ${denomSub} = ${denomVal}$. Therefore $f(${xInput}) = \\frac{${numerVal}}{${denomVal}} = ${result}$. Choice ${letterOf('signError')} is incorrect; it results from ignoring the negative sign of the denominator. Choices ${letterOf('offLow')} and ${letterOf('offHigh')} are incorrect; each results from an arithmetic error when evaluating the numerator or the denominator.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting $${xInput}$ for $x$, the numerator is $(${xInput})^2 ${bSign}(${xInput}) + ${c} = ${xInput * xInput} + ${b * xInput} + ${c} = ${numerVal}$, and the denominator is $${xInput} - ${denomSub} = ${denomVal}$. Therefore $f(${xInput}) = \\frac{${numerVal}}{${denomVal}} = ${result}$. Choice ${letterOf('signError')} is incorrect because it results from ignoring the negative sign of the denominator. Choices ${letterOf('offLow')} and ${letterOf('offHigh')} are incorrect; each results from an arithmetic error when evaluating the numerator or the denominator.`
     };
   }
 };

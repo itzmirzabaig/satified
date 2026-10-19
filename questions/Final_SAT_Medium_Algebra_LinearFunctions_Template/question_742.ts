@@ -100,7 +100,7 @@ export const generator_742 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,
-      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${f2} - ${f1}}{${h2} - ${h1}} = \\frac{${f2 - f1}}{${h2 - h1}} = ${m}$. Substituting the point $(${h1}, ${f1})$ into $f(h) = ${m}h + b$ and solving for the intercept gives $b = ${f1} - ${m}(${h1}) = ${b}$. Thus $f(h) = ${m}h + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${f2} - ${f1}}{${h2} - ${h1}} = \\frac{${f2 - f1}}{${h2 - h1}} = ${m}$. Substituting the point $(${h1}, ${f1})$ into $f(h) = ${m}h + b$ and solving for the intercept gives $b = ${f1} - ${m}(${h1}) = ${b}$. Thus $f(h) = ${m}h + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

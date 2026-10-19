@@ -88,7 +88,7 @@ export const generator_1185 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. To find the $x$-intercept, substitute $y = 0$: $${a}x = ${c}$, so $r = ${rTeX}$. To find the $y$-intercept, substitute $x = 0$: $${b}y = ${c}$, so $t = ${tTeX}$. The requested ratio is $\\frac{t}{r} = \\frac{c/${b}}{c/${a}}$, where $c = ${c}$. The factor $c$ cancels, leaving $\\frac{t}{r} = ${finalStep}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. To find the $x$-intercept, substitute $y = 0$: $${a}x = ${c}$, so $r = ${rTeX}$. To find the $y$-intercept, substitute $x = 0$: $${b}y = ${c}$, so $t = ${tTeX}$. The requested ratio is $\\frac{t}{r} = \\frac{c/${b}}{c/${a}}$, where $c = ${c}$. The factor $c$ cancels, leaving $\\frac{t}{r} = ${finalStep}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

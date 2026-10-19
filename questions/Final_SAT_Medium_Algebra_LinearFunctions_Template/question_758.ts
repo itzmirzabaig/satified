@@ -69,7 +69,7 @@ export const generator_758 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: targetY.toString(),
-      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${y2} - (${y1})}{${x2} - ${x1}} = \\frac{${y2 - y1}}{${step}} = ${m}$. The y-intercept is ${y1}. So $f(x) = ${m}x ${b >= 0 ? '+' : '-'} ${Math.abs(b)}$. Thus $f(${targetX}) = ${m}(${targetX}) ${b >= 0 ? '+' : '-'} ${Math.abs(b)} = ${targetY}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${y2} - (${y1})}{${x2} - ${x1}} = \\frac{${y2 - y1}}{${step}} = ${m}$. The y-intercept is ${y1}. So $f(x) = ${m}x ${b >= 0 ? '+' : '-'} ${Math.abs(b)}$. Thus $f(${targetX}) = ${m}(${targetX}) ${b >= 0 ? '+' : '-'} ${Math.abs(b)} = ${targetY}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

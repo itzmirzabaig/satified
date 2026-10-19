@@ -63,7 +63,7 @@ export const generator_1204 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The cost is \\$${firstDayCost} for day 1 plus \\$${additionalCost} for each of the remaining $(d-1)$ days: $C(d) = ${firstDayCost} + ${additionalCost}(d-1) = ${firstDayCost} + ${additionalCost}d - ${additionalCost} = ${additionalCost}d + ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The cost is \\$${firstDayCost} for day 1 plus \\$${additionalCost} for each of the remaining $(d-1)$ days: $C(d) = ${firstDayCost} + ${additionalCost}(d-1) = ${firstDayCost} + ${additionalCost}d - ${additionalCost} = ${additionalCost}d + ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

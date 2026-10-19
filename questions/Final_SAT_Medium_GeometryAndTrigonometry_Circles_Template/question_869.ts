@@ -62,7 +62,7 @@ export const generator_869 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `$(${h}, ${k})$`,
-      explanation: `Choice ${correctLetter} is correct. To find the center, rewrite the equation in standard form by completing the square. Taking half of ${b} gives ${halfB}, and squaring it gives ${perfectSquare}. Adding ${perfectSquare} to both sides: $$(x^2+${b}x+${perfectSquare})+y^2=${perfectSquare}$$, which factors to $$(x+${halfB})^2+y^2=${perfectSquare}$$. This can be written as $$(x-(${h}))^2+(y-${k})^2=${halfB}^2$$, so the center is at $$(${h}, ${k})$$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].pattern}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].pattern}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].pattern}.`
+      explanation: `Choice ${correctLetter} is correct. To find the center, rewrite the equation in standard form by completing the square. Taking half of ${b} gives ${halfB}, and squaring it gives ${perfectSquare}. Adding ${perfectSquare} to both sides: $$(x^2+${b}x+${perfectSquare})+y^2=${perfectSquare}$$, which factors to $$(x+${halfB})^2+y^2=${perfectSquare}$$. This can be written as $$(x-(${h}))^2+(y-${k})^2=${halfB}^2$$, so the center is at $$(${h}, ${k})$$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].pattern}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].pattern}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].pattern}.`
     };
   }
 };

@@ -54,7 +54,7 @@ export const generator_437 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. To find how many potatoes the gardener saved, calculate 10% of ${roundedTotal}: $\\frac{10}{100} \\times ${roundedTotal} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find how many potatoes the gardener saved, calculate 10% of ${roundedTotal}: $\\frac{10}{100} \\times ${roundedTotal} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

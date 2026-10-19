@@ -70,9 +70,9 @@ export const generator_1042 = {
     const q = c + e; // = root^2, always positive
 
     const explanation = `Choice ${correctLetter} is correct. Solving the second equation for $y$ gives $y = ${finalD}x - ${e}$. Setting the two expressions for $y$ equal gives $x^2 + ${b}x - ${-c} = ${finalD}x - ${e}$, which rearranges to $x^2 - ${p}x + ${q} = 0$. The discriminant is $(-${p})^2 - 4(1)(${q}) = ${p * p} - ${4 * q} = 0$. Because the discriminant equals zero, the quadratic equation has exactly one solution, so the system has exactly one solution.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `How many solutions are there to the system of equations shown?`,

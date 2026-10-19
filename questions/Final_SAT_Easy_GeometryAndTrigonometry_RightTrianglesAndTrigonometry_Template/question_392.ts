@@ -55,7 +55,7 @@ export const generator_392 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. According to the Pythagorean theorem, $a^2 + b^2 = c^2$. Given $a=${a}$ and $b=${b}$, the equation becomes $${a}^2 + ${b}^2 = c^2$. Solving for $c$, we get $c = \\sqrt{${a}^2 + ${b}^2}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. According to the Pythagorean theorem, $a^2 + b^2 = c^2$. Given $a=${a}$ and $b=${b}$, the equation becomes $${a}^2 + ${b}^2 = c^2$. Solving for $c$, we get $c = \\sqrt{${a}^2 + ${b}^2}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

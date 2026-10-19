@@ -139,7 +139,7 @@ export const generator_885 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `x > ${complement}`,
-      explanation: `Choice ${correctOption.letter} is correct. Angles $x$ and $y$ are same-side interior angles. Since $r \\parallel s$, $x + y = 180$. We are given $y < ${threshold}$. Subtracting $y$ from 180 gives $x = 180 - y$. Since $y < ${threshold}$, then $-y > -${threshold}$, so $180 - y > 180 - ${threshold}$, which simplifies to $x > ${complement}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Angles $x$ and $y$ are same-side interior angles. Since $r \\parallel s$, $x + y = 180$. We are given $y < ${threshold}$. Subtracting $y$ from 180 gives $x = 180 - y$. Since $y < ${threshold}$, then $-y > -${threshold}$, so $180 - y > 180 - ${threshold}$, which simplifies to $x > ${complement}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

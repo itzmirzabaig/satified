@@ -111,7 +111,7 @@ export const generator_1252 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: optB,
-      explanation: `Choice ${correctLetter} is correct. The given line can be written as $-${slope}x + y = ${b1}$. For no solution, the second equation must have the same slope but different y-intercept. Choice ${correctLetter} is $-${slope}x + y = ${b2}$, which satisfies this condition. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The given line can be written as $-${slope}x + y = ${b1}$. For no solution, the second equation must have the same slope but different y-intercept. Choice ${correctLetter} is $-${slope}x + y = ${b2}$, which satisfies this condition. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -60,7 +60,7 @@ export const generator_936 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. If $z = ${multiplierStr} \\times ${base}$, then $z = ${z}$. The percent by which $z$ is greater than ${base} is $\\frac{${z - base}}{${base}} \\times 100$, which equals ${percentIncrease}. So $z$ is ${percentIncrease}\\% greater than ${base}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. If $z = ${multiplierStr} \\times ${base}$, then $z = ${z}$. The percent by which $z$ is greater than ${base} is $\\frac{${z - base}}{${base}} \\times 100$, which equals ${percentIncrease}. So $z$ is ${percentIncrease}\\% greater than ${base}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

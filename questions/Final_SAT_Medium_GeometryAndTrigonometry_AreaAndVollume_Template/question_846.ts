@@ -70,7 +70,7 @@ export const generator_846 = {
     // STEP 5: Explanation — numbers from the same live variables; letters from
     // the shuffle. Each $...$ segment opens with a letter or backslash so no
     // bare "$<digit>" appears.
-    const explanation = `Choice ${correctLetter} is correct. The volume of a cylinder is $V = \\pi r^{2} h$. With $r = ${radius}$ and $h = ${height}$, $V = \\pi (${radius})^{2}(${height}) = \\pi \\cdot ${radius * radius} \\cdot ${height} = ${volume}\\pi$ cubic meters. Choice ${letterOf(cA)} is incorrect; it uses only the height, $\\pi h = ${cA}\\pi$, forgetting the radius entirely. Choice ${letterOf(cB)} is incorrect; it adds the radius and height, $\\pi (r + h) = ${cB}\\pi$, instead of using the volume formula. Choice ${letterOf(cC)} is incorrect; it computes $\\pi r h^{2} = ${cC}\\pi$ instead of $\\pi r^{2} h$.`;
+    const explanation = `Choice ${correctLetter} is correct. The volume of a cylinder is $V = \\pi r^{2} h$. With $r = ${radius}$ and $h = ${height}$, $V = \\pi (${radius})^{2}(${height}) = \\pi \\cdot ${radius * radius} \\cdot ${height} = ${volume}\\pi$ cubic meters. Choice ${letterOf(cA)} is incorrect because it uses only the height, $\\pi h = ${cA}\\pi$, forgetting the radius entirely. Choice ${letterOf(cB)} is incorrect because it adds the radius and height, $\\pi (r + h) = ${cB}\\pi$, instead of using the volume formula. Choice ${letterOf(cC)} is incorrect because it computes $\\pi r h^{2} = ${cC}\\pi$ instead of $\\pi r^{2} h$.`;
 
     return {
       questionText: `A right circular cylinder has a height of $${height}$ meters (m) and a base with a radius of $${radius}$ m. What is the volume, in cubic meters, of the cylinder?`,

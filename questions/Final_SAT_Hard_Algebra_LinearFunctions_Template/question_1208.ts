@@ -64,7 +64,7 @@ export const generator_1208 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The first day costs \\$${firstDayCost}, and each additional day costs \\$${additionalCost}. For $x$ days, there are $(x-1)$ additional days. So $y = ${firstDayCost} + ${additionalCost}(x-1) = ${firstDayCost} + ${additionalCost}x - ${additionalCost} = ${additionalCost}x + ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The first day costs \\$${firstDayCost}, and each additional day costs \\$${additionalCost}. For $x$ days, there are $(x-1)$ additional days. So $y = ${firstDayCost} + ${additionalCost}(x-1) = ${firstDayCost} + ${additionalCost}x - ${additionalCost} = ${additionalCost}x + ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

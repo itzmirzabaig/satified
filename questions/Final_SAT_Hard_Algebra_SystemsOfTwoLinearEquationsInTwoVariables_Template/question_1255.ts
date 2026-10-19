@@ -110,7 +110,7 @@ export const generator_1255 = {
       figureCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. Both lines have the same slope, $\\frac{${num}}{${den}}$, but different $y$-intercepts (${b1} and ${b2}), so they are parallel and distinct. Parallel distinct lines never intersect, so the system has zero solutions. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Both lines have the same slope, $\\frac{${num}}{${den}}$, but different $y$-intercepts (${b1} and ${b2}), so they are parallel and distinct. Parallel distinct lines never intersect, so the system has zero solutions. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -50,7 +50,7 @@ export const generator_374 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. The sum of interior angles is $180^{\\circ}$. With $\\angle R = ${angleR}^{\\circ}$, we have $\\angle S + \\angle T = ${180 - angleR}^{\\circ}$. Since $\\angle T > 0$, we need $\\angle S < ${180 - angleR}^{\\circ}$. Only ${correctAnswer} satisfies this condition. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The sum of interior angles is $180^{\\circ}$. With $\\angle R = ${angleR}^{\\circ}$, we have $\\angle S + \\angle T = ${180 - angleR}^{\\circ}$. Since $\\angle T > 0$, we need $\\angle S < ${180 - angleR}^{\\circ}$. Only ${correctAnswer} satisfies this condition. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

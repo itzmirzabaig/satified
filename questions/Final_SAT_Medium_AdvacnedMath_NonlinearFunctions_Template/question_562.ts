@@ -45,7 +45,7 @@ export const generator_562 = {
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. An exponential growth model has the form $p(t)=a(b)^{t}$, where $a$ is the initial value and $b$ is the growth factor per year. The initial population is ${initialPop}, and a ${growthPercent}% average increase each year gives a growth factor of $b=1+${(growthPercent / 100).toFixed(2)}=${factorStr}$. So the model is $p(t)=${initialPop}(${factorStr})^{t}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. An exponential growth model has the form $p(t)=a(b)^{t}$, where $a$ is the initial value and $b$ is the growth factor per year. The initial population is ${initialPop}, and a ${growthPercent}% average increase each year gives a growth factor of $b=1+${(growthPercent / 100).toFixed(2)}=${factorStr}$. So the model is $p(t)=${initialPop}(${factorStr})^{t}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText,

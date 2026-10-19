@@ -48,7 +48,7 @@ export const generator_491 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `To convert centimeters to meters, divide by ${cmPerMeter}. ${centimeters} \\div ${cmPerMeter} = ${correctMeters}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `To convert centimeters to meters, divide by ${cmPerMeter}. ${centimeters} \\div ${cmPerMeter} = ${correctMeters}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `How many meters are equivalent to ${centimeters} centimeters? (${cmPerMeter} centimeters = 1 meter)`,

@@ -50,7 +50,7 @@ export const generator_386 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. To find the length of the hypotenuse $c$, use the Pythagorean theorem: $a^2 + b^2 = c^2$. Substituting the leg lengths: $${leg1}^2 + ${leg2}^2 = c^2 \Rightarrow ${leg1 * leg1} + ${leg2 * leg2} = c^2 \Rightarrow ${sumSquares} = c^2$. Thus, $c = \\sqrt{${sumSquares}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. To find the length of the hypotenuse $c$, use the Pythagorean theorem: $a^2 + b^2 = c^2$. Substituting the leg lengths: $${leg1}^2 + ${leg2}^2 = c^2 \Rightarrow ${leg1 * leg1} + ${leg2 * leg2} = c^2 \Rightarrow ${sumSquares} = c^2$. Thus, $c = \\sqrt{${sumSquares}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

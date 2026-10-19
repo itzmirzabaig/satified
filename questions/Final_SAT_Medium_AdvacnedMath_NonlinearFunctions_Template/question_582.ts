@@ -66,7 +66,7 @@ export const generator_582 = {
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Substituting $x=3$ into $y=${a}(2)^{x}+${b}$: $y=${a}(2)^{3}+${b}=${a}(8)+${b}=${a * 8}+${b}=${y3}$, which matches the table. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Substituting $x=3$ into $y=${a}(2)^{x}+${b}$: $y=${a}(2)^{3}+${b}=${a}(8)+${b}=${a * 8}+${b}=${y3}$, which matches the table. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText,

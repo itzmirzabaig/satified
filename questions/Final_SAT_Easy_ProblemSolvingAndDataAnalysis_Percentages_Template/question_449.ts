@@ -60,7 +60,7 @@ export const generator_449 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `\\$${formattedTotal}`,
-      explanation: `Choice ${correctOption.letter} is correct. The sales tax is ${taxRate}% of \\$${price}, which is \\$${formattedTax}. Adding this to the original price gives \\$${price} + \\$${formattedTax} = \\$${formattedTotal}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The sales tax is ${taxRate}% of \\$${price}, which is \\$${formattedTax}. Adding this to the original price gives \\$${price} + \\$${formattedTax} = \\$${formattedTotal}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

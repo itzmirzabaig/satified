@@ -62,7 +62,7 @@ export const generator_718 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: result.toString(),
-      explanation: `Choice ${correctLetter} is correct. $f(${x}) = ${x} + ${b} = ${f_x}$. $g(${x}) = ${m}(${x}) = ${g_x}$. Therefore, $${coef}f(${x}) - g(${x}) = ${coef}(${f_x}) - ${g_x} = ${coef * f_x} - ${g_x} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. $f(${x}) = ${x} + ${b} = ${f_x}$. $g(${x}) = ${m}(${x}) = ${g_x}$. Therefore, $${coef}f(${x}) - g(${x}) = ${coef}(${f_x}) - ${g_x} = ${coef * f_x} - ${g_x} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

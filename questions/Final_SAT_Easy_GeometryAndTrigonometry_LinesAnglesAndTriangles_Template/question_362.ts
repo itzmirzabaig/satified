@@ -78,7 +78,7 @@ export const generator_362 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. Vertical angles are congruent. In the figure, the angle with measure $x^\\circ$ and the angle with measure $${givenAngle}^\\circ$ are vertical angles. Therefore, $x = ${givenAngle}$. The fact that lines $m$ and $n$ are parallel is extra information not needed to solve the problem. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Vertical angles are congruent. In the figure, the angle with measure $x^\\circ$ and the angle with measure $${givenAngle}^\\circ$ are vertical angles. Therefore, $x = ${givenAngle}$. The fact that lines $m$ and $n$ are parallel is extra information not needed to solve the problem. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

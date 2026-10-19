@@ -57,7 +57,7 @@ export const generator_58 = {
       figureCode: null,
       options: shuffled.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. Setting $f(x)=${targetVal}$ in the definition $f(x)=${coeff}\\sqrt{x}$ gives the equation $\\sqrt{x}=\\frac{${targetVal}}{${coeff}}=${sqrtRes}$ after dividing both sides by ${coeff}. Squaring both sides gives $x=${sqrtRes}^2=${xVal}$. Choice ${rootLetter} is incorrect; ${sqrtRes} is the value of $\\sqrt{x}$, not the value of $x$. Choice ${coeffLetter} is incorrect; ${coeff} is the coefficient of $\\sqrt{x}$ in the definition of $f$, not the value of $x$. Choice ${offByOneLetter} is incorrect; it is one more than the correct value of $x$.`
+      explanation: `Choice ${correctOption.letter} is correct. Setting $f(x)=${targetVal}$ in the definition $f(x)=${coeff}\\sqrt{x}$ gives the equation $\\sqrt{x}=\\frac{${targetVal}}{${coeff}}=${sqrtRes}$ after dividing both sides by ${coeff}. Squaring both sides gives $x=${sqrtRes}^2=${xVal}$. Choice ${rootLetter} is incorrect; ${sqrtRes} is the value of $\\sqrt{x}$, not the value of $x$. Choice ${coeffLetter} is incorrect; ${coeff} is the coefficient of $\\sqrt{x}$ in the definition of $f$, not the value of $x$. Choice ${offByOneLetter} is incorrect because it is one more than the correct value of $x$.`
     };
   }
 };

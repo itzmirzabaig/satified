@@ -35,7 +35,7 @@ export const generator_588 = {
     
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     // Fixed: \\frac instead of \\\\frac throughout
-    const explanation = `Choice ${correctLetter} is correct. The function is of the form $f(t) = a(2)^{\\frac{t}{d}}$, where $a$ is the initial amount and $d$ is the doubling time period. The population doubles when the factor $(2)^{\\frac{t}{${doublingTime}}}$ becomes $2^1 = 2$. For the factor to be $2$, the exponent $\\frac{t}{${doublingTime}}$ must equal $1$. Solving $\\frac{t}{${doublingTime}} = 1$ yields $t = ${doublingTime}$. Therefore, it takes ${doublingTime} minutes for the population to double. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The function is of the form $f(t) = a(2)^{\\frac{t}{d}}$, where $a$ is the initial amount and $d$ is the doubling time period. The population doubles when the factor $(2)^{\\frac{t}{${doublingTime}}}$ becomes $2^1 = 2$. For the factor to be $2$, the exponent $\\frac{t}{${doublingTime}}$ must equal $1$. Solving $\\frac{t}{${doublingTime}} = 1$ yields $t = ${doublingTime}$. Therefore, it takes ${doublingTime} minutes for the population to double. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: questionText,

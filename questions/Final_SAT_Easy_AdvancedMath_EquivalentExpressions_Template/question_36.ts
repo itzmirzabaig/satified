@@ -77,7 +77,7 @@ export const generator_36 = {
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const incorrectSentences = shuffledOptions
       .filter(opt => !opt.isCorrect)
-      .map(opt => `Choice ${opt.letter} is incorrect; it ${opt.reason}.`)
+      .map(opt => `Choice ${opt.letter} is incorrect because it ${opt.reason}.`)
       .join(' ');
 
     return {

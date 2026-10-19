@@ -90,7 +90,7 @@ export const generator_389 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. The sine of an acute angle is the ratio of the length of the opposite side to the length of the hypotenuse. In the figure, the side opposite the angle labeled $x^\\circ$ has length ${opposite}, and the hypotenuse has length ${hypotenuse}. Thus, $\\sin x^\\circ = \\frac{${opposite}}{${hypotenuse}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The sine of an acute angle is the ratio of the length of the opposite side to the length of the hypotenuse. In the figure, the side opposite the angle labeled $x^\\circ$ has length ${opposite}, and the hypotenuse has length ${hypotenuse}. Thus, $\\sin x^\\circ = \\frac{${opposite}}{${hypotenuse}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

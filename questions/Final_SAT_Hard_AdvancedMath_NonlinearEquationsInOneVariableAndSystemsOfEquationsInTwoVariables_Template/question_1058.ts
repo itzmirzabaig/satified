@@ -57,9 +57,9 @@ export const generator_1058 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     const explanation = `Choice ${correctLetter} is correct. The graphs intersect where the two expressions for $y$ are equal: $ 2x^2 - ${-b}x + ${c} = ${d}x + a$. Rewriting gives $ 2x^2 - ${-bd}x + (${c} - a) = 0$. Because the graphs intersect at exactly one point, this quadratic equation must have exactly one solution, so its discriminant, $(${bd})^2 - 4(2)(${c} - a)$, equals zero. A quadratic equation with a discriminant of zero has its single solution at $x = -\\frac{${bd}}{2(2)} = \\frac{${-bd}}{4} = ${xValue}$.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `$y = 2x^2 - ${-b}x + ${c}$\n$y = ${d}x + a$\n\nIn the given system of equations, $a$ is a constant. The graphs of the equations in the given system intersect at exactly one point, $(x, y)$, in the $xy$-plane. What is the value of $x$?`,

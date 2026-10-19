@@ -75,7 +75,7 @@ export const generator_809 = {
 
     const wrongExplanations = shuffledOptions
       .filter(o => !o.isCorrect)
-      .map(o => `Choice ${o.letter} is incorrect; it ${reasons[o.text]}`)
+      .map(o => `Choice ${o.letter} is incorrect because it ${reasons[o.text]}`)
       .join(' ');
 
     // STEP 5: Explanation from the same live variables, \( ... \) inline math.

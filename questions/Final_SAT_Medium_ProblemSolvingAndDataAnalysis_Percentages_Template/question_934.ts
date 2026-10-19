@@ -91,7 +91,7 @@ export const generator_934 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Because the stove keeps ${100 - depreciationRate}% of its value each year, its value is multiplied by ${retentionStr} annually. ${chain}. So the value after ${years} years is ${money(finalValue)}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Because the stove keeps ${100 - depreciationRate}% of its value each year, its value is multiplied by ${retentionStr} annually. ${chain}. So the value after ${years} years is ${money(finalValue)}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

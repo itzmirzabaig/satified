@@ -72,7 +72,7 @@ export const generator_743 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,
-      explanation: `Choice ${correctLetter} is correct. The slope is $m = \\frac{${y2} - ${b}}{${x2} - 0} = \\frac{${y2 - b}}{${x2}} = ${slope}$. The y-intercept is ${b} from the point $(0, ${b})$. Thus $f(x) = ${slope}x + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The slope is $m = \\frac{${y2} - ${b}}{${x2} - 0} = \\frac{${y2 - b}}{${x2}} = ${slope}$. The y-intercept is ${b} from the point $(0, ${b})$. Thus $f(x) = ${slope}x + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -64,7 +64,7 @@ export const generator_850 = {
 
     // STEP 4: Explanation — numbers from the same live variables; letters from
     // the shuffle. Every $...$ segment opens with a letter or backslash.
-    const explanation = `Choice ${correctLetter} is correct. The area of a square with side length $s$ is $s^{2} = s \\cdot s$. With $s = ${side}$, the area is $s^{2} = ${side} \\cdot ${side} = ${areaValue}$ square centimeters. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The area of a square with side length $s$ is $s^{2} = s \\cdot s$. With $s = ${side}$, the area is $s^{2} = ${side} \\cdot ${side} = ${areaValue}$ square centimeters. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `The length of each side of a square is $${side}$ centimeters (cm). Which expression gives the area, in square centimeters, of the square?`,

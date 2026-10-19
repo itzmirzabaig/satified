@@ -59,7 +59,7 @@ export const generator_896 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
     // STEP 5: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. Triangle $FGH$ is similar to triangle $JKL$, and angle $F$ corresponds to angle $J$. In similar triangles, corresponding angles are congruent, so $m\\angle F = m\\angle J$. Therefore, $\\sin(F) = \\sin(J) = \\frac{${oppositeLeg}}{${hypotenuse}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Triangle $FGH$ is similar to triangle $JKL$, and angle $F$ corresponds to angle $J$. In similar triangles, corresponding angles are congruent, so $m\\angle F = m\\angle J$. Therefore, $\\sin(F) = \\sin(J) = \\frac{${oppositeLeg}}{${hypotenuse}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     // STEP 6: Return question data
     return {

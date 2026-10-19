@@ -135,7 +135,7 @@ export const generator_880 = {
       figureCode: svg,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Because $\\overline{AF} \\parallel \\overline{BE} \\parallel \\overline{CD}$, the segments they cut on the transversals $\\overline{AC}$ and $\\overline{FD}$ are proportional: $\\frac{AB}{BC} = \\frac{FE}{ED}$. Substituting the given values gives $\\frac{${AB}}{${BC}} = \\frac{${FE}}{ED}$, so $ED = \\frac{${BC} \\cdot ${FE}}{${AB}} = \\frac{${BC * FE}}{${AB}}$, which gives $ED \\approx ${exact.toFixed(2)}$. Rounded to the nearest tenth, $ED = ${correctText}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Because $\\overline{AF} \\parallel \\overline{BE} \\parallel \\overline{CD}$, the segments they cut on the transversals $\\overline{AC}$ and $\\overline{FD}$ are proportional: $\\frac{AB}{BC} = \\frac{FE}{ED}$. Substituting the given values gives $\\frac{${AB}}{${BC}} = \\frac{${FE}}{ED}$, so $ED = \\frac{${BC} \\cdot ${FE}}{${AB}} = \\frac{${BC * FE}}{${AB}}$, which gives $ED \\approx ${exact.toFixed(2)}$. Rounded to the nearest tenth, $ED = ${correctText}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -55,7 +55,7 @@ export const generator_571 = {
     
     // STEP 6: Build explanation with dynamic letters
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. The general form for exponential growth is $y = a(b)^t$, where $a$ is the initial amount and $b$ is the growth factor. The initial number of bacteria is $${initial.toLocaleString('en-US')}$, so $a = ${initial}$. Since the number doubles every day, $b = 2$. Therefore, $y = ${initial}(2)^t$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The general form for exponential growth is $y = a(b)^t$, where $a$ is the initial amount and $b$ is the growth factor. The initial number of bacteria is $${initial.toLocaleString('en-US')}$, so $a = ${initial}$. Since the number doubles every day, $b = 2$. Therefore, $y = ${initial}(2)^t$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     // STEP 7: Return question data
     return {

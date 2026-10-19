@@ -162,7 +162,7 @@ export const generator_1262 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correct,
-      explanation: `Choice ${correctLetter} is correct. The two equations are equivalent (Equation 1 is Equation 2 multiplied by $${mult}$), so they represent the same line $${A}x + ${B}y = ${C}$. Letting the free parameter be the $y$-coordinate, set $y = r$ and solve for $x$: $${A}x + ${B}r = ${C}$, so $x = \\frac{${C} - ${B}r}{${A}} = ${xDisplay}$. Thus every solution has the form $${correct}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The two equations are equivalent (Equation 1 is Equation 2 multiplied by $${mult}$), so they represent the same line $${A}x + ${B}y = ${C}$. Letting the free parameter be the $y$-coordinate, set $y = r$ and solve for $x$: $${A}x + ${B}r = ${C}$, so $x = \\frac{${C} - ${B}r}{${A}} = ${xDisplay}$. Thus every solution has the form $${correct}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

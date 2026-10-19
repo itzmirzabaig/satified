@@ -62,7 +62,7 @@ export const generator_890 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // STEP 5: Build explanation from the shuffled letters and live values.
-    const explanation = `Choice ${correctLetter} is correct. In a right triangle the two acute angles $R$ and $S$ are complementary, so their measures add to 90 degrees. By the cofunction identity, $\\sin(R) = \\cos(90^{\\circ} - R) = \\cos(S)$. Since $\\sin(R) = \\frac{\\sqrt{${radicand}}}{${denominator}}$, it follows that $\\cos(S) = \\frac{\\sqrt{${radicand}}}{${denominator}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. In a right triangle the two acute angles $R$ and $S$ are complementary, so their measures add to 90 degrees. By the cofunction identity, $\\sin(R) = \\cos(90^{\\circ} - R) = \\cos(S)$. Since $\\sin(R) = \\frac{\\sqrt{${radicand}}}{${denominator}}$, it follows that $\\cos(S) = \\frac{\\sqrt{${radicand}}}{${denominator}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     // STEP 6: Return question data.
     return {

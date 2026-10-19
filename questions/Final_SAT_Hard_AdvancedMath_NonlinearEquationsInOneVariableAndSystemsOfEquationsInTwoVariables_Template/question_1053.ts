@@ -69,9 +69,9 @@ export const generator_1053 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     const explanation = `Choice ${correctLetter} is correct. Subtracting ${c} from both sides isolates the radical: $\\sqrt{${a}x+${b}} = x - ${eAbs}$. Squaring both sides gives $x^2 - ${2 * eAbs}x + ${eAbs * eAbs} = ${a}x + ${b}$, which rearranges to $x^2 - ${linearCoef}x - ${constTerm} = 0$. This factors as $(x - ${validSol})(x + ${-extraneousSol}) = 0$, so $x = ${validSol}$ or $x = ${extraneousSol}$. Checking $x = ${validSol}$ in the original equation: the left side is $\\sqrt{${radicandAtValid}} + ${c} = ${sqrtAtValid} + ${c} = ${validSol + d}$ and the right side is $x + ${d} = ${validSol + d}$, so it is a solution. Checking $x = ${extraneousSol}$: the right side of the isolated equation becomes $(${extraneousSol}) - ${eAbs} = ${extraneousSol - eAbs}$, which is negative, and a square root cannot equal a negative number, so $x = ${extraneousSol}$ is extraneous. The solution set is $\\{${validSol}\\}$.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `$\\sqrt{${a}x+${b}} + ${c} = x + ${d}$\n\nWhat is the solution set of the equation above?`,

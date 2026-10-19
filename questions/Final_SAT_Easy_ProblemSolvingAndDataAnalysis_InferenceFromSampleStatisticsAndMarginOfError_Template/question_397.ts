@@ -71,7 +71,7 @@ export const generator_397 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The margin of error defines a range around the sample mean where the true population mean likely falls: $${sampleMean} - ${marginOfError} = ${lowerBound}$ to $${sampleMean} + ${marginOfError} = ${upperBound}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The margin of error defines a range around the sample mean where the true population mean likely falls: $${sampleMean} - ${marginOfError} = ${lowerBound}$ to $${sampleMean} + ${marginOfError} = ${upperBound}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `In a ${study}, the data from a random sample of a population had a ${metric} of $${sampleMean}$, with an associated margin of error of $${marginOfError}$. Which of the following is the most appropriate conclusion that can be made about the population ${metric}?`,

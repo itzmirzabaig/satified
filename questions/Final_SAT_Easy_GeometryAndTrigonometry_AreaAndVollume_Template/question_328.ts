@@ -47,7 +47,7 @@ export const generator_328 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: area.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The area is $${length} \\times ${width} = ${area}$ square centimeters. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The area is $${length} \\times ${width} = ${area}$ square centimeters. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

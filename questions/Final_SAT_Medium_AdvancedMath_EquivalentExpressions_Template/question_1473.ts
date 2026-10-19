@@ -106,7 +106,7 @@ Combine the like terms: $${a*d}x ${b*c >= 0 ? '+' : '-'} ${Math.abs(b*c)}x = ${t
 
 So the product is $${correctPoly}$.
 
-Choice ${letterFor(d1Text)} is incorrect; it results from subtracting the inner product from the outer product instead of adding them when combining the middle terms. Choice ${letterFor(d2Text)} is incorrect; it adds the leading coefficients of the two binomials, $${a} + ${c} = ${a + c}$, and uses that sum as the coefficient of the middle term instead of combining the outer and inner products. Choice ${letterFor(d3Text)} is incorrect; it results from a sign error on the constant term: $(${b})(${d}) = ${term3}$, not $${-term3}$.`
+Choice ${letterFor(d1Text)} is incorrect because it results from subtracting the inner product from the outer product instead of adding them when combining the middle terms. Choice ${letterFor(d2Text)} is incorrect because it adds the leading coefficients of the two binomials, $${a} + ${c} = ${a + c}$, and uses that sum as the coefficient of the middle term instead of combining the outer and inner products. Choice ${letterFor(d3Text)} is incorrect because it results from a sign error on the constant term: $(${b})(${d}) = ${term3}$, not $${-term3}$.`
     };
   }
 };

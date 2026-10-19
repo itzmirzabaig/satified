@@ -123,7 +123,7 @@ export const generator_1246 = {
         figureCode: null,
         options: shuffledOptions.map(o => ({ text: o.text })),
         correctAnswer: optB_text,
-        explanation: `Choice ${correctLetter} is correct. A system has no solution when the lines are parallel and distinct (same slope, different $y$-intercepts). The given equation can be rewritten as $y = \\frac{${a_base}}{${b_base}}x + \\frac{${c_base}}{${b_base}}$, which has slope $\\frac{1}{${slopeBase}}$ and a nonzero $y$-intercept. Choice ${correctLetter} rewrites as $y = \\frac{1}{${slopeBase}}x$, the same slope but a different ($0$) $y$-intercept, so the lines are parallel and never meet. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+        explanation: `Choice ${correctLetter} is correct. A system has no solution when the lines are parallel and distinct (same slope, different $y$-intercepts). The given equation can be rewritten as $y = \\frac{${a_base}}{${b_base}}x + \\frac{${c_base}}{${b_base}}$, which has slope $\\frac{1}{${slopeBase}}$ and a nonzero $y$-intercept. Choice ${correctLetter} rewrites as $y = \\frac{1}{${slopeBase}}x$, the same slope but a different ($0$) $y$-intercept, so the lines are parallel and never meet. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
       };
     }
 

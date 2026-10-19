@@ -73,7 +73,7 @@ export const generator_746 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,
-      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${p2} - ${p1}}{${x2} - ${x1}} = \\frac{${p2 - p1}}{${x2 - x1}} = ${profitPerItem}$. Substituting the point $(${x1}, ${p1})$ into $f(x) = ${profitPerItem}x + b$ and solving for the intercept gives $b = ${p1} - ${profitPerItem}(${x1}) = -${fixedCost}$. Thus $f(x) = ${profitPerItem}x - ${fixedCost}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${p2} - ${p1}}{${x2} - ${x1}} = \\frac{${p2 - p1}}{${x2 - x1}} = ${profitPerItem}$. Substituting the point $(${x1}, ${p1})$ into $f(x) = ${profitPerItem}x + b$ and solving for the intercept gives $b = ${p1} - ${profitPerItem}(${x1}) = -${fixedCost}$. Thus $f(x) = ${profitPerItem}x - ${fixedCost}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

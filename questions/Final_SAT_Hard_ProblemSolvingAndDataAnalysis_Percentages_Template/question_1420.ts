@@ -88,7 +88,7 @@ export const generator_1420 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: originalCount.toString(),
-      explanation: `Choice ${correctLetter} is correct. Let $x$ be the number of dragonflies on January 1. A ${increasePct}% increase means $x + \\frac{${increasePct}}{100}x = ${finalCount}$, so $\\frac{${100 + increasePct}}{100}x = ${finalCount}$. Solving gives $x = ${finalCount} \\cdot \\frac{100}{${100 + increasePct}} = ${originalCount}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Let $x$ be the number of dragonflies on January 1. A ${increasePct}% increase means $x + \\frac{${increasePct}}{100}x = ${finalCount}$, so $\\frac{${100 + increasePct}}{100}x = ${finalCount}$. Solving gives $x = ${finalCount} \\cdot \\frac{100}{${100 + increasePct}} = ${originalCount}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

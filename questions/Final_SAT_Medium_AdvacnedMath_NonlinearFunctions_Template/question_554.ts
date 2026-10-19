@@ -51,7 +51,7 @@ export const generator_554 = {
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. The y-intercept occurs when $x=0$. Substituting: $g(0)=${coefficient}\\left(\\frac{${baseNumerator}}{${baseDenominator}}\\right)^{0}=${coefficient}(1)=${coefficient}$. So the y-intercept is $(0, ${coefficient})$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The y-intercept occurs when $x=0$. Substituting: $g(0)=${coefficient}\\left(\\frac{${baseNumerator}}{${baseDenominator}}\\right)^{0}=${coefficient}(1)=${coefficient}$. So the y-intercept is $(0, ${coefficient})$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText,

@@ -90,7 +90,7 @@ export const generator_1089 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The table shows that $p(${root1})=0$ and $p(${root2})=0$. By the factor theorem, if $p(k)=0$, then $(x-k)$ is a factor of $p(x)$, so $(x-(${root1}))=(x+${a})$ and $(x-${b})$ are both factors of $p(x)$. Therefore their product $(x+${a})(x-${b})$ must also be a factor of $p(x)$. Choice ${flippedLetter} is incorrect; it reverses the signs of the factors and would require $p(${a})=0$ and $p(${-b})=0$, which the table does not show. Choices ${single1Letter} and ${single2Letter} are incorrect because the table does not show that $p(${a})=0$ or that $p(${-b})=0$, so neither $(x-${a})$ nor $(x+${b})$ must be a factor.`
+      explanation: `Choice ${correctLetter} is correct. The table shows that $p(${root1})=0$ and $p(${root2})=0$. By the factor theorem, if $p(k)=0$, then $(x-k)$ is a factor of $p(x)$, so $(x-(${root1}))=(x+${a})$ and $(x-${b})$ are both factors of $p(x)$. Therefore their product $(x+${a})(x-${b})$ must also be a factor of $p(x)$. Choice ${flippedLetter} is incorrect because it reverses the signs of the factors and would require $p(${a})=0$ and $p(${-b})=0$, which the table does not show. Choices ${single1Letter} and ${single2Letter} are incorrect because the table does not show that $p(${a})=0$ or that $p(${-b})=0$, so neither $(x-${a})$ nor $(x+${b})$ must be a factor.`
     };
   }
 };

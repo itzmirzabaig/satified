@@ -72,7 +72,7 @@ export const generator_737 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,
-      explanation: `Choice ${correctLetter} is correct. The rate of change gives the slope, $m = ${m}$. Substituting the point $(${x}, ${y})$ into $y = ${m}x + b$ gives $b = ${y} - ${m}\\cdot${x} = ${b}$. Thus $y = ${m}x + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The rate of change gives the slope, $m = ${m}$. Substituting the point $(${x}, ${y})$ into $y = ${m}x + b$ gives $b = ${y} - ${m}\\cdot${x} = ${b}$. Thus $y = ${m}x + ${b}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

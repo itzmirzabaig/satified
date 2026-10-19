@@ -92,7 +92,7 @@ export const generator_1402 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: aValue.toString(),
-      explanation: `Choice ${correctLetter} is correct. Because $b$ is ${P2}% less than ${baseValue}, $b = ${baseValue}(1 - ${lessFrac}) = ${baseValue}(${lessMult}) = ${bValue}$. Because $a$ is ${P1}% greater than $b$, $a = ${bValue}(1 + ${greatFrac}) = ${bValue}(${greatMult}) = ${aValue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Because $b$ is ${P2}% less than ${baseValue}, $b = ${baseValue}(1 - ${lessFrac}) = ${baseValue}(${lessMult}) = ${bValue}$. Because $a$ is ${P1}% greater than $b$, $a = ${bValue}(1 + ${greatFrac}) = ${bValue}(${greatMult}) = ${aValue}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

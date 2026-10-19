@@ -61,7 +61,7 @@ export const generator_933 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Let $P_{2015}$ be the population of City A in 2015. The population increased by ${percent}% from 2015 to 2016. The population in 2016 is $P_{2015} + \\frac{${percent}}{100}P_{2015} = ${multiplier}P_{2015}$. Since $P_{2016} = k \\cdot P_{2015}$, it follows that $k = ${multiplier}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Let $P_{2015}$ be the population of City A in 2015. The population increased by ${percent}% from 2015 to 2016. The population in 2016 is $P_{2015} + \\frac{${percent}}{100}P_{2015} = ${multiplier}P_{2015}$. Since $P_{2016} = k \\cdot P_{2015}$, it follows that $k = ${multiplier}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

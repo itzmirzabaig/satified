@@ -61,7 +61,7 @@ export const generator_727 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEq,
-      explanation: `Choice ${correctLetter} is correct. The y-intercept is $f(0) = ${f0}$. The slope is $\\frac{f(1) - f(0)}{1 - 0} = \\frac{${f1} - ${f0}}{1} = ${m}$. Thus $f(x) = ${m}x + ${f0}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The y-intercept is $f(0) = ${f0}$. The slope is $\\frac{f(1) - f(0)}{1 - 0} = \\frac{${f1} - ${f0}}{1} = ${m}$. Thus $f(x) = ${m}x + ${f0}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -67,7 +67,7 @@ export const generator_606 = {
 
     // STEP 7: Build explanation with dynamic letters
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. An exponential relationship has the form $d = P(1+r)^t$, where $P$ is the initial amount and $r$ is the growth rate. At $t=0$ the table shows $d=${initial}$, so $P=${initial}$. Checking $t=1$: $d = ${initial}(1+${rateStr})^1 = ${initial} \\times ${growthFactor.toFixed(3)} = ${year1}$, which matches the table. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. An exponential relationship has the form $d = P(1+r)^t$, where $P$ is the initial amount and $r$ is the growth rate. At $t=0$ the table shows $d=${initial}$, so $P=${initial}$. Checking $t=1$: $d = ${initial}(1+${rateStr})^1 = ${initial} \\times ${growthFactor.toFixed(3)} = ${year1}$, which matches the table. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     // STEP 8: Return question data
     return {

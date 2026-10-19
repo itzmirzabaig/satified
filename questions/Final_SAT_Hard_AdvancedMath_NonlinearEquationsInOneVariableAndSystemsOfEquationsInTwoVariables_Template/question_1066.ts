@@ -59,9 +59,9 @@ export const generator_1066 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     const explanation = `Choice ${correctLetter} is correct. Multiplying both sides of the equation by $(t-${c})$ gives $(t-${c})(u-${a})=${finalB}$. Dividing both sides by $(u-${a})$ gives $t-${c}=\\frac{${finalB}}{u-${a}}$. Adding ${c} to both sides gives $t=\\frac{${finalB}}{u-${a}}+${c}=\\frac{${finalB}+${c}(u-${a})}{u-${a}}=\\frac{${c}u}{u-${a}}$.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `If $u-${a}=\\frac{${finalB}}{t-${c}}$, what is $t$ in terms of $u$?`,

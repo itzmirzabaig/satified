@@ -78,7 +78,7 @@ export const generator_1439 = {
 
     // Every math segment starts with a backslash command (no bare "$<digit>"),
     // so the explanation avoids the DOLLAR_RISK currency heuristic.
-    const explanation = `Choice ${correctLetter} is correct. Volume equals mass divided by density, so the volume is $\\frac{${mass}}{${density}} \\approx ${volumeShown}$ cubic meters. The edge length is the cube root of the volume, so the edge length is $\\sqrt[3]{${volumeShown}} \\approx ${correctText}$ meters. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Volume equals mass divided by density, so the volume is $\\frac{${mass}}{${density}} \\approx ${volumeShown}$ cubic meters. The edge length is the cube root of the volume, so the edge length is $\\sqrt[3]{${volumeShown}} \\approx ${correctText}$ meters. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `The density of a certain type of wood is $${density}$ kilograms per cubic meter. A sample of this wood is in the shape of a cube and has a mass of $${mass}$ kilograms. To the nearest hundredth of a meter, what is the length of one edge of this sample?`,

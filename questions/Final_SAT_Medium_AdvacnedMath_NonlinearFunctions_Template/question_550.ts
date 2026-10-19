@@ -50,7 +50,7 @@ export const generator_550 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. When $t=0$ (at the moment of being kicked), $h = -${gravityCoeff}(0)^2 + ${velocityCoeff}(0) + ${initialHeight} = ${initialHeight}$ meters. This is the initial height. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. When $t=0$ (at the moment of being kicked), $h = -${gravityCoeff}(0)^2 + ${velocityCoeff}(0) + ${initialHeight} = ${initialHeight}$ meters. This is the initial height. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText,

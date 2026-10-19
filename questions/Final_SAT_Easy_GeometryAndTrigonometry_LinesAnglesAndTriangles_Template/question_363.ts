@@ -100,7 +100,7 @@ export const generator_363 = {
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. Angles $BCA$ and $BCD$ form a linear pair, so $\\angle BCA = 180^{\\circ} - ${exteriorAngle}^{\\circ} = ${baseAngle}^{\\circ}$. Because $\\angle BAC = \\angle BCA$, we have $\\angle BAC = ${baseAngle}^{\\circ}$. The three interior angles of $\\triangle ABC$ sum to a straight angle, so $x = 180^{\\circ} - ${baseAngle}^{\\circ} - ${baseAngle}^{\\circ} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Angles $BCA$ and $BCD$ form a linear pair, so $\\angle BCA = 180^{\\circ} - ${exteriorAngle}^{\\circ} = ${baseAngle}^{\\circ}$. Because $\\angle BAC = \\angle BCA$, we have $\\angle BAC = ${baseAngle}^{\\circ}$. The three interior angles of $\\triangle ABC$ sum to a straight angle, so $x = 180^{\\circ} - ${baseAngle}^{\\circ} - ${baseAngle}^{\\circ} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

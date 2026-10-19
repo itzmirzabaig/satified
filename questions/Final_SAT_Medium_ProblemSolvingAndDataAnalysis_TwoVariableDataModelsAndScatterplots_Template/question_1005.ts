@@ -125,7 +125,7 @@ export const generator_1005 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctLetter} is correct. The slope is positive and approximately $(${points[7].y} - ${points[0].y}) / (${points[7].x} - ${points[0].x}) = ${rise} / ${dx} \\approx ${approxSlope}$. The $y$-intercept is close to ${intercept.toFixed(1)}. Choice ${correctLetter} is the best fit. Choice ${incorrectOptions[0].letter} is incorrect; it swaps the slope and intercept. Choices ${incorrectOptions[1].letter} and ${incorrectOptions[2].letter} are incorrect; the slope is positive, not negative.`
+      explanation: `Choice ${correctLetter} is correct. The slope is positive and approximately $(${points[7].y} - ${points[0].y}) / (${points[7].x} - ${points[0].x}) = ${rise} / ${dx} \\approx ${approxSlope}$. The $y$-intercept is close to ${intercept.toFixed(1)}. Choice ${correctLetter} is the best fit. Choice ${incorrectOptions[0].letter} is incorrect because it swaps the slope and intercept. Choices ${incorrectOptions[1].letter} and ${incorrectOptions[2].letter} are incorrect; the slope is positive, not negative.`
     };
   }
 };

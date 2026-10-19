@@ -62,7 +62,7 @@ export const generator_385 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. By the Pythagorean theorem, $${leg1}^2 + ${leg2}^2 = c^2 \Rightarrow ${leg1 * leg1} + ${leg2 * leg2} = c^2 \Rightarrow ${sumSquares} = c^2$. Thus, $c = \\sqrt{${sumSquares}} \\approx ${roundedHypotenuse}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. By the Pythagorean theorem, $${leg1}^2 + ${leg2}^2 = c^2 \Rightarrow ${leg1 * leg1} + ${leg2 * leg2} = c^2 \Rightarrow ${sumSquares} = c^2$. Thus, $c = \\sqrt{${sumSquares}} \\approx ${roundedHypotenuse}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

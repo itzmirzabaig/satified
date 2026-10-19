@@ -67,7 +67,7 @@ export const generator_335 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: sideXY.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The ratio of the perimeters is $\\frac{${perimeterXYZ}}{${perimeterTUV}} = ${scaleFactor}$. Since the triangles are similar, corresponding sides share that ratio, so $\\overline{XY} = ${sideTU} \\times ${scaleFactor} = ${sideXY}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The ratio of the perimeters is $\\frac{${perimeterXYZ}}{${perimeterTUV}} = ${scaleFactor}$. Since the triangles are similar, corresponding sides share that ratio, so $\\overline{XY} = ${sideTU} \\times ${scaleFactor} = ${sideXY}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

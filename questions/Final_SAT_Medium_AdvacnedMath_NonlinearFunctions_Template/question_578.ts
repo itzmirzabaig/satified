@@ -38,7 +38,7 @@ export const generator_578 = {
     const correctAnswer = `$C = ${initial}(${decayFactor.toFixed(2)})^t$`;
     
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    const explanation = `Choice ${correctLetter} is correct. The model for exponential decay is $C = I(1 - \\\\frac{r}{100})^t$, where $I$ is the initial value and $r$ is the annual decline percentage. With $I = ${initial}$ and $r = ${rate}$, we get $C = ${initial}(1 - \\\\frac{${rate}}{100})^t = ${initial}(${decayFactor.toFixed(2)})^t$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The model for exponential decay is $C = I(1 - \\\\frac{r}{100})^t$, where $I$ is the initial value and $r$ is the annual decline percentage. With $I = ${initial}$ and $r = ${rate}$, we get $C = ${initial}(1 - \\\\frac{${rate}}{100})^t = ${initial}(${decayFactor.toFixed(2)})^t$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: questionText,

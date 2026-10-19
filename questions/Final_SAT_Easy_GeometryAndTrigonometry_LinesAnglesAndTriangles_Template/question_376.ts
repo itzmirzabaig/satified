@@ -49,7 +49,7 @@ export const generator_376 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. In isosceles triangle $ABC$ with $AB = AC$, the base angles are equal: $\\angle ABC = \\angle ACB = ${baseAngle}^{\\circ}$. By the triangle angle sum theorem: $${baseAngle}^{\\circ} + ${baseAngle}^{\\circ} + x = 180^{\\circ}$, so $x = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In isosceles triangle $ABC$ with $AB = AC$, the base angles are equal: $\\angle ABC = \\angle ACB = ${baseAngle}^{\\circ}$. By the triangle angle sum theorem: $${baseAngle}^{\\circ} + ${baseAngle}^{\\circ} + x = 180^{\\circ}$, so $x = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -76,9 +76,9 @@ export const generator_1046 = {
 Case 1: $${a}x + ${b} = ${c}$, so $${a}x = ${c - b}$ and $x = ${x1Text}$.
 Case 2: $${a}x + ${b} = ${-c}$, so $${a}x = ${-c - b}$ and $x = ${x2Text}$.
 The sum of the solutions is $${x1Text} + ${x2Text} = ${sumText}$.
-Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
+Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
+Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `What is the sum of the solutions to the given equation?\n\n$|${a}x + ${b}| = ${c}$`,

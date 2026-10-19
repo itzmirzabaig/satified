@@ -44,7 +44,7 @@ export const generator_178 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `$y = ${m}x + ${b}$`,
-      explanation: `Choice ${correctLetter} is correct. The slope-intercept form of a line is $y = mx + b$, where $m$ is the slope and $b$ is the $y$-intercept. The slope of line $r$ is ${m}, and because the line passes through $(0, ${b})$, its $y$-intercept is ${b}. So the equation is $y = ${m}x + ${b}$. Choice ${incorrect[0].letter} is incorrect; it ${incorrect[0].reason}. Choice ${incorrect[1].letter} is incorrect; it ${incorrect[1].reason}. Choice ${incorrect[2].letter} is incorrect; it ${incorrect[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The slope-intercept form of a line is $y = mx + b$, where $m$ is the slope and $b$ is the $y$-intercept. The slope of line $r$ is ${m}, and because the line passes through $(0, ${b})$, its $y$-intercept is ${b}. So the equation is $y = ${m}x + ${b}$. Choice ${incorrect[0].letter} is incorrect because it ${incorrect[0].reason}. Choice ${incorrect[1].letter} is incorrect because it ${incorrect[1].reason}. Choice ${incorrect[2].letter} is incorrect because it ${incorrect[2].reason}.`
     };
   }
 };

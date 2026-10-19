@@ -66,7 +66,7 @@ export const generator_1224 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. In the budget constraint $${smallPrice}x + ${largePrice}y \\leq ${budget}$, the term $${largePrice}y$ is the price per large pizza ($\\$${largePrice}$) multiplied by the number of large pizzas ($y$), so it represents the total amount spent on large pizzas. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. In the budget constraint $${smallPrice}x + ${largePrice}y \\leq ${budget}$, the term $${largePrice}y$ is the price per large pizza ($\\$${largePrice}$) multiplied by the number of large pizzas ($y$), so it represents the total amount spent on large pizzas. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

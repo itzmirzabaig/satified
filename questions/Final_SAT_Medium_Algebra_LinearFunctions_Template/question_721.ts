@@ -54,7 +54,7 @@ export const generator_721 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The x-intercept occurs where $y = 0$, meaning speed is 0 (complete stop). The x-coordinate represents the time to stop: $0 = ${initialSpeed} - ${decelRate}x$, so $x = ${stopTime.toFixed(1)}$ seconds. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The x-intercept occurs where $y = 0$, meaning speed is 0 (complete stop). The x-coordinate represents the time to stop: $0 = ${initialSpeed} - ${decelRate}x$, so $x = ${stopTime.toFixed(1)}$ seconds. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

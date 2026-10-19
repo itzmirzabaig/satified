@@ -59,7 +59,7 @@ export const generator_35 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. Combine the $x$ terms: $${a1}x+${a2}x=${sumA}x$. Combine the $y$ terms: $${b1}y+${b2}y=${sumB}y$. The result is $${sumA}x+${sumB}y$. Choice ${letterOf(0)} is incorrect; it subtracts the $x$ coefficients instead of adding them. Choice ${letterOf(1)} is incorrect; it multiplies the $y$ coefficients instead of adding them. Choice ${letterOf(2)} is incorrect; $x$ terms and $y$ terms are not like terms, so they cannot be combined into a single $xy$ term.`
+      explanation: `Choice ${correctOption.letter} is correct. Combine the $x$ terms: $${a1}x+${a2}x=${sumA}x$. Combine the $y$ terms: $${b1}y+${b2}y=${sumB}y$. The result is $${sumA}x+${sumB}y$. Choice ${letterOf(0)} is incorrect because it subtracts the $x$ coefficients instead of adding them. Choice ${letterOf(1)} is incorrect because it multiplies the $y$ coefficients instead of adding them. Choice ${letterOf(2)} is incorrect; $x$ terms and $y$ terms are not like terms, so they cannot be combined into a single $xy$ term.`
     };
   }
 };

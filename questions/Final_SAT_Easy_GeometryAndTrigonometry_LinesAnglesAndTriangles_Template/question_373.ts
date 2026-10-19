@@ -84,7 +84,7 @@ export const generator_373 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. In the figure, $x$ and the angle labeled $${givenAngle}^{\\circ}$ are consecutive interior angles (or same-side interior angles). When parallel lines are cut by a transversal, consecutive interior angles are supplementary. Therefore, $x + ${givenAngle} = 180$, which gives $x = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In the figure, $x$ and the angle labeled $${givenAngle}^{\\circ}$ are consecutive interior angles (or same-side interior angles). When parallel lines are cut by a transversal, consecutive interior angles are supplementary. Therefore, $x + ${givenAngle} = 180$, which gives $x = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

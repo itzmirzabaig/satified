@@ -95,7 +95,7 @@ export const generator_897 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // STEP 6: Build explanation.
-    const explanation = `Choice ${correctLetter} is correct. Triangle $ABC$ is equilateral with all sides equal to ${side}. The altitude $\\overline{BD}$ bisects the base $\\overline{AC}$, so $AD = \\frac{${side}}{2} = ${answer}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Triangle $ABC$ is equilateral with all sides equal to ${side}. The altitude $\\overline{BD}$ bisects the base $\\overline{AC}$, so $AD = \\frac{${side}}{2} = ${answer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     // STEP 7: Return question data.
     return {

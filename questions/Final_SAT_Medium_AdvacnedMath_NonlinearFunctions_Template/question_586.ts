@@ -52,7 +52,7 @@ export const generator_586 = {
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. Shifting a graph down by ${shift} units means subtracting ${shift} from the function. Since $f(x) = ${coefficient}x^3$, the transformed function is $g(x) = ${coefficient}x^3 - ${shift}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Shifting a graph down by ${shift} units means subtracting ${shift} from the function. Since $f(x) = ${coefficient}x^3$, the transformed function is $g(x) = ${coefficient}x^3 - ${shift}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText,

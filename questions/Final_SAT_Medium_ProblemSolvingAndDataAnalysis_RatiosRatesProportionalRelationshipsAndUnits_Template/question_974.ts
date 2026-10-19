@@ -94,7 +94,7 @@ export const generator_974 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctStr,
-      explanation: `Choice ${correctLetter} is correct. Because ${feetPerYard} feet make 1 yard, dividing the speed by ${feetPerYard} converts feet per second to yards per second: $\\frac{${numerator}}{${denominator}} \\div ${feetPerYard} = \\frac{${numerator}}{${denominator}} \\times \\frac{1}{${feetPerYard}} = \\frac{${numerator}}{${denominator * feetPerYard}} = ${correctStr}$ yards per second. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Because ${feetPerYard} feet make 1 yard, dividing the speed by ${feetPerYard} converts feet per second to yards per second: $\\frac{${numerator}}{${denominator}} \\div ${feetPerYard} = \\frac{${numerator}}{${denominator}} \\times \\frac{1}{${feetPerYard}} = \\frac{${numerator}}{${denominator * feetPerYard}} = ${correctStr}$ yards per second. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

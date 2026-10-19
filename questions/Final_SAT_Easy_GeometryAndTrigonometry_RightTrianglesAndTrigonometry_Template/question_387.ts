@@ -71,7 +71,7 @@ export const generator_387 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. The tangent of an acute angle in a right triangle is the ratio of the length of the side opposite the angle to the length of the side adjacent to the angle. In the triangle shown, relative to angle $x^{\\circ}$, the opposite side has length ${opposite} and the adjacent side has length ${adjacent}. Thus, $\\tan x^{\\circ} = \\frac{\\text{opposite}}{\\text{adjacent}} = \\frac{${opposite}}{${adjacent}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The tangent of an acute angle in a right triangle is the ratio of the length of the side opposite the angle to the length of the side adjacent to the angle. In the triangle shown, relative to angle $x^{\\circ}$, the opposite side has length ${opposite} and the adjacent side has length ${adjacent}. Thus, $\\tan x^{\\circ} = \\frac{\\text{opposite}}{\\text{adjacent}} = \\frac{${opposite}}{${adjacent}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -66,7 +66,7 @@ export const generator_348 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // STEP 6: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. In the circle shown, O is the center and ∠AOC is a central angle. From the figure, the two radii that meet to form ∠AOC are perpendicular, so the measure of ∠AOC is ${centralAngle}°. The length of minor arc $\\widehat{AC}$ is $\\frac{${centralAngle}}{360}$ of the circumference. Since the circumference is ${circumference}, the arc length is $\\frac{${centralAngle}}{360} \\times ${circumference} = ${arcLength}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. In the circle shown, O is the center and ∠AOC is a central angle. From the figure, the two radii that meet to form ∠AOC are perpendicular, so the measure of ∠AOC is ${centralAngle}°. The length of minor arc $\\widehat{AC}$ is $\\frac{${centralAngle}}{360}$ of the circumference. Since the circumference is ${circumference}, the arc length is $\\frac{${centralAngle}}{360} \\times ${circumference} = ${arcLength}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     // STEP 7: Return question data
     return {

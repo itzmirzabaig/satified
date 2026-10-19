@@ -42,7 +42,7 @@ export const generator_593 = {
     
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     // Fixed: \\frac instead of \\\\frac throughout
-    const explanation = `Choice ${correctLetter} is correct. To find $f(${xVal})$, substitute $x = ${xVal}$ into $f(x) = ${coeff}x^{-1}$. Recall that $x^{-1} = \\frac{1}{x}$. Therefore, $f(${xVal}) = ${coeff} \\cdot \\frac{1}{${xVal}} = \\frac{${coeff}}{${xVal}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. To find $f(${xVal})$, substitute $x = ${xVal}$ into $f(x) = ${coeff}x^{-1}$. Recall that $x^{-1} = \\frac{1}{x}$. Therefore, $f(${xVal}) = ${coeff} \\cdot \\frac{1}{${xVal}} = \\frac{${coeff}}{${xVal}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
     
     return {
       questionText: questionText,

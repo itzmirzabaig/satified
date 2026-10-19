@@ -94,7 +94,7 @@ export const generator_946 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. The percent increase equals $\\frac{${roundedNewBill.toFixed(2)} - ${roundedOriginal.toFixed(2)}}{${roundedOriginal.toFixed(2)}} \\times 100 = \\frac{${actualIncrease.toFixed(2)}}{${roundedOriginal.toFixed(2)}} \\times 100 \\approx ${roundedPercent.toFixed(1)}$ percent. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The percent increase equals $\\frac{${roundedNewBill.toFixed(2)} - ${roundedOriginal.toFixed(2)}}{${roundedOriginal.toFixed(2)}} \\times 100 = \\frac{${actualIncrease.toFixed(2)}}{${roundedOriginal.toFixed(2)}} \\times 100 \\approx ${roundedPercent.toFixed(1)}$ percent. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

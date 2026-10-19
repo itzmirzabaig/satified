@@ -95,7 +95,7 @@ export const generator_1441 = {
 
     // Explanation numbers computed from the same live variables; volume rounded to
     // 4 decimals so no float artifact leaks into user-visible text.
-    const explanation = `Choice ${correctLetter} is correct. The volume of a cube with edge length ${edgeLength} meters is $(${edgeLength})^3=${parseFloat(volume.toFixed(4))}$ cubic meters. Using Mass = Density × Volume, the mass is $${density}\\times${parseFloat(volume.toFixed(4))}=${parseFloat(mass.toFixed(2))}$ kilograms, which rounds to ${massRounded} kilograms. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The volume of a cube with edge length ${edgeLength} meters is $(${edgeLength})^3=${parseFloat(volume.toFixed(4))}$ cubic meters. Using Mass = Density × Volume, the mass is $${density}\\times${parseFloat(volume.toFixed(4))}=${parseFloat(mass.toFixed(2))}$ kilograms, which rounds to ${massRounded} kilograms. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
       questionText: `A sample of oak has a density of $${density}$ kilograms per cubic meter. The sample is in the shape of a cube, where each edge has a length of $${edgeLength}$ meters. To the nearest whole number, what is the mass, in kilograms, of this sample?`,

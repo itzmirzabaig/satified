@@ -50,7 +50,7 @@ export const generator_377 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${correctAnswer}^{\\circ}`,
-      explanation: `Choice ${correctOption.letter} is correct. The triangle angle sum theorem states that the sum of the measures of the interior angles of a triangle is $180^{\\circ}$. Therefore, $\\angle Z = 180^{\\circ} - ${angleX}^{\\circ} - ${angleY}^{\\circ} = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The triangle angle sum theorem states that the sum of the measures of the interior angles of a triangle is $180^{\\circ}$. Therefore, $\\angle Z = 180^{\\circ} - ${angleX}^{\\circ} - ${angleY}^{\\circ} = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

@@ -128,7 +128,7 @@ export const generator_960 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correct.tex,
-      explanation: `Choice ${correctLetter} is correct. The number of presidents who were at least 50 years old is ${range3} + ${range4} + ${range5} + ${range6} = ${atLeast50}. Of those, the number who were at least 60 is ${range5} + ${range6} = ${atLeast60}. Therefore, the fraction is $\\frac{${atLeast60}}{${atLeast50}} = \\frac{${simplifiedNum}}{${simplifiedDen}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The number of presidents who were at least 50 years old is ${range3} + ${range4} + ${range5} + ${range6} = ${atLeast50}. Of those, the number who were at least 60 is ${range5} + ${range6} = ${atLeast60}. Therefore, the fraction is $\\frac{${atLeast60}}{${atLeast50}} = \\frac{${simplifiedNum}}{${simplifiedDen}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

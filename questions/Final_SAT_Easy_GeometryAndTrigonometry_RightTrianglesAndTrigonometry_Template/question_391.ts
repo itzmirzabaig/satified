@@ -46,7 +46,7 @@ export const generator_391 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. When two triangles are similar, their corresponding angles are congruent. Since angle $A$ corresponds to $D$ and angle $C$ corresponds to $F$, the remaining angle $B$ must correspond to $E$. Therefore, $m\\angle B = m\\angle E$. Since the angles are equal, their cosine values are also equal: $\\cos E = \\cos B = \\frac{${numerator}}{${denominator}}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. When two triangles are similar, their corresponding angles are congruent. Since angle $A$ corresponds to $D$ and angle $C$ corresponds to $F$, the remaining angle $B$ must correspond to $E$. Therefore, $m\\angle B = m\\angle E$. Since the angles are equal, their cosine values are also equal: $\\cos E = \\cos B = \\frac{${numerator}}{${denominator}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };

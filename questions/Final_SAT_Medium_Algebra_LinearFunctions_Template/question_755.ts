@@ -75,7 +75,7 @@ export const generator_755 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: b.toString(),
-      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${tableData[1].g} - ${tableData[0].g}}{${tableData[1].x} - ${tableData[0].x}} = \\frac{${m}}{1} = ${m}$. Using point (${tableData[0].x}, ${tableData[0].g}): ${tableData[0].g} = ${m}(${tableData[0].x}) + b, so $b = ${tableData[0].g} - (${m * tableData[0].x}) = ${b}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The slope is $\\frac{${tableData[1].g} - ${tableData[0].g}}{${tableData[1].x} - ${tableData[0].x}} = \\frac{${m}}{1} = ${m}$. Using point (${tableData[0].x}, ${tableData[0].g}): ${tableData[0].g} = ${m}(${tableData[0].x}) + b, so $b = ${tableData[0].g} - (${m * tableData[0].x}) = ${b}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };
