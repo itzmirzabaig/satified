@@ -32,7 +32,7 @@ export const generator_325 = {
       figureCode: null,
       options: [],
       correctAnswer: area.toString(),
-      explanation: `The area of a rectangle is calculated by multiplying length by width. Therefore, the area is ${length} × ${width} = ${area} square inches.`
+      explanation: `The correct answer is ${area.toLocaleString('en-US')}. The area of a rectangle is its length times its width, so the area of this rectangle is $${length}(${width}) = ${area.toLocaleString('en-US')}$ square inches.`
     };
   }
 };
