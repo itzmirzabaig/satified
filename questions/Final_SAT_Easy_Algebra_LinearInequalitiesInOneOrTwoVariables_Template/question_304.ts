@@ -37,11 +37,12 @@ export const generator_304 = {
     const distractor2 = collected;
     const distractor3 = 0;
 
+    // The wrong choices used to have no explanations.
     const optionsData = [
-      { text: `${distractor1}`, isCorrect: false },
-      { text: `${distractor2}`, isCorrect: false },
-      { text: `${additional}`, isCorrect: true },
-      { text: `${distractor3}`, isCorrect: false }
+      { text: `${distractor1}`, isCorrect: false, reason: `it results from adding the ${collected} samples already collected to ${needed} instead of subtracting them` },
+      { text: `${distractor2}`, isCorrect: false, reason: `${collected} is the number of samples already collected, not the number of additional samples needed` },
+      { text: `${additional}`, isCorrect: true, reason: '' },
+      { text: `${distractor3}`, isCorrect: false, reason: `the geologist has collected only ${collected} samples, which is fewer than ${needed}, so more samples are needed` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -51,8 +52,9 @@ export const generator_304 = {
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The geologist needs at least ${needed} samples and has ${collected}. The minimum additional samples needed is ${needed} - ${collected} = ${additional}.`;
+    const explanation = `Choice ${correctLetter} is correct. If $s$ is the number of additional samples, the geologist will have $${collected} + s$ samples, and $${collected} + s \\ge ${needed}$. Subtracting ${collected} from both sides of this inequality yields $s \\ge ${additional}$. Therefore, the minimum number of additional samples is ${additional}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A geologist needs to collect at least $${needed}$ samples of lava from a volcano. If the geologist has already collected $${collected}$ samples from the volcano, what is the minimum number of additional samples the geologist needs to collect?`,
