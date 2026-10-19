@@ -48,11 +48,12 @@ export const generator_291 = {
     const distractorSub = distance - speed;   // subtracts instead of divides
     const distractorDistance = distance;      // reports the distance itself
 
+    // The reasons used to name values ("The value 3 ...") instead of choices.
     const optionsData = [
-      { text: `${time}`, isCorrect: true },
-      { text: `${distractorSpeed}`, isCorrect: false },
-      { text: `${distractorSub}`, isCorrect: false },
-      { text: `${distractorDistance}`, isCorrect: false }
+      { text: `${time}`, isCorrect: true, reason: '' },
+      { text: `${distractorSpeed}`, isCorrect: false, reason: `${distractorSpeed} is the hiker's average speed, in kilometers per hour, not a number of hours` },
+      { text: `${distractorSub}`, isCorrect: false, reason: `it results from subtracting the speed, ${speed}, from the distance, ${distance}, instead of dividing the distance by the speed` },
+      { text: `${distractorDistance}`, isCorrect: false, reason: `${distractorDistance} is the goal distance, in kilometers, not a number of hours` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -63,7 +64,9 @@ export const generator_291 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
 
-    const explanation = `Choice ${correctLetter} is correct. The time needed is the distance divided by the average speed: $\\text{time} = \\frac{\\text{distance}}{\\text{speed}} = \\frac{${distance}}{${speed}} = ${time}$ hours. The value $${distractorSpeed}$ is the average speed in kilometers per hour, not the time. The value $${distractorSub}$ comes from subtracting the speed from the distance instead of dividing. The value $${distractorDistance}$ is the total distance in kilometers, not a number of hours.`;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+
+    const explanation = `Choice ${correctLetter} is correct. If the hiker walks for $h$ hours at ${speed} kilometers per hour, the hiker walks $${speed}h$ kilometers. To meet the goal, $${speed}h \\ge ${distance}$. Dividing both sides of this inequality by ${speed} yields $h \\ge ${time}$. Therefore, the minimum number of hours the hiker must walk is ${time}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A hiker set a goal to walk at least ${distance} kilometers in one day while preparing for a multiday trek. On that day, the hiker walks at an average speed of ${speed} kilometers per hour. What is the minimum number of hours the hiker must walk that day to meet the goal?`,
