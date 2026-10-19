@@ -5,9 +5,9 @@ import type { QuestionData } from '../../study/types';
  * Question 254
  *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [initialDiesel: 12-20, maxRange: 300-600, xValue: multiple of rateDenominator]
+ * - Number ranges: [initialDiesel: 12-20, rateDenominator: 20-32, maxRange: initialDiesel * rateDenominator]
  * - Difficulty factors: [Linear decay model, fraction rate]
- * - Distractor patterns: [empty tank, sign error, initial amount]
+ * - Distractor patterns: [initial amount, added amount used, amount used]
  * - Constraints: [xValue is a whole multiple of rateDenominator so x/rateDenominator is an integer]
  * - Question type: [Function evaluation→Multiple Choice Text]
  * - Figure generation: null
@@ -24,33 +24,27 @@ export const generator_254 = {
 
   generate: (): QuestionData => {
     const initialDiesel = getRandomInt(12, 20);
-    const maxRange = getRandomInt(300, 600);
+    const rateDenominator = getRandomInt(20, 32);
+    // The tank is empty when x = initialDiesel * rateDenominator, so that is
+    // where the domain ends. It used to be a separate random number (for
+    // example 0 to 514 when the tank empties at 512 miles), which allowed
+    // negative amounts of diesel.
+    const maxRange = initialDiesel * rateDenominator;
 
-    const rateDenominator = Math.floor(maxRange / initialDiesel);
-
-    // Choose the number of gallons used (k) first, then set xValue to an exact
-    // whole multiple of rateDenominator. This guarantees x/rateDenominator is the
-    // integer usedDiesel (no float artifact) and that xValue stays within the
-    // domain: xValue = rateDenominator*k <= (maxRange/initialDiesel)*(initialDiesel/2) < maxRange.
-    const usedDiesel = getRandomInt(Math.floor(initialDiesel / 4), Math.floor(initialDiesel / 2));
+    // Choose the number of gallons used first so x / rateDenominator is a whole
+    // number. Using fewer than half the diesel keeps the amount used different
+    // from the amount left.
+    const usedDiesel = getRandomInt(Math.floor(initialDiesel / 4), Math.floor((initialDiesel - 1) / 2));
     const xValue = rateDenominator * usedDiesel;
 
     const result = initialDiesel - usedDiesel;
 
-    // Distractors, all provably distinct from the answer (I-k) and from each
-    // other because usedDiesel (k) is in [3,10] and result stays positive:
-    //   initialDiesel (I)          — forgot to subtract the amount used
-    //   initialDiesel + usedDiesel — added the amount used instead of subtracting
-    //   0                          — assumed the tank is empty
-    const distractorInitial = initialDiesel;
-    const distractorAdded = initialDiesel + usedDiesel;
-    const distractorEmpty = 0;
-
+    // Distinct for every draw: used < result < initial < initial + used.
     const optionsData = [
-      { text: result.toString(), isCorrect: true },
-      { text: distractorInitial.toString(), isCorrect: false, reason: "is the initial amount, before any distance has been driven" },
-      { text: distractorAdded.toString(), isCorrect: false, reason: "adds the amount of diesel used instead of subtracting it" },
-      { text: distractorEmpty.toString(), isCorrect: false, reason: "is the amount only if the tank were completely empty" }
+      { text: result.toString(), isCorrect: true, reason: '' },
+      { text: initialDiesel.toString(), isCorrect: false, reason: `${initialDiesel} is the amount of diesel when $x = 0$, before the truck is driven` },
+      { text: (initialDiesel + usedDiesel).toString(), isCorrect: false, reason: `it results from adding the ${usedDiesel} gallons used to ${initialDiesel} instead of subtracting them` },
+      { text: usedDiesel.toString(), isCorrect: false, reason: `${usedDiesel} is the number of gallons used in driving ${xValue} miles, not the number of gallons that remain` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -66,7 +60,7 @@ export const generator_254 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$ in the equation gives $d = ${initialDiesel} - \\frac{${xValue}}{${rateDenominator}} = ${initialDiesel} - ${usedDiesel} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$ in the given equation yields $d = ${initialDiesel} - \\frac{${xValue}}{${rateDenominator}} = ${initialDiesel} - ${usedDiesel} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
