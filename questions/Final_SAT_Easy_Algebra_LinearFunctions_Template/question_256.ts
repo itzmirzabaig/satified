@@ -37,11 +37,14 @@ export const generator_256 = {
 
     const distractor3 = (fixedCost * numMonths) + monthlyPayment;
 
+    // Thousands commas: the choices used to read 13253 and 45623.
+    const fmt = (n: number) => n.toLocaleString('en-US');
+
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "results from subtracting the fixed cost instead of adding it" },
-      { text: distractor2.toString(), isCorrect: false, reason: "results from forgetting to add the fixed cost" },
-      { text: totalCost.toString(), isCorrect: true },
-      { text: distractor3.toString(), isCorrect: false, reason: "results from swapping the monthly payment and fixed cost" }
+      { text: fmt(distractor1), isCorrect: false, reason: `it results from subtracting ${fmt(fixedCost)} from ${fmt(distractor2)} instead of adding it` },
+      { text: fmt(distractor2), isCorrect: false, reason: `it is the cost of the ${numMonths} monthly payments alone, $${numMonths}(${monthlyPayment})$; it leaves out the ${fmt(fixedCost)} dollars added in the function` },
+      { text: fmt(totalCost), isCorrect: true, reason: '' },
+      { text: fmt(distractor3), isCorrect: false, reason: `it results from substituting ${monthlyPayment} in the wrong place, which gives $${numMonths}(${fmt(fixedCost)}) + ${monthlyPayment}$ instead of $${numMonths}(${monthlyPayment}) + ${fmt(fixedCost)}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -54,11 +57,11 @@ export const generator_256 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `The total cost $f(x)$, in dollars, to lease a car for ${numMonths} months from a particular car dealership is given by $f(x) = ${numMonths}x + ${fixedCost}$, where $x$ is the monthly payment, in dollars. What is the total cost to lease a car when the monthly payment is \\$${monthlyPayment}?`,
+      questionText: `The total cost $f(x)$, in dollars, to lease a car for ${numMonths} months from a particular car dealership is given by $f(x) = ${numMonths}x + ${fmt(fixedCost)}$, where $x$ is the monthly payment, in dollars. What is the total cost to lease a car when the monthly payment is \\$${monthlyPayment}?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: totalCost.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting \\$${monthlyPayment} for $x$ gives $f(${monthlyPayment}) = ${numMonths}(${monthlyPayment}) + ${fixedCost} = ${monthlyPayment * numMonths} + ${fixedCost} = ${totalCost}$, so the total cost is \\$${totalCost}. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      correctAnswer: fmt(totalCost),
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${monthlyPayment} for $x$ in the given function yields $f(${monthlyPayment}) = ${numMonths}(${monthlyPayment}) + ${fmt(fixedCost)}$, or $f(${monthlyPayment}) = ${fmt(distractor2)} + ${fmt(fixedCost)} = ${fmt(totalCost)}$. Therefore, the total cost to lease the car is \\$${fmt(totalCost)}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
