@@ -27,35 +27,41 @@ export const generator_326 = {
     // distractors (which repeat x, y, or z) can never collide with the
     // correct answer or one another. x+y is always >= 11 while every single
     // side is <= 10, so that fourth option is automatically distinct too.
-    let sideX = getRandomInt(6, 10);
-    let sideY = getRandomInt(5, 9);
-    let sideZ = getRandomInt(4, 8);
-    let tries = 0;
-    while ((sideX === sideY || sideX === sideZ || sideY === sideZ) && tries++ < 50) {
+    // The sides must also satisfy the triangle inequality, and the triangle
+    // must not be nearly flat. The figure used to be a right triangle with
+    // legs x and y, which made z look like the longest side even when the
+    // answer was shorter than both legs (for example x = 10, y = 9, z = 6).
+    let sideX = 6, sideY = 5, sideZ = 4, apexX = 0, apexY = 0;
+    do {
       sideX = getRandomInt(6, 10);
       sideY = getRandomInt(5, 9);
       sideZ = getRandomInt(4, 8);
-    }
+      // Base from (0, 0) to (sideX, 0); the apex is sideZ from the left end
+      // and sideY from the right end (law of cosines).
+      apexX = (sideZ * sideZ - sideY * sideY + sideX * sideX) / (2 * sideX);
+      apexY = Math.sqrt(Math.max(0, sideZ * sideZ - apexX * apexX));
+    } while (
+      sideX === sideY || sideX === sideZ || sideY === sideZ ||
+      sideY + sideZ <= sideX + 1 || apexY < 2.5
+    );
     const perimeter = sideX + sideY + sideZ;
 
-    // Triangle vertices: origin, base-right, apex.
-    // Scale down by 2 so sides 6-10 fit in a compact viewBox.
-    const px = sideX / 2;
-    const py = sideY / 2;
-
-    // Use Text component instead of LaTeX to avoid duplication issues
-    const mafsCode = `<Mafs viewBox={{ x: [-1, ${px + 2}], y: [-1.5, ${py + 1}] }}>
-  <Polygon points={[[0, 0], [${px}, 0], [${px}, ${py}]]} color="var(--mafs-blue)" />
-  <Text x={${px / 2}} y={-0.9}>x = ${sideX}</Text>
-  <Text x={${px + 0.7}} y={${py / 2}}>y = ${sideY}</Text>
-  <Text x={${(px / 2) - 0.5}} y={${py / 2 + 0.4}}>z</Text>
+    // Drawn to scale (half size), so each side's drawn length matches its label.
+    const s = 0.5;
+    const bx = sideX * s, ax = apexX * s, ay = apexY * s;
+    const r = (n: number) => Math.round(n * 1000) / 1000;
+    const mafsCode = `<Mafs viewBox={{ x: [${r(Math.min(0, ax) - 1.6)}, ${r(Math.max(bx, ax) + 1.8)}], y: [-1.3, ${r(ay + 0.8)}] }}>
+  <Polygon points={[[0, 0], [${r(bx)}, 0], [${r(ax)}, ${r(ay)}]]} color="var(--mafs-blue)" />
+  <Text x={${r(bx / 2)}} y={-0.8}>x = ${sideX}</Text>
+  <Text x={${r((bx + ax) / 2 + 1.1)}} y={${r(ay / 2 + 0.2)}}>y = ${sideY}</Text>
+  <Text x={${r(ax / 2 - 0.7)}} y={${r(ay / 2 + 0.2)}}>z</Text>
 </Mafs>`;
 
     const optionsData = [
-      { text: sideZ.toString(), isCorrect: true },
-      { text: sideY.toString(), isCorrect: false, reason: "repeats side y" },
-      { text: sideX.toString(), isCorrect: false, reason: "repeats side x" },
-      { text: (sideX + sideY).toString(), isCorrect: false, reason: "adds x and y instead of subtracting them from the perimeter" }
+      { text: sideZ.toString(), isCorrect: true, reason: '' },
+      { text: sideY.toString(), isCorrect: false, reason: `${sideY} is the length of side $y$, not side $z$` },
+      { text: sideX.toString(), isCorrect: false, reason: `${sideX} is the length of side $x$, not side $z$` },
+      { text: (sideX + sideY).toString(), isCorrect: false, reason: `${sideX + sideY} is the sum of $x$ and $y$; this sum must be subtracted from the perimeter, ${perimeter}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -71,7 +77,7 @@ export const generator_326 = {
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: sideZ.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The perimeter is the sum of all three sides, so $z = ${perimeter} - ${sideX} - ${sideY} = ${sideZ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The perimeter of a triangle is the sum of its three side lengths, so $x + y + z = ${perimeter}$, or $${sideX} + ${sideY} + z = ${perimeter}$. This gives $${sideX + sideY} + z = ${perimeter}$, so $z = ${sideZ}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
