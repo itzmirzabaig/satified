@@ -134,6 +134,18 @@ export const generator_290 = {
     const xStep = tickStep(xMax - xMin);
     const yStep = tickStep(yMax - yMin);
 
+    // Faint gridlines at every whole number (or at each tick when the y-span is
+    // large) so the boundary's intercept and slope can be read; the graph used
+    // to have no gridlines.
+    let grid = "";
+    for (let t = Math.ceil(xMin); t <= xMax + 1e-9; t += 1) {
+      grid += `<line x1="${sx(t)}" y1="${sy(yMin)}" x2="${sx(t)}" y2="${sy(yMax)}" stroke="currentColor" stroke-opacity="0.08" stroke-width="1" />`;
+    }
+    const gStep = yMax - yMin <= 30 ? 1 : yStep;
+    for (let t = Math.ceil(yMin / gStep) * gStep; t <= yMax + 1e-9; t += gStep) {
+      grid += `<line x1="${sx(xMin)}" y1="${sy(t)}" x2="${sx(xMax)}" y2="${sy(t)}" stroke="currentColor" stroke-opacity="0.08" stroke-width="1" />`;
+    }
+
     let ticks = "";
     for (let t = Math.ceil(xMin / xStep) * xStep; t <= xMax + 1e-9; t += xStep) {
       if (t === 0) continue; // 0 drawn once at the origin below
@@ -150,6 +162,7 @@ export const generator_290 = {
     const figureCode = `
       <div style="width:100%;max-width:${width}px;margin:0 auto;">
         <svg viewBox="0 0 ${width} ${height}" style="width:100%;height:auto;font-family:sans-serif;user-select:none;">
+          ${grid}
           <polygon points="${region}" fill="#3b82f6" fill-opacity="0.18" />
           <line x1="${sx(xMin)}" y1="${axisY0}" x2="${sx(xMax)}" y2="${axisY0}" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" />
           <line x1="${axisX0}" y1="${sy(yMin)}" x2="${axisX0}" y2="${sy(yMax)}" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" />
@@ -161,11 +174,18 @@ export const generator_290 = {
       </div>
     `;
 
+    // "-1x" used to appear in the explanation when the slope was -1, and the
+    // three wrong choices shared one sentence.
+    const lineTex = `${slope === -1 ? '-' : slope}x + ${intercept}`;
+    const wrongReason = (p: { x: number; y: number }) => {
+      const b = slope * p.x + intercept;
+      return `at $x = ${p.x}$, the boundary line is at $y = ${slope}(${p.x}) + ${intercept} = ${b}$, and $${p.y} < ${b}$, so the point $(${p.x}, ${p.y})$ is below the line, outside the shaded region`;
+    };
     const optionsData = [
-      { text: `$(${correctX}, ${correctY})$`, isCorrect: true },
-      { text: `$(${distractors[0].x}, ${distractors[0].y})$`, isCorrect: false },
-      { text: `$(${distractors[1].x}, ${distractors[1].y})$`, isCorrect: false },
-      { text: `$(${distractors[2].x}, ${distractors[2].y})$`, isCorrect: false }
+      { text: `$(${correctX}, ${correctY})$`, isCorrect: true, reason: '' },
+      { text: `$(${distractors[0].x}, ${distractors[0].y})$`, isCorrect: false, reason: wrongReason(distractors[0]) },
+      { text: `$(${distractors[1].x}, ${distractors[1].y})$`, isCorrect: false, reason: wrongReason(distractors[1]) },
+      { text: `$(${distractors[2].x}, ${distractors[2].y})$`, isCorrect: false, reason: wrongReason(distractors[2]) }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -175,8 +195,9 @@ export const generator_290 = {
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The shaded region represents $y \\ge ${slope}x + ${intercept}$. A point is a solution when its $y$-value is at least $${slope}x + ${intercept}$. Testing $(${correctX}, ${correctY})$: the boundary value is $${slope}(${correctX}) + ${intercept} = ${boundaryAtCorrect}$, and $${correctY} \\ge ${boundaryAtCorrect}$ is true, so this point lies in the shaded region. Each other point fails this test because its $y$-value is below $${slope}x + ${intercept}$ at its $x$-value.`;
+    const explanation = `Choice ${correctLetter} is correct. The boundary line passes through $(0, ${intercept})$ and has a slope of $${slope}$, so its equation is $y = ${lineTex}$, and the shaded region above it represents $y \\ge ${lineTex}$. At $x = ${correctX}$, the boundary line is at $y = ${slope}(${correctX}) + ${intercept} = ${boundaryAtCorrect}$, and $${correctY} \\ge ${boundaryAtCorrect}$, so $(${correctX}, ${correctY})$ is in the shaded region. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `The shaded region shown represents the solutions to a linear inequality. Which ordered pair $(x, y)$ is a solution to this inequality?`,
