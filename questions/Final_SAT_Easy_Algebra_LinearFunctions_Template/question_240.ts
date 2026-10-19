@@ -53,10 +53,10 @@ export const generator_240 = {
     );
 
     const optionsData = [
-      { text: wrongSign.toString(), isCorrect: false, reason: "treats the slope as positive instead of negative" },
-      { text: result.toString(), isCorrect: true },
-      { text: noX.toString(), isCorrect: false, reason: "adds the slope to the intercept without multiplying by $x$" },
-      { text: onlyProduct.toString(), isCorrect: false, reason: "multiplies the slope by $x$ but forgets to add the intercept" }
+      { text: wrongSign.toString(), isCorrect: false, reason: `it results from adding ${Math.abs(slope) * xValue} to ${intercept} instead of subtracting it` },
+      { text: result.toString(), isCorrect: true, reason: '' },
+      { text: noX.toString(), isCorrect: false, reason: `it results from subtracting ${Math.abs(slope)} from ${intercept} without first multiplying ${Math.abs(slope)} by ${xValue}` },
+      { text: onlyProduct.toString(), isCorrect: false, reason: `it is the value of the $x$-term alone, $-${Math.abs(slope)}(${xValue})$; ${intercept} must still be added to it` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -73,7 +73,7 @@ export const generator_240 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: result.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$: $f(${xValue}) = ${intercept} - ${Math.abs(slope)}(${xValue}) = ${intercept} - ${Math.abs(slope) * xValue} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$ in the given function yields $f(${xValue}) = ${intercept} - ${Math.abs(slope)}(${xValue})$, or $f(${xValue}) = ${intercept} - ${Math.abs(slope) * xValue} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
