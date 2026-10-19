@@ -1,27 +1,30 @@
-import { getRandomInt, shuffle } from '../../utils/math';
+import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
 * Question 354
 *
 * ORIGINAL ANALYSIS:
-* - Number ranges: [angle: 120-175]
-* - Difficulty factors: [Parallel lines, corresponding angles, transversal properties]
-* - Distractor patterns: [Division error, supplementary angle, random calculation error]
+* - Number ranges: [angle: 115-160, not 135]
+* - Difficulty factors: [Parallel lines, congruent angle pairs, transversal properties]
+* - Distractor patterns: [supplementary angle, subtracts from 360, subtracts 90]
 * - Constraints: [Obtuse angle, lines must be parallel]
 * - Question type: [Figure→Multiple Choice Text]
 *
 * FIXED:
-* - Old distractors collided for some draws that the 25-draw smoke missed but
-*   the 200-draw audit caught: (180 - g) equaled (g - 100) at g = 140, and
-*   round(g/10) equaled (180 - g) at g = 164, producing DUP_OPTIONS.
-* - Correct answer (g) is always >= 120; every distractor here is < 100 and the
-*   set is de-duplicated with a bounded retry, so all four options are distinct
-*   for every draw. The labeled "supplementary" distractor is kept intact; any
-*   remaining collisions are resolved with unique arithmetic-slip fillers.
-* - Explanation no longer places a $digit segment next to a $letter segment,
-*   clearing the DOLLAR_RISK soft flag.
+* - The old Mafs figure was a fixed sketch on a black box with no line labels,
+*   and the explanation called the marked angles corresponding when they were
+*   alternate exterior angles. Two wrong choices were "drops the hundreds
+*   digit" and "divides by 10".
+* - The figure is now an SVG drawn to the true angle, with lines m, n, and t
+*   labeled. The marked pair is chosen at random from the four pairs of
+*   congruent obtuse angles, and the explanation names the pair.
+* - The given angle runs from 115 to 160 so the transversal is not nearly
+*   flat, and skips 135, where 180 - g would equal g - 90.
 */
+
+type Pt = { x: number; y: number };
+const rad = (d: number) => (d * Math.PI) / 180;
 
 export const generator_354 = {
   metadata: {
@@ -33,55 +36,89 @@ export const generator_354 = {
   },
 
   generate: (): QuestionData => {
-    const givenAngle = getRandomInt(120, 175); // obtuse; correct answer = givenAngle
-    const yTop = 2;
-    const yBottom = 0;
+    let givenAngle = 135;
+    while (givenAngle === 135) givenAngle = getRandomInt(115, 160); // obtuse; correct answer = givenAngle
+    const acute = 180 - givenAngle; // angle between the transversal and each parallel line
 
-    // Two parallel lines cut by a transversal - corresponding angles.
-    const mafsCode = `<Mafs viewBox={{ x: [-3, 5], y: [-1, 4] }}>
-  <!-- Parallel line m (top) -->
-  <Line.Segment point1={[-2, ${yTop}]} point2={[4, ${yTop}]} color="var(--mafs-foreground)" />
+    // Each intersection has two obtuse angles: above the line and left of t
+    // ("LA"), and below the line and right of t ("RB").
+    const pair = getRandomElement([
+      { top: 'LA', bottom: 'LA', name: 'corresponding angles' },
+      { top: 'RB', bottom: 'RB', name: 'corresponding angles' },
+      { top: 'LA', bottom: 'RB', name: 'alternate exterior angles' },
+      { top: 'RB', bottom: 'LA', name: 'alternate interior angles' }
+    ]);
 
-  <!-- Parallel line n (bottom) -->
-  <Line.Segment point1={[-2, ${yBottom}]} point2={[4, ${yBottom}]} color="var(--mafs-foreground)" />
+    // Math coords, y up. Line m is y = 1 and line n is y = -1; the transversal
+    // rises at the acute angle and crosses m at M and n at N.
+    const cotA = Math.cos(rad(acute)) / Math.sin(rad(acute));
+    const dirT: Pt = { x: Math.cos(rad(acute)), y: Math.sin(rad(acute)) };
+    const M: Pt = { x: cotA, y: 1 };
+    const N: Pt = { x: -cotA, y: -1 };
+    const halfLen = cotA + 1.8;
+    const m1: Pt = { x: -halfLen, y: 1 }, m2: Pt = { x: halfLen, y: 1 };
+    const n1: Pt = { x: -halfLen, y: -1 }, n2: Pt = { x: halfLen, y: -1 };
+    const tTop: Pt = { x: M.x + 1.2 * dirT.x, y: M.y + 1.2 * dirT.y };
+    const tBot: Pt = { x: N.x - 1.2 * dirT.x, y: N.y - 1.2 * dirT.y };
 
-  <!-- Transversal line t -->
-  <Line.Segment point1={[-1, -1]} point2={[3, 3.5]} color="var(--mafs-foreground)" />
+    // Start direction of each obtuse wedge (it spans givenAngle degrees CCW).
+    const startDir = (pos: string) => (pos === 'LA' ? acute : 180 + acute);
+    const bisector = (V: Pt, pos: string, r: number): Pt => {
+      const t = rad(startDir(pos) + givenAngle / 2);
+      return { x: V.x + r * Math.cos(t), y: V.y + r * Math.sin(t) };
+    };
+    const gLbl = bisector(M, pair.top, 0.72);
+    const wLbl = bisector(N, pair.bottom, 0.72);
+    const mLbl: Pt = { x: -halfLen - 0.3, y: 1 };
+    const nLbl: Pt = { x: -halfLen - 0.3, y: -1 };
+    const tLbl: Pt = { x: tTop.x + 0.22 * dirT.x, y: tTop.y + 0.22 * dirT.y };
 
-  <!-- Angle labels -->
-  <Text x={0.5} y={${yTop + 0.5}}>${givenAngle}°</Text>
-  <Text x={0.5} y={${yBottom - 0.5}}>w°</Text>
-</Mafs>`;
+    // Uniform-scale mapper so angles render true.
+    const round2 = (v: number) => Math.round(v * 100) / 100;
+    const W = 460, H = 300, PAD = 12;
+    const xs = [m1.x, m2.x, tTop.x, tBot.x, mLbl.x, tLbl.x];
+    const ys = [1, -1, tTop.y, tBot.y, tLbl.y, gLbl.y, wLbl.y];
+    const xmin = Math.min(...xs) - 0.3, xmax = Math.max(...xs) + 0.3;
+    const ymin = Math.min(...ys) - 0.3, ymax = Math.max(...ys) + 0.3;
+    const sc = Math.min((W - 2 * PAD) / (xmax - xmin), (H - 2 * PAD) / (ymax - ymin));
+    const ox = PAD + ((W - 2 * PAD) - (xmax - xmin) * sc) / 2;
+    const oy = PAD + ((H - 2 * PAD) - (ymax - ymin) * sc) / 2;
+    const mx = (v: number) => round2(ox + (v - xmin) * sc);
+    const my = (v: number) => round2(H - (oy + (v - ymin) * sc));
+
+    const line = (A: Pt, B: Pt) =>
+      `<line x1="${mx(A.x)}" y1="${my(A.y)}" x2="${mx(B.x)}" y2="${my(B.y)}" stroke="currentColor" stroke-width="2"/>`;
+    const arc = (V: Pt, pos: string, r: number, color: string) => {
+      const a1 = startDir(pos);
+      let d = '';
+      for (let i = 0; i <= 20; i++) {
+        const t = rad(a1 + (givenAngle * i) / 20);
+        d += `${i === 0 ? 'M' : 'L'}${mx(V.x + r * Math.cos(t))} ${my(V.y + r * Math.sin(t))} `;
+      }
+      return `<path d="${d}" fill="none" stroke="${color}" stroke-width="1.4"/>`;
+    };
+    const text = (p: Pt, s: string, italic: boolean, color = 'currentColor', size = 14) =>
+      `<text x="${mx(p.x)}" y="${my(p.y) + 5}" text-anchor="middle" font-size="${size}" font-family="serif"${italic ? ' font-style="italic"' : ''} fill="${color}">${s}</text>`;
+
+    const figureCode =
+      `<div style="width:100%;max-width:460px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
+      line(m1, m2) + line(n1, n2) + line(tBot, tTop) +
+      arc(M, pair.top, 0.32, 'currentColor') +
+      arc(N, pair.bottom, 0.32, '#3b82f6') +
+      text(gLbl, `${givenAngle}°`, false) +
+      text(wLbl, 'w°', true, '#3b82f6') +
+      text(mLbl, 'm', true) + text(nLbl, 'n', true) + text(tLbl, 't', true) +
+      `</svg></div>`;
 
     const correctAnswer = givenAngle.toString();
 
-    // Build a distinct set of wrong answers. The correct value is >= 120; every
-    // distractor below is < 100, so distractors only ever risk colliding with
-    // each other. We add labeled candidates first, then fill any gaps caused by
-    // a collision with unique arithmetic-slip values (generic reason).
-    const used = new Set<number>([givenAngle]);
-    const wrong: { value: number; reason: string }[] = [];
-    const tryAdd = (value: number, reason: string) => {
-      if (wrong.length >= 3) return;
-      if (value > 0 && value < 100 && !used.has(value)) { used.add(value); wrong.push({ value, reason }); }
-    };
-
-    tryAdd(180 - givenAngle, "finds the supplementary angle instead of the congruent corresponding angle");
-    tryAdd(givenAngle - 100, "drops the hundreds digit of the angle measure");
-    tryAdd(Math.round(givenAngle / 10), "mistakenly divides the angle measure by 10");
-
-    // Fill remaining slots with unique values < 100 (arithmetic slips).
-    let filler = 10;
-    while (wrong.length < 3 && filler < 100) {
-      if (!used.has(filler)) { used.add(filler); wrong.push({ value: filler, reason: "makes a calculation error" }); }
-      filler++;
-    }
-
+    // Each wrong choice is a real slip. With g in [115, 160] and not 135, the
+    // values g, 180 - g, 360 - g, and g - 90 never collide.
     const optionsData = [
-      { text: wrong[0].value.toString(), isCorrect: false, reason: wrong[0].reason },
-      { text: wrong[1].value.toString(), isCorrect: false, reason: wrong[1].reason },
-      { text: correctAnswer, isCorrect: true },
-      { text: wrong[2].value.toString(), isCorrect: false, reason: wrong[2].reason }
+      { text: (180 - givenAngle).toString(), isCorrect: false, reason: `${180 - givenAngle} is the measure of an angle supplementary to the ${givenAngle}° angle; ${pair.name} are congruent, not supplementary` },
+      { text: (360 - givenAngle).toString(), isCorrect: false, reason: `it results from subtracting ${givenAngle} from 360; ${pair.name} are congruent, so $w$ equals ${givenAngle}` },
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: (givenAngle - 90).toString(), isCorrect: false, reason: `it results from subtracting 90 from ${givenAngle}; ${pair.name} are congruent, so $w$ equals ${givenAngle}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -93,11 +130,11 @@ export const generator_354 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `Note: Figure not drawn to scale. In the figure, line $m$ is parallel to line $n$. What is the value of $w$?`,
-      figureCode: mafsCode,
+      questionText: `In the figure, line $m$ is parallel to line $n$, and line $t$ intersects both lines. What is the value of $w$?`,
+      figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. Lines $m$ and $n$ are parallel and line $t$ is a transversal, so the marked angles are corresponding angles. Corresponding angles formed by a transversal cutting parallel lines are congruent, so the two angle measures are equal and $w = ${givenAngle}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Lines $m$ and $n$ are parallel and line $t$ is a transversal. The angle with measure ${givenAngle}° and the angle with measure $w^{\\circ}$ are ${pair.name}. When two parallel lines are cut by a transversal, ${pair.name} are congruent, so $w = ${givenAngle}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
