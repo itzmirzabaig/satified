@@ -30,12 +30,18 @@ export const generator_316 = {
     const total = num1 + num2;
     const revenue = price1 * num1 + price2 * num2;
 
-    const correctAnswer = `$\\begin{aligned} x + y &= ${total} \\\\ ${price1}x + ${price2}y &= ${revenue.toLocaleString('en-US')} \\end{aligned}$`;
+    // Thousands commas everywhere (the product used to print as 4102410 and
+    // the revenue as 26130 in the explanation), dollar signs on the prices,
+    // and reasons that name the actual mistake.
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const rev = fmt(revenue);
+    const product = fmt(total * revenue);
+    const correctAnswer = `$\\begin{aligned} x + y &= ${total} \\\\ ${price1}x + ${price2}y &= ${rev} \\end{aligned}$`;
     const optionsData = [
-      { text: correctAnswer, isCorrect: true },
-      { text: `$\\begin{aligned} x + y &= ${total} \\\\ ${price1}x + ${price2}y &= ${total * revenue} \\end{aligned}$`, isCorrect: false, reason: "multiplies the totals incorrectly" },
-      { text: `$\\begin{aligned} x + y &= ${revenue.toLocaleString('en-US')} \\\\ ${price1}x + ${price2}y &= ${total * revenue} \\end{aligned}$`, isCorrect: false, reason: "swaps the total tickets with total revenue" },
-      { text: `$\\begin{aligned} ${price1}x &= ${price2}y \\\\ ${total}x + ${total}y &= ${revenue.toLocaleString('en-US')} \\end{aligned}$`, isCorrect: false, reason: "sets up incorrect equations" }
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: `$\\begin{aligned} x + y &= ${total} \\\\ ${price1}x + ${price2}y &= ${product} \\end{aligned}$`, isCorrect: false, reason: `${product} is the product of the number of tickets and the amount collected, $${total}(${rev})$; the amount collected from the tickets is \\$${rev}` },
+      { text: `$\\begin{aligned} x + y &= ${rev} \\\\ ${price1}x + ${price2}y &= ${product} \\end{aligned}$`, isCorrect: false, reason: `it sets the number of tickets equal to the amount collected, ${rev}, instead of ${total}, and the amount collected is \\$${rev}, not ${product}` },
+      { text: `$\\begin{aligned} ${price1}x &= ${price2}y \\\\ ${total}x + ${total}y &= ${rev} \\end{aligned}$`, isCorrect: false, reason: `nothing in the situation says the two groups of tickets brought in equal amounts, and the amount collected is $${price1}x + ${price2}y$, not $${total}x + ${total}y$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -46,10 +52,10 @@ export const generator_316 = {
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The total number of tickets is $x + y = ${total}$. The revenue from $x$ tickets at $${price1}$ and $y$ tickets at $${price2}$ is $${price1}x + ${price2}y = ${revenue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The airline sold ${total} tickets in all, so $x + y = ${total}$. The $x$ tickets sold for \\$${price1} each bring in $${price1}x$ dollars, and the $y$ tickets sold for \\$${price2} each bring in $${price2}y$ dollars, for a total of \\$${rev}, so $${price1}x + ${price2}y = ${rev}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `A discount airline sells a certain number of tickets, $x$, for a flight for $${price1}$ each. It sells the number of remaining tickets, $y$, for $${price2}$ each. For a particular flight, the airline sold ${total} tickets and collected a total of $${revenue.toLocaleString('en-US')}$ from the sale of those tickets. Which system of equations represents this relationship between $x$ and $y$?`,
+      questionText: `A discount airline sells a certain number of tickets, $x$, for a flight for \\$${price1} each. It sells the number of remaining tickets, $y$, for \\$${price2} each. For a particular flight, the airline sold ${total} tickets and collected a total of \\$${rev} from the sale of those tickets. Which system of equations represents this relationship between $x$ and $y$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
