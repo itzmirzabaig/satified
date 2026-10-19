@@ -26,17 +26,22 @@ export const generator_319 = {
     const finalX = intercept / 2;
     const finalY = finalX;
 
-    const mafsCode = `
-      <Coordinates.Cartesian />
-      <Plot.OfX y={(x) => x} color="#1a7cff" />
-      <Plot.OfX y={(x) => -x + ${intercept}} color="#ff2a7a" />
-    `;
+    // A window around the intersection and both intercepts, with a gridline at
+    // every whole number (the graph used to have no window).
+    const mafsCode = `<Mafs viewBox={{ x: [-2, ${intercept + 2}], y: [-2, ${intercept + 2}] }}>
+  <Coordinates.Cartesian
+    xAxis={{ lines: 1, labels: (n) => n }}
+    yAxis={{ lines: 1, labels: (n) => n }}
+  />
+  <Plot.OfX y={(x) => x} color="#1a7cff" />
+  <Plot.OfX y={(x) => -x + ${intercept}} color="#ff2a7a" />
+</Mafs>`;
 
     const optionsData = [
-      { text: `(0, ${intercept})`, isCorrect: false, reason: "uses the y-intercept" },
-      { text: `(${finalX}, ${finalY})`, isCorrect: true },
-      { text: `(${intercept}, 0)`, isCorrect: false, reason: "uses the x-intercept" },
-      { text: `(${intercept}, ${intercept})`, isCorrect: false, reason: "uses the intercept value incorrectly" }
+      { text: `$(0, ${intercept})$`, isCorrect: false, reason: `$(0, ${intercept})$ is the $y$-intercept of the line that slopes down, which is not on the other line` },
+      { text: `$(${finalX}, ${finalY})$`, isCorrect: true, reason: '' },
+      { text: `$(${intercept}, 0)$`, isCorrect: false, reason: `$(${intercept}, 0)$ is the $x$-intercept of the line that slopes down, which is not on the other line` },
+      { text: `$(${intercept}, ${intercept})$`, isCorrect: false, reason: `$(${intercept}, ${intercept})$ is on the line that slopes up, but not on the line that slopes down` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,13 +52,13 @@ export const generator_319 = {
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The lines $y = x$ and $y = -x + ${intercept}$ intersect where $x = -x + ${intercept}$, so $2x = ${intercept}$, giving $x = ${finalX}$ and $y = ${finalY}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The solution to a system of two linear equations is the point where their graphs intersect. The two lines shown intersect at $(${finalX}, ${finalY})$, so the solution is $(${finalX}, ${finalY})$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `The graph of a system of two linear equations is shown. What is the solution $(x, y)$ to the system?`,
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: `(${finalX}, ${finalY})`,
+      correctAnswer: `$(${finalX}, ${finalY})$`,
       explanation: explanation
     };
   }
