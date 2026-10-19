@@ -23,18 +23,22 @@ export const generator_299 = {
   },
 
   generate: (): QuestionData => {
-    const minTemp = (getRandomInt(50, 60) + getRandomInt(0, 9) / 10).toFixed(1);
-    const currentTemp = (parseFloat(minTemp) - getRandomInt(2, 6) - getRandomInt(0, 9) / 10).toFixed(1);
-    const neededIncrease = (parseFloat(minTemp) - parseFloat(currentTemp)).toFixed(1);
-    const distractor1 = (parseFloat(minTemp) - (parseFloat(currentTemp) + 2.4)).toFixed(1);
-    const distractor2 = (parseFloat(minTemp) - (parseFloat(currentTemp) - 1.3)).toFixed(1);
-    const distractor3 = (parseFloat(minTemp) - (parseFloat(currentTemp) - 2.6)).toFixed(1);
+    // Work in tenths of a degree to avoid float drift. The old wrong choices
+    // were the answer shifted by 2.4, 1.3 and 2.6 degrees, which no one gets
+    // from a real mistake.
+    const minT = getRandomInt(500, 609);
+    const currentT = minT - getRandomInt(20, 69);
+    const t = (v: number) => (v / 10).toFixed(1);
+    const minTemp = t(minT), currentTemp = t(currentT), neededIncrease = t(minT - currentT);
+    const sum = t(minT + currentT);
 
+    // Always distinct: the increase is at most 6.9, less than both temperatures,
+    // and the sum is larger than both.
     const optionsData = [
-      { text: `${distractor1}`, isCorrect: false },
-      { text: `${neededIncrease}`, isCorrect: true },
-      { text: `${distractor2}`, isCorrect: false },
-      { text: `${distractor3}`, isCorrect: false }
+      { text: currentTemp, isCorrect: false, reason: `${currentTemp}°F is the butterfly's current body temperature, not the increase needed` },
+      { text: neededIncrease, isCorrect: true, reason: '' },
+      { text: minTemp, isCorrect: false, reason: `${minTemp}°F is the lowest body temperature at which the butterfly can fly, not the increase needed` },
+      { text: sum, isCorrect: false, reason: `it results from adding ${currentTemp} to ${minTemp} instead of subtracting it` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -44,8 +48,9 @@ export const generator_299 = {
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The butterfly needs at least ${minTemp}°F and currently has ${currentTemp}°F. The minimum increase is ${minTemp} - ${currentTemp} = ${neededIncrease}°F.`;
+    const explanation = `Choice ${correctLetter} is correct. If the butterfly's body temperature increases by $x$ degrees, its temperature will be $${currentTemp} + x$ degrees. To fly, $${currentTemp} + x \\ge ${minTemp}$. Subtracting ${currentTemp} from both sides of this inequality yields $x \\ge ${neededIncrease}$. Therefore, the minimum increase needed is ${neededIncrease}°F. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `Monarch butterflies can fly only with a body temperature of at least ${minTemp} degrees Fahrenheit (°F). If a monarch butterfly's body temperature is ${currentTemp}°F, what is the minimum increase needed in its body temperature, in °F, so that it can fly?`,
