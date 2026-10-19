@@ -31,11 +31,11 @@ export const generator_270 = {
     const targetCost = baseCost + perGame * numGames;
 
     return {
-      questionText: `The function $f$ represents the total cost, in dollars, of attending an arcade when $x$ games are played. The function is $f(x) = ${baseCost} + ${perGame}x$. How many games can be played for a total cost of $${targetCost}$?`,
+      questionText: `The function $f$ represents the total cost, in dollars, of attending an arcade when $x$ games are played. The function is $f(x) = ${baseCost} + ${perGame}x$. How many games can be played for a total cost of \\$${targetCost}?`,
       figureCode: null,
       options: [],
       correctAnswer: numGames.toString(),
-      explanation: `Setting $f(x) = ${targetCost}$ gives ${targetCost} = ${baseCost} + ${perGame}x$. Subtracting ${baseCost} from both sides: ${targetCost - baseCost} = ${perGame}x$. Dividing by ${perGame}: $x = ${numGames}$.`
+      explanation: `The correct answer is ${numGames}. Substituting ${targetCost} for $f(x)$ in the given function yields $${targetCost} = ${baseCost} + ${perGame}x$. Subtracting ${baseCost} from both sides of this equation yields $${targetCost - baseCost} = ${perGame}x$. Dividing both sides by ${perGame} yields $x = ${numGames}$. Therefore, ${numGames} games can be played for a total cost of \\$${targetCost}.`
     };
   }
 };
