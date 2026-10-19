@@ -5,9 +5,9 @@ import type { QuestionData } from '../../study/types';
  * Question 288
  *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [required: 100, current: 86]
+ * - Number ranges: [required: 80-150, current: 40 to required - 10]
  * - Difficulty factors: [Simple subtraction, "at least" interpretation]
- * - Distractor patterns: [A=correct difference, B=subtraction error, C=current hours, D=sum of both]
+ * - Distractor patterns: [added instead of subtracted, hours already logged, total requirement]
  * - Constraints: [Result must be positive integer]
  * - Question type: [Word Problem→Multiple Choice Text]
  * - Figure generation: [None]
@@ -38,30 +38,15 @@ export const generator_288 = {
       needed = required - current;
     }
 
-    // Build distractors that never collide with the answer or one another.
-    const used = new Set<number>([needed]);
-    const addUnique = (value: number): number => {
-      let v = value;
-      let guard = 0;
-      while ((used.has(v) || v <= 0) && guard++ < 50) {
-        v += 1;
-      }
-      used.add(v);
-      return v;
-    };
-
-    // C = hours already logged; D = total requirement (forgets logged hours);
-    // B = arithmetic slip a few hours off from the correct difference.
-    const distractorCurrent = addUnique(current);
-    const distractorRequired = addUnique(required);
-    const slip = needed + (Math.random() < 0.5 ? -1 : 1) * getRandomInt(2, 6);
-    const distractorSlip = addUnique(slip);
-
+    // Every wrong choice is a real slip. The old fourth choice was the answer
+    // moved by 2 to 6 hours ("a subtraction slip"). The values are distinct:
+    // needed and current differ (guarded above), and both are less than
+    // required, which is less than required + current.
     const optionsData = [
-      { text: `${needed}`, isCorrect: true },
-      { text: `${distractorSlip}`, isCorrect: false, reason: "results from a subtraction slip near the correct difference" },
-      { text: `${distractorCurrent}`, isCorrect: false, reason: "reports the hours already logged rather than the additional hours needed" },
-      { text: `${distractorRequired}`, isCorrect: false, reason: "reports the total requirement, ignoring the hours already logged" }
+      { text: `${needed}`, isCorrect: true, reason: '' },
+      { text: `${required + current}`, isCorrect: false, reason: `it results from adding the ${current} hours already logged to ${required} instead of subtracting them` },
+      { text: `${current}`, isCorrect: false, reason: `${current} is the number of hours the student has already logged, not the number of additional hours needed` },
+      { text: `${required}`, isCorrect: false, reason: `${required} is the total number of hours required; it does not account for the ${current} hours already logged` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -73,7 +58,7 @@ export const generator_288 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. A student pilot needs at least ${required} hours of flight time and has already logged ${current} hours, so the minimum number of additional hours needed is $${required} - ${current} = ${needed}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. If $h$ is the number of additional hours of flight time, the student will have logged a total of $${current} + h$ hours. The student needs at least ${required} hours, so $${current} + h \\ge ${required}$. Subtracting ${current} from both sides of this inequality yields $h \\ge ${needed}$. Therefore, the minimum number of additional hours is ${needed}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A student pilot needs at least ${required} hours of flight time to earn a private pilot certificate. If the student has already logged ${current} hours of flight time, what is the minimum number of additional hours of flight time the student needs to earn the certificate?`,
