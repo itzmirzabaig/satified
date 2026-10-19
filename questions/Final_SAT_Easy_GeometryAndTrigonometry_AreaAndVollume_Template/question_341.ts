@@ -5,9 +5,9 @@ import type { QuestionData } from '../../study/types';
 * Question 341
 *
 * ORIGINAL ANALYSIS:
-* - Number ranges: [triangle area: 60-100, square side: 3-6 (simple values)]
+* - Number ranges: [triangle area: 60-100, square side: 3-9, not 4]
 * - Difficulty factors: [Combining areas of different shapes, basic addition]
-* - Distractor patterns: [adds half triangle to side, adds triangle area to side]
+* - Distractor patterns: [adds side, adds 2 × side, adds perimeter instead of side²]
 * - Constraints: [Square area = side², total = triangle + square]
 * - Question type: [No figure, Multiple Choice Text]
 * - Figure generation: [None]
@@ -24,15 +24,19 @@ export const generator_341 = {
 
   generate: (): QuestionData => {
     const triangleArea = getRandomInt(60, 100);
-    const squareSide = getRandomInt(3, 6);
+    // Each wrong choice is a real slip in finding the area of the square; the
+    // old ones were the total plus 10 and a rounded half of the triangle's
+    // area. A side of 4 is skipped because 4 times 4 is also the perimeter.
+    let squareSide = 4;
+    while (squareSide === 4) squareSide = getRandomInt(3, 9);
     const squareArea = squareSide * squareSide;
     const totalArea = triangleArea + squareArea;
 
     const optionsData = [
-      { text: (Math.floor(triangleArea / 2) + squareSide).toString(), isCorrect: false, reason: "adds half the triangle area to the square side" },
-      { text: (triangleArea + squareSide).toString(), isCorrect: false, reason: "adds triangle area to square side instead of square area" },
-      { text: (triangleArea + squareArea + 10).toString(), isCorrect: false, reason: "calculation error" },
-      { text: totalArea.toString(), isCorrect: true }
+      { text: (triangleArea + squareSide).toString(), isCorrect: false, reason: `it results from adding the side length of square S, ${squareSide}, to the area of triangle R instead of the area of square S` },
+      { text: (triangleArea + 2 * squareSide).toString(), isCorrect: false, reason: `it results from using $2(${squareSide})$ as the area of square S; the area is $${squareSide}^2$, not $2(${squareSide})$` },
+      { text: (triangleArea + 4 * squareSide).toString(), isCorrect: false, reason: `it results from adding the perimeter of square S, $4(${squareSide})$, to the area of triangle R instead of the area of square S` },
+      { text: totalArea.toString(), isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -48,7 +52,7 @@ export const generator_341 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: totalArea.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The area of square S is $${squareSide} \\times ${squareSide} = ${squareArea}$ cm². The total area is $${triangleArea} + ${squareArea} = ${totalArea}$ cm². Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The area of a square is the square of its side length, so the area of square S is $${squareSide}^2 = ${squareArea}$ square centimeters. The total area of triangle R and square S is $${triangleArea} + ${squareArea} = ${totalArea}$ square centimeters. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
