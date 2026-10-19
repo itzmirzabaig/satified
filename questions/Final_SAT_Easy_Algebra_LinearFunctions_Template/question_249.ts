@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [slope: 4-8, intercept: 5-12, result: calculated]
  * - Difficulty factors: [Solving for input given output]
- * - Distractor patterns: [calculation error, subtracting slope]
+ * - Distractor patterns: [added intercept instead of subtracting, did not divide, evaluated f at the target]
  * - Constraints: [Ensure clean result]
  * - Question type: [Solve for x→Multiple Choice Text]
  * - Figure generation: null
@@ -23,19 +23,26 @@ export const generator_249 = {
   },
 
   generate: (): QuestionData => {
-    const slope = getRandomInt(4, 8);
-
-    const intercept = getRandomInt(5, 12);
+    // Every wrong choice is a real solving slip. The old choices were the
+    // answer plus 3 ("a calculation error"), the target minus the slope, and
+    // the target times the slope. The slope divides twice the intercept so
+    // that adding the intercept instead of subtracting it gives a whole number.
+    let slope = 4, intercept = 8;
+    do {
+      slope = getRandomInt(4, 8);
+      intercept = getRandomInt(5, 12);
+    } while ((2 * intercept) % slope !== 0);
 
     const xValue = getRandomInt(8, 12);
 
     const result = slope * xValue + intercept;
 
+    // Always distinct: x < x + 2b/m <= 18 < 32 <= m*x < f(result).
     const optionsData = [
-      { text: xValue.toString(), isCorrect: true },
-      { text: (xValue + 3).toString(), isCorrect: false, reason: "results from a calculation error" },
-      { text: (result - slope).toString(), isCorrect: false, reason: "subtracts slope instead of solving correctly" },
-      { text: (result * slope).toString(), isCorrect: false, reason: "multiplies instead of dividing" }
+      { text: xValue.toString(), isCorrect: true, reason: '' },
+      { text: ((result + intercept) / slope).toString(), isCorrect: false, reason: `it results from adding ${intercept} to both sides instead of subtracting it, which gives $${slope}x = ${result + intercept}$` },
+      { text: (result - intercept).toString(), isCorrect: false, reason: `it is the value of $${slope}x$, not $x$; both sides must still be divided by ${slope}` },
+      { text: (slope * result + intercept).toString(), isCorrect: false, reason: `it is the value of $f(${result})$, not the value of $x$ for which $f(x) = ${result}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -52,7 +59,7 @@ export const generator_249 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: xValue.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Setting $f(x) = ${result}$: ${result} = ${slope}x + ${intercept}$. Subtracting ${intercept} gives ${result - intercept} = ${slope}x$. Dividing by ${slope} yields $x = ${xValue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${result} for $f(x)$ in the given function yields $${result} = ${slope}x + ${intercept}$. Subtracting ${intercept} from both sides of this equation yields $${result - intercept} = ${slope}x$. Dividing both sides by ${slope} yields $x = ${xValue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
