@@ -26,10 +26,10 @@ export const generator_258 = {
     const slope = getRandomInt(20, 50);
 
     const optionsData = [
-      { text: `f(x)=-${slope}x`, isCorrect: false, reason: "uses the negative of the slope" },
-      { text: `f(x)=\\frac{1}{${slope}}x`, isCorrect: false, reason: "uses the reciprocal of the slope" },
-      { text: `f(x)=x-${slope}`, isCorrect: false, reason: "uses slope as intercept with wrong sign" },
-      { text: `f(x)=${slope}x`, isCorrect: true }
+      { text: `$f(x) = -${slope}x$`, isCorrect: false, reason: `its graph has a slope of $-${slope}$, not ${slope}` },
+      { text: `$f(x) = \\frac{1}{${slope}}x$`, isCorrect: false, reason: `its slope is the reciprocal of ${slope}, not ${slope}` },
+      { text: `$f(x) = x - ${slope}$`, isCorrect: false, reason: `its graph has a slope of 1 and passes through $(0, -${slope})$, not $(0, 0)$` },
+      { text: `$f(x) = ${slope}x$`, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -45,8 +45,8 @@ export const generator_258 = {
       questionText: `For the linear function $f$, the graph of $y=f(x)$ in the $xy$-plane has a slope of $${slope}$ and passes through the point $(0,0)$. Which equation defines $f$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: `f(x)=${slope}x`,
-      explanation: `Choice ${correctOption.letter} is correct. Using slope-intercept form with slope $m=${slope}$ and y-intercept $b=0$ (since it passes through origin) gives $f(x)=${slope}x$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      correctAnswer: `$f(x) = ${slope}x$`,
+      explanation: `Choice ${correctOption.letter} is correct. Using slope-intercept form, $f(x) = mx + b$, with slope $m = ${slope}$ and $y$-intercept $b = 0$ (since the graph passes through the origin) gives $f(x) = ${slope}x$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
