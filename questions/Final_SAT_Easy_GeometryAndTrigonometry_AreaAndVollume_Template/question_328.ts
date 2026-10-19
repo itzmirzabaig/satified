@@ -26,12 +26,13 @@ export const generator_328 = {
     const length = getRandomInt(32, 42);
     const width = length - getRandomInt(2, 6);
     const area = length * width;
+    const fmt = (n: number) => n.toLocaleString('en-US');
 
     const optionsData = [
-      { text: (length + width).toString(), isCorrect: false, reason: "adds length and width" },
-      { text: (2 * (length + width)).toString(), isCorrect: false, reason: "calculates perimeter instead of area" },
-      { text: (width * width).toString(), isCorrect: false, reason: "squares the width" },
-      { text: area.toString(), isCorrect: true }
+      { text: (length + width).toString(), isCorrect: false, reason: "adds the length and the width instead of multiplying them" },
+      { text: (2 * (length + width)).toString(), isCorrect: false, reason: "is the perimeter of the rectangle, not its area" },
+      { text: fmt(width * width), isCorrect: false, reason: "multiplies the width by itself instead of multiplying the length by the width" },
+      { text: fmt(area), isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -46,8 +47,8 @@ export const generator_328 = {
       questionText: `What is the area, in square centimeters, of a rectangle with a length of $${length}$ centimeters and a width of $${width}$ centimeters?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: area.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The area is $${length} \\times ${width} = ${area}$ square centimeters. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      correctAnswer: fmt(area),
+      explanation: `Choice ${correctOption.letter} is correct. The area is $${length} \\times ${width} = ${fmt(area)}$ square centimeters. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
     };
   }
 };
