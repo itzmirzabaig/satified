@@ -5,9 +5,9 @@ import type { QuestionData } from '../../study/types';
 * Question 355
 *
 * ORIGINAL ANALYSIS:
-* - Number ranges: [tallHeight: 400-600, tallShadow: 250-350, smallShadow: 12-20]
+* - Number ranges: [tallHeight: 555 (the real height), tallShadow: 225-350, smallShadow: 10-20]
 * - Difficulty factors: [Similar triangles, proportions, real-world application]
-* - Distractor patterns: [Incorrect proportion calculation]
+* - Distractor patterns: [Inverted ratio, shadow taken as height, additive difference]
 * - Constraints: [Proportion yields reasonable tree height]
 * - Question type: [Conceptual (no figure)→Multiple Choice Text]
 */
@@ -22,20 +22,32 @@ export const generator_355 = {
   },
 
   generate: (): QuestionData => {
-    const tallHeight = getRandomInt(400, 600);
-    const tallShadow = getRandomInt(250, 350);
-    const smallShadow = getRandomInt(12, 20);
-    const treeHeightRounded = Math.round((tallHeight * smallShadow) / tallShadow);
-    const distractorA = Math.round(treeHeightRounded * 0.33);
-    const distractorB = Math.round(treeHeightRounded * 0.67);
-    const distractorD = Math.round(treeHeightRounded * 1.17);
+    // The Washington Monument is about 555 feet tall; the old code drew a
+    // height from 400 to 600, which misstated it on most draws. Only the
+    // shadows vary now.
+    // Draws whose exact height is within 0.1 of a half are redone, so the
+    // rounded value in the explanation clearly points to one choice.
+    const tallHeight = 555;
+    let tallShadow = 225, smallShadow = 10, exactHeight = 0;
+    do {
+      tallShadow = getRandomInt(225, 350);
+      smallShadow = getRandomInt(10, 20);
+      exactHeight = (tallHeight * smallShadow) / tallShadow;
+    } while (Math.abs((exactHeight % 1) - 0.5) < 0.1);
+    const treeHeightRounded = Math.round(exactHeight);
     const correctAnswer = treeHeightRounded.toString();
 
+    // Each wrong choice is a real slip; the old ones were the answer times
+    // 0.33, 0.67, and 1.17. The answer is at least 1.58 times the tree's
+    // shadow and the inverted ratio is at most 0.64 times it, so the four
+    // values never collide.
+    const inverted = Math.round((tallShadow * smallShadow) / tallHeight);
+    const additive = smallShadow + (tallHeight - tallShadow);
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: "results from incorrect proportion calculation" },
-      { text: distractorB.toString(), isCorrect: false, reason: "results from incorrect proportion calculation" },
-      { text: correctAnswer, isCorrect: true },
-      { text: distractorD.toString(), isCorrect: false, reason: "results from incorrect proportion calculation" }
+      { text: inverted.toString(), isCorrect: false, reason: `it results from inverting one of the ratios, $\\frac{${tallShadow}}{${tallHeight}} = \\frac{h}{${smallShadow}}$; the ratio of height to shadow length must be the same for both objects` },
+      { text: smallShadow.toString(), isCorrect: false, reason: `${smallShadow} feet is the length of the tree's shadow, not its height` },
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: additive.toString(), isCorrect: false, reason: `it results from adding the difference between the monument's height and its shadow length, $${tallHeight} - ${tallShadow}$, to the tree's shadow length; heights and shadow lengths are proportional, not separated by a constant difference` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -51,7 +63,7 @@ export const generator_355 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. Using similar triangles: $\\frac{\\text{monument height}}{\\text{monument shadow}} = \\frac{\\text{tree height}}{\\text{tree shadow}}$. So $\\frac{${tallHeight}}{${tallShadow}} = \\frac{h}{${smallShadow}}$. Cross-multiplying: $h = \\frac{${tallHeight} \\times ${smallShadow}}{${tallShadow}} \\approx ${correctAnswer}$ feet. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. At the same time and place, the sun's rays strike both objects at the same angle, so each object and its shadow form similar right triangles. Therefore, the ratio of each object's height to its shadow length is the same. If $h$ is the height, in feet, of the cherry tree, then $\\frac{${tallHeight}}{${tallShadow}} = \\frac{h}{${smallShadow}}$. Multiplying both sides by ${smallShadow} gives $h = \\frac{${tallHeight}(${smallShadow})}{${tallShadow}}$, which is approximately ${exactHeight.toFixed(1)}. Of the given choices, ${correctAnswer} is closest to the height of the cherry tree. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
