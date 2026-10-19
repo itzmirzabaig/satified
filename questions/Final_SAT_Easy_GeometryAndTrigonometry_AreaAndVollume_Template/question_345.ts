@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [dimensions 2-8]
 * - Difficulty factors: [Volume of prism with figure]
-* - Distractor patterns: [l×w×2, l×w, l+w+h]
+* - Distractor patterns: [surface area, l×w, l+w+h]
 * - Constraints: [Volume = l × w × h]
 * - Question type: [Has Figure (SVG), Multiple Choice Text]
 * - Figure generation: [3D rectangular prism representation]
@@ -18,8 +18,8 @@ import type { QuestionData } from '../../study/types';
 *   Added a bounded uniqueness retry (<=50) that redraws until the four option
 *   values are distinct.
 * - Replaced the Mafs prism (which drew off-scale and could overflow its
-*   viewBox) with a plain, self-contained SVG isometric prism drawn at fixed
-*   pixel coordinates so it always fits; the l/w/h labels are interpolated from
+*   viewBox) with a plain, self-contained SVG prism drawn in proportion to
+*   the draw so it always fits; the edge labels are interpolated from
 *   the live draw values so the figure matches the question every time.
 * - Volume is integer by construction; explanation numbers come from the same
 *   live variables and the correct letter is read from the shuffled array.
@@ -44,7 +44,7 @@ export const generator_345 = {
       const baseArea = length * width;
       return [
         length * width * height, // correct volume
-        baseArea * 2,            // multiplies base area by 2 instead of height
+        2 * (baseArea + width * height + length * height), // surface area
         baseArea,                // only the base area
         length + width + height  // adds the dimensions
       ];
@@ -59,30 +59,36 @@ export const generator_345 = {
     const volume = length * width * height;
     const baseArea = length * width;
 
-    // Self-contained SVG of a right rectangular prism. The box is drawn at
-    // fixed pixel coordinates (illustrative, not to scale, as on the SAT); only
-    // the dimension labels change with the draw so they always match the text.
-    const figureCode = `<div style="width:100%;max-width:320px;margin:0 auto;"><svg viewBox="0 0 300 220" style="width:100%;height:auto;display:block;font-family:sans-serif;" xmlns="http://www.w3.org/2000/svg">
-  <!-- back face -->
-  <polygon points="80,50 250,50 250,150 80,150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+    // Self-contained SVG of a right rectangular prism drawn in proportion to
+    // the draw (length across, height up, width receding at 45 degrees). The
+    // box used to be a fixed shape, so a length of 4 and a height of 6 drew
+    // much wider than tall, and the width label sat on an edge.
+    const u = 22;
+    const L = length * u, H = height * u, d = Math.round(width * u * 0.45);
+    const x0 = 56, yb = 15 + d + H;
+    const xr = x0 + L, yt = yb - H;
+    const vbW = xr + d + 64, vbH = yb + 32;
+    const figureCode = `<div style="width:100%;max-width:${vbW + 20}px;margin:0 auto;"><svg viewBox="0 0 ${vbW} ${vbH}" style="width:100%;height:auto;display:block;font-family:sans-serif;" xmlns="http://www.w3.org/2000/svg">
+  <!-- hidden edges -->
+  <polyline points="${x0},${yb} ${x0 + d},${yb - d} ${xr + d},${yb - d}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+  <line x1="${x0 + d}" y1="${yb - d}" x2="${x0 + d}" y2="${yt - d}" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+  <!-- top and right faces -->
+  <polygon points="${x0},${yt} ${x0 + d},${yt - d} ${xr + d},${yt - d} ${xr},${yt}" fill="#3b82f6" fill-opacity="0.06" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  <polygon points="${xr},${yt} ${xr + d},${yt - d} ${xr + d},${yb - d} ${xr},${yb}" fill="#3b82f6" fill-opacity="0.08" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
   <!-- front face -->
-  <polygon points="40,80 210,80 210,180 40,180" fill="#3b82f6" fill-opacity="0.12" stroke="currentColor" stroke-width="2"/>
-  <!-- connecting edges -->
-  <line x1="40" y1="80" x2="80" y2="50" stroke="currentColor" stroke-width="2"/>
-  <line x1="210" y1="80" x2="250" y2="50" stroke="currentColor" stroke-width="2"/>
-  <line x1="210" y1="180" x2="250" y2="150" stroke="currentColor" stroke-width="2"/>
-  <line x1="40" y1="180" x2="80" y2="150" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+  <rect x="${x0}" y="${yt}" width="${L}" height="${H}" fill="#3b82f6" fill-opacity="0.12" stroke="currentColor" stroke-width="2"/>
   <!-- labels -->
-  <text x="125" y="200" text-anchor="middle" font-size="14" fill="currentColor">l = ${length}</text>
-  <text x="224" y="135" text-anchor="start" font-size="14" fill="currentColor">h = ${height}</text>
-  <text x="238" y="66" text-anchor="start" font-size="14" fill="currentColor">w = ${width}</text>
+  <text x="${x0 + L / 2}" y="${yb + 22}" text-anchor="middle" font-size="14" fill="currentColor">${length} cm</text>
+  <text x="${x0 - 8}" y="${yb - H / 2 + 5}" text-anchor="end" font-size="14" fill="currentColor">${height} cm</text>
+  <text x="${xr + d / 2 + 10}" y="${yb - d / 2 + 14}" text-anchor="start" font-size="14" fill="currentColor">${width} cm</text>
 </svg></div>`;
 
+    const surfaceArea = 2 * (baseArea + width * height + length * height);
     const optionsData = [
-      { text: volume.toString(), isCorrect: true },
-      { text: (baseArea * 2).toString(), isCorrect: false, reason: "multiplies the base area by 2 instead of by the height" },
-      { text: baseArea.toString(), isCorrect: false, reason: "calculates only the base area" },
-      { text: (length + width + height).toString(), isCorrect: false, reason: "adds the three dimensions instead of multiplying" }
+      { text: volume.toString(), isCorrect: true, reason: '' },
+      { text: surfaceArea.toString(), isCorrect: false, reason: `it is the surface area of the prism, $2(${length}(${width}) + ${width}(${height}) + ${length}(${height}))$, in square centimeters, not its volume` },
+      { text: baseArea.toString(), isCorrect: false, reason: `it is the area of one face, $${length}(${width})$, in square centimeters; this area must also be multiplied by the height, ${height}` },
+      { text: (length + width + height).toString(), isCorrect: false, reason: `it is the sum of the three dimensions, $${length} + ${width} + ${height}$, not their product` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -98,7 +104,7 @@ export const generator_345 = {
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: volume.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The volume is $V = \\ell wh = (${length})(${width})(${height}) = ${volume}$ cubic centimeters. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The figure shows that the prism has a length of ${length} cm, a width of ${width} cm, and a height of ${height} cm. Substituting these values into $V = \\ell wh$ gives $V = (${length})(${width})(${height}) = ${volume}$. Therefore, the volume of the prism is ${volume} cubic centimeters. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
