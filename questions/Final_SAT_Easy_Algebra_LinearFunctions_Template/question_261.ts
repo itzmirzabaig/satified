@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [slope: 4-8, xValue: 3-6, aValue: 5-15]
  * - Difficulty factors: [Solving for parameter in linear function]
- * - Distractor patterns: [calculation error, subtracting slope, sign error]
+ * - Distractor patterns: [added instead of subtracted, subtracted slope only, subtracted in wrong order]
  * - Constraints: [None]
  * - Question type: [Find parameter→Multiple Choice Text]
  * - Figure generation: null
@@ -31,11 +31,16 @@ export const generator_261 = {
 
     const result = (slope * xValue) + aValue;
 
+    const product = slope * xValue;
+
+    // Every wrong choice is a real solving slip. The old first choice was the
+    // answer's g value minus 1 ("a calculation error"). The four values are
+    // distinct: -a < a < result - slope < result + product.
     const optionsData = [
-      { text: (result - 1).toString(), isCorrect: false, reason: "results from a calculation error" },
-      { text: (result - slope).toString(), isCorrect: false, reason: "subtracts the slope instead of solving correctly" },
-      { text: aValue.toString(), isCorrect: true },
-      { text: (-aValue).toString(), isCorrect: false, reason: "has a sign error" }
+      { text: (result + product).toString(), isCorrect: false, reason: `it results from adding ${product} to ${result} instead of subtracting it` },
+      { text: (result - slope).toString(), isCorrect: false, reason: `it results from subtracting ${slope} from ${result} instead of subtracting $${slope}(${xValue})$, or ${product}` },
+      { text: aValue.toString(), isCorrect: true, reason: '' },
+      { text: (-aValue).toString(), isCorrect: false, reason: `it results from subtracting in the wrong order, $${product} - ${result}$, instead of $${result} - ${product}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -52,7 +57,7 @@ export const generator_261 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: aValue.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting $x = ${xValue}$ gives $g(${xValue}) = ${slope}(${xValue}) + a = ${slope * xValue} + a$. Since $g(${xValue}) = ${result}$, we solve $a = ${result} - ${slope * xValue} = ${aValue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${xValue} for $x$ in the given function yields $g(${xValue}) = ${slope}(${xValue}) + a$, or $g(${xValue}) = ${product} + a$. Since $g(${xValue}) = ${result}$, it follows that $${result} = ${product} + a$. Subtracting ${product} from both sides of this equation yields $a = ${aValue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
