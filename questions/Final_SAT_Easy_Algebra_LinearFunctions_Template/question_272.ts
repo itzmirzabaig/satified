@@ -34,16 +34,16 @@ export const generator_272 = {
       dailyRate = getRandomInt(10, 15);
     }
 
-    const correctEquation = `c = ${dailyRate}d + ${insuranceFee}`;
-    const distractorA = `c = ${dailyRate}(d + ${insuranceFee})`;
-    const distractorB = `c = ${insuranceFee}(d + ${dailyRate})`;
-    const distractorD = `c = ${insuranceFee}d + ${dailyRate}`;
+    const correctEquation = `$c = ${dailyRate}d + ${insuranceFee}$`;
+    const distractorA = `$c = ${dailyRate}(d + ${insuranceFee})$`;
+    const distractorB = `$c = ${insuranceFee}(d + ${dailyRate})$`;
+    const distractorD = `$c = ${insuranceFee}d + ${dailyRate}$`;
 
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "incorrectly applies the daily rate to the sum" },
-      { text: distractorB, isCorrect: false, reason: "incorrectly uses the insurance fee as the rate" },
-      { text: correctEquation, isCorrect: true },
-      { text: distractorD, isCorrect: false, reason: "swaps the daily rate and the insurance fee" }
+      { text: distractorA, isCorrect: false, reason: `it multiplies the \\$${insuranceFee} insurance fee by ${dailyRate} as well, which charges the fee ${dailyRate} times instead of once` },
+      { text: distractorB, isCorrect: false, reason: `it charges \\$${insuranceFee} per day instead of \\$${dailyRate} per day and multiplies the \\$${dailyRate} by ${insuranceFee}` },
+      { text: correctEquation, isCorrect: true, reason: '' },
+      { text: distractorD, isCorrect: false, reason: `it charges \\$${insuranceFee} per day and a \\$${dailyRate} insurance fee, which reverses the two amounts` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -55,11 +55,11 @@ export const generator_272 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `A customer rents a tent at a cost of ${dailyRate} dollars per day plus a onetime insurance fee of ${insuranceFee} dollars. Which equation represents the total cost $c$, in dollars, to rent the tent with insurance for $d$ days?`,
+      questionText: `A customer rents a tent at a cost of \\$${dailyRate} per day plus an insurance fee of \\$${insuranceFee} that is charged only once. Which equation represents the total cost $c$, in dollars, to rent the tent with insurance for $d$ days?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. The total cost is the daily rate of ${dailyRate} dollars times the number of days $d$ plus the one-time insurance fee of ${insuranceFee} dollars, giving $c = ${dailyRate}d + ${insuranceFee}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Renting the tent for $d$ days at \\$${dailyRate} per day costs $${dailyRate}d$ dollars. Adding the \\$${insuranceFee} insurance fee, which is charged only once, gives a total cost of $c = ${dailyRate}d + ${insuranceFee}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
