@@ -27,11 +27,11 @@ export const generator_336 = {
     const perimeter = 4 * side;
 
     return {
-      questionText: `Each side of a square has a length of ${side} centimeters. What is the perimeter of this square?`,
+      questionText: `Each side of a square has a length of ${side} centimeters. What is the perimeter, in centimeters, of this square?`,
       figureCode: null,
       options: [],
       correctAnswer: perimeter.toString(),
-      explanation: `The perimeter of a square is calculated by multiplying the side length by 4. Therefore, the perimeter is $4 \\times ${side} = ${perimeter}$.`
+      explanation: `The correct answer is ${perimeter}. A square has four sides of equal length, so its perimeter is 4 times its side length. Therefore, the perimeter of this square is $4(${side}) = ${perimeter}$ centimeters.`
     };
   }
 };
