@@ -25,19 +25,19 @@ export const generator_246 = {
   generate: (): QuestionData => {
     const intercept = getRandomInt(35, 50);
 
-    const correctEquation = `h(x) = -x + ${intercept}`;
+    const correctEquation = `$h(x) = -x + ${intercept}$`;
 
-    const distractorB = `h(x) = -x`;
+    const distractorB = `$h(x) = -x$`;
 
-    const distractorC = `h(x) = -${intercept}x`;
+    const distractorC = `$h(x) = -${intercept}x$`;
 
-    const distractorD = `h(x) = -${intercept}`;
+    const distractorD = `$h(x) = -${intercept}$`;
 
     const optionsData = [
-      { text: correctEquation, isCorrect: true },
-      { text: distractorB, isCorrect: false, reason: "omits the y-intercept" },
-      { text: distractorC, isCorrect: false, reason: "uses the intercept as the slope" },
-      { text: distractorD, isCorrect: false, reason: "creates a constant function with an incorrect value" }
+      { text: correctEquation, isCorrect: true, reason: '' },
+      { text: distractorB, isCorrect: false, reason: `this function has the correct slope, $-1$, but $h(0) = 0$, not ${intercept}` },
+      { text: distractorC, isCorrect: false, reason: `it uses ${intercept} in the slope instead of as the $y$-intercept; this function gives $h(0) = 0$, not ${intercept}` },
+      { text: distractorD, isCorrect: false, reason: `this function gives $h(0) = -${intercept}$ and $h(1) = -${intercept}$, not ${intercept} and ${intercept - 1}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -54,7 +54,7 @@ export const generator_246 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. The slope is $\\frac{${intercept - 1} - ${intercept}}{1 - 0} = -1$ and the y-intercept is ${intercept}, giving $h(x) = -x + ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The slope is $\\frac{${intercept - 1} - ${intercept}}{1 - 0} = -1$ and the $y$-intercept is $h(0) = ${intercept}$, so in slope-intercept form $h(x) = mx + b$, the function is $h(x) = -x + ${intercept}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
