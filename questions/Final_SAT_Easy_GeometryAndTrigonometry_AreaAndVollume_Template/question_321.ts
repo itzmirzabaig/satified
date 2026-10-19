@@ -37,7 +37,7 @@ export const generator_321 = {
       { text: perimeterABC.toString(), isCorrect: false, reason: "keeps the perimeter unchanged instead of scaling it" },
       { text: perimeterDEF.toString(), isCorrect: true },
       { text: (perimeterABC + scaleFactor).toString(), isCorrect: false, reason: "adds the scale factor instead of multiplying by it" },
-      { text: (perimeterABC * scaleFactor * scaleFactor).toString(), isCorrect: false, reason: "squares the scale factor, which is the ratio of areas, not perimeters" }
+      { text: (perimeterABC * scaleFactor * scaleFactor).toString(), isCorrect: false, reason: "multiplies by the square of the scale factor, which is the ratio of the areas, not the ratio of the perimeters" }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -53,7 +53,7 @@ export const generator_321 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: perimeterDEF.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Because $DE = ${scaleFactor}\\,AB$, the scale factor from triangle $ABC$ to triangle $DEF$ is ${scaleFactor}. In similar figures the perimeter scales by the same factor as the sides, so the perimeter of triangle $DEF$ is $P_{DEF} = ${perimeterABC} \\times ${scaleFactor} = ${perimeterDEF}$ units. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Because $DE = ${scaleFactor}\\,AB$, the scale factor from triangle $ABC$ to triangle $DEF$ is ${scaleFactor}. In similar figures the perimeter scales by the same factor as the sides, so the perimeter of triangle $DEF$ is $P_{DEF} = ${perimeterABC} \\times ${scaleFactor} = ${perimeterDEF}$ units. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because it ${o.reason}.`).join(' ')}`
     };
   }
 };
