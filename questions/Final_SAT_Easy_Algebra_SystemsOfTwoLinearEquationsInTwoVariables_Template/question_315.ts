@@ -22,22 +22,34 @@ export const generator_315 = {
   },
 
   generate: (): QuestionData => {
-    const x = -1 * getRandomInt(3, 6);
-    const y = -1 * getRandomInt(2, 5);
+    // x and y differ so the reversed-coordinates choice is a different point.
+    let x = -3, y = -2;
+    do {
+      x = -1 * getRandomInt(3, 6);
+      y = -1 * getRandomInt(2, 5);
+    } while (x === y);
     const b1 = y - x;
     const b2 = y + x;
 
-    const mafsCode = `
-      <Coordinates.Cartesian />
-      <Plot.OfX y={(x) => x + ${b1}} color="#1a7cff" />
-      <Plot.OfX y={(x) => -x + ${b2}} color="#ff2a7a" />
-    `;
+    // A window around the intersection and both y-intercepts, with a gridline
+    // at every whole number. The graph used to have no window.
+    const yLo = Math.min(y, b2) - 3, yHi = Math.max(y, b1) + 3;
+    const mafsCode = `<Mafs viewBox={{ x: [${x - 4}, 3], y: [${yLo}, ${yHi}] }}>
+  <Coordinates.Cartesian
+    xAxis={{ lines: 1, labels: (n) => n }}
+    yAxis={{ lines: 1, labels: (n) => n % 2 === 0 ? n : "" }}
+  />
+  <Plot.OfX y={(x) => x + ${b1}} color="#1a7cff" />
+  <Plot.OfX y={(x) => -x + ${b2}} color="#ff2a7a" />
+</Mafs>`;
 
+    // The old wrong choices included the floor of the average of the two
+    // intercepts ("an incorrect intercept value").
     const optionsData = [
-      { text: `(0, ${b2})`, isCorrect: false, reason: "uses the y-intercept" },
-      { text: `(0, ${Math.floor((b1 + b2) / 2)})`, isCorrect: false, reason: "uses an incorrect intercept value" },
-      { text: `(${x}, ${y})`, isCorrect: true },
-      { text: `(${x}, 0)`, isCorrect: false, reason: "uses the x-coordinate only" }
+      { text: `$(0, ${b2})$`, isCorrect: false, reason: `$(0, ${b2})$ is the $y$-intercept of one of the lines, not the point where the two lines intersect` },
+      { text: `$(0, ${b1})$`, isCorrect: false, reason: `$(0, ${b1})$ is the $y$-intercept of one of the lines, not the point where the two lines intersect` },
+      { text: `$(${x}, ${y})$`, isCorrect: true, reason: '' },
+      { text: `$(${y}, ${x})$`, isCorrect: false, reason: `it reverses the coordinates of the intersection point, $(${x}, ${y})$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -48,13 +60,14 @@ export const generator_315 = {
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The solution is the intersection point of the two lines. Setting $x + ${b1} = -x + ${b2}$: $2x = ${b2 - b1}$, so $x = ${x}$ and $y = ${y}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    // The explanation used to read "Setting x + 0 = -x + -10".
+    const explanation = `Choice ${correctOption.letter} is correct. The solution to a system of two linear equations is the point where their graphs intersect. The two lines shown intersect at $(${x}, ${y})$, so the solution is $(${x}, ${y})$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `The graph of a system of linear equations is shown. What is the solution $(x, y)$ to the system?`,
       figureCode: mafsCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: `(${x}, ${y})`,
+      correctAnswer: `$(${x}, ${y})$`,
       explanation: explanation
     };
   }
