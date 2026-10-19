@@ -15,11 +15,11 @@ import type { QuestionData } from '../../study/types';
  *     correct = w        in [122,150]
  *     supplement = 180-w in [30, 58]
  *     reflex = 360-w     in [210,238]
- *     halved = round(w/2) in [61, 75]
- *   (w lower bound tightened from 120 to 122 to keep supplement<halved.)
+ *     right angle = 90
  * - Rebuilt the figure as a plain SVG template literal (house style): two
  *   intersecting lines with the vertical-angle pair w and z labeled in the
- *   top/bottom (obtuse) sectors, matching the geometry.
+ *   top/bottom (obtuse) sectors. The slope is derived from w so the drawn
+ *   sector matches it.
  */
 
 export const generator_365 = {
@@ -37,14 +37,15 @@ export const generator_365 = {
     const correctAnswer = wValue.toString();
     const distractorSupp = 180 - wValue;      // supplementary-angle error
     const distractorReflex = 360 - wValue;    // reflex-angle error
-    const distractorHalf = Math.round(wValue / 2); // halves the angle
 
-    // Figure: two lines crossing at the center of a 450x250 canvas. The lines
-    // are chosen so the top and bottom sectors are obtuse (matching w, z).
+    // Figure: two lines crossing at the center of a 450x250 canvas. Each line
+    // makes an angle of (180 - w) / 2 with the horizontal, so the top and
+    // bottom sectors measure exactly w; the slope used to be fixed, drawing
+    // about 148 degrees for every w from 122 to 150.
     const W = 450, H = 250;
     const cx = W / 2, cy = H / 2;
-    // Line 1: gentle positive slope; Line 2: gentle negative slope.
-    const dx = 190, dy = 55;
+    const dx = 190;
+    const dy = Math.round(dx * Math.tan(((180 - wValue) / 2) * Math.PI / 180) * 10) / 10;
     const figureCode = `
       <div style="display:flex;justify-content:center;">
         <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;font-family:sans-serif;user-select:none;">
@@ -57,11 +58,14 @@ export const generator_365 = {
       </div>
     `;
 
+    // The old fourth choice was half of w, rounded (so 61.5 showed as 62).
+    // With w from 122 to 150, the values w, 180 - w, 360 - w, and 90 never
+    // collide.
     const optionsData = [
-      { text: correctAnswer, isCorrect: true },
-      { text: distractorSupp.toString(), isCorrect: false, reason: "gives the supplementary angle instead of the vertical angle" },
-      { text: distractorReflex.toString(), isCorrect: false, reason: "gives the reflex angle instead of the vertical angle" },
-      { text: distractorHalf.toString(), isCorrect: false, reason: "incorrectly halves the angle" }
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: distractorSupp.toString(), isCorrect: false, reason: `${distractorSupp} is the measure of each angle adjacent to the angle with measure $w^{\\circ}$; the angle with measure $z^{\\circ}$ is vertical to it, not adjacent` },
+      { text: distractorReflex.toString(), isCorrect: false, reason: `it results from subtracting ${wValue} from 360; the angles with measures $w^{\\circ}$ and $z^{\\circ}$ are vertical angles, which are congruent` },
+      { text: "90", isCorrect: false, reason: `it assumes the two lines are perpendicular; the angle with measure $w^{\\circ}$ is ${wValue}°, not 90°` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -77,7 +81,7 @@ export const generator_365 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. When two lines intersect, the angles opposite each other (vertical angles) are congruent. In the figure, $w^\\circ$ and $z^\\circ$ are vertical angles, so $z = w = ${wValue}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. When two lines intersect, the angles opposite each other (vertical angles) are congruent. In the figure, $w^\\circ$ and $z^\\circ$ are vertical angles, so $z = w = ${wValue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
