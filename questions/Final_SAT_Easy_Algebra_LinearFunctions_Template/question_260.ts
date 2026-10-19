@@ -31,9 +31,9 @@ export const generator_260 = {
 
     const optionsData = [
       { text: optionA, isCorrect: true },
-      { text: `The estimated height, in cm, of the fluid at the end of the experiment`, isCorrect: false, reason: "the end height depends on the duration" },
-      { text: `The estimated change in the height, in cm, of the fluid each day`, isCorrect: false, reason: "describes the slope, not the intercept" },
-      { text: `The estimated number of days for all the fluid to evaporate`, isCorrect: false, reason: "requires solving for x when f(x)=0" }
+      { text: `The estimated height, in cm, of the fluid at the end of the experiment`, isCorrect: false, reason: `the height at the end of the experiment is the value of $f(x)$ on the last day, which would be less than ${initialHeight} because the height decreases each day` },
+      { text: `The estimated change in the height, in cm, of the fluid each day`, isCorrect: false, reason: `the change in the height each day is given by the coefficient of $x$, $-${rate}$, not by ${initialHeight}` },
+      { text: `The estimated number of days for all the fluid to evaporate`, isCorrect: false, reason: `the number of days for all the fluid to evaporate is the value of $x$ for which $f(x) = 0$, not ${initialHeight}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,7 +50,7 @@ export const generator_260 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: optionA,
-      explanation: `Choice ${correctOption.letter} is correct. In $f(x)=${initialHeight}-${rate}x$, the value ${initialHeight} is the y-intercept, representing the height when $x=0$ (the start of the experiment). Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting 0 for $x$ in the given function yields $f(0) = ${initialHeight} - ${rate}(0)$, or $f(0) = ${initialHeight}$. Since $x = 0$ is the start of the experiment, ${initialHeight} is the estimated height, in cm, of the fluid at the start of the experiment. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
