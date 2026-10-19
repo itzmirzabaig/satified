@@ -30,9 +30,9 @@ export const generator_305 = {
 
     const optionsData = [
       { text: `$\\begin{aligned} x+y &\\ge ${minItems} \\\\ ${workbookCost}x+${flashcardCost}y &\\le ${maxCost} \\end{aligned}$`, isCorrect: true },
-      { text: `$\\begin{aligned} x+y &\\ge ${minItems} \\\\ ${workbookCost}x+${flashcardCost}y &\\ge ${maxCost} \\end{aligned}$`, isCorrect: false, reason: "uses 'at least' for cost instead of 'at most'" },
-      { text: `$\\begin{aligned} ${workbookCost}x+${flashcardCost}y &\\le ${minItems} \\\\ x+y &\\ge ${maxCost} \\end{aligned}$`, isCorrect: false, reason: "swaps the constraints" },
-      { text: `$\\begin{aligned} x+y &\\le ${minItems} \\\\ ${workbookCost}x+${flashcardCost}y &\\ge ${maxCost} \\end{aligned}$`, isCorrect: false, reason: "reverses both inequality directions" }
+      { text: `$\\begin{aligned} x+y &\\ge ${minItems} \\\\ ${workbookCost}x+${flashcardCost}y &\\ge ${maxCost} \\end{aligned}$`, isCorrect: false, reason: `its second inequality says the order costs at least \\$${maxCost}, but the cost must not be over \\$${maxCost}` },
+      { text: `$\\begin{aligned} ${workbookCost}x+${flashcardCost}y &\\le ${minItems} \\\\ x+y &\\ge ${maxCost} \\end{aligned}$`, isCorrect: false, reason: `it compares the cost, in dollars, with the number of items, ${minItems}, and the number of items with the cost limit, ${maxCost}` },
+      { text: `$\\begin{aligned} x+y &\\le ${minItems} \\\\ ${workbookCost}x+${flashcardCost}y &\\ge ${maxCost} \\end{aligned}$`, isCorrect: false, reason: `it says the teacher orders at most ${minItems} items and spends at least \\$${maxCost}, which reverses both conditions` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -44,7 +44,7 @@ export const generator_305 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The teacher orders at least ${minItems} items ($x+y \\ge ${minItems}$) and spends at most \\$${maxCost} ($\\,${workbookCost}x+${flashcardCost}y \\le ${maxCost}$). Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The teacher orders $x + y$ items, and this must be at least ${minItems}, so $x + y \\ge ${minItems}$. The order costs $${workbookCost}x + ${flashcardCost}y$ dollars, and this must not be over \\$${maxCost}, so $${workbookCost}x + ${flashcardCost}y \\le ${maxCost}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `An elementary school teacher is ordering $x$ workbooks and $y$ sets of flash cards for a math class. The teacher must order at least ${minItems} items, but the total cost of the order must not be over \\$${maxCost}. If the workbooks cost \\$${workbookCost} each and the flash cards cost \\$${flashcardCost} per set, which of the following systems of inequalities models this situation?`,
