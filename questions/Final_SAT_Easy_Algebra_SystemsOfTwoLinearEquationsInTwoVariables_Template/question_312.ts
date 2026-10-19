@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [coefficients: 2-9, constants: 9-36]
  * - Difficulty factors: [Understanding proportional systems]
- * - Distractor patterns: [First constant, unscaled constant, over-scaled constant]
+ * - Distractor patterns: [scale factor, unscaled constant, additive instead of multiplicative scaling]
  * - Constraints: [System must have proportional coefficients]
  * - Question type: [Conceptual→Multiple Choice Text]
  * - Figure generation: [None]
@@ -37,11 +37,15 @@ export const generator_312 = {
     //   scale (3-6) vs c1 (7-12): disjoint.
     //   correctA = c1*scale >= 21, so it exceeds scale, c1, and differs from correctA+scale by scale.
     //   correctA+scale = scale*(c1+1) >= 24, above c1 and scale. All four are provably distinct.
+    // The fourth choice used to be the answer plus the scale factor. It is now
+    // the additive slip: the x-coefficient grows by a2 - a1, so add the same
+    // amount to the constant. It differs from the answer because a1 < c1.
+    const added = a2 - a1;
     const optionsData = [
-      { text: scale.toString(), isCorrect: false, reason: "uses the scale factor instead of the constant" },
-      { text: c1.toString(), isCorrect: false, reason: "uses the first equation's constant without scaling" },
-      { text: correctA.toString(), isCorrect: true },
-      { text: (correctA + scale).toString(), isCorrect: false, reason: "adds the scale factor instead of scaling the constant" }
+      { text: scale.toString(), isCorrect: false, reason: `${scale} is the number that each coefficient is multiplied by, not the constant $a$` },
+      { text: c1.toString(), isCorrect: false, reason: `${c1} is the constant in the first equation; for the equations to be equivalent, it must also be multiplied by ${scale}` },
+      { text: correctA.toString(), isCorrect: true, reason: '' },
+      { text: (c1 + added).toString(), isCorrect: false, reason: `it results from adding ${added}, the increase from ${a1} to ${a2}, to ${c1}; the coefficients are multiplied by ${scale}, so the constant must be multiplied by ${scale}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -52,7 +56,7 @@ export const generator_312 = {
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. For a system to have infinitely many solutions, one equation must be a constant multiple of the other. Comparing coefficients, each term of the second equation is a scale factor of $k = ${scale}$ times the first, since $a_2 = ${a2} = ${scale} \\times ${a1}$ and $b_2 = ${b2} = ${scale} \\times ${b1}$. The constant must scale the same way, so $a = ${scale} \\times ${c1} = ${correctA}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. A system of two linear equations has infinitely many solutions when one equation is a multiple of the other. The coefficients of $x$ and $y$ in the second equation are ${scale} times those in the first, since $${a2} = ${scale}(${a1})$ and $${b2} = ${scale}(${b1})$. Multiplying both sides of the first equation by ${scale} gives $${a2}x + ${b2}y = ${correctA}$, so $a = ${correctA}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `In the given system of equations, $a$ is a constant. If the system has infinitely many solutions, what is the value of $a$?$$\\begin{aligned} ${a1}x + ${b1}y &= ${c1} \\\\ ${a2}x + ${b2}y &= a \\end{aligned}$$`,
