@@ -36,19 +36,19 @@ export const generator_243 = {
       tries++;
     } while (ratePerPound === constantCalories && tries < 50);
 
-    const correctEquation = `c=${ratePerPound}x+${constantCalories}`;
+    const correctEquation = `$c = ${ratePerPound}x + ${constantCalories}$`;
 
-    const distractorA = `c=${ratePerPound}x`;
+    const distractorA = `$c = ${ratePerPound}x$`;
 
-    const distractorB = `c=${ratePerPound + constantCalories}x`;
+    const distractorB = `$c = ${ratePerPound + constantCalories}x$`;
 
-    const distractorC = `c=${constantCalories}x+${ratePerPound}`;
+    const distractorC = `$c = ${constantCalories}x + ${ratePerPound}$`;
 
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "omits the additional constant calories" },
-      { text: distractorB, isCorrect: false, reason: "incorrectly adds the rate and constant together" },
-      { text: distractorC, isCorrect: false, reason: "swaps the rate and the constant value" },
-      { text: correctEquation, isCorrect: true }
+      { text: distractorA, isCorrect: false, reason: `it leaves out the additional ${constantCalories} calories the rabbit should eat each day` },
+      { text: distractorB, isCorrect: false, reason: `it adds ${constantCalories} to the rate of ${ratePerPound} calories per pound; the additional ${constantCalories} calories do not depend on the weight, so they are not multiplied by $x$` },
+      { text: distractorC, isCorrect: false, reason: `it gives ${constantCalories} calories per pound plus an additional ${ratePerPound} calories, which reverses the two values` },
+      { text: correctEquation, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -65,7 +65,7 @@ export const generator_243 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. The rabbit eats ${ratePerPound} calories per pound of its weight $x$, plus ${constantCalories} additional calories each day, giving $c = ${ratePerPound}x + ${constantCalories}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The rabbit should eat ${ratePerPound} calories for each of its $x$ pounds, or $${ratePerPound}x$ calories, plus an additional ${constantCalories} calories each day. The total number of calories is therefore $c = ${ratePerPound}x + ${constantCalories}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
