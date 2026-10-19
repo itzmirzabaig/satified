@@ -28,9 +28,9 @@ export const generator_294 = {
     const maxSpeed = baseSpeed + rangeWidth;
 
     const optionsData = [
-      { text: `$s \\leq ${rangeWidth}$`, isCorrect: false, reason: "uses the range width instead of the actual bounds" },
-      { text: `$s \\leq ${baseSpeed}$`, isCorrect: false, reason: "only includes the lower bound, missing the upper constraint" },
-      { text: `$s \\leq ${maxSpeed}$`, isCorrect: false, reason: "only includes the upper bound, missing the lower constraint" },
+      { text: `$s \\leq ${rangeWidth}$`, isCorrect: false, reason: `${rangeWidth} is the difference between the highest and lowest speeds, $${maxSpeed} - ${baseSpeed}$, not a bound on the speed; the speed was always at least ${baseSpeed} miles per hour` },
+      { text: `$s \\leq ${baseSpeed}$`, isCorrect: false, reason: `${baseSpeed} miles per hour was the lowest speed, so the speed was at least ${baseSpeed}, not at most ${baseSpeed}` },
+      { text: `$s \\leq ${maxSpeed}$`, isCorrect: false, reason: `this inequality includes speeds below ${baseSpeed} miles per hour, the lowest speed during this portion of the flight` },
       { text: `$${baseSpeed} \\leq s \\leq ${maxSpeed}$`, isCorrect: true }
     ];
 
@@ -43,7 +43,7 @@ export const generator_294 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The cruising speed $s$ varied between ${baseSpeed} and ${maxSpeed} miles per hour, meaning $s$ is at least ${baseSpeed} and at most ${maxSpeed}: $${baseSpeed} \\leq s \\leq ${maxSpeed}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The cruising speed $s$ varied between ${baseSpeed} and ${maxSpeed} miles per hour, meaning $s$ is at least ${baseSpeed} and at most ${maxSpeed}: $${baseSpeed} \\leq s \\leq ${maxSpeed}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `During a portion of a flight, a small airplane's cruising speed varied between $${baseSpeed}$ miles per hour and $${maxSpeed}$ miles per hour. Which inequality best represents this situation, where $s$ is the cruising speed, in miles per hour, during this portion of the flight?`,
