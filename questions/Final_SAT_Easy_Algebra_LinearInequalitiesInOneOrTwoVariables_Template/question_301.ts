@@ -5,7 +5,7 @@ import type { QuestionData } from '../../study/types';
  * Question 301
  *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [slope: 4/5, y-intercept: -7]
+ * - Number ranges: [slope: proper fraction in lowest terms, y-intercept: -4 to -10]
  * - Difficulty factors: [Graph to equation conversion, slope calculation from points]
  * - Distractor patterns: [A=correct y>=2/3x-6, B=wrong intercept sign, C=wrong intercept value, D=wrong intercept sign and value]
  * - Constraints: [Must calculate slope from two points on line]
@@ -40,14 +40,18 @@ export const generator_301 = {
   },
 
   generate: (): QuestionData => {
-    const rise = getRandomInt(1, 4);
-    const run = getRandomInt(2, 5);
-    const yIntercept = -getRandomInt(4, 10);
+    // The slope is a proper fraction in lowest terms (draws such as 2/2 and
+    // 2/4 used to appear), and the rise divides the intercept so the
+    // x-intercept is a whole number that can be read from the graph.
+    const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+    let rise = 1, run = 2, yIntercept = -4;
+    do {
+      rise = getRandomInt(1, 4);
+      run = getRandomInt(2, 5);
+      yIntercept = -getRandomInt(4, 10);
+    } while (rise >= run || gcd(rise, run) !== 1 || yIntercept % rise !== 0);
     const slope = rise / run;
     const xIntercept = (-yIntercept * run) / rise;
-
-    const wrongIntercept1 = Math.abs(yIntercept);
-    const wrongIntercept2 = yIntercept - 3;
 
     // ---- Figure: auto-scaled SVG, boundary line + shaded region above ----
     const width = 460;
@@ -101,6 +105,20 @@ export const generator_301 = {
       ticks += `<text x="${axisX0 - 8}" y="${sy(t) + 3.5}" text-anchor="end" font-size="11" fill="currentColor">${t}</text>`;
     }
     ticks += `<text x="${axisX0 - 7}" y="${axisY0 + 14}" text-anchor="end" font-size="11" fill="currentColor">0</text>`;
+    // Faint gridlines at every whole y-value, and dots on both intercepts:
+    // with labels only every 2 units in y and every 5 in x, intercepts such as
+    // -7 and 28 fell between gridlines and the slope could not be read.
+    if (yMax - yMin <= 24) {
+      for (let t = Math.ceil(yMin); t <= yMax + 1e-9; t += 1) {
+        if (t % yStep === 0) continue;
+        grid += `<line x1="${sx(xMin)}" y1="${sy(t)}" x2="${sx(xMax)}" y2="${sy(t)}" stroke="currentColor" stroke-opacity="0.06" />`;
+      }
+    }
+    const dots = [[0, yIntercept], [xIntercept, 0]]
+      .map(([px, py]) => `<circle cx="${sx(px)}" cy="${sy(py)}" r="4.5" fill="#3b82f6" stroke="white" stroke-width="1.5" />`)
+      .join('')
+      + `<text x="${sx(0) + 8}" y="${sy(yIntercept) + 16}" font-size="12" fill="currentColor">(0, ${yIntercept})</text>`
+      + `<text x="${sx(xIntercept) - 6}" y="${sy(0) - 10}" text-anchor="end" font-size="12" fill="currentColor">(${xIntercept}, 0)</text>`;
 
     const figureCode = `
       <div style="width:100%;max-width:${width}px;margin:0 auto;">
@@ -111,17 +129,24 @@ export const generator_301 = {
           <line x1="${axisX0}" y1="${sy(yMin)}" x2="${axisX0}" y2="${sy(yMax)}" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" />
           ${ticks}
           <line x1="${sx(xMin)}" y1="${sy(by1)}" x2="${sx(xMax)}" y2="${sy(by2)}" stroke="#3b82f6" stroke-width="3" />
+          ${dots}
           <text x="${width - margin.right}" y="${axisY0 - 6}" text-anchor="end" font-size="12" fill="currentColor">x</text>
           <text x="${axisX0 + 6}" y="${margin.top + 10}" font-size="12" fill="currentColor">y</text>
         </svg>
       </div>
     `;
 
+    // Each wrong choice is a single real misreading of the graph. The old
+    // ones moved the intercept by 3 or flipped its sign and then moved it.
+    const c = Math.abs(yIntercept);
+    const m = `\\frac{${rise}}{${run}}`;
+    const recip = rise === 1 ? `${run}` : `\\frac{${run}}{${rise}}`;
+    const lineTex = `${m}x - ${c}`;
     const optionsData = [
-      { text: `$y \\ge \\frac{${rise}}{${run}}x ${yIntercept >= 0 ? '+' : '-'}${Math.abs(yIntercept)}$`, isCorrect: true },
-      { text: `$y \\ge \\frac{${rise}}{${run}}x + ${wrongIntercept1}$`, isCorrect: false },
-      { text: `$y \\ge \\frac{${rise}}{${run}}x ${wrongIntercept2 >= 0 ? '+' : '-'}${Math.abs(wrongIntercept2)}$`, isCorrect: false },
-      { text: `$y \\ge \\frac{${rise}}{${run}}x + ${wrongIntercept1 + 3}$`, isCorrect: false }
+      { text: `$y \\ge ${lineTex}$`, isCorrect: true, reason: '' },
+      { text: `$y \\ge ${m}x + ${c}$`, isCorrect: false, reason: `the graph of $y = ${m}x + ${c}$ crosses the $y$-axis at $(0, ${c})$, but the boundary line shown crosses it at $(0, ${yIntercept})$` },
+      { text: `$y \\le ${lineTex}$`, isCorrect: false, reason: `this inequality describes the region below the boundary line, but the shaded region is above it` },
+      { text: `$y \\ge ${recip}x - ${c}$`, isCorrect: false, reason: `its boundary line has a slope of $${recip}$, the reciprocal of the slope of the line shown` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -131,8 +156,9 @@ export const generator_301 = {
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The line passes through (0, ${yIntercept}) and (${xIntercept.toFixed(1)}, 0) with slope $\\frac{${rise}}{${run}}$. The shaded region is above the line, representing $y \\ge \\frac{${rise}}{${run}}x ${yIntercept >= 0 ? '+' : '-'}${Math.abs(yIntercept)}$.`;
+    const explanation = `Choice ${correctLetter} is correct. The boundary line passes through the points $(0, ${yIntercept})$ and $(${xIntercept}, 0)$, so its slope is $\\frac{0 - (${yIntercept})}{${xIntercept} - 0} = \\frac{${c}}{${xIntercept}} = ${m}$, and its $y$-intercept is $(0, ${yIntercept})$. An equation of the line is $y = ${lineTex}$. The shaded region is above the line and the line is solid, so the region represents $y \\ge ${lineTex}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `The shaded region shown represents the solutions to which inequality?`,
