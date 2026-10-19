@@ -6,7 +6,7 @@ import type { QuestionData } from '../../study/types';
  * 
  * ORIGINAL ANALYSIS:
  * - Number ranges: [obtuse angle: 135-150]
- * - Difficulty factors: [Linear pair, supplementary angles]
+ * - Difficulty factors: [Corresponding angles, linear pair, supplementary angles]
  * - Distractor patterns: [Finds x instead of sum, assumes right angle, chooses given angle]
  * - Constraints: [x + givenAngle = 180]
  * - Question type: [Figure→Multiple Choice Text]
@@ -23,53 +23,57 @@ export const generator_358 = {
 
   generate: (): QuestionData => {
     const givenAngle = getRandomInt(135, 150);
-    
-    // Geometric setup:
-    // Two parallel lines p (top) and q (bottom).
-    // Transversal t intersects them.
-    // We focus on the top intersection to show a Linear Pair.
-    // Top intersection at (0, 2).
-    // Transversal has slope ~1, passing through (0, 2) and (-2, 0).
-    
-    const mafsCode = `
-      <Mafs viewBox={{ x: [-5, 5], y: [-1, 4] }}>
-        <Coordinates.Cartesian xAxis={{ labels: false, axis: false }} yAxis={{ labels: false, axis: false }} />
-        
-        {/* Line p (top) */}
-        <Line.Segment point1={[-4, 2]} point2={[4, 2]} />
-        <Text x={4.2} y={2} attach="e">p</Text>
-        
-        {/* Line q (bottom) */}
-        <Line.Segment point1={[-4, 0]} point2={[4, 0]} />
-        <Text x={4.2} y={0} attach="e">q</Text>
+    const acute = 180 - givenAngle; // the value of x
 
-        {/* Transversal Line t */}
-        <Line.Segment point1={[-2, 0]} point2={[2, 4]} />
-        <Text x={2} y={4} attach="w">t</Text>
-
-        {/* Labels for Linear Pair on Line p */}
-        {/* Left Side (Obtuse) - Quadrant II relative to intersection */}
-        <Text x={-1.2} y={2.3}>${givenAngle}°</Text>
-        
-        {/* Right Side (Acute) - Quadrant I relative to intersection */}
-        {/* Variable x */}
-        <Text x={0.8} y={2.3}>x°</Text>
-      </Mafs>
+    // Geometric setup: parallel lines p (top) and q (bottom) cut by t, which
+    // rises at exactly the acute angle. x is above p and right of t; the
+    // given obtuse angle is above q and left of t. The old Mafs figure put both
+    // angles at line p as a linear pair, so the parallel lines played no part,
+    // and it drew t at about 49 degrees on a gridded black box.
+    const width = 450, height = 250, yTop = 80, yBot = 175, ext = 55;
+    const acuteRad = (acute * Math.PI) / 180;
+    const dx = (yBot - yTop) / Math.tan(acuteRad);
+    const xTopHit = 225 + dx / 2, xBotHit = 225 - dx / 2;
+    const r1 = (v: number) => Math.round(v * 10) / 10;
+    const pt = (x: number, y: number, deg: number, d: number) =>
+      [r1(x + d * Math.cos((deg * Math.PI) / 180)), r1(y - d * Math.sin((deg * Math.PI) / 180))];
+    const arcPath = (x: number, y: number, from: number, span: number, r: number) => {
+      const [sx, sy] = pt(x, y, from, r);
+      const [ex, ey] = pt(x, y, from + span, r);
+      return `M ${sx} ${sy} A ${r} ${r} 0 0 0 ${ex} ${ey}`;
+    };
+    const [xlx, xly] = pt(xTopHit, yTop, acute / 2, Math.max(32, 15 / Math.sin(acuteRad / 2)));
+    const [glx, gly] = pt(xBotHit, yBot, acute + givenAngle / 2, 36);
+    const [t1x, t1y] = pt(xBotHit, yBot, 180 + acute, ext);
+    const [t2x, t2y] = pt(xTopHit, yTop, acute, ext);
+    // The t label goes at the lower end, clear of the x label at the top.
+    const [tlx, tly] = pt(xBotHit, yBot, 180 + acute, ext + 12);
+    const figureCode = `
+      <div style="text-align:center;">
+        <svg viewBox="0 0 ${width} ${height}" style="width:100%; max-width:${width}px; height:auto; font-family:serif; user-select:none;">
+          <line x1="40" y1="${yTop}" x2="410" y2="${yTop}" stroke="currentColor" stroke-width="2"/>
+          <text x="418" y="${yTop + 5}" font-size="16" font-style="italic" fill="currentColor">p</text>
+          <line x1="40" y1="${yBot}" x2="410" y2="${yBot}" stroke="currentColor" stroke-width="2"/>
+          <text x="418" y="${yBot + 5}" font-size="16" font-style="italic" fill="currentColor">q</text>
+          <line x1="${t1x}" y1="${t1y}" x2="${t2x}" y2="${t2y}" stroke="currentColor" stroke-width="2"/>
+          <text x="${tlx}" y="${tly + 5}" text-anchor="middle" font-size="16" font-style="italic" fill="currentColor">t</text>
+          <path d="${arcPath(xTopHit, yTop, 0, acute, 18)}" fill="none" stroke="#3b82f6" stroke-width="1.4"/>
+          <text x="${xlx}" y="${xly + 5}" text-anchor="middle" font-size="15" font-style="italic" fill="#3b82f6">x&#176;</text>
+          <path d="${arcPath(xBotHit, yBot, acute, givenAngle, 16)}" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="${glx}" y="${gly + 5}" text-anchor="middle" font-size="15" fill="currentColor">${givenAngle}&#176;</text>
+        </svg>
+      </div>
     `;
 
-    // Logic: x and givenAngle are a linear pair, so they sum to 180.
-    // The question asks for "x + givenAngle", which is trivially 180.
+    // x + givenAngle is 180 for every draw; the wrong choices are real slips
+    // and never collide (x is at most 45, the given angle at least 135).
     const correctAnswer = "180";
-    
-    const distractorA = 180 - givenAngle; // The value of x
-    const distractorB = "90";
-    const distractorC = givenAngle.toString();
 
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: "finds x instead of x + given angle" },
-      { text: distractorB, isCorrect: false, reason: "assumes right angle relationship" },
-      { text: distractorC, isCorrect: false, reason: "chooses the given angle" },
-      { text: correctAnswer, isCorrect: true }
+      { text: acute.toString(), isCorrect: false, reason: `${acute} is the value of $x$, not the value of $x + ${givenAngle}$` },
+      { text: "90", isCorrect: false, reason: `it assumes the two angles are complementary; the transversal is not perpendicular to the parallel lines` },
+      { text: givenAngle.toString(), isCorrect: false, reason: `it assumes the angle with measure $x^{\\circ}$ is congruent to the ${givenAngle}° angle, which gives the value of $x$, not $x + ${givenAngle}$; the two angles are supplementary` },
+      { text: correctAnswer, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -81,20 +85,11 @@ export const generator_358 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `In the figure above, line $p$ is parallel to line $q$, and line $t$ intersects both lines. What is the value of $x + ${givenAngle}$?`,
-      figureCode: mafsCode,
+      questionText: `In the figure, line $p$ is parallel to line $q$, and line $t$ intersects both lines. What is the value of $x + ${givenAngle}$?`,
+      figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. 
-
-The angle marked $x^{\\circ}$ and the angle marked $${givenAngle}^{\\circ}$ form a **linear pair** along line $p$. 
-
-A linear pair of angles are adjacent angles formed by intersecting lines. The measures of angles in a linear pair are supplementary, meaning their sum is $180^{\\circ}$.
-
-Therefore, without needing to calculate $x$ individually:
-$$x + ${givenAngle} = 180$$
-
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Since lines $p$ and $q$ are parallel, the angle with measure $x^{\\circ}$, above line $p$ and to the right of line $t$, is congruent to its corresponding angle above line $q$ and to the right of line $t$. That corresponding angle and the ${givenAngle}° angle form a linear pair, so their measures add to 180. Therefore, $x + ${givenAngle} = 180$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
