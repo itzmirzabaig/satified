@@ -23,12 +23,18 @@ export const generator_292 = {
   },
 
   generate: (): QuestionData => {
-    const packageSize = getRandomInt(8, 15);
-    const needed = getRandomInt(40, 80);
-    const rawCalc = needed / packageSize;
-    const minPackages = Math.ceil(rawCalc);
+    // The number needed is not a multiple of the package size, so the answer
+    // requires rounding up. The explanation used to say "p >= 3.08" for
+    // 40/13 = 3.0769..., a rounded bound that is slightly too large.
+    let packageSize = 8, needed = 41;
+    do {
+      packageSize = getRandomInt(8, 15);
+      needed = getRandomInt(40, 80);
+    } while (needed % packageSize === 0);
+    const minPackages = Math.ceil(needed / packageSize);
+    const fewer = minPackages - 1;
 
-    const explanation = `The inequality $${packageSize}p \\ge ${needed}$ represents the situation, where $p$ is packages. Dividing: $p \\ge ${(rawCalc).toFixed(2)}$. Since packages must be whole numbers, the minimum is ${minPackages}.`;
+    const explanation = `The correct answer is ${minPackages}. If $p$ is the number of packages bought, the number of dinner rolls is $${packageSize}p$, so the situation is represented by the inequality $${packageSize}p \\ge ${needed}$. Dividing both sides of this inequality by ${packageSize} yields $p \\ge \\frac{${needed}}{${packageSize}}$, which is about ${(needed / packageSize).toFixed(1)}. Since $p$ must be a whole number, ${fewer} packages, or ${fewer * packageSize} rolls, are not enough, and ${minPackages} packages, or ${minPackages * packageSize} rolls, are enough. Therefore, the minimum number of packages is ${minPackages}.`;
 
     return {
       questionText: `For a party, dinner rolls are needed. Dinner rolls are sold in packages of ${packageSize}. What is the minimum number of packages that should be bought for the party if ${needed} dinner rolls are needed?`,
