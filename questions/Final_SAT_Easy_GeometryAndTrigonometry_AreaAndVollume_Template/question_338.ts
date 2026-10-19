@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [width 5-10, difference 30-50]
 * - Difficulty factors: [Word problem, finding length then area]
-* - Distractor patterns: [width, 2×width, sum of sides]
+* - Distractor patterns: [width × difference, perimeter, sum of sides]
 * - Constraints: [Length = width + 40, Area = length × width]
 * - Question type: [No figure, Multiple Choice Text]
 * - Figure generation: [None]
@@ -28,11 +28,14 @@ export const generator_338 = {
     const length = width + difference;
     const area = length * width;
 
+    // Each wrong choice is a real slip; two of the old ones were the width and
+    // twice the width. The values never collide: width times difference is at
+    // least 150, the perimeter is at most 140, and the sum is at most 70.
     const optionsData = [
-      { text: width.toString(), isCorrect: false, reason: "states the width instead of the area" },
-      { text: (width * 2).toString(), isCorrect: false, reason: "calculates twice the width" },
-      { text: (width + length).toString(), isCorrect: false, reason: "adds length and width instead of multiplying" },
-      { text: area.toString(), isCorrect: true }
+      { text: (width * difference).toString(), isCorrect: false, reason: `it uses ${difference} as the length; the length is ${difference} centimeters longer than the width, so it is ${length} centimeters` },
+      { text: (2 * (length + width)).toString(), isCorrect: false, reason: `it is the perimeter of the rectangle, $2(${length} + ${width})$, in centimeters, not its area` },
+      { text: (width + length).toString(), isCorrect: false, reason: `it is the sum of the length and the width, $${length} + ${width}$, not their product` },
+      { text: area.toString(), isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -48,7 +51,7 @@ export const generator_338 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: area.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The length is ${width} + ${difference} = ${length} cm. The area is ${length} × ${width} = ${area} square centimeters. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The length of the rectangle is ${difference} centimeters longer than the width, so the length is $${width} + ${difference} = ${length}$ centimeters. The area of a rectangle is its length times its width, so the area is $${length}(${width}) = ${area}$ square centimeters. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
