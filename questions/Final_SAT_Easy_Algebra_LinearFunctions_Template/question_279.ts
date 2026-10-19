@@ -5,9 +5,9 @@ import type { QuestionData } from '../../study/types';
  * Question 279
  *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [growthRate: 4.8, initialLength: 140-180]
+ * - Number ranges: [growthRate: 4.1-6.9, initialLength: 140-180]
  * - Difficulty factors: [Modeling growth]
- * - Distractor patterns: [no intercept, length as slope, growth as intercept]
+ * - Distractor patterns: [reversed values, 12-month growth as monthly rate, no starting length]
  * - Constraints: [None]
  * - Question type: [Modeling→Multiple Choice Text]
  * - Figure generation: null
@@ -23,23 +23,25 @@ export const generator_279 = {
   },
 
   generate: (): QuestionData => {
-    const growthRate = (getRandomInt(4, 6) + 0.8).toFixed(1);
+    // The rate used to always end in .8. Every wrong choice is now a real
+    // modeling slip; the old ones used one number as both the slope and the
+    // constant (for example y = 6.8x + 6.8).
+    let tenths = 48;
+    do {
+      tenths = getRandomInt(41, 69);
+    } while (tenths % 10 === 0);
+    const growthRate = (tenths / 10).toFixed(1);
+    const yearGrowth = (tenths * 12 / 10).toFixed(1);
 
     const initialLength = getRandomInt(140, 180);
 
-    const correctEquation = `y = ${growthRate}x + ${initialLength}`;
-
-    const distractorA = `y = ${initialLength}x`;
-
-    const distractorB = `y = ${initialLength}x + ${initialLength}`;
-
-    const distractorC = `y = ${growthRate}x + ${growthRate}`;
+    const correctEquation = `$y = ${growthRate}x + ${initialLength}$`;
 
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "uses initial length as slope with no intercept" },
-      { text: distractorB, isCorrect: false, reason: "incorrectly uses initial length as both slope and intercept" },
-      { text: distractorC, isCorrect: false, reason: "uses growth rate as both slope and intercept" },
-      { text: correctEquation, isCorrect: true }
+      { text: `$y = ${initialLength}x + ${growthRate}$`, isCorrect: false, reason: `it gives a length of ${growthRate} cm at birth and a growth of ${initialLength} cm per month, which reverses the two values` },
+      { text: `$y = ${yearGrowth}x + ${initialLength}$`, isCorrect: false, reason: `${yearGrowth} cm is the total growth over the first 12 months, $12(${growthRate})$, not the growth per month` },
+      { text: `$y = ${growthRate}x$`, isCorrect: false, reason: `it leaves out the length at birth; this equation gives a length of 0 cm when $x = 0$, not ${initialLength} cm` },
+      { text: correctEquation, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -56,7 +58,7 @@ export const generator_279 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. The initial length is ${initialLength} cm and it grows at ${growthRate} cm per month, giving $y = ${growthRate}x + ${initialLength}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The whale was ${initialLength} cm long at birth, when $x = 0$, and its length increased by ${growthRate} cm each month. After $x$ months, its length increased by $${growthRate}x$ cm, so its length is $y = ${growthRate}x + ${initialLength}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
