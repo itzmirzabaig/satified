@@ -738,6 +738,11 @@ body.light-mode .flip-card-back{box-shadow:0 26px 56px -38px rgba(51,44,20,.42)}
 }
 .figure{margin:14px 0;border-radius:8px;max-width:100%;overflow-x:auto}
 .figure > *{max-width:100%}
+/* Data tables written as bare <table> markup had no borders or padding, so
+   rows such as "0 | 25" ran together as "025". Inline styles still win. */
+.figure table{border-collapse:collapse;margin:0 auto}
+.figure th,.figure td{border:1px solid var(--hairline-strong);padding:8px 16px;text-align:center}
+.figure th{font-weight:600}
 
 /* answer verdict */
 .answer-section{
