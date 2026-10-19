@@ -32,10 +32,10 @@ export const generator_308 = {
 
     const correctAnswer = `$\\begin{aligned} f + r &= ${total} \\\\ ${priceFull}f + ${priceReduced}r &= ${revenue.toLocaleString('en-US')} \\end{aligned}$`;
     const optionsData = [
-      { text: `$\\begin{aligned} f + r &= ${revenue.toLocaleString('en-US')} \\\\ ${priceFull}f + ${priceReduced}r &= ${total} \\end{aligned}$`, isCorrect: false, reason: "swaps the total tickets with total revenue" },
-      { text: correctAnswer, isCorrect: true },
-      { text: `$\\begin{aligned} f + r &= ${total} \\\\ ${priceReduced}f + ${priceFull}r &= ${revenue.toLocaleString('en-US')} \\end{aligned}$`, isCorrect: false, reason: "swaps the prices for full and reduced tickets" },
-      { text: `$\\begin{aligned} f + r &= ${revenue.toLocaleString('en-US')} \\\\ ${priceReduced}f + ${priceFull}r &= ${total} \\end{aligned}$`, isCorrect: false, reason: "swaps both totals and prices" }
+      { text: `$\\begin{aligned} f + r &= ${revenue.toLocaleString('en-US')} \\\\ ${priceFull}f + ${priceReduced}r &= ${total} \\end{aligned}$`, isCorrect: false, reason: `it sets the number of tickets, $f + r$, equal to the amount collected, ${revenue.toLocaleString('en-US')}, and the amount collected equal to the number of tickets, ${total}` },
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: `$\\begin{aligned} f + r &= ${total} \\\\ ${priceReduced}f + ${priceFull}r &= ${revenue.toLocaleString('en-US')} \\end{aligned}$`, isCorrect: false, reason: `it charges \\$${priceReduced} for each full-price ticket and \\$${priceFull} for each reduced-price ticket, which reverses the two prices` },
+      { text: `$\\begin{aligned} f + r &= ${revenue.toLocaleString('en-US')} \\\\ ${priceReduced}f + ${priceFull}r &= ${total} \\end{aligned}$`, isCorrect: false, reason: `it reverses the two prices and also reverses the number of tickets, ${total}, and the amount collected, ${revenue.toLocaleString('en-US')}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -46,10 +46,13 @@ export const generator_308 = {
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The total tickets sold is $f + r = ${total}$. The revenue from full-price tickets is $${priceFull}f$ and from reduced-price tickets is $${priceReduced}r$, totaling $${revenue.toLocaleString('en-US')}$, so $${priceFull}f + ${priceReduced}r = ${revenue}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    // The prices and the total used to be written as $10$, so they rendered
+    // as plain numbers without dollar signs.
+    const revenueText = revenue.toLocaleString('en-US');
+    const explanation = `Choice ${correctOption.letter} is correct. The theater sold ${total} tickets in all, so $f + r = ${total}$. The full-price tickets brought in $${priceFull}f$ dollars and the reduced-price tickets brought in $${priceReduced}r$ dollars, for a total of \\$${revenueText}, so $${priceFull}f + ${priceReduced}r = ${revenueText}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `A movie theater charges $${priceFull}$ for each full-price ticket and $${priceReduced}$ for each reduced-price ticket. For one movie showing, the theater sold a total of ${total} full-price and reduced-price tickets for $${revenue.toLocaleString('en-US')}$. Which of the following systems of equations could be used to determine the number of full-price tickets, $f$, and the number of reduced-price tickets, $r$, sold?`,
+      questionText: `A movie theater charges \\$${priceFull} for each full-price ticket and \\$${priceReduced} for each reduced-price ticket. For one movie showing, the theater sold a total of ${total} full-price and reduced-price tickets for \\$${revenueText}. Which of the following systems of equations could be used to determine the number of full-price tickets, $f$, and the number of reduced-price tickets, $r$, sold?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
