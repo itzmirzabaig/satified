@@ -32,7 +32,7 @@ export const generator_333 = {
       figureCode: null,
       options: [],
       correctAnswer: area.toString(),
-      explanation: `The area of a rectangle is calculated by multiplying length by width. Therefore, the area is $${length} \\times ${width} = ${area}$ square centimeters.`
+      explanation: `The correct answer is ${area.toLocaleString('en-US')}. The area of a rectangle is its length times its width. Therefore, the area is $${length}(${width}) = ${area.toLocaleString('en-US')}$ square centimeters.`
     };
   }
 };
