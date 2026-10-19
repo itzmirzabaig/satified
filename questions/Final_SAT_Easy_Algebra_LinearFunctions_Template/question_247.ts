@@ -36,10 +36,10 @@ export const generator_247 = {
     const distractor4 = speed * (time + 1);
 
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "is the speed, not the distance" },
-      { text: distractor2.toString(), isCorrect: false, reason: "results from adding instead of multiplying" },
-      { text: distance.toString(), isCorrect: true },
-      { text: distractor4.toString(), isCorrect: false, reason: "calculates distance for one extra second" }
+      { text: distractor1.toString(), isCorrect: false, reason: `${speed} is the number of feet the bus travels each second, which is its distance from the marker 1 second after passing it, not ${time} seconds after` },
+      { text: distractor2.toString(), isCorrect: false, reason: `it results from adding ${time} to ${speed} instead of multiplying ${speed} by ${time}` },
+      { text: distance.toString(), isCorrect: true, reason: '' },
+      { text: distractor4.toString(), isCorrect: false, reason: `it is the distance from the marker ${time + 1} seconds after passing it, $${speed}(${time + 1})$, not ${time} seconds after` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -56,7 +56,7 @@ export const generator_247 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: distance.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Substituting ${time} for $t$: $d = ${speed}(${time}) = ${distance}$ feet. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting ${time} for $t$ in the given equation yields $d = ${speed}(${time})$, or $d = ${distance}$. Therefore, ${time} seconds after passing the marker, the bus will be ${distance} feet from the marker. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
