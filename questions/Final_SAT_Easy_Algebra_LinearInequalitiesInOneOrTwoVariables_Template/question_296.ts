@@ -36,11 +36,15 @@ export const generator_296 = {
     // Distractors: lower-only, upper-only, and a shifted range. All differ from
     // the correct compound inequality because maxDist > minDist and
     // minDist + maxDist > maxDist for every draw.
+    // Thousands commas (the distances used to print as 2221 and 3731), and
+    // the wrong choices used to have no explanations.
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const lo = fmt(minDist), hi = fmt(maxDist), sum = fmt(minDist + maxDist);
     const optionsData = [
-      { text: `$${minDist} \\le d \\le ${maxDist}$`, isCorrect: true },
-      { text: `$d \\le ${minDist}$`, isCorrect: false },
-      { text: `$d \\ge ${maxDist}$`, isCorrect: false },
-      { text: `$${maxDist} \\le d \\le ${minDist + maxDist}$`, isCorrect: false }
+      { text: `$${lo} \\le d \\le ${hi}$`, isCorrect: true, reason: '' },
+      { text: `$d \\le ${lo}$`, isCorrect: false, reason: `${lo} miles was the minimum distance, so $d$ is at least ${lo}, not at most ${lo}` },
+      { text: `$d \\ge ${hi}$`, isCorrect: false, reason: `${hi} miles was the maximum distance, so $d$ is at most ${hi}, not at least ${hi}` },
+      { text: `$${hi} \\le d \\le ${sum}$`, isCorrect: false, reason: `${sum} is the sum of the minimum and maximum distances, and the distance $d$ can be as small as ${lo} miles, which is less than ${hi}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,11 +54,12 @@ export const generator_296 = {
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The distance $d$ is at least ${minDist} miles, so $d \\ge ${minDist}$, and at most ${maxDist} miles, so $d \\le ${maxDist}$. Combining these bounds gives the compound inequality $${minDist} \\le d \\le ${maxDist}$.`;
+    const explanation = `Choice ${correctLetter} is correct. The distance $d$ is at least ${lo} miles, so $d \\ge ${lo}$, and at most ${hi} miles, so $d \\le ${hi}$. Combining these bounds gives the compound inequality $${lo} \\le d \\le ${hi}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `During spring migration, a dragonfly traveled a minimum of ${minDist} miles and a maximum of ${maxDist} miles between stopover locations. Which inequality represents this situation, where $d$ is a possible distance, in miles, this dragonfly traveled between stopover locations during spring migration?`,
+      questionText: `During spring migration, a dragonfly traveled a minimum of ${lo} miles and a maximum of ${hi} miles between stopover locations. Which inequality represents this situation, where $d$ is a possible distance, in miles, this dragonfly traveled between stopover locations during spring migration?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
