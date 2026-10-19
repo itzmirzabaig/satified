@@ -56,17 +56,19 @@ export const generator_285 = {
       {
         text: `A rectangle with length ${length} and width ${width} has a perimeter of ${actualPerimeter}, so the pair ${notSatisfiesPhrase} the inequality.`,
         isCorrect: false,
-        reason: "reaches the opposite conclusion about whether the pair satisfies the inequality"
+        reason: satisfies
+          ? `${actualPerimeter} is less than ${maxPerimeter}, so the pair satisfies the inequality`
+          : `${actualPerimeter} is greater than ${maxPerimeter}, so the pair does not satisfy the inequality`
       },
       {
         text: `The ordered pair means the perimeter of the rectangle is exactly ${maxPerimeter}.`,
         isCorrect: false,
-        reason: `treats ${maxPerimeter} as the exact perimeter rather than an upper bound`
+        reason: `the perimeter of a rectangle with length ${length} and width ${width} is ${actualPerimeter}, not ${maxPerimeter}; ${maxPerimeter} is the largest perimeter the inequality allows`
       },
       {
         text: `The ordered pair means the sum of the length and width must be at most ${maxPerimeter}.`,
         isCorrect: false,
-        reason: "drops the factor of 2, comparing the length plus width to the bound instead of the full perimeter"
+        reason: `the ordered pair gives one specific length and width, not a condition, and the inequality limits the perimeter, $2\\ell + 2w$, not the sum $\\ell + w$`
       }
     ];
 
@@ -79,7 +81,7 @@ export const generator_285 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Substituting length $\\ell = ${length}$ and width $w = ${width}$ into $2\\ell + 2w$ gives $2(${length}) + 2(${width}) = ${actualPerimeter}$. Since $${actualPerimeter} ${satisfies ? '\\leq' : '>'} ${maxPerimeter}$, the pair ${satisfiesPhrase} the inequality $2\\ell + 2w \\leq ${maxPerimeter}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Substituting length $\\ell = ${length}$ and width $w = ${width}$ into $2\\ell + 2w$ gives $2(${length}) + 2(${width}) = ${actualPerimeter}$. Since $${actualPerimeter} ${satisfies ? '\\leq' : '>'} ${maxPerimeter}$, the pair ${satisfiesPhrase} the inequality $2\\ell + 2w \\leq ${maxPerimeter}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A rectangle has length $\\ell$ and width $w$. The inequality $2\\ell + 2w \\leq ${maxPerimeter}$ gives the values of $\\ell$ and $w$ for which the perimeter of the rectangle is at most ${maxPerimeter}. Which statement is the best interpretation of $(\\ell, w) = (${length}, ${width})$ in this context?`,
