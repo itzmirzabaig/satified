@@ -47,11 +47,17 @@ export const generator_335 = {
       </table>
     `;
 
+    // The divided value used to be written with one decimal place (4 / 4 was
+    // "1.0", 5 / 3 was "1.7"); it is now a whole number or a reduced fraction.
+    const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+    const g = gcd(sideTU, scaleFactor);
+    const dividedText = scaleFactor / g === 1 ? `${sideTU / g}` : `$\\frac{${sideTU / g}}{${scaleFactor / g}}$`;
+
     const optionsData = [
-      { text: (sideTU / scaleFactor).toFixed(1), isCorrect: false, reason: "divides by the scale factor instead of multiplying" },
-      { text: sideTU.toString(), isCorrect: false, reason: "repeats the length of $\\overline{TU}$ instead of finding $\\overline{XY}$" },
-      { text: sideXY.toString(), isCorrect: true },
-      { text: (perimeterTUV + sideTU).toString(), isCorrect: false, reason: "adds the perimeter to the side length" }
+      { text: dividedText, isCorrect: false, reason: `it divides ${sideTU} by ${scaleFactor} instead of multiplying; triangle $XYZ$ is larger, so its sides are ${scaleFactor} times as long` },
+      { text: sideTU.toString(), isCorrect: false, reason: `${sideTU} is the length of $\\overline{TU}$, not $\\overline{XY}$` },
+      { text: sideXY.toString(), isCorrect: true, reason: '' },
+      { text: (perimeterTUV + sideTU).toString(), isCorrect: false, reason: `it adds the perimeter of triangle $TUV$, ${perimeterTUV}, to ${sideTU}; corresponding sides are in the same ratio as the perimeters, so ${sideTU} must be multiplied by ${scaleFactor}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -63,11 +69,11 @@ export const generator_335 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `The table gives the perimeters of similar triangles $TUV$ and $XYZ$, where $\\overline{TU}$ corresponds to $\\overline{XY}$. The length of $\\overline{TU} = ${sideTU}$. What is the length of $\\overline{XY}$?`,
+      questionText: `The table gives the perimeters of similar triangles $TUV$ and $XYZ$, where $\\overline{TU}$ corresponds to $\\overline{XY}$. The length of $\\overline{TU}$ is ${sideTU}. What is the length of $\\overline{XY}$?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: sideXY.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The ratio of the perimeters is $\\frac{${perimeterXYZ}}{${perimeterTUV}} = ${scaleFactor}$. Since the triangles are similar, corresponding sides share that ratio, so $\\overline{XY} = ${sideTU} \\times ${scaleFactor} = ${sideXY}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The ratio of the perimeters is $\\frac{${perimeterXYZ}}{${perimeterTUV}} = ${scaleFactor}$. Since the triangles are similar, the ratio of the lengths of corresponding sides is also ${scaleFactor}, so $XY = ${scaleFactor}(${sideTU}) = ${sideXY}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
