@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [initialHeight: 14-25, ratePerSecond: 5-12]
  * - Difficulty factors: [Modeling linear growth from word problem]
- * - Distractor patterns: [swapped rate/intercept, rate used as start, combined rate]
+ * - Distractor patterns: [swapped rate and starting height, starting height folded into rate, starting height left out]
  * - Constraints: [initialHeight > ratePerSecond so the swap distractor is always distinct]
  * - Question type: [Modeling→Multiple Choice Text]
  * - Figure generation: null
@@ -29,20 +29,18 @@ export const generator_251 = {
     const initialHeight = getRandomInt(14, 25);
     const ratePerSecond = getRandomInt(5, 12);
 
-    const correctEquation = `h = ${ratePerSecond}s + ${initialHeight}`;
+    const correctEquation = `$h = ${ratePerSecond}s + ${initialHeight}$`;
 
-    // Swapped the rate and the initial height.
-    const distractorSwap = `h = ${initialHeight}s + ${ratePerSecond}`;
-    // Used the rate as the starting height as well.
-    const distractorRateStart = `h = ${ratePerSecond}s + ${ratePerSecond}`;
-    // Combined the rate and the initial height into a single rate.
-    const distractorCombined = `h = ${ratePerSecond + initialHeight}s + ${initialHeight}`;
-
+    // Each wrong choice is a real modeling slip: swapping the two values,
+    // folding the starting height into the rate, or leaving it out. The old
+    // choices used the rate as the starting height (for example
+    // h = 10s + 10) and added the starting height to the rate while also
+    // keeping it as the constant.
     const optionsData = [
-      { text: correctEquation, isCorrect: true },
-      { text: distractorSwap, isCorrect: false, reason: "swaps the rate and the initial height" },
-      { text: distractorRateStart, isCorrect: false, reason: "uses the rate as the starting height instead of the given initial height" },
-      { text: distractorCombined, isCorrect: false, reason: "adds the initial height into the rate instead of using it as the constant term" }
+      { text: correctEquation, isCorrect: true, reason: '' },
+      { text: `$h = ${initialHeight}s + ${ratePerSecond}$`, isCorrect: false, reason: `it gives a starting height of ${ratePerSecond} feet and a rate of ${initialHeight} feet per second, which reverses the two values` },
+      { text: `$h = ${ratePerSecond + initialHeight}s$`, isCorrect: false, reason: `it adds the starting height of ${initialHeight} feet to the rate; this equation gives a height of 0 feet when $s = 0$, but the car starts ${initialHeight} feet above the ground` },
+      { text: `$h = ${ratePerSecond}s$`, isCorrect: false, reason: `it leaves out the starting height; this equation gives a height of 0 feet when $s = 0$, not ${initialHeight} feet` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -54,11 +52,11 @@ export const generator_251 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `The front of a roller-coaster car is at the bottom of a hill and is ${initialHeight} feet above the ground. If the front of the roller-coaster car rises at a constant rate of ${ratePerSecond} feet per second, which of the following equations gives the height $h$, in feet, of the front of the roller-coaster car $s$ seconds after it starts up the hill?`,
+      questionText: `The front of a roller coaster car is at the bottom of a hill and is ${initialHeight} feet above the ground. If the front of the roller coaster car rises at a constant rate of ${ratePerSecond} feet per second, which of the following equations gives the height $h$, in feet, of the front of the roller coaster car $s$ seconds after it starts up the hill?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. The starting height of ${initialHeight} feet is the constant term, and the rate of ${ratePerSecond} feet per second multiplied by the time $s$ gives the equation $h = ${ratePerSecond}s + ${initialHeight}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. After $s$ seconds, the front of the car has risen $${ratePerSecond}s$ feet above its starting height of ${initialHeight} feet. Adding the two gives the equation $h = ${ratePerSecond}s + ${initialHeight}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
