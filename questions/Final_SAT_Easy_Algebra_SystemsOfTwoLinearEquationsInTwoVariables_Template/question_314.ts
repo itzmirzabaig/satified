@@ -29,10 +29,10 @@ export const generator_314 = {
     const total = coef * x - 3 * y;
 
     const optionsData = [
-      { text: `(${x}, ${y})`, isCorrect: true },
-      { text: `(${x}, ${-3 * y})`, isCorrect: false, reason: "forgets to divide by -3" },
-      { text: `(${x}, ${-y})`, isCorrect: false, reason: "makes a sign error" },
-      { text: `(${x}, ${3 * y})`, isCorrect: false, reason: "forgets the negative sign" }
+      { text: `$(${x}, ${y})$`, isCorrect: true, reason: '' },
+      { text: `$(${x}, ${-3 * y})$`, isCorrect: false, reason: `$${-3 * y}$ is the value of $-3y$, not $y$; both sides must still be divided by $-3$` },
+      { text: `$(${x}, ${-y})$`, isCorrect: false, reason: `dividing $${-3 * y}$ by $-3$ gives ${y}, not $${-y}$` },
+      { text: `$(${x}, ${3 * y})$`, isCorrect: false, reason: `${3 * y} is the value of $3y$, not $y$; it must still be divided by 3` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -43,13 +43,13 @@ export const generator_314 = {
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. Substitute $x = ${x}$ into the first equation: $${coef}(${x}) - 3y = ${total}$. This gives $${coef * x} - 3y = ${total}$, so $-3y = ${total - coef * x}$, which simplifies to $-3y = ${-3 * y}$, and $y = ${y}$. The solution is $(${x}, ${y})$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Substitute $x = ${x}$ into the first equation: $${coef}(${x}) - 3y = ${total}$. This gives $${coef * x} - 3y = ${total}$, and subtracting ${coef * x} from both sides gives $-3y = ${-3 * y}$. Dividing both sides by $-3$ gives $y = ${y}$. The solution is $(${x}, ${y})$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `What is the solution $(x, y)$ to the given system of equations?$$\\begin{aligned} ${coef}x - 3y &= ${total} \\\\ x &= ${x} \\end{aligned}$$`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: `(${x}, ${y})`,
+      correctAnswer: `$(${x}, ${y})$`,
       explanation: explanation
     };
   }
