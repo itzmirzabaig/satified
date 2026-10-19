@@ -29,18 +29,25 @@ export const generator_311 = {
     const b1 = yIntersect - m1 * xIntersect;
     const b2 = yIntersect - m2 * xIntersect;
 
-    const mafsCode = `
-      <Coordinates.Cartesian />
-      <Plot.OfX y={(x) => ${m1} * x + ${b1}} color="#1a7cff" />
-      <Plot.OfX y={(x) => ${m2} * x + ${b2}} color="#ff2a7a" />
-    `;
+    // A window around the intersection with a gridline at every whole number.
+    // The graph used to have no window, so it auto-scaled to about -45 to 25
+    // on the y-axis with crowded gridlines.
+    const mafsCode = `<Mafs viewBox={{ x: [-1, ${xIntersect + 4}], y: [${yIntersect - 7}, ${yIntersect + 7}] }}>
+  <Coordinates.Cartesian
+    xAxis={{ lines: 1, labels: (n) => n }}
+    yAxis={{ lines: 1, labels: (n) => n }}
+  />
+  <Plot.OfX y={(x) => ${m1} * x + ${b1}} color="#1a7cff" />
+  <Plot.OfX y={(x) => ${m2} * x + ${b2}} color="#ff2a7a" />
+</Mafs>`;
 
+    // The explanation used to solve equations the question never gives.
     return {
       questionText: `The graph of a system of linear equations is shown. The solution to the system is $(x,y)$. What is the value of $x$?`,
       figureCode: mafsCode,
       options: [],
       correctAnswer: xIntersect.toString(),
-      explanation: `The solution is the intersection point. The lines intersect where $${m1}x ${b1 >= 0 ? '+' : '-'}${Math.abs(b1)} = ${m2}x + ${b2}$. Solving: $${m1 - m2}x = ${b2 - b1}$, so $x = ${xIntersect}$.`
+      explanation: `The correct answer is ${xIntersect}. The solution to a system of two linear equations is the point where the graphs of the equations intersect. The two lines shown intersect at the point $(${xIntersect}, ${yIntersect})$, so the solution is $(${xIntersect}, ${yIntersect})$, and the value of $x$ is ${xIntersect}.`
     };
   }
 };
