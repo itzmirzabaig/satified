@@ -23,16 +23,24 @@ export const generator_303 = {
   },
 
   generate: (): QuestionData => {
-    const score1 = getRandomInt(70, 95);
-    const score2 = getRandomInt(70, 95);
-    const score3 = getRandomInt(70, 95);
-    const targetMean = getRandomInt(85, 95);
+    // Redraw until the score needed on the fourth exam is possible (at most
+    // 100); targets such as a mean of 95 after scores of 70, 72 and 75 used to
+    // require a score of 163.
+    let score1 = 70, score2 = 70, score3 = 70, targetMean = 85;
+    do {
+      score1 = getRandomInt(70, 95);
+      score2 = getRandomInt(70, 95);
+      score3 = getRandomInt(70, 95);
+      targetMean = getRandomInt(85, 95);
+    } while (4 * targetMean - (score1 + score2 + score3) > 100);
+    const scores = `${score1} + ${score2} + ${score3}`;
+    const total = 4 * targetMean;
 
     const optionsData = [
-      { text: `$${targetMean} - (${score1} + ${score2} + ${score3}) \\leq 4G$`, isCorrect: false, reason: "incorrectly rearranges the mean formula" },
-      { text: `$4G + ${score1} + ${score2} + ${score3} \\ge ${targetMean * 4}$`, isCorrect: false, reason: "adds 4G instead of just G" },
-      { text: `$\\frac{(G + ${score1} + ${score2} + ${score3})}{4} \\ge ${targetMean}$`, isCorrect: true },
-      { text: `$\\frac{(${score1} + ${score2} + ${score3})}{4} \\ge ${targetMean} - 4G$`, isCorrect: false, reason: "averages only the first three exams" }
+      { text: `$${targetMean} - (${scores}) \\leq 4G$`, isCorrect: false, reason: `it subtracts the sum of the first three scores from the target mean, ${targetMean}; the mean of the four scores is their sum, $G + ${scores}$, divided by 4` },
+      { text: `$4G + ${scores} \\ge ${total}$`, isCorrect: false, reason: `it multiplies the fourth score by 4; the sum of the four scores is $G + ${scores}$, not $4G + ${scores}$` },
+      { text: `$\\frac{(G + ${scores})}{4} \\ge ${targetMean}$`, isCorrect: true, reason: '' },
+      { text: `$\\frac{(${scores})}{4} \\ge ${targetMean} - 4G$`, isCorrect: false, reason: `multiplying both sides by 4 gives $${scores} + 16G \\ge ${total}$, which counts the fourth score 16 times instead of once` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -44,7 +52,7 @@ export const generator_303 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The mean of four scores is the sum divided by 4. For the mean to be at least ${targetMean}: $\\frac{G + ${score1} + ${score2} + ${score3}}{4} \\ge ${targetMean}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The mean of the four exam scores is the sum of the scores, $G + ${scores}$, divided by 4. For this mean to be at least ${targetMean}, $\\frac{(G + ${scores})}{4} \\ge ${targetMean}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A student scored ${score1}, ${score2}, and ${score3} on their first three exams in history class. Solving which inequality gives the score, $G$, on their fourth exam that will result in a mean score on all four exams of at least ${targetMean}?`,
