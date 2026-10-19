@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [intercept: 15-25]
  * - Difficulty factors: [Identifying constant function]
- * - Distractor patterns: [reciprocal constant, unitary constant, doubled constant]
+ * - Distractor patterns: [fits only f(1), fits only f(0), fits only f(0)]
  * - Constraints: [Slope is zero]
  * - Question type: [Find equation→Multiple Choice Text]
  * - Figure generation: null
@@ -25,19 +25,16 @@ export const generator_284 = {
   generate: (): QuestionData => {
     const intercept = getRandomInt(15, 25);
 
-    const correctEquation = `f(x) = ${intercept}`;
+    const correctEquation = `$f(x) = ${intercept}$`;
 
-    const distractorA = `f(x) = \\frac{1}{${intercept}}`;
-
-    const distractorB = `f(x) = 1`;
-
-    const distractorD = `f(x) = ${2 * intercept}`;
-
+    // Each wrong choice fits one of the two given values but not the other.
+    // The old choices were 1, the reciprocal of the constant, and twice the
+    // constant, none of which comes from a real mistake.
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "is a constant function with an incorrect value" },
-      { text: distractorB, isCorrect: false, reason: "is a constant function with wrong value" },
-      { text: correctEquation, isCorrect: true },
-      { text: distractorD, isCorrect: false, reason: "doubles the correct constant" }
+      { text: `$f(x) = ${intercept}x$`, isCorrect: false, reason: `this function gives $f(1) = ${intercept}$ but $f(0) = 0$, not ${intercept}` },
+      { text: `$f(x) = x + ${intercept}$`, isCorrect: false, reason: `this function gives $f(0) = ${intercept}$ but $f(1) = ${intercept + 1}$, not ${intercept}` },
+      { text: correctEquation, isCorrect: true, reason: '' },
+      { text: `$f(x) = ${intercept}x + ${intercept}$`, isCorrect: false, reason: `this function gives $f(0) = ${intercept}$ but $f(1) = ${2 * intercept}$, not ${intercept}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -54,7 +51,7 @@ export const generator_284 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. Since $f(0) = ${intercept}$ and $f(1) = ${intercept}$, the function has slope $m = \\frac{${intercept} - ${intercept}}{1 - 0} = 0$ and y-intercept $b = ${intercept}$, giving $f(x) = ${intercept}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Since $f(0) = ${intercept}$ and $f(1) = ${intercept}$, the value of $f(x)$ does not change when $x$ increases from 0 to 1, so the slope of the graph of $y = f(x)$ is 0. A linear function with slope 0 and $f(0) = ${intercept}$ is $f(x) = ${intercept}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
