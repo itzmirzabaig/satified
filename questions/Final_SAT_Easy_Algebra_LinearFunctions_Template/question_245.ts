@@ -35,7 +35,7 @@ export const generator_245 = {
       figureCode: null,
       options: [],
       correctAnswer: result.toString(),
-      explanation: `Substituting ${xValue} for $x$: $f(${xValue}) = ${slope}(${xValue}) + ${intercept} = ${slope * xValue} + ${intercept} = ${result}$.`
+      explanation: `The correct answer is ${result}. The number of people on a retreat with ${xValue} managers is the value of $f(${xValue})$. Substituting ${xValue} for $x$ in the given function yields $f(${xValue}) = ${slope}(${xValue}) + ${intercept}$, or $f(${xValue}) = ${slope * xValue} + ${intercept} = ${result}$. Therefore, there are ${result} people on a company retreat with ${xValue} managers.`
     };
   }
 };
