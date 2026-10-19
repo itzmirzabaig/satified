@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [slope: 2-5, intercept: 5-12 negative]
  * - Difficulty factors: [Constructing equation from m and b]
- * - Distractor patterns: [omitted intercept, incorrect intercept]
+ * - Distractor patterns: [no intercept, opposite sign intercept, slope and intercept reversed]
  * - Constraints: [None]
  * - Question type: [Find equation→Multiple Choice Text]
  * - Figure generation: null
@@ -35,44 +35,16 @@ export const generator_276 = {
     const slope = getRandomInt(2, 5);
     const intercept = -getRandomInt(5, 12); // strictly negative, in [-12,-5]
 
-    // Render "mx + b" with a proper sign: "- |b|" when negative, dropped at 0.
-    const buildEquation = (b: number): string => {
-      if (b === 0) return `f(x) = ${slope}x`;
-      return b > 0
-        ? `f(x) = ${slope}x + ${b}`
-        : `f(x) = ${slope}x - ${Math.abs(b)}`;
-    };
+    const c = -intercept;
+    const correctEquation = `f(x) = ${slope}x - ${c}`;
 
-    const correctEquation = buildEquation(intercept);
-
-    // On-theme distractor candidates. Each carries the intercept it uses so the
-    // rendered string matches its reason exactly.
-    const candidates: { equation: string; reason: string }[] = [];
-    // Omits the y-intercept entirely (uses only the slope).
-    candidates.push({ equation: buildEquation(0), reason: "omits the y-intercept" });
-    // Uses the opposite sign for the y-intercept.
-    candidates.push({ equation: buildEquation(-intercept), reason: "uses the opposite sign for the y-intercept" });
-    // Shifts the y-intercept by a small amount (a nearby but incorrect value).
-    candidates.push({ equation: buildEquation(intercept + 1), reason: "uses an incorrect y-intercept" });
-    candidates.push({ equation: buildEquation(intercept - 1), reason: "uses an incorrect y-intercept" });
-    candidates.push({ equation: buildEquation(intercept + 2), reason: "uses an incorrect y-intercept" });
-
-    // De-duplicate against the answer and each other; keep the first three.
-    const used = new Set<string>([correctEquation]);
-    const distractors: { equation: string; reason: string }[] = [];
-    for (const cand of candidates) {
-      if (!used.has(cand.equation)) {
-        used.add(cand.equation);
-        distractors.push(cand);
-        if (distractors.length === 3) break;
-      }
-    }
-
+    // Every wrong choice is a real slip. The old third choice moved the
+    // intercept by 1 or 2 ("an incorrect y-intercept").
     const optionsData = [
-      { text: correctEquation, isCorrect: true, reason: "" },
-      { text: distractors[0].equation, isCorrect: false, reason: distractors[0].reason },
-      { text: distractors[1].equation, isCorrect: false, reason: distractors[1].reason },
-      { text: distractors[2].equation, isCorrect: false, reason: distractors[2].reason }
+      { text: `$${correctEquation}$`, isCorrect: true, reason: '' },
+      { text: `$f(x) = ${slope}x$`, isCorrect: false, reason: `its graph passes through $(0, 0)$, not $(0, ${intercept})$; it leaves out the $y$-intercept` },
+      { text: `$f(x) = ${slope}x + ${c}$`, isCorrect: false, reason: `its graph passes through $(0, ${c})$, not $(0, ${intercept})$` },
+      { text: `$f(x) = ${intercept}x + ${slope}$`, isCorrect: false, reason: `it reverses the slope and the $y$-coordinate of the $y$-intercept; its graph has a slope of $${intercept}$ and passes through $(0, ${slope})$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -87,8 +59,8 @@ export const generator_276 = {
       questionText: `For the function $f$, the graph of $y = f(x)$ in the $xy$-plane has a slope of $${slope}$ and passes through the point $(0, ${intercept})$. Which equation defines $f$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: correctEquation,
-      explanation: `Choice ${correctOption.letter} is correct. In slope-intercept form $f(x) = mx + b$, the slope is $m = ${slope}$ and the $y$-intercept is $b = ${intercept}$ (the point $(0, ${intercept})$), which gives $${correctEquation}$. Choice ${incorrectOptions[0].letter} is incorrect; it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; it ${incorrectOptions[2].reason}.`
+      correctAnswer: `$${correctEquation}$`,
+      explanation: `Choice ${correctOption.letter} is correct. A linear function can be written in slope-intercept form, $f(x) = mx + b$, where $m$ is the slope of its graph and $(0, b)$ is its $y$-intercept. Since the slope is ${slope} and the graph passes through $(0, ${intercept})$, $m = ${slope}$ and $b = ${intercept}$, which gives $${correctEquation}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
