@@ -5,10 +5,10 @@ import type { QuestionData } from '../../study/types';
  * Question 302
  *
  * ORIGINAL ANALYSIS:
- * - Number ranges: [coordinates: single-digit positive integers (8, 2)]
+ * - Number ranges: [coordinates: nonzero integers from -15 to 15]
  * - Difficulty factors: [Basic coordinate plane understanding, quadrant identification]
- * - Distractor patterns: [B/C/D test wrong quadrant combinations]
- * - Constraints: [x and y must be positive for correct answer]
+ * - Distractor patterns: [the other three sign combinations]
+ * - Constraints: [Neither coordinate is 0]
  * - Question type: [Conceptual→Multiple Choice Text]
  * - Figure generation: [None]
  */
@@ -23,28 +23,30 @@ export const generator_302 = {
   },
 
   generate: (): QuestionData => {
-    const x = getRandomInt(1, 15);
-    const y = getRandomInt(1, 15);
+    // The point used to be in the first quadrant every time, so the answer
+    // never changed, and each system was written as "$x > 0$ $y > 0$" on one
+    // line, which rendered as "x > 0 y > 0". The systems are now stacked.
+    const xPos = Math.random() < 0.5;
+    const yPos = Math.random() < 0.5;
+    const x = (xPos ? 1 : -1) * getRandomInt(1, 15);
+    const y = (yPos ? 1 : -1) * getRandomInt(1, 15);
 
-    // Each incorrect option carries a `reason` derived from its OWN sign claims
-    // (xPos/yPos), so the explanation stays correct no matter how shuffle()
-    // reorders the choices.
-    const reasonFor = (xPos: boolean, yPos: boolean): string => {
-      if (!xPos && !yPos) {
-        return `it claims both coordinates are negative, but ${x} and ${y} are both positive`;
-      }
-      if (!xPos) {
-        return `it claims $x < 0$ (negative), but ${x} is positive`;
-      }
-      return `it claims $y < 0$ (negative), but ${y} is positive`;
+    const rel = (pos: boolean) => (pos ? '>' : '<');
+    const word = (pos: boolean) => (pos ? 'positive' : 'negative');
+    const system = (xp: boolean, yp: boolean) => `$\\begin{aligned} x &${rel(xp)} 0 \\\\ y &${rel(yp)} 0 \\end{aligned}$`;
+
+    const reasonFor = (xp: boolean, yp: boolean): string => {
+      const parts: string[] = [];
+      if (xp !== xPos) parts.push(`it requires $x ${rel(xp)} 0$, but the $x$-coordinate, $${x}$, is ${word(xPos)}`);
+      if (yp !== yPos) parts.push(`${parts.length ? 'and' : 'it'} requires $y ${rel(yp)} 0$, but the $y$-coordinate, $${y}$, is ${word(yPos)}`);
+      return parts.join(', ');
     };
 
-    const optionsData = [
-      { text: `$x > 0$ $y > 0$`, isCorrect: true, xPos: true, yPos: true },
-      { text: `$x > 0$ $y < 0$`, isCorrect: false, xPos: true, yPos: false },
-      { text: `$x < 0$ $y > 0$`, isCorrect: false, xPos: false, yPos: true },
-      { text: `$x < 0$ $y < 0$`, isCorrect: false, xPos: false, yPos: false }
-    ];
+    const optionsData = [[true, true], [true, false], [false, true], [false, false]].map(([xp, yp]) => ({
+      text: system(xp, yp),
+      isCorrect: xp === xPos && yp === yPos,
+      reason: reasonFor(xp, yp)
+    }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -55,11 +57,7 @@ export const generator_302 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const distractorText = incorrectOptions
-      .map(opt => `${opt.letter} is incorrect because ${reasonFor(opt.xPos, opt.yPos)}.`)
-      .join(" ");
-
-    const explanation = `Choice ${correctLetter} is correct. The point $(${x}, ${y})$ has x-coordinate ${x} and y-coordinate ${y}. Since both coordinates are positive, $x > 0$ and $y > 0$. ${distractorText}`;
+    const explanation = `Choice ${correctLetter} is correct. The point $(${x}, ${y})$ has $x$-coordinate $${x}$, which is ${word(xPos)}, so $x ${rel(xPos)} 0$, and $y$-coordinate $${y}$, which is ${word(yPos)}, so $y ${rel(yPos)} 0$. Therefore, the point is a solution to the system with $x ${rel(xPos)} 0$ and $y ${rel(yPos)} 0$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `The point $(${x}, ${y})$ in the $xy$-plane is a solution to which of the following systems of inequalities?`,
