@@ -23,18 +23,26 @@ export const generator_298 = {
   },
 
   generate: (): QuestionData => {
-    const minTemp = (getRandomInt(96, 98) + getRandomInt(0, 9) / 10).toFixed(1);
-    const maxTemp = (parseFloat(minTemp) + getRandomInt(1, 3) + getRandomInt(0, 9) / 10).toFixed(1);
-    const tooLow1 = (parseFloat(minTemp) - getRandomInt(1, 2) - 0.2).toFixed(1);
-    const tooLow2 = (parseFloat(minTemp) - 0.2).toFixed(1);
-    const correctTemp = (parseFloat(minTemp) + 0.1).toFixed(1);
-    const tooHigh = (parseFloat(maxTemp) + 0.7).toFixed(1);
+    // Work in tenths of a degree to avoid float drift. The normal range is now
+    // about 1 degree wide (it used to be up to 3.9 degrees, such as 97.8 to
+    // 101.7), and the correct temperature can be anywhere strictly inside it
+    // instead of always 0.1 degree above the minimum.
+    const minT = getRandomInt(970, 980);
+    const maxT = minT + getRandomInt(8, 14);
+    const correctT = getRandomInt(minT + 1, maxT - 1);
+    const tooLow1T = minT - getRandomInt(12, 25);
+    const tooLow2T = minT - getRandomInt(1, 3);
+    const tooHighT = maxT + getRandomInt(3, 9);
+    const t = (v: number) => (v / 10).toFixed(1);
+    const minTemp = t(minT), maxTemp = t(maxT), correctTemp = t(correctT);
+    const deg = (v: string) => `$${v}^{\\circ}\\text{F}$`;
 
+    const below = (v: string) => `${deg(v)} is less than ${deg(minTemp)}, the lowest normal temperature`;
     const optionsData = [
-      { text: `$${tooLow1}^{\\circ}\\text{F}$`, isCorrect: false },
-      { text: `$${tooLow2}^{\\circ}\\text{F}$`, isCorrect: false },
-      { text: `$${correctTemp}^{\\circ}\\text{F}$`, isCorrect: true },
-      { text: `$${tooHigh}^{\\circ}\\text{F}$`, isCorrect: false }
+      { text: deg(t(tooLow1T)), isCorrect: false, reason: below(t(tooLow1T)) },
+      { text: deg(t(tooLow2T)), isCorrect: false, reason: below(t(tooLow2T)) },
+      { text: deg(correctTemp), isCorrect: true, reason: '' },
+      { text: deg(t(tooHighT)), isCorrect: false, reason: `${deg(t(tooHighT))} is greater than ${deg(maxTemp)}, the highest normal temperature` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -44,8 +52,9 @@ export const generator_298 = {
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Normal body temperature is between $${minTemp}^{\\circ}\\text{F}$ and $${maxTemp}^{\\circ}\\text{F}$. Only $${correctTemp}^{\\circ}\\text{F}$ falls within this range.`;
+    const explanation = `Choice ${correctLetter} is correct. A normal temperature $T$, in degrees Fahrenheit, satisfies $${minTemp} \\le T \\le ${maxTemp}$. Since $${minTemp} \\le ${correctTemp} \\le ${maxTemp}$, ${deg(correctTemp)} could be the patient's body temperature. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `Normal body temperature for an adult is between $${minTemp}^{\\circ}\\text{F}$ and $${maxTemp}^{\\circ}\\text{F}$, inclusive. If a patient has a body temperature that is considered to be normal, which of the following could be the patient's body temperature?`,
