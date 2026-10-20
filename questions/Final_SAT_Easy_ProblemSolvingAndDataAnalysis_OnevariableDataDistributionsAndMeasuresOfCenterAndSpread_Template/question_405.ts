@@ -104,10 +104,10 @@ export const generator_405 = {
     const difference = dramaCount - chessCount;
 
     const optionsData = [
-      { text: difference.toString(), isCorrect: true },
-      { text: chessCount.toString(), isCorrect: false },
-      { text: dramaCount.toString(), isCorrect: false },
-      { text: (chessCount + dramaCount).toString(), isCorrect: false }
+      { text: difference.toString(), isCorrect: true, reason: '' },
+      { text: chessCount.toString(), isCorrect: false, reason: `${chessCount} is the number of students in the chess club, not the difference` },
+      { text: dramaCount.toString(), isCorrect: false, reason: `${dramaCount} is the number of students in the drama club, not the difference` },
+      { text: (chessCount + dramaCount).toString(), isCorrect: false, reason: `${chessCount + dramaCount} is the total number of students in the two clubs, $${dramaCount} + ${chessCount}$, not the difference` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -116,13 +116,16 @@ export const generator_405 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
+    // The stem used to be only the question, with no sentence saying what the
+    // graph shows; the explanation gave no reasons for the wrong choices.
     return {
-      questionText: "How many more students are in drama than in chess?",
+      questionText: "The bar graph shows the number of students in each of four school clubs. How many more students are in the drama club than in the chess club?",
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: difference.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Based on the bar graph, there are ${dramaCount} students in drama and ${chessCount} in chess. The difference is ${dramaCount} - ${chessCount} = ${difference}.`
+      explanation: `Choice ${correctOption.letter} is correct. The bar graph shows that ${dramaCount} students are in the drama club and ${chessCount} students are in the chess club. The difference is $${dramaCount} - ${chessCount} = ${difference}$, so there are ${difference} more students in the drama club than in the chess club. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
