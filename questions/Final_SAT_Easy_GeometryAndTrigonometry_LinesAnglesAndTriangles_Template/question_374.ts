@@ -23,18 +23,19 @@ export const generator_374 = {
 
   generate: (): QuestionData => {
     const angleR = getRandomInt(50, 75);
-    const maxAngleS = 180 - angleR - 1;
-    const validAngleS = maxAngleS - 1;
-    const invalidOption1 = maxAngleS + 1;
-    const invalidOption2 = maxAngleS + 9;
-    const invalidOption3 = 180;
+    const bound = 180 - angleR;                       // angle S + angle T
+    const validAngleS = bound - getRandomInt(2, 12);  // leaves angle T positive
+    const atBound = bound;                            // would leave angle T = 0
+    const overBound = bound + getRandomInt(6, 12);    // would make angle T negative
     const correctAnswer = validAngleS.toString();
 
+    // The old reasons read "exceeds maximum possible angle sum" (also for the
+    // value equal to the bound) and "it a triangle angle cannot equal 180°".
     const optionsData = [
-      { text: correctAnswer, isCorrect: true },
-      { text: invalidOption1.toString(), isCorrect: false, reason: "exceeds maximum possible angle sum" },
-      { text: invalidOption2.toString(), isCorrect: false, reason: "exceeds maximum possible angle sum" },
-      { text: invalidOption3.toString(), isCorrect: false, reason: "a triangle angle cannot equal 180°" }
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: atBound.toString(), isCorrect: false, reason: `if the measure of angle $S$ were ${atBound} degrees, the measure of angle $T$ would be $${bound} - ${atBound} = 0$ degrees, which is not possible` },
+      { text: overBound.toString(), isCorrect: false, reason: `${overBound} is greater than ${bound}, so the measures of angles $R$ and $S$ alone would add to more than 180 degrees` },
+      { text: "180", isCorrect: false, reason: `the measures of all three angles of a triangle add to 180 degrees, so no single angle can measure 180 degrees` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,7 +51,7 @@ export const generator_374 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. The sum of interior angles is $180^{\\circ}$. With $\\angle R = ${angleR}^{\\circ}$, we have $\\angle S + \\angle T = ${180 - angleR}^{\\circ}$. Since $\\angle T > 0$, we need $\\angle S < ${180 - angleR}^{\\circ}$. Only ${correctAnswer} satisfies this condition. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The sum of the measures of the angles of a triangle is $180^{\\circ}$. Since the measure of angle $R$ is $${angleR}^{\\circ}$, the measures of angles $S$ and $T$ add to $180^{\\circ} - ${angleR}^{\\circ} = ${bound}^{\\circ}$. The measure of angle $T$ must be greater than 0, so the measure of angle $S$ must be less than ${bound} degrees. Of the choices, only ${correctAnswer} is less than ${bound}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
