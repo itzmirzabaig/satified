@@ -32,7 +32,7 @@ import type { QuestionData } from '../../study/types';
  *   of ABC by scaleFactor. Arcs mark the given angle at A and the asked angle
  *   at X (blue "?"), labels sit on their wedges' bisectors, and d labels side
  *   AB. ABC is sized so the largest dilation (4×) still fits the viewBox.
- * - Generation logic untouched: same random ranges, options, explanation.
+ * - Wrong choices: k times angle A, 180 - A, and the length of XY (d times k).
  */
 
 type Pt = { x: number; y: number };
@@ -50,9 +50,14 @@ export const generator_381 = {
   },
 
   generate: (): QuestionData => {
-    const d = getRandomInt(12, 20);
-    const scaleFactor = getRandomInt(2, 4);
-    const angleA = getRandomInt(50, 70);
+    // Redraw until the four choices differ (angle A = 60 with a scale factor
+    // of 2 makes 2A equal 180 - A, and d times the scale factor can equal A).
+    let d = 12, scaleFactor = 2, angleA = 50;
+    do {
+      d = getRandomInt(12, 20);
+      scaleFactor = getRandomInt(2, 4);
+      angleA = getRandomInt(50, 70);
+    } while (new Set([angleA, scaleFactor * angleA, 180 - angleA, d * scaleFactor]).size < 4);
 
     // ---- Figure, derived from the generated values so the drawing cannot
     // contradict the labels. Math coords, y up.
@@ -71,7 +76,7 @@ export const generator_381 = {
 
     // Triangle XYZ — the TRUE dilation of ABC by scaleFactor.
     // Correspondence: X <-> A, Y <-> B, Z <-> C.
-    const X: Pt = { x: cAB + 0.9, y: 0 };
+    const X: Pt = { x: cAB + 1.3, y: 0 }; // gap wide enough that the B and X labels do not run together
     const Y: Pt = { x: X.x + scaleFactor * cAB, y: 0 };
     const Z: Pt = { x: X.x + scaleFactor * C.x, y: scaleFactor * C.y };
 
@@ -136,15 +141,14 @@ export const generator_381 = {
       `</svg></div>`;
 
     const correctAnswer = angleA.toString();
-    const distractorA = angleA - 40;
-    const distractorB = angleA - 3;
-    const distractorD = angleA + 3;
 
+    // Each wrong choice is a real slip; the old ones were angle A minus 40,
+    // minus 3, and plus 3, all explained as "a calculation error".
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: "results from a calculation error" },
-      { text: distractorB.toString(), isCorrect: false, reason: "results from a calculation error" },
-      { text: correctAnswer, isCorrect: true },
-      { text: distractorD.toString(), isCorrect: false, reason: "results from a calculation error" }
+      { text: (scaleFactor * angleA).toString(), isCorrect: false, reason: `it results from multiplying the measure of angle $A$ by the scale factor, ${scaleFactor}; a dilation multiplies side lengths by the scale factor but does not change angle measures` },
+      { text: (180 - angleA).toString(), isCorrect: false, reason: `${180 - angleA} is the measure of an angle supplementary to angle $A$; corresponding angles of similar triangles are congruent` },
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: (d * scaleFactor).toString(), isCorrect: false, reason: `${d * scaleFactor} is the length of side $XY$, $${scaleFactor}(${d})$, not the measure of angle $X$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -160,7 +164,7 @@ export const generator_381 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. Dilation is a transformation that changes the size of a figure but not its shape, producing similar figures. In similar triangles, corresponding angles are congruent (equal in measure). Angle $A$ corresponds to angle $X$. Therefore, the measure of angle $X$ is equal to the measure of angle $A$, which is $${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Dilation is a transformation that changes the size of a figure but not its shape, producing similar figures. In similar triangles, corresponding angles are congruent (equal in measure). Angle $A$ corresponds to angle $X$. Therefore, the measure of angle $X$ is equal to the measure of angle $A$, which is $${correctAnswer}^{\\circ}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
