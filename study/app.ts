@@ -149,6 +149,10 @@ const autoWrap = (t: string): string => {
   return t;
 };
 
+// Answer choices typeset fractions in display style: an inline \frac inside a
+// choice drew at about two thirds of the text height and was hard to read.
+const optWrap = (t: string): string => autoWrap(t).replace(/\\frac\{/g, '\\dfrac{');
+
 const getOptText = (o: string | {text:string}): string =>
   typeof o === 'string' ? o : (o as any).text ?? String(o);
 
@@ -601,7 +605,7 @@ class QuestionTester {
         } else {
           h+=`<li class="option" data-index="${i}" role="button" tabindex="0">
             <span class="option-letter">${letter}.</span>
-            <span class="option-text">${autoWrap(txt)}</span></li>`;
+            <span class="option-text">${optWrap(txt)}</span></li>`;
         }
       });
       h+=`</ul>`;
@@ -687,7 +691,7 @@ class QuestionTester {
         answerFigure=ctxt;
         correctDisplay=`${letter}. <span class="option-text">the graph shown below</span>`;
       } else {
-        correctDisplay=`${letter}. <span class="option-text">${autoWrap(ctxt)}</span>`;
+        correctDisplay=`${letter}. <span class="option-text">${optWrap(ctxt)}</span>`;
       }
     }
 
@@ -1555,7 +1559,7 @@ class PracticeTestEngine {
         const selected = q.selectedOpt === i ? ' selected' : '';
         h += `<li class="option${selected}" data-index="${i}" role="button" tabindex="0">
           <span class="option-letter">${letter}.</span>
-          <span class="option-text">${autoWrap(txt)}</span></li>`;
+          <span class="option-text">${optWrap(txt)}</span></li>`;
       });
       h += `</ul>`;
     }
