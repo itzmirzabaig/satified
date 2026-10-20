@@ -24,8 +24,13 @@ export const generator_422 = {
 
   generate: (): QuestionData => {
     // Generate temperatures where mode, median, mean are equal but range is different
+    // Three days at the base temperature and two days k degrees below and
+    // above it, in a random order, so the mean, median, and mode all equal
+    // the base temperature and the range is 2k. The old data were always
+    // base, base - 1, base, base, base + 1 in that order.
     const baseTemp = getRandomInt(78, 83);
-    const temps = [baseTemp, baseTemp - 1, baseTemp, baseTemp, baseTemp + 1];
+    const k = getRandomInt(1, 3);
+    const temps = shuffle([baseTemp, baseTemp - k, baseTemp, baseTemp, baseTemp + k]);
 
     const tableCode = `
       <table>
@@ -34,11 +39,13 @@ export const generator_422 = {
       </table>
     `;
 
+    const sorted = [...temps].sort((a, b) => a - b);
+    const sum = temps.reduce((a, b) => a + b, 0);
     const optionsData = [
-      { text: "Median", isCorrect: false },
-      { text: "Mean", isCorrect: false },
-      { text: "Mode", isCorrect: false },
-      { text: "Range", isCorrect: true }
+      { text: "Median", isCorrect: false, reason: `listed in order, the temperatures are ${sorted.join(', ')}, so the median is the middle value, ${baseTemp}°F` },
+      { text: "Mean", isCorrect: false, reason: `the mean is $\\frac{${sum}}{5} = ${baseTemp}$, or ${baseTemp}°F` },
+      { text: "Mode", isCorrect: false, reason: `${baseTemp}°F occurs 3 times, more often than any other temperature, so it is the mode` },
+      { text: "Range", isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,13 +54,14 @@ export const generator_422 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `Over this 5-day period, which of the following is NOT equal to ${baseTemp}°F?`,
+      questionText: `The table shows the high temperature, in degrees Fahrenheit (°F), in a city on each of 5 days. Over this 5-day period, which of the following is NOT equal to ${baseTemp}°F?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: "Range",
-      explanation: `Choice ${correctOption.letter} is correct. Range is max-min (${Math.max(...temps)}-${Math.min(...temps)}=${Math.max(...temps)-Math.min(...temps)}). Mean, Median, and Mode are all ${baseTemp}.`
+      explanation: `Choice ${correctOption.letter} is correct. The range of a data set is the greatest value minus the least value. The range of these temperatures is $${baseTemp + k} - ${baseTemp - k} = ${2 * k}$, or ${2 * k}°F, which is not equal to ${baseTemp}°F. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
