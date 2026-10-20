@@ -48,9 +48,13 @@ export const generator_371 = {
 
     // Figure: two lines crossing at the center of a 450x250 canvas, with the
     // vertical-angle pair (acute) labeled 1 and 2 in the left/right sectors.
+    // Each line makes an angle of angle1 / 2 with the horizontal, so the
+    // sectors measure exactly angle1 (the slope used to be fixed, drawing
+    // about 53 degrees for every angle from 45 to 85).
     const W = 450, H = 250;
     const cx = W / 2, cy = H / 2;
-    const dx = 190, dy = 95;
+    const dx = Math.min(190, 110 / Math.tan(((angle1 / 2) * Math.PI) / 180));
+    const dy = Math.round(dx * Math.tan(((angle1 / 2) * Math.PI) / 180) * 10) / 10;
     const figureCode = `
       <div style="display:flex;justify-content:center;">
         <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;font-family:sans-serif;user-select:none;">
