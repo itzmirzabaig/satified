@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [leg1: single-digit, leg2: single-digit]
  * - Difficulty factors: [Pythagorean theorem, square root estimation]
- * - Distractor patterns: [sqrt(difference), average of legs, product of legs]
+ * - Distractor patterns: [sqrt(difference), sum of legs, product of legs]
  * - Constraints: [Must satisfy a^2 + b^2 = c^2]
  * - Question type: [Figure -> Multiple Choice Text]
  * - Figure generation: [Right triangle with two legs labeled]
@@ -48,11 +48,12 @@ export const generator_393 = {
       const hypotenuseSquared = leg1 * leg1 + leg2 * leg2;
       hypotenuse = round(Math.sqrt(hypotenuseSquared), 1).toFixed(1);
       distractorA = round(Math.sqrt(Math.abs(leg1 * leg1 - leg2 * leg2)), 1).toFixed(1);
-      distractorB = round((leg1 + leg2) / 2, 1).toFixed(1);
+      distractorB = round(leg1 + leg2, 1).toFixed(1); // sum of the legs (was their average)
       distractorD = round(leg1 * leg2, 1).toFixed(1);
 
       const vals = [hypotenuse, distractorA, distractorB, distractorD];
-      let distinct = true;
+      // Equal legs would make the difference of the squares 0, a "0.0" choice.
+      let distinct = leg1 !== leg2;
       for (let a = 0; a < vals.length && distinct; a++) {
         for (let b = a + 1; b < vals.length; b++) {
           if (vals[a] === vals[b] || numEq(vals[a], vals[b])) { distinct = false; break; }
@@ -84,10 +85,10 @@ export const generator_393 = {
     `;
 
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "may result from taking the square root of the difference of the squares of the legs instead of the sum" },
-      { text: distractorB, isCorrect: false, reason: "may result from averaging the leg lengths instead of applying the Pythagorean theorem" },
-      { text: hypotenuse, isCorrect: true },
-      { text: distractorD, isCorrect: false, reason: "may result from multiplying the leg lengths instead of applying the Pythagorean theorem" }
+      { text: distractorA, isCorrect: false, reason: `it results from subtracting the squares of the legs, $\\sqrt{${Math.max(leg1, leg2) ** 2} - ${Math.min(leg1, leg2) ** 2}}$, instead of adding them` },
+      { text: distractorB, isCorrect: false, reason: `it is the sum of the leg lengths, $${leg1} + ${leg2}$; the hypotenuse is found from the squares of the legs, and it is shorter than the sum of the legs` },
+      { text: hypotenuse, isCorrect: true, reason: '' },
+      { text: distractorD, isCorrect: false, reason: `it is the product of the leg lengths, $${leg1}(${leg2})$, not the length of the hypotenuse` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -104,7 +105,7 @@ export const generator_393 = {
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. The Pythagorean theorem states that for a right triangle, $a^2 + b^2 = c^2$, where $c$ is the hypotenuse. The legs shown have lengths ${leg1} and ${leg2}, so $c^2 = ${leg1}^2 + ${leg2}^2 = ${leg1 * leg1} + ${leg2 * leg2} = ${hypotenuseSquared}$. Taking the positive square root gives $c = \\sqrt{${hypotenuseSquared}} \\approx ${hypotenuse}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The Pythagorean theorem states that for a right triangle, $a^2 + b^2 = c^2$, where $c$ is the hypotenuse. The legs shown have lengths ${leg1} and ${leg2}, so $c^2 = ${leg1}^2 + ${leg2}^2 = ${leg1 * leg1} + ${leg2 * leg2} = ${hypotenuseSquared}$. Taking the positive square root gives $c = \\sqrt{${hypotenuseSquared}} \\approx ${hypotenuse}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
