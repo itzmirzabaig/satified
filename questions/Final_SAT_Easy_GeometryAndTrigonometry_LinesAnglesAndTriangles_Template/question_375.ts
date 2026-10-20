@@ -11,7 +11,7 @@ import type { QuestionData } from '../../study/types';
  * FIX ANALYSIS:
  * - Old distractors {round(g/10), 180-g-12, 180-g} collided (round(g/10) equalled
  *   180-g-12 at g=153) and were pedagogically weak. Replaced with meaningful,
- *   pairwise-distinct distractors {180-g (supplementary error), g-10 (misread),
+ *   pairwise-distinct distractors {180-g (supplementary error), 360-g,
  *   90 (right-angle assumption)} — verified collision-free over g in [110,160].
  * - Explanation letters read from the shuffled array; each distractor explained.
  * - Cleared DOLLAR_RISK: the given measure is written in prose with a degree sign
@@ -35,37 +35,57 @@ export const generator_375 = {
     // Distractors are constructed to be pairwise distinct from the answer and
     // from each other across the entire [110,160] range (verified exhaustively).
     const dSupp = 180 - givenAngle; // treats the pair as supplementary
-    const dMisread = givenAngle - 10; // careless misread of the figure
+    const dReflex = 360 - givenAngle; // subtracts from 360
     const dRight = 90; // assumes a right angle
 
-    // Plain SVG figure (house style): two parallel lines cut by a transversal,
-    // with the given angle and w in corresponding (matching) positions.
+    // Plain SVG figure (house style): two parallel lines cut by a transversal
+    // that falls to the right at the true angle (it used to be fixed at about
+    // 120 degrees for every given angle from 110 to 160). The corresponding
+    // pair is drawn either above each line and right of the transversal, or
+    // below each line and left of it; both wedges measure givenAngle.
+    const acute = 180 - givenAngle;
+    const upper = Math.random() < 0.5;
+    const W = 460, H = 260, yTop = 80, yBot = 180, ext = 60;
+    const dx = (yBot - yTop) / Math.tan((acute * Math.PI) / 180);
+    const xTop = 230 - dx / 2, xBot = 230 + dx / 2;
+    const r1 = (v: number) => Math.round(v * 10) / 10;
+    const pt = (x: number, y: number, deg: number, d: number) =>
+      [r1(x + d * Math.cos((deg * Math.PI) / 180)), r1(y - d * Math.sin((deg * Math.PI) / 180))];
+    const arcPath = (x: number, y: number, from: number, r: number) => {
+      const [sx, sy] = pt(x, y, from, r);
+      const [ex, ey] = pt(x, y, from + givenAngle, r);
+      return `M ${sx} ${sy} A ${r} ${r} 0 0 0 ${ex} ${ey}`;
+    };
+    const from = upper ? 0 : 180; // wedge start; each wedge spans givenAngle
+    const [glx, gly] = pt(xTop, yTop, from + givenAngle / 2, 34);
+    const [wlx, wly] = pt(xBot, yBot, from + givenAngle / 2, 34);
+    const [t1x, t1y] = pt(xTop, yTop, givenAngle, ext);
+    const [t2x, t2y] = pt(xBot, yBot, givenAngle + 180, ext);
     const figureCode = `
       <div style="display:flex;justify-content:center;">
-      <svg viewBox="0 0 460 260" style="width:100%;max-width:460px;height:auto;font-family:sans-serif;user-select:none;" role="img" aria-label="Two parallel lines cut by a transversal">
-        <!-- Parallel line m (top) -->
-        <line x1="20" y1="70" x2="440" y2="70" stroke="currentColor" stroke-width="2" />
-        <text x="28" y="62" font-size="16" font-style="italic" fill="currentColor">m</text>
-        <!-- Parallel line n (bottom) -->
-        <line x1="20" y1="190" x2="440" y2="190" stroke="currentColor" stroke-width="2" />
-        <text x="28" y="210" font-size="16" font-style="italic" fill="currentColor">n</text>
-        <!-- Transversal -->
-        <line x1="160" y1="10" x2="320" y2="250" stroke="currentColor" stroke-width="2" />
-        <!-- Given angle at the top intersection (upper-right) -->
-        <text x="210" y="58" font-size="16" fill="currentColor">${givenAngle}&#176;</text>
-        <!-- w at the bottom intersection (upper-right, corresponding position) -->
-        <text x="292" y="178" font-size="16" fill="currentColor">w&#176;</text>
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;font-family:serif;user-select:none;" role="img" aria-label="Two parallel lines cut by a transversal">
+        <line x1="20" y1="${yTop}" x2="420" y2="${yTop}" stroke="currentColor" stroke-width="2" />
+        <text x="428" y="${yTop + 5}" font-size="16" font-style="italic" fill="currentColor">m</text>
+        <line x1="20" y1="${yBot}" x2="420" y2="${yBot}" stroke="currentColor" stroke-width="2" />
+        <text x="428" y="${yBot + 5}" font-size="16" font-style="italic" fill="currentColor">n</text>
+        <line x1="${t1x}" y1="${t1y}" x2="${t2x}" y2="${t2y}" stroke="currentColor" stroke-width="2" />
+        <path d="${arcPath(xTop, yTop, from, 16)}" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="${glx}" y="${gly + 5}" text-anchor="middle" font-size="15" fill="currentColor">${givenAngle}&#176;</text>
+        <path d="${arcPath(xBot, yBot, from, 16)}" fill="none" stroke="#3b82f6" stroke-width="1.4"/>
+        <text x="${wlx}" y="${wly + 5}" text-anchor="middle" font-size="15" font-style="italic" fill="#3b82f6">w&#176;</text>
       </svg>
       </div>
     `;
 
     const correctAnswer = givenAngle.toString();
 
+    // The old third choice was the given angle minus 10. With g from 110 to
+    // 160, the values g, 180 - g, 360 - g, and 90 never collide.
     const optionsData = [
-      { text: dSupp.toString(), isCorrect: false, reason: "treats the two angles as supplementary rather than corresponding" },
-      { text: dMisread.toString(), isCorrect: false, reason: "misreads the figure and subtracts 10 from the given measure" },
-      { text: dRight.toString(), isCorrect: false, reason: "assumes a right angle instead of using corresponding angles" },
-      { text: correctAnswer, isCorrect: true }
+      { text: dSupp.toString(), isCorrect: false, reason: `${dSupp} is the measure of an angle supplementary to the ${givenAngle}° angle; corresponding angles are congruent, not supplementary` },
+      { text: dReflex.toString(), isCorrect: false, reason: `it results from subtracting ${givenAngle} from 360; corresponding angles are congruent, so $w$ equals ${givenAngle}` },
+      { text: dRight.toString(), isCorrect: false, reason: `it assumes the transversal is perpendicular to the parallel lines, which the figure does not show` },
+      { text: correctAnswer, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -81,7 +101,7 @@ export const generator_375 = {
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. The given angle of ${givenAngle}° and the angle $w$ lie in matching positions at the two intersections, so they are corresponding angles. When two parallel lines are cut by a transversal, corresponding angles are congruent, so $w = ${givenAngle}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The ${givenAngle}° angle and the angle with measure $w^{\\circ}$ lie in matching positions at the two intersections: each is ${upper ? 'above its line and to the right of' : 'below its line and to the left of'} the transversal. So they are corresponding angles. When two parallel lines are cut by a transversal, corresponding angles are congruent, so $w = ${givenAngle}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
