@@ -34,7 +34,8 @@ export const generator_406 = {
   generate: (): QuestionData => {
     // 1. Generate Data
     const freq0 = getRandomInt(4, 8);
-    const freq1 = getRandomInt(1, 4);
+    // 1 to 3, so the 1 kWh bar (a wrong choice) never matches the 0 kWh bar.
+    const freq1 = getRandomInt(1, 3);
     const freq2 = getRandomInt(2, 6);
     const freq3 = getRandomInt(3, 7);
     const freq4 = getRandomInt(1, 5);
@@ -127,11 +128,14 @@ export const generator_406 = {
     `;
 
     // 6. Options
+    // Each wrong choice is a real misreading; the old ones were "1" (tied to
+    // nothing in the graph) and the answer minus 2. The values 0, freq1 (1 to
+    // 3), freq0 (4 to 8), and the total (at least 11) never collide.
     const optionsData = [
-      { text: "0", isCorrect: false }, // Common confusion with the label
-      { text: "1", isCorrect: false },
-      { text: (freq0 > 2 ? freq0 - 2 : freq0 + 1).toString(), isCorrect: false },
-      { text: freq0.toString(), isCorrect: true }
+      { text: "0", isCorrect: false, reason: `0 is the charge, in kWh, that labels the bar, not the number of days` },
+      { text: freq1.toString(), isCorrect: false, reason: `${freq1} is the height of the bar for 1 kWh, the number of days with a charge of 1 kWh` },
+      { text: totalDays.toString(), isCorrect: false, reason: `${totalDays} is the total number of days shown in the graph` },
+      { text: freq0.toString(), isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -140,13 +144,14 @@ export const generator_406 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
       questionText: `The bar graph shows the daily battery charge (in kWh) recorded over ${totalDays} days. For how many of these days did the battery receive a charge of 0 kWh?`,
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: freq0.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. In the bar graph, the horizontal axis represents the charge in kWh, and the vertical axis represents the number of days. The bar labeled "0" (representing 0 kWh) has a height corresponding to ${freq0} on the vertical axis. Therefore, the battery received a charge of 0 kWh on ${freq0} days.`
+      explanation: `Choice ${correctOption.letter} is correct. In the bar graph, the horizontal axis represents the charge in kWh, and the vertical axis represents the number of days. The bar labeled "0" (representing 0 kWh) has a height corresponding to ${freq0} on the vertical axis. Therefore, the battery received a charge of 0 kWh on ${freq0} days. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
