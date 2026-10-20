@@ -54,9 +54,15 @@ export const generator_399 = {
         new Set([correctAnswer, distractorA, distractorB, distractorD]).size !== 4)
     );
 
-    const groupTypes = ["city council members", "state representatives", "school board members", "planning committee members"];
-    const group = getRandomElement(groupTypes);
-    const billTypes = ["specific bill", "new ordinance", "budget proposal", "zoning change"];
+    // A legislative chamber of 30 to 120 members is realistic; the old text
+    // gave a city that many school board or council members, or "state
+    // representatives".
+    const chamber = getRandomElement([
+      { body: "A state senate", members: "senators" },
+      { body: "A state house of representatives", members: "representatives" },
+      { body: "A state assembly", members: "assembly members" }
+    ]);
+    const billTypes = ["certain bill", "new budget proposal", "transportation bill", "school funding bill"]; // each follows "a"
     const bill = getRandomElement(billTypes);
     const observerTypes = ["reporter", "analyst", "researcher", "pollster"];
     const observer = getRandomElement(observerTypes);
@@ -80,7 +86,7 @@ export const generator_399 = {
     const explanation = `Choice ${correctLetter} is correct. Set up a proportion using the sample rate: $\\frac{${supportersInSample}}{${sampleSize}} = \\frac{x}{${totalPopulation}}$. Solving gives $x = \\frac{${supportersInSample}}{${sampleSize}} \\times ${totalPopulation} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `A city has $${totalPopulation}$ ${group}. A ${observer} polled a random sample of $${sampleSize}$ ${group} and found that $${supportersInSample}$ of those polled supported a ${bill}. Based on the sample, which of the following is the best estimate of the number of ${group} in the city who support the ${bill}?`,
+      questionText: `${chamber.body} has $${totalPopulation}$ members. ${/^[aeiou]/i.test(observer) ? "An" : "A"} ${observer} polled a random sample of $${sampleSize}$ ${chamber.members} and found that $${supportersInSample}$ of those polled supported a ${bill}. Based on the sample, which of the following is the best estimate of the number of ${chamber.members} who support the ${bill}?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
