@@ -20,16 +20,14 @@ export const generator_420 = {
 
   generate: (): QuestionData => {
     // 1. Generate Data
-    // The four answer options are val1 (correct), val2, val3, and the misread
-    // val1 + 10. Because the value ranges overlap (and val1 + 10 can land on
-    // val2/val3), draw until all four option values are distinct — bounded so
-    // an unlucky range can never hang the render.
+    // The three bar values are answer choices, and their ranges overlap, so
+    // draw until they are distinct (bounded so the render can never hang).
     let val1 = getRandomInt(25, 40);
     let val2 = getRandomInt(40, 55);
     let val3 = getRandomInt(50, 65);
     let tries = 0;
     while (
-      new Set([val1, val2, val3, val1 + 10]).size !== 4 &&
+      new Set([val1, val2, val3]).size !== 3 &&
       tries++ < 50
     ) {
       val1 = getRandomInt(25, 40);
@@ -110,11 +108,19 @@ export const generator_420 = {
     `;
 
     // 6. Generate Options
+    // The question used to ask about Group 1 every time, with the answer plus
+    // 10 as a "misread" choice even though every bar shows its value. Now a
+    // group is chosen at random; the choices are the three bar values and the
+    // total (at least 115, so it never matches a bar).
+    const target = data[getRandomInt(0, 2)];
+    const total = val1 + val2 + val3;
     const optionsData = [
-      { text: val1.toString(), isCorrect: true },
-      { text: val2.toString(), isCorrect: false },
-      { text: val3.toString(), isCorrect: false },
-      { text: (val1 + 10).toString(), isCorrect: false } // Plausible misread
+      ...data.map(d => ({
+        text: d.val.toString(),
+        isCorrect: d === target,
+        reason: d === target ? '' : `${d.val} is the number of books collected by ${d.label}, not ${target.label}`
+      })),
+      { text: total.toString(), isCorrect: false, reason: `${total} is the total number of books collected by all three groups` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -123,13 +129,14 @@ export const generator_420 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: "The bar graph shows the distribution of books collected by different groups for a book drive. How many books were collected by Group 1?",
+      questionText: `The bar graph shows the number of books collected by each of three groups for a book drive. How many books were collected by ${target.label}?`,
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: val1.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. According to the bar graph, the bar labeled 'Group 1' reaches a height of ${val1} on the vertical axis.`
+      correctAnswer: target.val.toString(),
+      explanation: `Choice ${correctOption.letter} is correct. In the bar graph, the bar for ${target.label} has a height of ${target.val} on the vertical axis, so ${target.label} collected ${target.val} books. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
