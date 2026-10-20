@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [data values: single digit to 30s]
  * - Difficulty factors: [Calculating mean]
- * - Distractor patterns: [median, calculation error (÷4), max value]
+ * - Distractor patterns: [median, sum without dividing, max value]
  * - Constraints: [5 values, sum divisible by 5 for clean integer mean]
  * - Question type: [Raw Data→Multiple Choice Text]
  * - Figure generation: [No figure]
@@ -30,7 +30,7 @@ export const generator_404 = {
     let values: number[] = [];
     let median = 0;
     let maxVal = 0;
-    let divErr = 0; // classic mistake: divide the sum by 4 instead of 5
+    let divErr = 0; // classic mistake: forget to divide the sum
 
     // Build a data set whose three natural distractors are all distinct from
     // one another and from the correct mean. Ranges are wide, so a collision is
@@ -49,7 +49,9 @@ export const generator_404 = {
       values = [v1, v2, v3, v4, v5].sort((a, b) => a - b);
       median = values[2];
       maxVal = values[4];
-      divErr = Math.round(sum / 4);
+      // The sum itself (forgetting to divide). The old choice was the sum
+      // divided by 4, rounded, which was not exact for most sums.
+      divErr = sum;
       tries++;
     } while (
       tries < 50 &&
@@ -57,10 +59,10 @@ export const generator_404 = {
     );
 
     const optionsData = [
-      { text: mean.toString(), isCorrect: true },
-      { text: median.toString(), isCorrect: false },
-      { text: divErr.toString(), isCorrect: false },
-      { text: maxVal.toString(), isCorrect: false }
+      { text: mean.toString(), isCorrect: true, reason: '' },
+      { text: median.toString(), isCorrect: false, reason: `${median} is the median of the data, the middle value when the values are listed in order, not the mean` },
+      { text: divErr.toString(), isCorrect: false, reason: `${divErr} is the sum of the values; the sum must be divided by the number of values, 5` },
+      { text: maxVal.toString(), isCorrect: false, reason: `${maxVal} is the greatest value in the data, not the mean` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -69,13 +71,14 @@ export const generator_404 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: `What is the mean of the data shown?\n\n${values.join(', ')}`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: mean.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The mean is the sum of the values divided by the number of values: (${values.join(' + ')}) / 5 = ${sum} / 5 = ${mean}. The value ${median} is the median (the middle value), ${maxVal} is the largest value, and ${divErr} comes from mistakenly dividing the sum by 4 instead of 5.`
+      explanation: `Choice ${correctOption.letter} is correct. The mean of a data set is the sum of the values divided by the number of values. The sum of the values is $${values.join(' + ')} = ${sum}$, and there are 5 values, so the mean is $\\frac{${sum}}{5} = ${mean}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
