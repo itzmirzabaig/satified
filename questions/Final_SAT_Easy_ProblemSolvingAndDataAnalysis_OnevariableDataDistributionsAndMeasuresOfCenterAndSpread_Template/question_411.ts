@@ -24,7 +24,8 @@ import type { QuestionData } from '../../study/types';
  *   the option content.
  * - Tables restyled to the house table style (currentColor borders, compact,
  *   centered) so they render on both light and dark themes.
- * - Generation logic untouched: same ranges, data, and distractor tables.
+ * - Wrong tables: columns swapped, counts matched to the wrong numbers, and
+ *   running totals. Frequencies are distinct so each wrong table differs.
  */
 
 export const generator_411 = {
@@ -41,9 +42,14 @@ export const generator_411 = {
     const val2 = val1 + getRandomInt(3, 6);
     const val3 = val2 + getRandomInt(4, 8);
 
-    const freq1 = getRandomInt(3, 6);
-    const freq2 = getRandomInt(2, 5);
-    const freq3 = getRandomInt(1, 4);
+    // Distinct frequencies, so the table with the counts matched to the wrong
+    // numbers always differs from the correct one.
+    let freq1 = 3, freq2 = 2, freq3 = 1;
+    do {
+      freq1 = getRandomInt(3, 6);
+      freq2 = getRandomInt(2, 5);
+      freq3 = getRandomInt(1, 4);
+    } while (new Set([freq1, freq2, freq3]).size < 3);
 
     const rawData = [
       ...Array(freq1).fill(val1),
@@ -63,16 +69,20 @@ export const generator_411 = {
       `<tr><td ${cell}>${v3}</td><td ${cell}>${f3}</td></tr>` +
       `</table></div>`;
 
+    // Wrong tables are real slips. The old ones included a table whose
+    // "Number" column held each number times its frequency (so a number could
+    // appear twice) and a table of arbitrary multiples.
     const tableA = createTable(val1, freq1, val2, freq2, val3, freq3);
-    const tableB = createTable(freq1, val1, freq2, val2, freq3, val3);
-    const tableC = createTable(val1 * freq1, val1, val2 * freq2, val2, val3 * freq3, val3);
-    const tableD = createTable(val1 * 4, freq1 * 2, val2 * 3, freq2 * 3, val3 * 2, freq3 * 4);
+    const tableB = createTable(freq1, val1, freq2, val2, freq3, val3);   // columns swapped
+    const tableC = createTable(val1, freq2, val2, freq3, val3, freq1);   // counts matched to the wrong numbers
+    const tableD = createTable(val1, freq1, val2, freq1 + freq2, val3, freq1 + freq2 + freq3); // running totals
 
+    const times = (n: number) => (n === 1 ? '1 time' : `${n} times`);
     const optionsData = [
-      { text: tableA, isCorrect: true },
-      { text: tableB, isCorrect: false },
-      { text: tableC, isCorrect: false },
-      { text: tableD, isCorrect: false }
+      { text: tableA, isCorrect: true, reason: '' },
+      { text: tableB, isCorrect: false, reason: `it swaps the columns: it lists the frequencies in the Number column and the numbers in the Frequency column` },
+      { text: tableC, isCorrect: false, reason: `it matches the frequencies to the wrong numbers; for example, it shows ${val1} with a frequency of ${freq2}, but ${val1} occurs ${times(freq1)}` },
+      { text: tableD, isCorrect: false, reason: `it shows running totals instead of frequencies; for example, ${val2} occurs ${times(freq2)}, not ${freq1 + freq2}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -81,13 +91,14 @@ export const generator_411 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: `Which frequency table correctly represents the data listed?\n\n${rawData.join(', ')}`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. In the data listed, ${val1} occurs ${freq1} times, ${val2} occurs ${freq2} times, and ${val3} occurs ${freq3} times. This matches the frequency table in option ${correctOption.letter}.`
+      explanation: `Choice ${correctOption.letter} is correct. A frequency table lists each number and the number of times it occurs. In the data listed, ${val1} occurs ${times(freq1)}, ${val2} occurs ${times(freq2)}, and ${val3} occurs ${times(freq3)}, which matches the table in choice ${correctOption.letter}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
