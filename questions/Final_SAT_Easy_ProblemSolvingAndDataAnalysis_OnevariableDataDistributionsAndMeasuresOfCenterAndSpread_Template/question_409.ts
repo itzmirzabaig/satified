@@ -22,18 +22,25 @@ export const generator_409 = {
   },
 
   generate: (): QuestionData => {
+    // The tenth value balances the sum. It used to be anything from about
+    // -100 to 130 and always came last; now it is redrawn until it is between
+    // -5 and 25, and the list is shuffled.
     const mean = getRandomInt(8, 15);
     const targetSum = mean * 10;
-    const values = Array.from({ length: 9 }, () => getRandomInt(2, 20));
-    const currentSum = values.reduce((a, b) => a + b, 0);
-    values.push(targetSum - currentSum);
+    let values: number[] = [];
+    do {
+      values = Array.from({ length: 9 }, () => getRandomInt(2, 20));
+      values.push(targetSum - values.reduce((a, b) => a + b, 0));
+    } while (values[9] < -5 || values[9] > 25);
+    values = shuffle(values);
+    const show = (v: number) => (v < 0 ? `−${-v}` : `${v}`);
 
     return {
-      questionText: `A list of 10 data values is shown.\n\n${values.join(', ')}\n\nWhat is the mean of these data?`,
+      questionText: `A list of 10 data values is shown.\n\n${values.map(show).join(', ')}\n\nWhat is the mean of these data?`,
       figureCode: null,
       options: [],
       correctAnswer: mean.toString(),
-      explanation: `The mean is the sum of the values divided by the count. The sum is ${targetSum}, and there are 10 values, so the mean is ${targetSum}/10 = ${mean}.`
+      explanation: `The correct answer is ${mean}. The mean of a data set is the sum of the values divided by the number of values. The sum of the 10 values is ${targetSum}, so the mean is $\\frac{${targetSum}}{10} = ${mean}$.`
     };
   }
 };
