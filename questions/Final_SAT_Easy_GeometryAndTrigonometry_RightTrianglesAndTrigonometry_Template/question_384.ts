@@ -4,14 +4,20 @@ import type { QuestionData } from '../../study/types';
 /**
  * Question 384
  *
- * FIX ANALYSIS:
- * - Added <Mafs> wrapper with fixed viewBox to ensure visibility.
- * - Decoupled rendering size from value size:
- *   - Draws a fixed-size triangle (4x4 units) for stability.
- *   - Labels it with the random 'legValue' (10-40).
- * - Fixed the "unsolvable" issue by explicitly adding the 45-degree angle label.
- * - Added a Right Angle marker for geometric clarity.
- * - Replaced <LaTeX> with <Text> to prevent double-labeling.
+ * ORIGINAL ANALYSIS:
+ * - Number ranges: [leg: even, 10-40]
+ * - Difficulty factors: [45-45-90 triangle has congruent legs]
+ * - Distractor patterns: [Hypotenuse L√2, half the leg (30-60-90 rule), the angle measure]
+ * - Question type: [Figure→Multiple Choice Text]
+ *
+ * FIXED:
+ * - The old Mafs figure sat on a black box and its x axis was stretched, so
+ *   the "45°" angle of the isosceles right triangle drew at about 32 degrees.
+ *   It is now an SVG with equal legs and a right-angle mark.
+ * - Two wrong choices were twice the leg and 45 plus the leg. They are now
+ *   the hypotenuse (leg times the square root of 2) and half the leg (the
+ *   30-60-90 rule applied to the wrong triangle). The leg is even so half of
+ *   it is a whole number.
  */
 
 export const generator_384 = {
@@ -24,41 +30,23 @@ export const generator_384 = {
   },
 
   generate: (): QuestionData => {
-    const legValue = getRandomInt(10, 40);
-    const doubleLeg = legValue * 2;
-    const sumAngleLeg = 45 + legValue;
-    
-    // Geometry Construction
-    // Fixed drawing size (4 units) ensures the figure always fits the viewbox.
-    // We label this fixed shape with the dynamic 'legValue'.
-    
-    const mafsCode = `
-      <Mafs viewBox={{ x: [-1, 5], y: [-1, 5] }}>
-        {/* Triangle Vertices: (0,0), (4,0), (0,4) */}
-        <Polygon points={[[0, 0], [4, 0], [0, 4]]} color="black" fillOpacity={0.1} />
-        
-        {/* Right Angle Marker at (0,0) */}
-        <Line.Segment point1={[0, 0.4]} point2={[0.4, 0.4]} color="black" />
-        <Line.Segment point1={[0.4, 0.4]} point2={[0.4, 0]} color="black" />
+    const legValue = 2 * getRandomInt(5, 20);
 
-        {/* Labels */}
-        {/* Bottom Leg: Label with legValue */}
-        <Text x={2} y={-0.4}>${legValue}</Text>
-        
-        {/* Left Leg: Label with x */}
-        <Text x={-0.4} y={2}>x</Text>
-        
-        {/* Angle Label at Bottom Right (4,0) */}
-        {/* Placing it slightly inside to indicate the angle */}
-        <Text x={3.2} y={0.3}>45°</Text>
-      </Mafs>
-    `;
+    // Isosceles right triangle: right angle at the bottom left, legs 190 px.
+    const x0 = 80, yB = 225, s = 190;
+    const figureCode = `<div style="width:100%;max-width:360px;margin:0 auto;"><svg viewBox="0 0 360 260" style="width:100%;height:auto;display:block;font-family:serif;" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="${x0},${yB} ${x0 + s},${yB} ${x0},${yB - s}" fill="#3b82f6" fill-opacity="0.12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  <polyline points="${x0},${yB - 16} ${x0 + 16},${yB - 16} ${x0 + 16},${yB}" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <text x="${x0 + s / 2}" y="${yB + 24}" text-anchor="middle" font-size="17" fill="currentColor">${legValue}</text>
+  <text x="${x0 - 16}" y="${yB - s / 2 + 6}" text-anchor="middle" font-size="17" font-style="italic" fill="currentColor">x</text>
+  <text x="${x0 + s - 52}" y="${yB - 10}" text-anchor="middle" font-size="16" fill="currentColor">45°</text>
+</svg></div>`;
 
     const optionsData = [
-      { text: `${legValue}`, isCorrect: true },
-      { text: `45`, isCorrect: false, reason: "confuses the angle measure with the side length" },
-      { text: `${doubleLeg}`, isCorrect: false, reason: "incorrectly doubles the given leg length" },
-      { text: `${sumAngleLeg}`, isCorrect: false, reason: "incorrectly adds the angle measure and the leg length" }
+      { text: `${legValue}`, isCorrect: true, reason: '' },
+      { text: `45`, isCorrect: false, reason: `45 is the measure of the acute angle, in degrees, not a side length` },
+      { text: `$${legValue}\\sqrt{2}$`, isCorrect: false, reason: `$${legValue}\\sqrt{2}$ is the length of the hypotenuse, which is $\\sqrt{2}$ times the length of a leg; $x$ is the length of a leg` },
+      { text: `${legValue / 2}`, isCorrect: false, reason: `it results from taking half of ${legValue}, as for the side opposite the $30^{\\circ}$ angle in a 30-60-90 triangle; this triangle is a 45-45-90 triangle, so its legs are congruent` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -71,10 +59,10 @@ export const generator_384 = {
 
     return {
       questionText: "In the triangle shown, what is the value of $x$?",
-      figureCode: mafsCode,
+      figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The figure shows a right triangle with one acute angle measuring $45^{\\circ}$. Since the sum of angles in a triangle is $180^{\\circ}$ and the right angle is $90^{\\circ}$, the third angle must be $180 - 90 - 45 = 45^{\\circ}$. A triangle with two equal angles is isosceles, meaning its two legs are equal in length. Therefore, $x = ${legValue}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The figure shows a right triangle with one acute angle measuring $45^{\\circ}$. Since the sum of the measures of the angles of a triangle is $180^{\\circ}$, the other acute angle measures $180^{\\circ} - 90^{\\circ} - 45^{\\circ} = 45^{\\circ}$. A triangle with two congruent angles has congruent sides opposite those angles, so the two legs have the same length. Therefore, $x = ${legValue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
