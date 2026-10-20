@@ -40,10 +40,12 @@ export const generator_400 = {
     const group = getRandomElement(groupTypes);
     const orgTypes = ["company", "firm", "organization", "business"];
     const org = getRandomElement(orgTypes);
+    // Full predicates; the old text read "are completed at least two
+    // training modules".
     const activityTypes = [
-      { activity: "enrolled in exactly three professional development courses", descriptor: "enrolled" },
-      { activity: "completed at least two training modules", descriptor: "completed" },
-      { activity: "participating in the mentorship program", descriptor: "participating" }
+      "are enrolled in exactly three professional development courses",
+      "have completed at least two training modules",
+      "are participating in the mentorship program"
     ];
     const activity = getRandomElement(activityTypes);
 
@@ -52,10 +54,10 @@ export const generator_400 = {
     const distractorD = totalPopulation - successesInSample;
 
     const optionsData = [
-      { text: `${distractorA}`, isCorrect: false, reason: "is just the difference between the sample size and the number found" },
-      { text: `${correctAnswer}`, isCorrect: true },
-      { text: `${distractorC}`, isCorrect: false, reason: "subtracts the sample size from the total, which is unrelated" },
-      { text: `${distractorD}`, isCorrect: false, reason: "subtracts the number found from the total, which uses incorrect logic" }
+      { text: `${distractorA}`, isCorrect: false, reason: `${distractorA} is the number of ${group} in the sample who do not fit the description, $${sampleSize} - ${successesInSample}$; it is not an estimate for the whole ${org}` },
+      { text: `${correctAnswer}`, isCorrect: true, reason: '' },
+      { text: `${distractorC}`, isCorrect: false, reason: `${distractorC} is the number of ${group} who were not in the sample, $${totalPopulation} - ${sampleSize}$, not an estimate based on the sample proportion` },
+      { text: `${distractorD}`, isCorrect: false, reason: `it results from subtracting the ${successesInSample} ${group} in the sample from the total, $${totalPopulation} - ${successesInSample}$, instead of applying the sample proportion to the total` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -67,10 +69,10 @@ export const generator_400 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The sample proportion is $\\frac{${successesInSample}}{${sampleSize}}$. Multiply by the total: $${totalPopulation} \\times \\frac{${successesInSample}}{${sampleSize}} = ${correctAnswer}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Since the sample was selected at random, the proportion of ${group} in the sample who fit the description, $\\frac{${successesInSample}}{${sampleSize}}$, is a good estimate of the proportion for all ${group} at the ${org}. Multiplying this proportion by the total number of ${group} gives $\\frac{${successesInSample}}{${sampleSize}}(${totalPopulation}) = ${correctAnswer}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `A manager selected $${sampleSize}$ ${group} at random from all $${totalPopulation}$ ${group} at a ${org}. They found that $${successesInSample}$ of the ${group} in this sample are ${activity.activity} this year. Based on these findings, which of the following is the best estimate of the number of ${group} at the ${org} who are ${activity.activity} this year?`,
+      questionText: `A manager selected $${sampleSize}$ ${group} at random from all $${totalPopulation}$ ${group} at ${/^[aeiou]/i.test(org) ? "an" : "a"} ${org}. They found that $${successesInSample}$ of the ${group} in this sample ${activity} this year. Based on these findings, which of the following is the best estimate of the number of ${group} at the ${org} who ${activity} this year?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
