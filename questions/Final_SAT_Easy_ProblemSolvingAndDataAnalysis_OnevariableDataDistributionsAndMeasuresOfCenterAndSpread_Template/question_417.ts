@@ -20,10 +20,15 @@ export const generator_417 = {
 
   generate: (): QuestionData => {
     // 1. Generate Data
-    const freqA = getRandomInt(3, 8);
-    const freqB = getRandomInt(8, 14);
-    const freqC = getRandomInt(15, 22);
-    const freqD = getRandomInt(10, 18);
+    // The four bars have different heights, so the choices can be the four
+    // bar values; the old code filled any gap with the answer plus or minus 2.
+    let freqA = 3, freqB = 8, freqC = 15, freqD = 10;
+    do {
+      freqA = getRandomInt(3, 8);
+      freqB = getRandomInt(8, 14);
+      freqC = getRandomInt(15, 22);
+      freqD = getRandomInt(10, 18);
+    } while (new Set([freqA, freqB, freqC, freqD]).size < 4);
 
     const data = [
       { label: "Gift A", val: freqA },
@@ -105,43 +110,27 @@ export const generator_417 = {
       </svg>
     `;
 
-    // 6. Generate Options
-    // Start with the correct answer
-    const optionsData = [
-      { text: targetItem.val.toString(), isCorrect: true },
-    ];
-    
-    // Add other bar values as distractors
-    data.forEach(d => {
-      if (d.label !== targetItem.label) {
-        // Prevent duplicate options if multiple bars have same height
-        if (!optionsData.some(o => o.text === d.val.toString())) {
-             optionsData.push({ text: d.val.toString(), isCorrect: false });
-        }
-      }
-    });
+    // 6. Generate Options: the four bar values (all different).
+    const optionsData = data.map(d => ({
+      text: d.val.toString(),
+      isCorrect: d.label === targetItem.label,
+      reason: d.label === targetItem.label ? '' : `${d.val} is the number of volunteers who chose ${d.label}, not ${targetItem.label}`
+    }));
 
-    // Fill remaining spots if needed
-    while (optionsData.length < 4) {
-      const fakeVal = targetItem.val + getRandomInt(-2, 2);
-      if (fakeVal > 0 && !optionsData.some(o => o.text === fakeVal.toString())) {
-        optionsData.push({ text: fakeVal.toString(), isCorrect: false });
-      }
-    }
-
-    const shuffledOptions = shuffle(optionsData).slice(0, 4).map((opt, index) => ({
+    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `The bar graph above shows the number of volunteers who chose different gifts. How many volunteers chose ${targetItem.label}?`,
+      questionText: `The bar graph shows the number of volunteers who chose each of four gifts. How many volunteers chose ${targetItem.label}?`,
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: targetItem.val.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. According to the bar graph, the height of the bar for ${targetItem.label} corresponds to ${targetItem.val} on the vertical axis.`
+      explanation: `Choice ${correctOption.letter} is correct. In the bar graph, the bar for ${targetItem.label} has a height of ${targetItem.val} on the vertical axis, so ${targetItem.val} volunteers chose ${targetItem.label}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
