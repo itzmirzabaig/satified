@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [angle X: 20-40, angle Y: 80-110]
 * - Difficulty factors: [Triangle angle sum theorem, straightforward calculation]
-* - Distractor patterns: [Calculation error, sum of other two angles, exceeds 180 error]
+* - Distractor patterns: [Sum of the two angles, subtracts from 360, subtracts only one angle]
 * - Constraints: [X + Y < 180]
 * - Question type: [Conceptual (no figure)→Multiple Choice Text]
 */
@@ -22,19 +22,22 @@ export const generator_377 = {
   },
 
   generate: (): QuestionData => {
-    const angleX = getRandomInt(20, 40);
-    const angleY = getRandomInt(80, 110);
-    const angleZ = 180 - angleX - angleY;
-    const distractorB = angleZ + 16;
-    const distractorC = angleX + angleY;
-    const distractorD = angleX + angleY + 90;
+    // Each wrong choice is a real slip; two of the old ones were the answer
+    // plus 16 and the sum plus 90. Redraw until the four values differ
+    // (X = 20 and Y = 80 make 180 - Y equal X + Y).
+    let angleX = 20, angleY = 80, angleZ = 80;
+    do {
+      angleX = getRandomInt(20, 40);
+      angleY = getRandomInt(80, 110);
+      angleZ = 180 - angleX - angleY;
+    } while (new Set([angleZ, angleX + angleY, 360 - angleX - angleY, 180 - angleY]).size < 4);
     const correctAnswer = angleZ.toString();
 
     const optionsData = [
-      { text: `${correctAnswer}^{\\circ}`, isCorrect: true },
-      { text: `${distractorB}^{\\circ}`, isCorrect: false, reason: "results from conceptual or calculation errors" },
-      { text: `${distractorC}^{\\circ}`, isCorrect: false, reason: "sums angles X and Y instead of finding the third angle" },
-      { text: `${distractorD}^{\\circ}`, isCorrect: false, reason: "results from conceptual or calculation errors" }
+      { text: `${correctAnswer}^{\\circ}`, isCorrect: true, reason: '' },
+      { text: `${360 - angleX - angleY}^{\\circ}`, isCorrect: false, reason: `it results from subtracting the two given measures from $360^{\\circ}$ instead of $180^{\\circ}$` },
+      { text: `${angleX + angleY}^{\\circ}`, isCorrect: false, reason: `it is the sum of the measures of angles $X$ and $Y$, which must be subtracted from $180^{\\circ}$` },
+      { text: `${180 - angleY}^{\\circ}`, isCorrect: false, reason: `it results from subtracting only the measure of angle $Y$ from $180^{\\circ}$; the measure of angle $X$ must also be subtracted` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,7 +53,7 @@ export const generator_377 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${correctAnswer}^{\\circ}`,
-      explanation: `Choice ${correctOption.letter} is correct. The triangle angle sum theorem states that the sum of the measures of the interior angles of a triangle is $180^{\\circ}$. Therefore, $\\angle Z = 180^{\\circ} - ${angleX}^{\\circ} - ${angleY}^{\\circ} = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The triangle angle sum theorem states that the sum of the measures of the interior angles of a triangle is $180^{\\circ}$. Therefore, the measure of angle $Z$ is $180^{\\circ} - ${angleX}^{\\circ} - ${angleY}^{\\circ} = ${correctAnswer}^{\\circ}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
