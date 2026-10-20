@@ -25,38 +25,42 @@ export const generator_394 = {
   generate: (): QuestionData => {
     const sampleSize = getRandomInt(150, 450);
     const dislikePercentage = getRandomInt(88, 97);
+    // Each medium carries its own plurals and viewer phrase; the old text
+    // built "television seriess" and "people who go see television seriess".
     const media = getRandomElement([
-      { source: "book", adaptation: "movie" },
-      { source: "novel", adaptation: "film" },
-      { source: "comic book", adaptation: "movie" },
-      { source: "book", adaptation: "television series" }
+      { source: "book", sources: "books", adaptation: "movie", viewers: "people who go to see movies" },
+      { source: "novel", sources: "novels", adaptation: "film", viewers: "people who go to see films" },
+      { source: "comic book", sources: "comic books", adaptation: "movie", viewers: "people who go to see movies" },
+      { source: "book", sources: "books", adaptation: "television series", viewers: "people who watch television series" }
     ]);
     const researcher = getRandomElement(["market researcher", "media studio", "polling firm", "production company"]);
+    // Base forms follow "will"; past forms describe what people said. The old
+    // text used past forms after "will" ("will did not enjoy", "will enjoyed").
     const v = getRandomElement([
-      { like: "liked", dislike: "disliked", liked: "liked", disliked: "disliked" },
-      { like: "enjoyed", dislike: "did not enjoy", liked: "enjoyed", disliked: "did not enjoy" }
+      { like: "like", dislike: "dislike", liked: "liked", disliked: "disliked" },
+      { like: "enjoy", dislike: "not enjoy", liked: "enjoyed", disliked: "did not enjoy" }
     ]);
 
     const optionsData = [
       {
-        text: `At least ${dislikePercentage}% of people who go see ${media.adaptation}s will ${v.dislike} this ${media.adaptation}.`,
+        text: `At least ${dislikePercentage}% of ${media.viewers} will ${v.dislike} this ${media.adaptation}.`,
         isCorrect: false,
-        reason: `generalizes results to all viewers of ${media.adaptation}s, but the sample only included people who ${v.liked} the ${media.source}`
+        reason: `it generalizes the result to all viewers of ${media.adaptation === 'television series' ? 'television series' : media.adaptation + 's'}, but the sample included only people who ${v.liked} the ${media.source}`
       },
       {
-        text: `At least ${dislikePercentage}% of people who read ${media.source}s will ${v.dislike} this ${media.adaptation}.`,
+        text: `At least ${dislikePercentage}% of people who read ${media.sources} will ${v.dislike} this ${media.adaptation}.`,
         isCorrect: false,
-        reason: `generalizes results to all readers of ${media.source}s, but the sample only included people who ${v.liked} this specific ${media.source}`
+        reason: `it generalizes the result to all readers of ${media.sources}, but the sample included only people who ${v.liked} this particular ${media.source}`
       },
       {
-        text: `Most people who ${v.dislike} this ${media.source} will ${v.like} this ${media.adaptation}.`,
+        text: `Most people who ${v.disliked} this ${media.source} will ${v.like} this ${media.adaptation}.`,
         isCorrect: false,
-        reason: `draws a conclusion about people who ${v.dislike} the ${media.source}, but the sample only included people who ${v.liked} the ${media.source}`
+        reason: `it draws a conclusion about people who ${v.disliked} the ${media.source}, but the sample included only people who ${v.liked} the ${media.source}`
       },
       {
-        text: `Most people who ${v.like} this ${media.source} will ${v.dislike} this ${media.adaptation}.`,
+        text: `Most people who ${v.liked} this ${media.source} will ${v.dislike} this ${media.adaptation}.`,
         isCorrect: true,
-        reason: `correctly limits the inference to the sampled population (those who ${v.liked} the ${media.source})`
+        reason: ''
       }
     ];
 
@@ -68,7 +72,7 @@ export const generator_394 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The sample was selected from a group of people who indicated that they ${v.liked} the ${media.source}. It is inappropriate to generalize the result of the survey beyond the population from which the participants were selected. Choice ${correctOption.letter} is the most appropriate inference because it describes a conclusion about people who ${v.liked} the ${media.source}, which matches the sampled population where ${dislikePercentage}% ${v.disliked} the ${media.adaptation}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The sample was selected at random from a group of people who indicated that they ${v.liked} the ${media.source}, so the result can be generalized only to that population. Since ${dislikePercentage}% of the people surveyed said they ${v.disliked} the ${media.adaptation}, it is appropriate to infer that most people who ${v.liked} the ${media.source} will ${v.dislike} the ${media.adaptation}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A ${researcher} selected ${sampleSize} people at random from a group of people who indicated that they ${v.liked} a certain ${media.source}. The ${sampleSize} people were shown a ${media.adaptation} based on the ${media.source} and then asked whether they ${v.liked} or ${v.disliked} the ${media.adaptation}. Of those surveyed, ${dislikePercentage}% said they ${v.disliked} the ${media.adaptation}. Which of the following inferences can appropriately be drawn from this survey result?`,
