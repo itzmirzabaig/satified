@@ -51,11 +51,12 @@ export const generator_403 = {
     const distractorBRange = `$${(rangeStart - 1500).toLocaleString('en-US')}$ to $${(rangeEnd - 1500).toLocaleString('en-US')}$`;
     const distractorDRange = `$${(rangeStart + 4000).toLocaleString('en-US')}$ to $${(rangeEnd + 4000).toLocaleString('en-US')}$`;
 
+    const fmt = (n: number) => n.toLocaleString('en-US');
     const optionsData = [
-      { text: distractorARange, isCorrect: false, reason: "is too low" },
-      { text: distractorBRange, isCorrect: false, reason: "is lower than the estimate" },
-      { text: correctRange, isCorrect: true },
-      { text: distractorDRange, isCorrect: false, reason: "is too high" }
+      { text: distractorARange, isCorrect: false, reason: `every value in this range is less than the estimate of ${fmt(estimatedTotal)} ${objectType}` },
+      { text: distractorBRange, isCorrect: false, reason: `every value in this range is less than the estimate of ${fmt(estimatedTotal)} ${objectType}` },
+      { text: correctRange, isCorrect: true, reason: '' },
+      { text: distractorDRange, isCorrect: false, reason: `every value in this range is greater than the estimate of ${fmt(estimatedTotal)} ${objectType}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -70,10 +71,13 @@ export const generator_403 = {
     const sampleList = sampleValues.join("$, $");
     const sum = sampleValues.reduce((a, b) => a + b, 0);
 
-    const explanation = `Choice ${correctLetter} is correct. Calculate the mean: $\\frac{${sampleList}}{${numSamples}} = \\frac{${sum}}{${numSamples}} = ${mean}$ ${objectType} per acre. Then estimate total: $${mean} \\times ${totalAcres} = ${estimatedTotal}$, which falls in the range ${correctRange}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    // The mean used to be written as \frac{60$, $54$, ...}{5}, which put "$"
+    // inside the fraction and broke the math; the total had no comma.
+    const exact = mean * totalAcres;
+    const explanation = `Choice ${correctLetter} is correct. The mean number of ${objectType} per acre in the sample is $\\frac{${sampleValues.join(' + ')}}{${numSamples}} = \\frac{${sum}}{${numSamples}} = ${mean}$. Multiplying this mean by the number of acres in the ${location} gives an estimate of $${mean}(${totalAcres})${Number.isInteger(exact) ? ' = ' : ' \\approx '}${fmt(estimatedTotal)}$ ${objectType}, which is in the range from ${fmt(rangeStart)} to ${fmt(rangeEnd)}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `A certain ${location} is $${totalAcres}$ acres. To estimate the number of ${objectType} in the ${location}, a ${measurer} randomly selects $${numSamples}$ different $1$-acre parcels in the ${location} and determines the number of ${objectType} in each parcel. The numbers of ${objectType} in the sample acres are $${sampleList}$. Based on the mean of the sample, which of the following ranges contains the best estimate for the number of ${objectType} in the entire ${location}?`,
+      questionText: `A certain ${location} is $${totalAcres}$ acres. To estimate the number of ${objectType} in the ${location}, ${/^[aeiou]/i.test(measurer) ? 'an' : 'a'} ${measurer} randomly selects $${numSamples}$ different $1$-acre parcels in the ${location} and determines the number of ${objectType} in each parcel. The numbers of ${objectType} in the sample acres are $${sampleList}$. Based on the mean of the sample, which of the following ranges contains the best estimate for the number of ${objectType} in the entire ${location}?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
