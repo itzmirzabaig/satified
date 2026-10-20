@@ -81,7 +81,9 @@ const isGraphCode = (s: string) =>
 const sanitize = (text: string): string => {
   if (!text) return text;
   text = text.replace(/\\{3,}([a-zA-Z])/g, '\\$1');
-  text = text.replace(/\\{1,}%\$(?!\$)/g, '%');
+  // A rule here used to turn "\%$" into "%", which removed the closing "$"
+  // of every "$30\%$" and left the math unbalanced ("$30%" on the page).
+  // MathJax renders "\%" inside math, so it is left alone.
   const getDollarPositions = (t: string): number[] => {
     const pos: number[] = [];
     for (let i = 0; i < t.length; i++) {
