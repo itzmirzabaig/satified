@@ -7,9 +7,9 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [angle Q: 15-35]
 * - Difficulty factors: [Similar triangles, right triangles, corresponding angles, complementary angles]
-* - Distractor patterns: [Wrong correspondence, calculation error, supplementary error]
+* - Distractor patterns: [Wrong correspondence, forgets the right angle, supplementary error]
 * - Constraints: [Must be right triangles, angle P + angle Q = 90]
-* - Question type: [Figure→Multiple Choice Text]
+* - Question type: [No figure, Multiple Choice Text]
 */
 
 export const generator_379 = {
@@ -24,24 +24,16 @@ export const generator_379 = {
   generate: (): QuestionData => {
     const angleQ = getRandomInt(15, 35);
     const angleP = 90 - angleQ;
-    const mafsCode = `
-      <Coordinates.Cartesian xAxis={{ labels: false, axis: false }} yAxis={{ labels: false, axis: false }} />
-      <Polygon points={[,,]} />
-      <Polygon points={[,, [11, 4.5]]} />
-      <LaTeX at={[3.5, 0.5]} tex="18^{\\circ}" />
-      <LaTeX at={[0.5, 0.5]} tex="Q" />
-      <LaTeX at={[5.5, 0.5]} tex="S" />
-    `;
     const correctAnswer = angleP.toString();
-    const distractorA = angleQ;
-    const distractorC = angleP + 10;
-    const distractorD = 180 - angleP;
 
+    // Each wrong choice is a real slip; the old third choice was the answer
+    // plus 10. The values P (55 to 75), Q (15 to 35), 180 - P (105 to 125),
+    // and 180 - Q (145 to 165) never collide.
     const optionsData = [
-      { text: `${distractorA}^{\\circ}`, isCorrect: false, reason: "confuses angle Q with angle S, incorrect correspondence" },
-      { text: `${correctAnswer}^{\\circ}`, isCorrect: true },
-      { text: `${distractorC}^{\\circ}`, isCorrect: false, reason: "calculation error" },
-      { text: `${distractorD}^{\\circ}`, isCorrect: false, reason: "finds supplementary angle instead" }
+      { text: `${angleQ}^{\\circ}`, isCorrect: false, reason: `$${angleQ}^{\\circ}$ is the measure of angle $Q$, which corresponds to angle $T$, not angle $S$` },
+      { text: `${correctAnswer}^{\\circ}`, isCorrect: true, reason: '' },
+      { text: `${180 - angleQ}^{\\circ}`, isCorrect: false, reason: `it results from subtracting the measure of angle $Q$ from $180^{\\circ}$ without also subtracting the $90^{\\circ}$ right angle` },
+      { text: `${180 - angleP}^{\\circ}`, isCorrect: false, reason: `it is the measure of an angle supplementary to angle $P$; corresponding angles of similar triangles are congruent, not supplementary` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -53,11 +45,11 @@ export const generator_379 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `Right triangles $PQR$ and $STU$ are similar, where $P$ corresponds to $S$. If the measure of angle $Q$ is $${angleQ}^{\\circ}$, what is the measure of angle $S$?`,
+      questionText: `Right triangles $PQR$ and $STU$ are similar, where angles $P$, $Q$, and $R$ correspond to angles $S$, $T$, and $U$, respectively, and angle $R$ is a right angle. If the measure of angle $Q$ is $${angleQ}^{\\circ}$, what is the measure of angle $S$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${correctAnswer}^{\\circ}`,
-      explanation: `Choice ${correctOption.letter} is correct. In right triangle $PQR$, $\\angle P + \\angle Q = 90^{\\circ}$, so $\\angle P = 90^{\\circ} - ${angleQ}^{\\circ} = ${correctAnswer}^{\\circ}$. Since triangles $PQR$ and $STU$ are similar with $P$ corresponding to $S$, we have $\\angle S = \\angle P = ${correctAnswer}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. In right triangle $PQR$, angle $R$ is the right angle, so the measures of angles $P$ and $Q$ add to $90^{\\circ}$. The measure of angle $P$ is therefore $90^{\\circ} - ${angleQ}^{\\circ} = ${correctAnswer}^{\\circ}$. Corresponding angles of similar triangles are congruent, and angle $S$ corresponds to angle $P$, so the measure of angle $S$ is also $${correctAnswer}^{\\circ}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
