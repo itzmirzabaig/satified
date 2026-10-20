@@ -21,45 +21,36 @@ export const generator_410 = {
   generate: (): QuestionData => {
     // 1. Dynamic Data Generation
     
-    // Pool of names to choose from
-    const countryNames = [
-      "Monaco", "Nauru", "San Marino", "Tuvalu", 
-      "Liechtenstein", "Marshall Islands", "Saint Kitts", "Maldives", 
-      "Palau", "Grenada"
+    // The old version gave real countries random areas (Monaco "0.57",
+    // Liechtenstein "73"), which misstated real facts. These are the
+    // countries' approximate land areas in square kilometers; five are chosen
+    // at random. The draw is redone until the median and the mean round to
+    // different whole numbers.
+    const countries = [
+      { name: "Monaco", area: 2.02 },
+      { name: "Nauru", area: 21 },
+      { name: "Tuvalu", area: 26 },
+      { name: "San Marino", area: 61 },
+      { name: "Liechtenstein", area: 160 },
+      { name: "Marshall Islands", area: 181 },
+      { name: "Saint Kitts and Nevis", area: 261 },
+      { name: "Maldives", area: 298 },
+      { name: "Malta", area: 316 },
+      { name: "Grenada", area: 344 }
     ];
-    
-    // Shuffle and pick 5 distinct countries
-    const selectedNames = shuffle(countryNames).slice(0, 5);
-    
-    // Generate random areas (sq km) 
-    // We create a skewed distribution to make Mean vs Median interesting
-    // 1 very small value (float), 4 larger integer values
-    const smallArea = Math.round((Math.random() * 2 + 0.5) * 100) / 100; // 0.50 to 2.50
-    const mediumAreas = [
-      getRandomInt(20, 35),
-      getRandomInt(50, 80),
-      getRandomInt(90, 120),
-      getRandomInt(150, 300)
-    ];
-
-    const areas = [smallArea, ...mediumAreas];
-    
-    // Combine into objects and shuffle row order for the table
-    const tableData = shuffle(selectedNames.map((name, i) => ({
-      name,
-      area: areas[i]
-    })));
+    let tableData = countries.slice(0, 5);
+    let sum = 0, mean = 0, roundedMean = 0, roundedMedian = 0;
+    do {
+      tableData = shuffle(countries).slice(0, 5);
+      sum = Math.round(tableData.reduce((acc, curr) => acc + curr.area, 0) * 100) / 100;
+      mean = sum / tableData.length;
+      roundedMean = Math.round(mean);
+      roundedMedian = Math.round([...tableData].map(d => d.area).sort((a, b) => a - b)[2]);
+    } while (roundedMedian === roundedMean);
 
     // 2. Calculations
-    const sum = tableData.reduce((acc, curr) => acc + curr.area, 0);
     const count = tableData.length;
-    const mean = sum / count;
-    const roundedMean = Math.round(mean);
-
-    // Calculate statistics for distractors
     const sortedAreas = [...tableData].map(d => d.area).sort((a, b) => a - b);
-    const median = sortedAreas[2]; // Middle of 5 is index 2
-    const roundedMedian = Math.round(median);
     const maxVal = Math.round(sortedAreas[4]);
     const roundedSum = Math.round(sum);
 
@@ -84,56 +75,31 @@ export const generator_410 = {
       </table>
     `;
 
-    // 4. Generate Options
-    // We need unique options. Sometimes Mean ≈ Median, so we handle collisions.
-    const uniqueOptions = new Map<string, { text: string, isCorrect: boolean }>();
-    
-    // Correct Answer
-    uniqueOptions.set(roundedMean.toString(), { text: roundedMean.toString(), isCorrect: true });
+    // 4. Generate Options. The mean, median, greatest value, and sum are
+    // distinct: the loop above separates the mean and the median, the sum is
+    // more than 4 times the mean, and the greatest value is above the mean.
+    // (The old version filled any gap with the mean plus a random offset.)
+    const optionsData = [
+      { text: roundedMean.toString(), isCorrect: true, reason: '' },
+      { text: roundedMedian.toString(), isCorrect: false, reason: `${roundedMedian} is the median land area, the middle value when the areas are listed in order, not the mean` },
+      { text: maxVal.toString(), isCorrect: false, reason: `${maxVal} is the greatest land area in the table, not the mean` },
+      { text: roundedSum.toLocaleString('en-US'), isCorrect: false, reason: `${roundedSum.toLocaleString('en-US')} is the sum of the land areas, to the nearest square kilometer; the sum must be divided by ${count}` }
+    ];
 
-    // Distractor 1: Median
-    if (!uniqueOptions.has(roundedMedian.toString())) {
-      uniqueOptions.set(roundedMedian.toString(), { text: roundedMedian.toString(), isCorrect: false });
-    }
-
-    // Distractor 2: Max Value
-    if (!uniqueOptions.has(maxVal.toString())) {
-      uniqueOptions.set(maxVal.toString(), { text: maxVal.toString(), isCorrect: false });
-    }
-
-    // Distractor 3: The Sum (Forgot to divide)
-    if (!uniqueOptions.has(roundedSum.toString())) {
-      uniqueOptions.set(roundedSum.toString(), { text: roundedSum.toString(), isCorrect: false });
-    }
-
-    // Fill remaining spots with plausible offsets if we had collisions
-    while (uniqueOptions.size < 4) {
-      const offset = getRandomInt(-10, 10);
-      const fake = roundedMean + offset;
-      if (fake > 0 && !uniqueOptions.has(fake.toString())) {
-        uniqueOptions.set(fake.toString(), { text: fake.toString(), isCorrect: false });
-      }
-    }
-
-    const shuffledOptions = shuffle(Array.from(uniqueOptions.values())).map((opt, index) => ({
+    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `The table above lists the land areas, in square kilometers, of ${count} countries. What is the mean land area of these countries, to the nearest square kilometer?`,
+      questionText: `The table shown lists the approximate land areas, in square kilometers, of ${count} countries. What is the mean land area of these countries, to the nearest square kilometer?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: roundedMean.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. To find the mean land area, sum the areas of the ${count} countries and divide by ${count}.
-      <br/><br/>
-      Sum = ${tableData.map(d => d.area).join(' + ')} = ${parseFloat(sum.toFixed(2))}
-      <br/>
-      Mean = ${parseFloat(sum.toFixed(2))} / ${count} ≈ ${mean.toFixed(2)}
-      <br/><br/>
-      Rounding ${mean.toFixed(2)} to the nearest square kilometer gives ${roundedMean}.`
+      explanation: `Choice ${correctOption.letter} is correct. The mean of a data set is the sum of the values divided by the number of values. The sum of the land areas is $${tableData.map(d => d.area).join(' + ')} = ${sum.toLocaleString('en-US')}$, so the mean is $\\frac{${sum.toLocaleString('en-US')}}{${count}} ${Math.abs(mean * 100 - Math.round(mean * 100)) < 1e-9 ? '=' : '\\approx'} ${parseFloat(mean.toFixed(2))}$. To the nearest square kilometer, the mean land area is ${roundedMean}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
