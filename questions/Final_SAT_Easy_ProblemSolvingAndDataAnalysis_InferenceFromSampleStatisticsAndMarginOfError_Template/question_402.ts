@@ -41,15 +41,18 @@ export const generator_402 = {
     ];
     const food = getRandomElement(foodTypes);
 
-    const distractorA = Math.round((successesInSample / 100) * population / 100) * 100;
-    const distractorC = Math.round(population * 0.5 / 100) * 100;
-    const distractorD = Math.round(population * 0.7 / 100) * 100;
+    // Each wrong choice is a real slip; two of the old ones were 50% and 70%
+    // of the population, explained only as "not supported by the sample data".
+    const percentInSample = (successesInSample * 100) / sampleSize;            // 12 to 18, exact (7 / 50 * 100 gave 14.000000000000002)
+    const distractorA = Math.round((successesInSample / 100) * population / 100) * 100;   // 6 to 9 percent: under 1,800
+    const distractorC = Math.round(((sampleSize - successesInSample) / sampleSize) * population / 100) * 100; // at least 82 percent
+    const fmt = (n: number) => n.toLocaleString('en-US');
 
     const optionsData = [
-      { text: `$${distractorA.toLocaleString('en-US')}$`, isCorrect: false, reason: "results from setting up the proportion incorrectly" },
-      { text: `$${correctAnswerRounded.toLocaleString('en-US')}$`, isCorrect: true },
-      { text: `$${distractorC.toLocaleString('en-US')}$`, isCorrect: false, reason: "is not supported by the sample data" },
-      { text: `$${distractorD.toLocaleString('en-US')}$`, isCorrect: false, reason: "is not supported by the sample data" }
+      { text: `$${fmt(distractorA)}$`, isCorrect: false, reason: `it results from treating ${successesInSample} out of ${sampleSize} as ${successesInSample}%; ${successesInSample} out of ${sampleSize} is ${percentInSample}%` },
+      { text: `$${fmt(correctAnswerRounded)}$`, isCorrect: true, reason: '' },
+      { text: `$${fmt(distractorC)}$`, isCorrect: false, reason: `it estimates the number of people who would not name ${food.flavor}, using $\\frac{${sampleSize - successesInSample}}{${sampleSize}}$ instead of $\\frac{${successesInSample}}{${sampleSize}}$` },
+      { text: `$${percentInSample}$`, isCorrect: false, reason: `${percentInSample} is the percent of the people in the sample who named ${food.flavor}, not the number of people in the ${location}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -61,7 +64,7 @@ export const generator_402 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Set up a proportion: $\\frac{${successesInSample}}{${sampleSize}} = \\frac{x}{${population.toLocaleString('en-US')}}$. This gives $x = \\frac{${successesInSample}}{${sampleSize}} \\times ${population.toLocaleString('en-US')} \\approx ${estimatedTotal.toLocaleString('en-US')}$, which rounds to $${correctAnswerRounded.toLocaleString('en-US')}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Set up a proportion: $\\frac{${successesInSample}}{${sampleSize}} = \\frac{x}{${population.toLocaleString('en-US')}}$. This gives $x = \\frac{${successesInSample}}{${sampleSize}} \\times ${population.toLocaleString('en-US')} \\approx ${estimatedTotal.toLocaleString('en-US')}$, which is about ${correctAnswerRounded.toLocaleString('en-US')}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A random sample of $${sampleSize}$ people from a ${location} with a population of $${population.toLocaleString('en-US')}$ were asked to name their favorite flavor of ${food.item}. If $${successesInSample}$ people in the sample named ${food.flavor} as their favorite ${food.item} flavor, about how many people in the ${location} would be expected to name ${food.flavor}?`,
