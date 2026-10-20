@@ -1,18 +1,26 @@
-import { getRandomInt, shuffle } from '../../utils/math';
+import { getRandomElement, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 387
  *
- * FIX ANALYSIS:
- * - Fixed logical error: Angle x was placed at the right angle (0,0). 
- *   Moved Angle x to the vertex at (4,0).
- *   This ensures the vertical side is "Opposite" and horizontal is "Adjacent", 
- *   matching the answer logic (tan x = opp/adj).
- * - Fixed scaling: Decoupled drawing size from random values.
- *   Draws a fixed 3x4 triangle to fit the viewbox, labels it with the random values (5-10, 20-30).
- * - Added Right Angle marker.
- * - Replaced <LaTeX> with <Text> to prevent double-labeling.
+ * ORIGINAL ANALYSIS:
+ * - Number ranges: [primitive Pythagorean triples with leg ratio between 0.3 and 3.3]
+ * - Difficulty factors: [Tangent as opposite over adjacent]
+ * - Distractor patterns: [Adjacent over opposite, sine, cosine]
+ * - Question type: [Figure→Multiple Choice Text]
+ *
+ * FIXED:
+ * - The old Mafs figure was a fixed 3-by-4 triangle on a black box labeled
+ *   with random legs (20 to 30 and 5 to 10), so the side labeled 22 drew
+ *   shorter than the side labeled 7. The wrong choices were 1 over the
+ *   opposite side, the difference over the opposite side, and the sum over
+ *   the adjacent side.
+ * - The triangle now comes from a primitive Pythagorean triple (either leg can
+ *   be opposite x), is drawn to scale, and labels all three sides. The wrong
+ *   choices are adjacent over opposite, sine (opposite over hypotenuse), and
+ *   cosine (adjacent over hypotenuse); a primitive triple keeps every ratio
+ *   in lowest terms.
  */
 
 export const generator_387 = {
@@ -25,36 +33,35 @@ export const generator_387 = {
   },
 
   generate: (): QuestionData => {
-    const opposite = getRandomInt(20, 30);
-    const adjacent = getRandomInt(5, 10);
+    const triple = getRandomElement([[3, 4, 5], [5, 12, 13], [8, 15, 17], [20, 21, 29], [12, 35, 37], [28, 45, 53], [33, 56, 65], [48, 55, 73]]);
+    const swap = Math.random() < 0.5;
+    const opposite = swap ? triple[1] : triple[0];
+    const adjacent = swap ? triple[0] : triple[1];
+    const hyp = triple[2];
 
-    const mafsCode = `
-      <Mafs viewBox={{ x: [-2, 5], y: [-1, 4] }}>
-        {/* Triangle Vertices: C(0,0), A(4,0), B(0,3) */}
-        <Polygon points={[[0, 0], [4, 0], [0, 3]]} color="black" fillOpacity={0.1} />
-        
-        {/* Right Angle Marker at C(0,0) */}
-        <Line.Segment point1={[0, 0.4]} point2={[0.4, 0.4]} color="black" />
-        <Line.Segment point1={[0.4, 0.4]} point2={[0.4, 0]} color="black" />
-
-        {/* Labels */}
-        {/* Adjacent Side (Bottom) */}
-        <Text x={2} y={-0.5}>${adjacent}</Text>
-        
-        {/* Opposite Side (Left) */}
-        <Text x={-0.8} y={1.5}>${opposite}</Text>
-        
-        {/* Angle x at Vertex A (4,0) */}
-        {/* This makes the vertical side 'opposite' and horizontal 'adjacent' */}
-        <Text x={3.2} y={0.4}>x°</Text>
-      </Mafs>
-    `;
+    // Right angle at the bottom left; the opposite side is vertical and the
+    // adjacent side horizontal, so x is at the bottom right. The longer leg
+    // is 200 px.
+    const k = 200 / Math.max(opposite, adjacent);
+    const x0 = 70, yB = 240, w = Math.round(adjacent * k), h = Math.round(opposite * k);
+    const xAngle = Math.atan(opposite / adjacent) * 180 / Math.PI;
+    const d = Math.max(30, 15 / Math.sin((xAngle / 2) * Math.PI / 180));
+    const bis = (180 - xAngle / 2) * Math.PI / 180;
+    const lx = Math.round(x0 + w + d * Math.cos(bis)), ly = Math.round(yB - d * Math.sin(bis));
+    const figureCode = `<div style="width:100%;max-width:360px;margin:0 auto;"><svg viewBox="0 0 360 275" style="width:100%;height:auto;display:block;font-family:serif;" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="${x0},${yB} ${x0 + w},${yB} ${x0},${yB - h}" fill="#3b82f6" fill-opacity="0.12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  <polyline points="${x0},${yB - 14} ${x0 + 14},${yB - 14} ${x0 + 14},${yB}" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <text x="${x0 + w / 2}" y="${yB + 24}" text-anchor="middle" font-size="17" fill="currentColor">${adjacent}</text>
+  <text x="${x0 - 12}" y="${yB - h / 2 + 6}" text-anchor="end" font-size="17" fill="currentColor">${opposite}</text>
+  <text x="${Math.round(x0 + w / 2 + 16)}" y="${Math.round(yB - h / 2 - 6)}" text-anchor="start" font-size="17" fill="currentColor">${hyp}</text>
+  <text x="${lx}" y="${ly + 6}" text-anchor="middle" font-size="16" font-style="italic" fill="currentColor">x°</text>
+</svg></div>`;
 
     const optionsData = [
-      { text: `$\\frac{1}{${opposite}}$`, isCorrect: false, reason: "uses the reciprocal of the opposite side length" },
-      { text: `$\\frac{${opposite - adjacent}}{${opposite}}$`, isCorrect: false, reason: "uses an incorrect calculation involving the difference of side lengths" },
-      { text: `$\\frac{${opposite}}{${adjacent}}$`, isCorrect: true },
-      { text: `$\\frac{${opposite + adjacent}}{${adjacent}}$`, isCorrect: false, reason: "incorrectly adds the sides before forming the ratio" }
+      { text: `$\\frac{${adjacent}}{${opposite}}$`, isCorrect: false, reason: `it is the ratio of the adjacent side to the opposite side, which is the reciprocal of $\\tan x^{\\circ}$` },
+      { text: `$\\frac{${opposite}}{${hyp}}$`, isCorrect: false, reason: `it is the ratio of the opposite side to the hypotenuse, which is $\\sin x^{\\circ}$` },
+      { text: `$\\frac{${opposite}}{${adjacent}}$`, isCorrect: true, reason: '' },
+      { text: `$\\frac{${adjacent}}{${hyp}}$`, isCorrect: false, reason: `it is the ratio of the adjacent side to the hypotenuse, which is $\\cos x^{\\circ}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -68,10 +75,10 @@ export const generator_387 = {
 
     return {
       questionText: "In the triangle shown, what is the value of $\\tan x^{\\circ}$?",
-      figureCode: mafsCode,
+      figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. The tangent of an acute angle in a right triangle is the ratio of the length of the side opposite the angle to the length of the side adjacent to the angle. In the triangle shown, relative to angle $x^{\\circ}$, the opposite side has length ${opposite} and the adjacent side has length ${adjacent}. Thus, $\\tan x^{\\circ} = \\frac{\\text{opposite}}{\\text{adjacent}} = \\frac{${opposite}}{${adjacent}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. The tangent of an acute angle in a right triangle is the ratio of the length of the side opposite the angle to the length of the side adjacent to the angle. In the triangle shown, the side opposite the angle with measure $x^{\\circ}$ has length ${opposite}, and the side adjacent to it (not the hypotenuse) has length ${adjacent}. Therefore, $\\tan x^{\\circ} = \\frac{${opposite}}{${adjacent}}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
