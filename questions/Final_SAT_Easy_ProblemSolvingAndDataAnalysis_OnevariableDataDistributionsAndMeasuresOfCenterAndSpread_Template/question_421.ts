@@ -132,9 +132,11 @@ export const generator_421 = {
     `;
 
     // 6. Generate Options
+    const freqOf = (name: string) => data.find(d => d.label === name)?.val;
     const optionsData = orderedCategories.map(name => ({
       text: name,
-      isCorrect: name === correctCategory
+      isCorrect: name === correctCategory,
+      reason: name === correctCategory ? '' : `the bar for ${name} shows a frequency of ${freqOf(name)}, not ${targetFreq}`
     }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -143,13 +145,14 @@ export const generator_421 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: `A data set consists of ${data.reduce((a,b)=>a+b.val,0)} items. The bar graph shows the frequency of each color in the data set. Which color appears exactly ${targetFreq} times?`,
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctCategory,
-      explanation: `Choice ${correctOption.letter} is correct. Looking at the graph, find the value ${targetFreq} on the vertical axis (Frequency). The bar that reaches exactly this height corresponds to ${correctCategory} on the horizontal axis.`
+      explanation: `Choice ${correctOption.letter} is correct. Looking at the graph, find the value ${targetFreq} on the vertical axis (Frequency). The bar that reaches exactly this height corresponds to ${correctCategory} on the horizontal axis. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
