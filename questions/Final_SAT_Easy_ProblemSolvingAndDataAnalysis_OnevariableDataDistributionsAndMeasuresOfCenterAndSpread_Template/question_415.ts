@@ -1,4 +1,4 @@
-import { getRandomInt, shuffle } from '../../utils/math';
+import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -22,32 +22,34 @@ export const generator_415 = {
   },
 
   generate: (): QuestionData => {
-    // Both series are arithmetic, so mean === median for each. To keep "I and II"
-    // the correct answer for every draw, Foothill's central value (fhStart - 2*fhDecrement)
-    // must strictly exceed Valley's central value (vlyStart + 2*vlyIncrement). Guard with
-    // a bounded retry so an unlucky draw can never tie or invert the intended answer.
-    let fhStart = 0, fhDecrement = 0, vlyStart = 0, vlyIncrement = 0;
-    let tries = 0;
+    // The old data were two arithmetic sequences, so each mean equaled its
+    // median and "I and II" was correct on every draw. Now a target outcome is
+    // chosen at random and yearly counts are redrawn until they produce it:
+    // statement I compares the means and statement II the medians.
+    const target = getRandomElement(['both', 'I', 'II', 'neither'] as const);
+    const median5 = (v: number[]) => [...v].sort((a, b) => a - b)[2];
+    const sum5 = (v: number[]) => v.reduce((a, b) => a + b, 0);
+    let fh: number[] = [], vly: number[] = [];
+    let iTrue = false, iiTrue = false;
     do {
-      // Foothill: starts high, decreases over 5 years
-      fhStart = getRandomInt(82, 95);
-      fhDecrement = getRandomInt(2, 5);
-      // Valley: starts low, increases over 5 years
-      vlyStart = getRandomInt(55, 68);
-      vlyIncrement = getRandomInt(2, 5);
+      fh = Array.from({ length: 5 }, () => getRandomInt(55, 100));
+      vly = Array.from({ length: 5 }, () => getRandomInt(55, 100));
+      const sf = sum5(fh), sv = sum5(vly), mf = median5(fh), mv = median5(vly);
+      if (sf === sv || mf === mv) continue;
+      iTrue = sf > sv;
+      iiTrue = mf > mv;
     } while (
-      (fhStart - 2 * fhDecrement) <= (vlyStart + 2 * vlyIncrement) &&
-      tries++ < 50
+      (target === 'both' && !(iTrue && iiTrue)) ||
+      (target === 'I' && !(iTrue && !iiTrue)) ||
+      (target === 'II' && !(!iTrue && iiTrue)) ||
+      (target === 'neither' && !(!iTrue && !iiTrue)) ||
+      sum5(fh) === sum5(vly) || median5(fh) === median5(vly)
     );
 
-    const fh = [fhStart, fhStart - fhDecrement, fhStart - 2*fhDecrement, fhStart - 3*fhDecrement, fhStart - 4*fhDecrement];
-    const vly = [vlyStart, vlyStart + vlyIncrement, vlyStart + 2*vlyIncrement, vlyStart + 3*vlyIncrement, vlyStart + 4*vlyIncrement];
-
-    // Compute means and medians (fh is sorted descending, vly ascending)
-    const fhMean = (fh.reduce((a, b) => a + b, 0) / 5).toFixed(1);
-    const vlyMean = (vly.reduce((a, b) => a + b, 0) / 5).toFixed(1);
-    const fhMedian = fh[2]; // middle of 5 sorted values
-    const vlyMedian = vly[2];
+    const fhMean = sum5(fh) / 5;   // a sum of whole numbers over 5: at most one decimal place
+    const vlyMean = sum5(vly) / 5;
+    const fhMedian = median5(fh);
+    const vlyMedian = median5(vly);
 
     const tableCode = `
       <table>
@@ -57,12 +59,14 @@ export const generator_415 = {
       </table>
     `;
 
-    const optionsData = [
-      { text: "I only", isCorrect: false },
-      { text: "II only", isCorrect: false },
-      { text: "I and II", isCorrect: true },
-      { text: "Neither I nor II", isCorrect: false }
-    ];
+    const correctText = iTrue && iiTrue ? "I and II" : iTrue ? "I only" : iiTrue ? "II only" : "Neither I nor II";
+    const iWord = iTrue ? 'true' : 'false';
+    const iiWord = iiTrue ? 'true' : 'false';
+    const optionsData = ["I only", "II only", "I and II", "Neither I nor II"].map(text => ({
+      text,
+      isCorrect: text === correctText,
+      reason: text === correctText ? '' : `statement I is ${iWord} and statement II is ${iiWord}`
+    }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -70,13 +74,15 @@ export const generator_415 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+    const sorted = (v: number[]) => [...v].sort((a, b) => a - b).join(', ');
 
     return {
-      questionText: "I. The mean number of interns at Foothill is greater than at Valley.\nII. The median number of interns at Foothill is greater than at Valley.\nWhich of the following statements is true?",
+      questionText: "The table shows the number of interns at two high schools, Foothill and Valley, each year from 2008 to 2012. Which of the following statements is true?\nI. The mean number of interns per year at Foothill is greater than at Valley.\nII. The median number of interns per year at Foothill is greater than at Valley.",
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: "I and II",
-      explanation: `Choice ${correctOption.letter} is correct. Foothill Mean: ${fhMean}, Valley Mean: ${vlyMean}. Foothill Median: ${fhMedian}, Valley Median: ${vlyMedian}. Both statements are true.`
+      correctAnswer: correctText,
+      explanation: `Choice ${correctOption.letter} is correct. The mean number of interns per year is $\\frac{${sum5(fh)}}{5} = ${fhMean}$ at Foothill and $\\frac{${sum5(vly)}}{5} = ${vlyMean}$ at Valley, so statement I is ${iWord}. Listed in order, the numbers are ${sorted(fh)} at Foothill and ${sorted(vly)} at Valley, so the medians are ${fhMedian} and ${vlyMedian}, and statement II is ${iiWord}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
