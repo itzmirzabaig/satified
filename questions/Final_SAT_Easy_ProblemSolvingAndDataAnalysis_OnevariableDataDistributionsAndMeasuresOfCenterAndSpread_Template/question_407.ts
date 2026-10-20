@@ -33,7 +33,7 @@ export const generator_407 = {
       figureCode: null,
       options: [],
       correctAnswer: median.toString(),
-      explanation: `The median of an ordered data set with 9 values is the 5th value. In the list ${values.join(', ')}, the 5th value is ${median}.`
+      explanation: `The correct answer is ${median}. The median of a data set with an odd number of values is the middle value when the values are listed in order. The 9 values are already listed in order, so the median is the 5th value, ${median}.`
     };
   }
 };
