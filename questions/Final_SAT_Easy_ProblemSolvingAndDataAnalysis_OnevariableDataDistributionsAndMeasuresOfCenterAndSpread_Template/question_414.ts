@@ -56,12 +56,15 @@ export const generator_414 = {
       <line x1="${margin.left}" y1="${axisY}" x2="${width - margin.right}" y2="${axisY}" stroke="currentColor" stroke-width="2" />
     `);
 
-    // Ticks and Labels
-    for (let v = axisMin; v <= axisMax; v += step) {
+    // Ticks and Labels. Every whole number gets a tick (labels every `step`),
+    // so an odd median such as 9 is readable when the labels go by 2; before,
+    // it fell between two ticks.
+    for (let v = axisMin; v <= axisMax; v += 1) {
       const x = getX(v);
+      const labeled = (v - axisMin) % step === 0;
       axisElements.push(`
-        <line x1="${x}" y1="${axisY}" x2="${x}" y2="${axisY + 8}" stroke="currentColor" stroke-width="1" />
-        <text x="${x}" y="${axisY + 25}" text-anchor="middle" font-size="12" fill="currentColor" style="font-family: sans-serif; opacity: 0.8;">${v}</text>
+        <line x1="${x}" y1="${axisY}" x2="${x}" y2="${axisY + (labeled ? 8 : 5)}" stroke="currentColor" stroke-width="1" />
+        ${labeled ? `<text x="${x}" y="${axisY + 25}" text-anchor="middle" font-size="12" fill="currentColor" style="font-family: sans-serif; opacity: 0.8;">${v}</text>` : ''}
       `);
     }
 
@@ -103,10 +106,10 @@ export const generator_414 = {
 
     // 6. Options
     const optionsData = [
-      { text: min.toString(), isCorrect: false },
-      { text: q1.toString(), isCorrect: false },
-      { text: median.toString(), isCorrect: true },
-      { text: max.toString(), isCorrect: false }
+      { text: min.toString(), isCorrect: false, reason: `${min} is at the left end of the left whisker, which is the minimum value, not the median` },
+      { text: q1.toString(), isCorrect: false, reason: `${q1} is at the left edge of the box, which is the first quartile, not the median` },
+      { text: median.toString(), isCorrect: true, reason: '' },
+      { text: max.toString(), isCorrect: false, reason: `${max} is at the right end of the right whisker, which is the maximum value, not the median` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -115,13 +118,14 @@ export const generator_414 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: "The box plot above summarizes a data set. What is the median of the data set?",
+      questionText: "The box plot shown summarizes a data set. What is the median of the data set?",
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: median.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. In a box plot, the median is indicated by the vertical line inside the rectangular box. Reading the graph, the vertical line inside the shaded box aligns with ${median} on the horizontal axis.`
+      explanation: `Choice ${correctOption.letter} is correct. In a box plot, the median is shown by the vertical line inside the box. In the box plot shown, this line is at ${median} on the horizontal axis, so the median of the data set is ${median}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
