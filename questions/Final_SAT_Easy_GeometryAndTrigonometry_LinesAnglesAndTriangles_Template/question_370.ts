@@ -30,10 +30,9 @@ import type { QuestionData } from '../../study/types';
  *   matched its label in any generation.
  * - Rebuilt as a self-contained SVG derived from baseAngle: the transversal's
  *   direction is exactly baseAngle°, so every drawn wedge equals its true
- *   measure. All five angles get arcs with labels on their wedge bisectors;
- *   acute and obtuse arcs at the bottom vertex use different radii so the four
- *   marks read as separate angles rather than one circle. Lines labeled j, k,
- *   and ℓ. No color accent on any variable — the correct option concerns w,
+ *   measure. Every label sits on its wedge bisector; only the given angle
+ *   has an arc, since four arcs at the bottom vertex read as one circle.
+ *   Lines labeled j, k, and ℓ. No color accent on any variable — the correct option concerns w,
  *   and highlighting it would leak the answer.
  * - Generation logic untouched.
  */
@@ -122,29 +121,26 @@ export const generator_370 = {
       `<div style="width:100%;max-width:460px;margin:0 auto;"><svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg">` +
       line(j1, j2) + line(k1, k2) + line(lBot, lTop) +   // lines j, k and transversal ℓ
       dot(P) + dot(Q) +
+      // Only the given angle gets an arc: four arcs around the bottom
+      // intersection read as one circle. The letters sit on the bisectors.
       arc(P, 0, baseAngle, 0.42) +                      // GIVEN: NE of the top intersection
-      arc(Q, 0, baseAngle, 0.36) +                      // w: NE (corresponding to the given angle)
-      arc(Q, baseAngle, 180, 0.46) +                    // x: NW (obtuse)
-      arc(Q, 180, 180 + baseAngle, 0.36) +              // y: SW (acute)
-      arc(Q, 180 + baseAngle, 360, 0.46) +              // z: SE (obtuse)
       text(givenLbl, `${baseAngle}\u00B0`, false) +
-      text(wLbl, "w", true) + text(xLbl, "x", true) + text(yLbl, "y", true) + text(zLbl, "z", true) +
+      text(wLbl, "w\u00B0", true) + text(xLbl, "x\u00B0", true) + text(yLbl, "y\u00B0", true) + text(zLbl, "z\u00B0", true) +
       text(jLbl, "j", true, 14) + text(kLbl, "k", true, 14) + text(lLbl, "\u2113", true, 14) +
       `</svg></div>`;
 
     // Correct Condition: Corresponding angles are equal
-    const correctCondition = `w = ${baseAngle}`;
+    const correctCondition = `$w = ${baseAngle}$`;
 
-    // Distractors
-    // x is Obtuse. Claiming x = baseAngle is False.
-    // y is Acute. Claiming y = supplementaryAngle is False.
-    // z is Obtuse. Claiming z = baseAngle is False.
-
+    // Each wrong condition forces w = 180 - baseAngle, so the corresponding
+    // angles would not be congruent. The old reasons read "it x is obtuse
+    // while the given angle is acute", which also leaned on the figure instead
+    // of the given condition.
     const optionsData = [
-      { text: correctCondition, isCorrect: true },
-      { text: `x = ${baseAngle}`, isCorrect: false, reason: "x is obtuse while the given angle is acute" },
-      { text: `y = ${supplementaryAngle}`, isCorrect: false, reason: "y is acute while the supplementary angle is obtuse" },
-      { text: `z = ${baseAngle}`, isCorrect: false, reason: "z is obtuse while the given angle is acute" }
+      { text: correctCondition, isCorrect: true, reason: '' },
+      { text: `$x = ${baseAngle}$`, isCorrect: false, reason: `the angles with measures $x^{\\circ}$ and $w^{\\circ}$ form a linear pair, so if $x = ${baseAngle}$, then $w = 180 - ${baseAngle} = ${supplementaryAngle}$; the corresponding angles would then measure ${supplementaryAngle}° and ${baseAngle}°, so lines $j$ and $k$ would not be parallel` },
+      { text: `$y = ${supplementaryAngle}$`, isCorrect: false, reason: `the angles with measures $y^{\\circ}$ and $w^{\\circ}$ are vertical angles, so if $y = ${supplementaryAngle}$, then $w = ${supplementaryAngle}$; the corresponding angles would then measure ${supplementaryAngle}° and ${baseAngle}°, so lines $j$ and $k$ would not be parallel` },
+      { text: `$z = ${baseAngle}$`, isCorrect: false, reason: `the angles with measures $z^{\\circ}$ and $x^{\\circ}$ are vertical angles, and the angle with measure $x^{\\circ}$ forms a linear pair with the angle with measure $w^{\\circ}$, so if $z = ${baseAngle}$, then $w = ${supplementaryAngle}$; lines $j$ and $k$ would not be parallel` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -160,7 +156,7 @@ export const generator_370 = {
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctCondition,
-      explanation: `Choice ${correctOption.letter} is correct. If $w = ${baseAngle}$, then $w$ and the angle measuring $${baseAngle}^{\\circ}$ are congruent corresponding angles. The converse of the Corresponding Angles Postulate states that if two lines are cut by a transversal so that corresponding angles are congruent, then the lines are parallel. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The angle with measure $w^{\\circ}$ and the angle with measure ${baseAngle}° are corresponding angles: each is above its line and to the right of line $\\ell$. If two lines are cut by a transversal so that corresponding angles are congruent, then the lines are parallel. So if $w = ${baseAngle}$, lines $j$ and $k$ are parallel. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
