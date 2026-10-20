@@ -94,10 +94,10 @@ export const generator_413 = {
     // from each other because vervet = mandrill + diff and total = mandrill +
     // vervet, so total > vervet > mandrill and diff !== mandrill by construction.
     const optionsData = [
-      { text: diff.toString(), isCorrect: true },
-      { text: mandrill.toString(), isCorrect: false },
-      { text: vervet.toString(), isCorrect: false },
-      { text: total.toString(), isCorrect: false }
+      { text: diff.toString(), isCorrect: true, reason: '' },
+      { text: mandrill.toString(), isCorrect: false, reason: `${mandrill} is the number of mandrills, not the difference` },
+      { text: vervet.toString(), isCorrect: false, reason: `${vervet} is the number of vervets, not the difference` },
+      { text: total.toString(), isCorrect: false, reason: `${total} is the total number of mandrills and vervets, $${vervet} + ${mandrill}$, not the difference` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -106,13 +106,14 @@ export const generator_413 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: "The bar graph shows the number of mandrills and vervets in a wildlife sanctuary. How many more vervets than mandrills are in the sanctuary?",
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: diff.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. The graph shows ${vervet} vervets and ${mandrill} mandrills, so there are ${vervet} - ${mandrill} = ${diff} more vervets than mandrills.`
+      explanation: `Choice ${correctOption.letter} is correct. The graph shows ${vervet} vervets and ${mandrill} mandrills, so there are $${vervet} - ${mandrill} = ${diff}$ more vervets than mandrills. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
