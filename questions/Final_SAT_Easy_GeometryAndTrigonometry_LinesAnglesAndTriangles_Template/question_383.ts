@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
 * ORIGINAL ANALYSIS:
 * - Number ranges: [angle X: 20-35, angle Y: 50-70]
 * - Difficulty factors: [Triangle angle sum, straightforward calculation]
-* - Distractor patterns: [Subtraction error, calculation error, sum of X and Y]
+* - Distractor patterns: [Difference of X and Y, subtracts from 360, sum of X and Y]
 * - Constraints: [Standard triangle, sum = 180]
 * - Question type: [Conceptual (no figure)→Multiple Choice Text]
 *
@@ -41,7 +41,7 @@ export const generator_383 = {
       angleY = getRandomInt(50, 70);
       angleZ = 180 - angleX - angleY;          // third angle (the answer)
       distractorA = angleY - angleX;           // subtracts X from Y erroneously
-      distractorB = angleZ - 2;                 // small calculation slip
+      distractorB = 360 - angleX - angleY;      // subtracts from 360 (was the answer minus 2)
       distractorD = angleX + angleY;            // sums X and Y instead
       tries++;
     } while (
@@ -52,10 +52,10 @@ export const generator_383 = {
     const correctAnswer = `$${angleZ}^{\\circ}$`;
 
     const optionsData = [
-      { text: `$${distractorA}^{\\circ}$`, isCorrect: false, reason: "subtracts angle X from angle Y instead of finding the third angle" },
-      { text: `$${distractorB}^{\\circ}$`, isCorrect: false, reason: "results from a calculation error in the angle sum" },
-      { text: correctAnswer, isCorrect: true },
-      { text: `$${distractorD}^{\\circ}$`, isCorrect: false, reason: "adds angles X and Y instead of subtracting their sum from 180" }
+      { text: `$${distractorA}^{\\circ}$`, isCorrect: false, reason: `it is the difference of the two given measures, $${angleY}^{\\circ} - ${angleX}^{\\circ}$; the third angle is found by subtracting both measures from $180^{\\circ}$` },
+      { text: `$${distractorB}^{\\circ}$`, isCorrect: false, reason: `it results from subtracting the two given measures from $360^{\\circ}$ instead of $180^{\\circ}$` },
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: `$${distractorD}^{\\circ}$`, isCorrect: false, reason: `it is the sum of the measures of angles $X$ and $Y$, which must be subtracted from $180^{\\circ}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -67,11 +67,11 @@ export const generator_383 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `In $\\triangle XYZ$, the measure of $\\angle X = ${angleX}^{\\circ}$ and the measure of $\\angle Y = ${angleY}^{\\circ}$. What is the measure of $\\angle Z$?`,
+      questionText: `In triangle $XYZ$, the measure of angle $X$ is $${angleX}^{\\circ}$ and the measure of angle $Y$ is $${angleY}^{\\circ}$. What is the measure of angle $Z$?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctAnswer,
-      explanation: `Choice ${correctOption.letter} is correct. The interior angles of a triangle satisfy $\\angle X + \\angle Y + \\angle Z = 180^{\\circ}$, so $\\angle Z = 180^{\\circ} - \\angle X - \\angle Y = 180^{\\circ} - ${angleX}^{\\circ} - ${angleY}^{\\circ} = ${angleZ}^{\\circ}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The sum of the measures of the angles of a triangle is $180^{\\circ}$. Therefore, the measure of angle $Z$ is $180^{\\circ} - ${angleX}^{\\circ} - ${angleY}^{\\circ} = ${angleZ}^{\\circ}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
