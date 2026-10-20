@@ -34,31 +34,36 @@ export const generator_397 = {
     const metric = getRandomElement(metricTypes);
     const dataTypes = [
       { item: "test scores", unit: "points" },
-      { item: "heights", unit: "inches" },
-      { item: "weights", unit: "pounds" },
+      { item: "plant heights", unit: "inches" },  // values are 25 to 50, which suits plants and dogs
+      { item: "dog weights", unit: "pounds" },
       { item: "ages", unit: "years" }
     ];
     const dataType = getRandomElement(dataTypes);
+
+    // "a" or "an" to match the next word; the old text read "In a analysis"
+    // and "had a average".
+    const art = (w: string) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
 
     const optionsData = [
       {
         text: `It is less than $${sampleMean}$.`,
         isCorrect: false,
-        reason: "while the true mean could be less, it could also be greater"
+        reason: `the population ${metric} could be less than ${sampleMean}, but it could also be greater; the plausible values extend from ${lowerBound} to ${upperBound}`
       },
       {
         text: `It is greater than $${sampleMean}$.`,
         isCorrect: false,
-        reason: "while the true mean could be greater, it could also be less"
+        reason: `the population ${metric} could be greater than ${sampleMean}, but it could also be less; the plausible values extend from ${lowerBound} to ${upperBound}`
       },
       {
         text: `It is between $${lowerBound}$ and $${upperBound}$.`,
-        isCorrect: true
+        isCorrect: true,
+        reason: ''
       },
       {
         text: `It is less than $${lowerBound}$ or greater than $${upperBound}$.`,
         isCorrect: false,
-        reason: "describes values outside the confidence interval where the mean is unlikely to be"
+        reason: `it describes the values outside the interval of plausible values, which is where the population ${metric} is not likely to be`
       }
     ];
 
@@ -71,10 +76,10 @@ export const generator_397 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The margin of error defines a range around the sample mean where the true population mean likely falls: $${sampleMean} - ${marginOfError} = ${lowerBound}$ to $${sampleMean} + ${marginOfError} = ${upperBound}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The margin of error gives a range of plausible values for the population ${metric} around the sample ${metric}: from $${sampleMean} - ${marginOfError} = ${lowerBound}$ to $${sampleMean} + ${marginOfError} = ${upperBound}$. So the most appropriate conclusion is that the population ${metric} is between ${lowerBound} and ${upperBound} ${dataType.unit}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `In a ${study}, the data from a random sample of a population had a ${metric} of $${sampleMean}$, with an associated margin of error of $${marginOfError}$. Which of the following is the most appropriate conclusion that can be made about the population ${metric}?`,
+      questionText: `In ${art(study)} ${study}, the ${dataType.item} from a random sample of a population had ${art(metric)} ${metric} of $${sampleMean}$ ${dataType.unit}, with an associated margin of error of $${marginOfError}$ ${dataType.unit}. Which of the following is the most appropriate conclusion that can be made about the population ${metric}, in ${dataType.unit}?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
