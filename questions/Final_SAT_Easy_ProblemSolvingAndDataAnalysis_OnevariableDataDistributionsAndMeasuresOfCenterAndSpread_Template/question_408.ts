@@ -60,7 +60,7 @@ export const generator_408 = {
       const x = getX(v);
       axisElements.push(`
         <line x1="${x}" y1="${axisY}" x2="${x}" y2="${axisY + 8}" stroke="currentColor" stroke-width="1" />
-        <text x="${x}" y="${axisY + 25}" text-anchor="middle" font-size="12" fill="currentColor" style="font-family: sans-serif; opacity: 0.8;">${v}</text>
+        <text x="${x}" y="${axisY + 25}" text-anchor="middle" font-size="12" fill="currentColor" style="font-family: sans-serif; opacity: 0.8;">${v.toLocaleString('en-US')}</text>
       `);
     }
 
@@ -109,11 +109,12 @@ export const generator_408 = {
     //   q1  -> left edge of the box mistaken for the median line
     //   q3  -> right edge of the box mistaken for the median line
     //   min -> left whisker end mistaken for the center
+    const fmt = (n: number) => n.toLocaleString('en-US');
     const optionsData = [
-      { text: median.toLocaleString('en-US'), isCorrect: true },
-      { text: q1.toLocaleString('en-US'), isCorrect: false },
-      { text: q3.toLocaleString('en-US'), isCorrect: false },
-      { text: min.toLocaleString('en-US'), isCorrect: false }
+      { text: fmt(median), isCorrect: true, reason: '' },
+      { text: fmt(q1), isCorrect: false, reason: `${fmt(q1)} is at the left edge of the box, which is the first quartile, not the median` },
+      { text: fmt(q3), isCorrect: false, reason: `${fmt(q3)} is at the right edge of the box, which is the third quartile, not the median` },
+      { text: fmt(min), isCorrect: false, reason: `${fmt(min)} is at the left end of the left whisker, which is the minimum, not the median` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -122,13 +123,17 @@ export const generator_408 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
+    // The stem said "the box plot above" (the plot is shown beside or below
+    // the text), the axis labels had no commas, and the explanation gave no
+    // choice-by-choice reasons.
     return {
-      questionText: "The number of acres of useful timberland in several counties is summarized in the box plot above. Which of the following is closest to the median number of acres?",
+      questionText: "The number of acres of useful timberland in several counties is summarized in the box plot shown. Which of the following is closest to the median number of acres?",
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: median.toLocaleString('en-US'),
-      explanation: `Choice ${correctOption.letter} is correct. In a box plot, the median is indicated by the vertical line inside the box (not the edges of the box or the ends of the whiskers). Reading the graph, that vertical line aligns with ${median.toLocaleString('en-US')} on the horizontal axis. The values ${q1.toLocaleString('en-US')} and ${q3.toLocaleString('en-US')} are the left and right edges of the box (the first and third quartiles), and ${min.toLocaleString('en-US')} is the left end of the whisker (the minimum).`
+      correctAnswer: fmt(median),
+      explanation: `Choice ${correctOption.letter} is correct. In a box plot, the median is shown by the vertical line inside the box. In the box plot shown, this line is at about ${fmt(median)} on the horizontal axis, so the median number of acres is closest to ${fmt(median)}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
