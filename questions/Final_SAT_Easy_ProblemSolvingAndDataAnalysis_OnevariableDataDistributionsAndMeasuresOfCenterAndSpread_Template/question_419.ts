@@ -42,13 +42,15 @@ export const generator_419 = {
     if (values.length === 0) {
       values = Array.from({ length: 10 }, () => mean);
     }
+    // The forced value used to be listed last on every draw.
+    values = shuffle(values);
 
     return {
       questionText: `Each value in the data set shown represents the height, in centimeters, of a plant.\n\n${values.join(', ')}\n\nWhat is the mean height, in centimeters, of these plants?`,
       figureCode: null,
       options: [],
       correctAnswer: mean.toString(),
-      explanation: `The sum of the heights is ${targetSum}. Dividing by 10 plants gives a mean of ${mean}.`
+      explanation: `The correct answer is ${mean}. The mean of a data set is the sum of the values divided by the number of values. The sum of the 10 heights is ${targetSum} centimeters, so the mean height is $\\frac{${targetSum}}{10} = ${mean}$ centimeters.`
     };
   }
 };
