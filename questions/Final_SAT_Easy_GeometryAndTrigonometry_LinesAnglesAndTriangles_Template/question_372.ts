@@ -49,23 +49,35 @@ export const generator_372 = {
     );
 
     // Plain SVG figure (house style): two parallel lines with a triangle whose
-    // apex is on the top line and whose base sits on the bottom line.
+    // apex is on the top line and whose base sits on the bottom line. The
+    // triangle used to be a fixed isosceles shape (base angles near 51
+    // degrees whatever y and z were). It is now built in units with the
+    // lines 1 apart and base angles y and z, then scaled to fit the box.
+    const rad = (d: number) => (d * Math.PI) / 180;
+    const left = 1 / Math.tan(rad(y)), right = 1 / Math.tan(rad(z));
+    const W = 460, H = 240, PADX = 40;
+    const span = left + right + 0.7;              // triangle plus 0.35 units of line on each side
+    const sc = Math.min((W - 2 * PADX) / span, 150);
+    const top = (H - sc) / 2, bot = top + sc;
+    const x0 = (W - span * sc) / 2;
+    const Bx = x0 + 0.35 * sc, Ax = Bx + left * sc, Cx = Ax + right * sc;
+    const r1 = (v: number) => Math.round(v * 10) / 10;
+    const at = (px: number, py: number, deg: number, d: number) => [r1(px + d * Math.cos(rad(deg))), r1(py - d * Math.sin(rad(deg)))];
+    const [ylx, yly] = at(Bx, bot, y / 2, Math.max(30, 14 / Math.sin(rad(y / 2))));
+    const [zlx, zly] = at(Cx, bot, 180 - z / 2, Math.max(30, 14 / Math.sin(rad(z / 2))));
+    const [xlx, xly] = at(Ax, top, (180 + y + 360 - z) / 2, Math.max(26, 14 / Math.sin(rad(x / 2))));
     const figureCode = `
       <div style="display:flex;justify-content:center;">
-      <svg viewBox="0 0 460 260" style="width:100%;max-width:460px;height:auto;font-family:sans-serif;user-select:none;" role="img" aria-label="Triangle formed between two parallel lines">
-        <!-- Top parallel line (ell) -->
-        <line x1="20" y1="60" x2="440" y2="60" stroke="currentColor" stroke-width="2" />
-        <text x="30" y="50" font-size="16" font-style="italic" fill="currentColor">&#8467;</text>
-        <!-- Bottom parallel line (m) -->
-        <line x1="20" y1="210" x2="440" y2="210" stroke="currentColor" stroke-width="2" />
-        <text x="30" y="230" font-size="16" font-style="italic" fill="currentColor">m</text>
-        <!-- Triangle sides -->
-        <line x1="230" y1="60" x2="110" y2="210" stroke="currentColor" stroke-width="2" />
-        <line x1="230" y1="60" x2="350" y2="210" stroke="currentColor" stroke-width="2" />
-        <!-- Vertex angle labels -->
-        <text x="222" y="86" font-size="16" fill="currentColor">x&#176;</text>
-        <text x="120" y="200" font-size="16" fill="currentColor">y&#176;</text>
-        <text x="326" y="200" font-size="16" fill="currentColor">z&#176;</text>
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;font-family:serif;user-select:none;" role="img" aria-label="Triangle formed between two parallel lines">
+        <line x1="${r1(x0)}" y1="${r1(top)}" x2="${r1(x0 + span * sc)}" y2="${r1(top)}" stroke="currentColor" stroke-width="2" />
+        <text x="${r1(x0 + span * sc + 10)}" y="${r1(top + 5)}" font-size="16" font-style="italic" fill="currentColor">&#8467;</text>
+        <line x1="${r1(x0)}" y1="${r1(bot)}" x2="${r1(x0 + span * sc)}" y2="${r1(bot)}" stroke="currentColor" stroke-width="2" />
+        <text x="${r1(x0 + span * sc + 10)}" y="${r1(bot + 5)}" font-size="16" font-style="italic" fill="currentColor">m</text>
+        <line x1="${r1(Ax)}" y1="${r1(top)}" x2="${r1(Bx)}" y2="${r1(bot)}" stroke="currentColor" stroke-width="2" />
+        <line x1="${r1(Ax)}" y1="${r1(top)}" x2="${r1(Cx)}" y2="${r1(bot)}" stroke="currentColor" stroke-width="2" />
+        <text x="${xlx}" y="${xly + 5}" text-anchor="middle" font-size="16" font-style="italic" fill="currentColor">x&#176;</text>
+        <text x="${ylx}" y="${yly + 5}" text-anchor="middle" font-size="16" font-style="italic" fill="currentColor">y&#176;</text>
+        <text x="${zlx}" y="${zly + 5}" text-anchor="middle" font-size="16" font-style="italic" fill="currentColor">z&#176;</text>
       </svg>
       </div>
     `;
@@ -88,7 +100,7 @@ export const generator_372 = {
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     return {
-      questionText: `In the figure above, lines $\\ell$ and $m$ are parallel. The triangle has interior angles $x^{\\circ}$, $y^{\\circ}$, and $z^{\\circ}$, where $y=${y}$ and $z=${z}$. What is the value of $x$?`,
+      questionText: `In the figure, lines $\\ell$ and $m$ are parallel. The triangle has interior angles $x^{\\circ}$, $y^{\\circ}$, and $z^{\\circ}$, where $y=${y}$ and $z=${z}$. What is the value of $x$?`,
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer,
