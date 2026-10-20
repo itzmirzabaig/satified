@@ -20,8 +20,8 @@ import type { QuestionData } from '../../study/types';
  *   numbered y-axis (step 2) with gridlines, trial labels 1-5 under the axis,
  *   bold value labels on top of each bar so all five data values are directly
  *   readable, axis titles, currentColor throughout for theme support.
- * - Generation logic untouched: same do/while (sum not divisible by 5), mean,
- *   distractors, options, explanation.
+ * - Wrong choices: the median, the sum, and the sum divided by 4 (they were
+ *   the mean plus or minus small amounts).
  */
 
 export const generator_424 = {
@@ -43,7 +43,9 @@ export const generator_424 = {
         getRandomInt(2, 6), getRandomInt(2, 6)
       ];
       sum = defects.reduce((a, b) => a + b, 0);
-    } while (sum % 5 === 0); // Avoid whole-number mean to make it non-trivial
+      // Avoid a whole-number mean, and keep the median (a wrong choice) apart
+      // from the sum divided by 4 (another wrong choice).
+    } while (sum % 5 === 0 || [...defects].sort((a, b) => a - b)[2] === sum / 4);
 
     const mean = sum / 5;
     const meanStr = mean.toFixed(1);
@@ -107,16 +109,17 @@ export const generator_424 = {
       </div>
     `;
 
-    // Distractors: nearby plausible values
-    const wrongLow = (Math.floor(mean * 10 - 2) / 10).toFixed(1);
-    const wrongHigh1 = (Math.ceil(mean * 10 + 2) / 10).toFixed(1);
-    const wrongHigh2 = (Math.ceil(mean * 10 + 4) / 10).toFixed(1);
-
+    // Wrong choices are real slips; they used to be the mean plus or minus
+    // 0.2 and plus 0.4. The mean is not a whole number, the median is, the
+    // sum is at least 10, and the loop above separates the median from the
+    // sum divided by 4.
+    const median = [...defects].sort((a, b) => a - b)[2];
+    const byFour = sum / 4;
     const optionsData = [
-      { text: wrongLow, isCorrect: false },
-      { text: meanStr, isCorrect: true },
-      { text: wrongHigh1, isCorrect: false },
-      { text: wrongHigh2, isCorrect: false }
+      { text: meanStr, isCorrect: true, reason: '' },
+      { text: median.toString(), isCorrect: false, reason: `${median} is the median number of defective lightbulbs, the middle value when the five values are listed in order, not the mean` },
+      { text: sum.toString(), isCorrect: false, reason: `${sum} is the total number of defective lightbulbs; the total must be divided by the number of trials, 5` },
+      { text: byFour.toString(), isCorrect: false, reason: `it results from dividing the total, ${sum}, by 4 instead of by the number of trials, 5` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -125,13 +128,14 @@ export const generator_424 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: "What is the mean number of defective lightbulbs for the five trials?",
+      questionText: "The bar graph shows the number of defective lightbulbs found in each of five trials. What is the mean number of defective lightbulbs for the five trials?",
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: meanStr,
-      explanation: `Choice ${correctOption.letter} is correct. The values are ${defects.join(', ')}. The sum is ${sum}. Dividing by 5 trials gives ${meanStr}.`
+      explanation: `Choice ${correctOption.letter} is correct. The bar graph shows ${defects.join(', ')} defective lightbulbs in the five trials. The sum of these values is $${defects.join(' + ')} = ${sum}$, so the mean is $\\frac{${sum}}{5} = ${meanStr}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
