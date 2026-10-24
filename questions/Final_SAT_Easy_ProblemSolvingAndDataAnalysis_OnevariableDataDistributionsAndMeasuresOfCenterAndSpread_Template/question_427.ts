@@ -28,10 +28,15 @@ export const generator_427 = {
     const maxWheels = minWheels + rangeVal;
     
     // Generate 11 values between min and max, ensuring min and max appear
-    const wheels: number[] = [minWheels, maxWheels];
-    for (let i = 0; i < 9; i++) {
-      wheels.push(getRandomInt(minWheels, maxWheels));
-    }
+    let wheels: number[];
+    do {
+      wheels = [minWheels, maxWheels];
+      for (let i = 0; i < 9; i++) {
+        wheels.push(getRandomInt(minWheels, maxWheels));
+      }
+      const m = [...wheels].sort((a, b) => a - b)[5];
+      if (m !== minWheels && m !== maxWheels) break;
+    } while (true);
     // Shuffle the order for the table
     for (let i = wheels.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -39,24 +44,25 @@ export const generator_427 = {
     }
 
     const range = Math.max(...wheels) - Math.min(...wheels);
+    const sorted = [...wheels].sort((a, b) => a - b);
+    const median = sorted[5];
 
     const tableCode = `
       <table>
-        <tr><th>Period</th><th>Wheels</th></tr>
-        ${wheels.map((w, i) => `<tr><td>${String.fromCharCode(65 + i)}</td><td>${w}</td></tr>`).join('')}
+        <tr><th>Hour</th><th>Number of wheels</th></tr>
+        ${wheels.map((w, i) => `<tr><td>${i + 1}</td><td>${w}</td></tr>`).join('')}
       </table>
     `;
 
-    // Distractors near the range
-    const wrong1 = (range + 1.5).toFixed(1);
-    const wrong2 = (range - 1.5 > 0 ? range - 1.5 : range + 2.5).toFixed(1);
-    const wrong3 = (range - 1).toFixed(1);
-
+    // Wrong choices are other values a student might report: the greatest
+    // value, the least value, and the median. They used to be the range plus
+    // 1.5, minus 1.5, and minus 1, all shown with a needless ".0". The
+    // generate loop keeps the median apart from the least and greatest values.
     const optionsData = [
-      { text: wrong1, isCorrect: false },
-      { text: range.toFixed(1), isCorrect: true },
-      { text: wrong2, isCorrect: false },
-      { text: wrong3, isCorrect: false }
+      { text: `${range}`, isCorrect: true, reason: '' },
+      { text: `${maxWheels}`, isCorrect: false, reason: `${maxWheels} is the greatest number of wheels made in an hour; the least number, ${minWheels}, must be subtracted from it` },
+      { text: `${minWheels}`, isCorrect: false, reason: `${minWheels} is the least number of wheels made in an hour, not the range` },
+      { text: `${median}`, isCorrect: false, reason: `${median} is the median number of wheels, the middle value when the 11 values are listed in order, not the range` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -65,13 +71,14 @@ export const generator_427 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: "What is the range of the number of wheels made for the 11 one-hour periods?",
+      questionText: "A machine makes wheels for toy cars. The table shows the number of wheels the machine made in each of 11 one-hour periods. What is the range of the number of wheels made for the 11 one-hour periods?",
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: range.toFixed(1),
-      explanation: `Choice ${correctOption.letter} is correct. Range is max (${Math.max(...wheels)}) minus min (${Math.min(...wheels)}), which is ${range}.`
+      correctAnswer: `${range}`,
+      explanation: `Choice ${correctOption.letter} is correct. The range of a data set is the greatest value minus the least value. The greatest number of wheels made in an hour is ${maxWheels} and the least is ${minWheels}, so the range is $${maxWheels} - ${minWheels} = ${range}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
