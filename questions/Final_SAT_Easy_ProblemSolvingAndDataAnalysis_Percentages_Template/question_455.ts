@@ -34,7 +34,7 @@ export const generator_455 = {
       figureCode: null,
       options: [],
       correctAnswer: `${result}`,
-      explanation: `The correct answer is ${result}. It's given that ${percentage}% of the ${total} seeds sprouted. Calculate the number by multiplying: ${total} $\\times \\frac{${percentage}}{100} = ${result}$.`
+      explanation: `The correct answer is ${result}. It's given that ${percentage}% of the ${total} seeds sprouted, so the number of seeds that sprouted is $${total} \\times \\frac{${percentage}}{100} = ${result}$.`
     };
   }
 };
