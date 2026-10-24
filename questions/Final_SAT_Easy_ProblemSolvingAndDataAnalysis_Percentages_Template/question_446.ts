@@ -27,27 +27,19 @@ export const generator_446 = {
     const tipPercent = getRandomInt(15, 25);
     const tipAmount = (bill * tipPercent) / 100;
 
-    // 2. Three incorrect percentages -> four total options.
-    //    Distinct integer percents on a fixed bill always yield distinct
-    //    amounts (gap >= bill/100 >= 0.25), so no distractor can tie the
-    //    correct amount or another distractor after .toFixed(2).
-    const potentialDistractors = [10, 12, 15, 18, 20, 22, 25, 28, 30];
-    const incorrectPercents = shuffle(
-      potentialDistractors.filter(p => p !== tipPercent)
-    ).slice(0, 3);
-
-    // 3. Build option objects (text carries escaped currency).
+    // 2. Wrong choices are real slips: the bill plus the tip, the bill minus
+    //    the tip, and the percent written with the decimal point one place
+    //    too far right. They used to be tips at other percents, which appear
+    //    nowhere in the question.
+    const m = (x: number) => `\\$${x.toFixed(2)}`;
+    const total = bill + tipAmount;
+    const less = bill - tipAmount;
+    const big = (bill * tipPercent) / 10;
     const optionsData = [
-      {
-        text: `\\$${tipAmount.toFixed(2)}`,
-        isCorrect: true,
-        percent: tipPercent
-      },
-      ...incorrectPercents.map(p => ({
-        text: `\\$${((bill * p) / 100).toFixed(2)}`,
-        isCorrect: false,
-        percent: p
-      }))
+      { text: m(tipAmount), isCorrect: true, reason: '' },
+      { text: m(total), isCorrect: false, reason: `${m(total)} is the total amount the diner paid, the bill plus the tip` },
+      { text: m(less), isCorrect: false, reason: `${m(less)} results from subtracting the tip from the bill` },
+      { text: m(big), isCorrect: false, reason: `${m(big)} results from writing ${tipPercent}% as ${tipPercent / 10} instead of ${(tipPercent / 100).toFixed(2)}` }
     ];
 
     // 4. Shuffle, then assign letters (letters only meaningful post-shuffle).
@@ -65,7 +57,7 @@ export const generator_446 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To find the amount of the tip, calculate ${tipPercent}% of \\$${bill.toFixed(2)}: $${bill.toFixed(2)} \\times \\frac{${tipPercent}}{100} = ${tipAmount.toFixed(2)}$, which is \\$${tipAmount.toFixed(2)}. Choice ${incorrectOptions[0].letter} is incorrect because it represents a tip of ${incorrectOptions[0].percent}%. Choice ${incorrectOptions[1].letter} is incorrect because it represents a tip of ${incorrectOptions[1].percent}%. Choice ${incorrectOptions[2].letter} is incorrect because it represents a tip of ${incorrectOptions[2].percent}%.`
+      explanation: `Choice ${correctOption.letter} is correct. The tip is ${tipPercent}% of \\$${bill.toFixed(2)}: $${bill.toFixed(2)} \\times ${(tipPercent / 100).toFixed(2)} = ${tipAmount.toFixed(2)}$, so the tip was ${m(tipAmount)}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
