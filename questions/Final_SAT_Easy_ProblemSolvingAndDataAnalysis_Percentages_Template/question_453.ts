@@ -27,15 +27,15 @@ export const generator_453 = {
     const roundedTotal = total % 2 === 0 ? total : total + 1;
     const result = roundedTotal / 2;
 
-    const distractorA = getRandomInt(20, 40);
-    const distractorB = 50;
-    const distractorD = roundedTotal - 50;
-
+    // Wrong choices: the percent used as a count, 50 subtracted from the
+    // total, and the total doubled instead of halved. The last replaced a
+    // random number explained as "a random guess."
+    const fmt = (n: number) => n.toLocaleString('en-US');
     const optionsData = [
-      { text: `${distractorA}`, isCorrect: false, reason: "likely results from a misinterpretation of the numbers or a random guess" },
-      { text: `${distractorB}`, isCorrect: false, reason: "incorrectly assumes the answer is the percentage value itself (50)" },
-      { text: `${result}`, isCorrect: true },
-      { text: `${distractorD}`, isCorrect: false, reason: `results from subtracting 50 from the total instead of taking half of it: $${roundedTotal} - 50 = ${distractorD}$` }
+      { text: fmt(roundedTotal * 2), isCorrect: false, reason: `${fmt(roundedTotal * 2)} results from multiplying ${roundedTotal} by 2 instead of dividing it by 2` },
+      { text: `50`, isCorrect: false, reason: `50 is the percent of the seats that were occupied, not the number of seats` },
+      { text: `${result}`, isCorrect: true, reason: '' },
+      { text: `${roundedTotal - 50}`, isCorrect: false, reason: `${roundedTotal - 50} results from subtracting 50 from ${roundedTotal} instead of finding 50% of ${roundedTotal}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,11 +47,11 @@ export const generator_453 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `There are a total of $${roundedTotal}$ seats in a school auditorium. During an assembly, students occupied $50\\%$ of the seats in the auditorium. How many seats did the students occupy during this assembly?`,
+      questionText: `There are a total of ${roundedTotal} seats in a school auditorium. During an assembly, students occupied $50\\%$ of the seats in the auditorium. How many seats did the students occupy during this assembly?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. To find 50% of $${roundedTotal}$, multiply by 0.50 or divide by 2: $${roundedTotal} \\times 0.50 = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find 50% of ${roundedTotal}, multiply by 0.50 or divide by 2: $${roundedTotal} \\times 0.50 = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
