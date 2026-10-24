@@ -24,7 +24,7 @@ export const generator_429 = {
 
   generate: (): QuestionData => {
     // Generate random frequencies, re-rolling until the four answer-choice
-    // values (never, almostNever, targetSum, sometimes+often) are pairwise
+    // values (each frequency and each pair's sum) are pairwise
     // distinct so no distractor can collide with another or with the key.
     let never = 0, almostNever = 0, sometimes = 0, often = 0;
     let tries = 0;
@@ -34,11 +34,10 @@ export const generator_429 = {
       sometimes = getRandomInt(60, 80);
       often = getRandomInt(30, 50);
     } while (
-      new Set([never, almostNever, never + almostNever, sometimes + often]).size < 4 &&
+      new Set([never, almostNever, sometimes, often, never + almostNever, sometimes + often]).size < 6 &&
       tries++ < 50
     );
     const total = never + almostNever + sometimes + often;
-    const targetSum = never + almostNever;
 
     const tableCode = `
       <table>
@@ -51,11 +50,22 @@ export const generator_429 = {
       </table>
     `;
 
+    // Ask about either the two lowest responses or the two highest, so the
+    // answer is not always the same pair. The wrong choices are each single
+    // frequency in the pair and the sum of the other pair.
+    const askLow = getRandomInt(0, 1) === 0;
+    const pair = askLow
+      ? [{ name: 'never', f: never }, { name: 'almost never', f: almostNever }]
+      : [{ name: 'sometimes', f: sometimes }, { name: 'often', f: often }];
+    const other = askLow
+      ? { names: '"sometimes" or "often"', f: sometimes + often }
+      : { names: '"never" or "almost never"', f: never + almostNever };
+    const answer = pair[0].f + pair[1].f;
     const optionsData = [
-      { text: never.toString(), isCorrect: false },
-      { text: almostNever.toString(), isCorrect: false },
-      { text: targetSum.toString(), isCorrect: true },
-      { text: (sometimes + often).toString(), isCorrect: false }
+      { text: `${answer}`, isCorrect: true, reason: '' },
+      { text: `${pair[0].f}`, isCorrect: false, reason: `${pair[0].f} is only the number of people who responded "${pair[0].name}"; the ${pair[1].f} people who responded "${pair[1].name}" must be added` },
+      { text: `${pair[1].f}`, isCorrect: false, reason: `${pair[1].f} is only the number of people who responded "${pair[1].name}"; the ${pair[0].f} people who responded "${pair[0].name}" must be added` },
+      { text: `${other.f}`, isCorrect: false, reason: `${other.f} is the number of people who responded ${other.names}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -64,13 +74,14 @@ export const generator_429 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: "How many people responded either 'never' or 'almost never'?",
+      questionText: `A group of ${total} people were asked how often they exercise in the morning. The table summarizes their responses. How many people responded either "${pair[0].name}" or "${pair[1].name}"?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: targetSum.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Summing the two frequencies: ${never} + ${almostNever} = ${targetSum}.`
+      correctAnswer: `${answer}`,
+      explanation: `Choice ${correctOption.letter} is correct. The table shows that ${pair[0].f} people responded "${pair[0].name}" and ${pair[1].f} people responded "${pair[1].name}". So $${pair[0].f} + ${pair[1].f} = ${answer}$ people responded either "${pair[0].name}" or "${pair[1].name}". ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
