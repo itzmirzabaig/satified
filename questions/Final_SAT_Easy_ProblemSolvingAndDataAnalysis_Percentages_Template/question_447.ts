@@ -35,16 +35,18 @@ export const generator_447 = {
     const result = percentage * (total / 100); // exact integer
 
     const complementCount = total - result;              // the "not red" count
-    const increasedTotal = Math.round(total * 1.1);      // a 10% increase
 
     // Two-digit decimal string for the multiplier (0.05 .. 0.25).
     const multiplier = `0.${percentage.toString().padStart(2, '0')}`;
 
+    // Wrong choices: the marbles that are not red, the percent used as a
+    // count, and the percent subtracted from the total. The last two used to
+    // be the total itself and an unrelated 10% increase.
     const optionsData = [
-      { text: `${result}`, isCorrect: true },
-      { text: `${complementCount}`, isCorrect: false, reason: "is the number of marbles that are *not* red" },
-      { text: `${total}`, isCorrect: false, reason: "is the total number of marbles" },
-      { text: `${increasedTotal}`, isCorrect: false, reason: "represents a 10% increase rather than a part of the whole" }
+      { text: `${result}`, isCorrect: true, reason: '' },
+      { text: `${complementCount}`, isCorrect: false, reason: `${complementCount} is the number of marbles that are not red, ${100 - percentage}% of ${total}` },
+      { text: `${percentage}`, isCorrect: false, reason: `${percentage} is the percent of the marbles that are red, not the number of red marbles` },
+      { text: `${total - percentage}`, isCorrect: false, reason: `${total - percentage} results from subtracting ${percentage} from ${total} instead of finding ${percentage}% of ${total}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -56,11 +58,11 @@ export const generator_447 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `There are $${total}$ marbles in a container. Of these marbles, ${percentage}% are red. How many marbles in the container are red?`,
+      questionText: `There are ${total} marbles in a container. Of these marbles, ${percentage}% are red. How many marbles in the container are red?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. To find the number of red marbles, calculate ${percentage}% of $${total}$: $${total} \\times ${multiplier} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the number of red marbles, calculate ${percentage}% of ${total}: $${total} \\times ${multiplier} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
