@@ -31,20 +31,16 @@ export const generator_435 = {
     const percentage = 10 * getRandomInt(11, 16); // 110..160, multiple of 10
     const result = (base * percentage) / 100; // exact integer, always > base
 
-    // Distractors chosen so all four options are provably distinct for every
-    // draw in the range (verified across all base x percentage combinations):
-    //   - base < result since percentage > 100, so base never equals result;
-    //   - result+base and 2*result-base are distinct from result and base
-    //     because percentage stays between 110 and 160 (result is never 2*base).
-    const dKeepBase = base;                 // used last year's number (ignored the increase)
-    const dAddOnTop = result + base;        // added last year's number on top of this year's
-    const dDoubleIncrease = 2 * result - base; // applied the percentage increase twice
-
+    // Wrong choices: last year's number, the increase alone, and the result
+    // of reading the percentage as a percent increase. The increase is less
+    // than 0.6 times the base and the other values exceed the base, so all
+    // four choices differ.
+    const increase = result - base;
     const optionsData = [
-      { text: `${result}`, isCorrect: true },
-      { text: `${dKeepBase}`, isCorrect: false, reason: `is last year's enrollment, so it ignores the increase to ${percentage}% of that number` },
-      { text: `${dAddOnTop}`, isCorrect: false, reason: `adds last year's ${base} students on top of this year's total instead of replacing it` },
-      { text: `${dDoubleIncrease}`, isCorrect: false, reason: "comes from applying the percentage increase a second time" }
+      { text: `${result}`, isCorrect: true, reason: '' },
+      { text: `${base}`, isCorrect: false, reason: `${base} is last year's enrollment; this year's enrollment is ${percentage}% of that number` },
+      { text: `${increase}`, isCorrect: false, reason: `${increase} is only the increase in enrollment, ${percentage - 100}% of ${base}, not this year's total enrollment` },
+      { text: `${result + base}`, isCorrect: false, reason: `${result + base} is the result of increasing ${base} by ${percentage}%, but this year's enrollment is ${percentage}% of last year's number, not ${percentage}% more than it` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -60,7 +56,7 @@ export const generator_435 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. To find this year's enrollment, take ${percentage}% of last year's ${base} students: $\\frac{${percentage}}{100} \\times ${base} = ${result}$ students. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. This year's enrollment is ${percentage}% of last year's ${base} students: $\\frac{${percentage}}{100} \\times ${base} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
