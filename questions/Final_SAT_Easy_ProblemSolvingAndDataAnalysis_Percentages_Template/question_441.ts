@@ -64,10 +64,10 @@ export const generator_441 = {
   <thead>
     <tr>
       <th>Employee</th>
-      <th>1 Star</th>
-      <th>2 Stars</th>
-      <th>3 Stars</th>
-      <th>4 Stars</th>
+      <th>1 star</th>
+      <th>2 stars</th>
+      <th>3 stars</th>
+      <th>4 stars</th>
       <th>Total</th>
     </tr>
   </thead>
@@ -81,10 +81,10 @@ export const generator_441 = {
 </table>`;
 
     const optionsData = [
-      { text: `${distractorA}%`, isCorrect: false, reason: `results from dividing Employee A's 1-star calls by the total number of calls for all employees (${grandTotal}) instead of by Employee A's total (${rowTotalA})` },
-      { text: `${roundedPercent}%`, isCorrect: true },
-      { text: `${distractorC}%`, isCorrect: false, reason: `is the raw number of 1-star calls, not a percentage of Employee A's total` },
-      { text: `${distractorD}%`, isCorrect: false, reason: `is the percent of Employee A's calls that did not receive a 1-star rating` }
+      { text: `${distractorA}%`, isCorrect: false, reason: `${distractorA}% results from dividing Employee A's ${star1} calls rated 1 star by the total number of calls for all four employees, ${grandTotal}, instead of by Employee A's total, ${rowTotalA}` },
+      { text: `${roundedPercent}%`, isCorrect: true, reason: '' },
+      { text: `${distractorC}%`, isCorrect: false, reason: `${star1} is the number of Employee A's calls rated 1 star, not the percent of Employee A's calls` },
+      { text: `${distractorD}%`, isCorrect: false, reason: `${distractorD}% is the percent of Employee A's calls that did not receive a rating of 1 star` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -96,11 +96,11 @@ export const generator_441 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `A supervisor at a call center reviewed the $${grandTotal}$ calls taken by four employees and rated each call on a scale from $1$ star to $4$ stars. The ratings for each employee are shown in the table above. According to the table, to the nearest whole percent, what percent of Employee A's calls received a rating of $1$ star?`,
+      questionText: `A supervisor at a call center reviewed the ${grandTotal} calls taken by four employees and rated each call on a scale from 1 star to 4 stars. The table shows the ratings for each employee. According to the table, to the nearest whole percent, what percent of Employee A's calls received a rating of 1 star?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${roundedPercent}%`,
-      explanation: `Choice ${correctOption.letter} is correct. To find the percent of Employee A's calls that received a one-star rating, divide the number of one-star calls by Employee A's total number of calls and multiply by one hundred: $\\frac{${star1}}{${rowTotalA}} \\times 100 \\approx ${round(percentage, 2)}$, which rounds to ${roundedPercent}% to the nearest whole percent. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The table shows that Employee A took ${rowTotalA} calls, and ${star1} of them were rated 1 star. To find the percent, divide ${star1} by ${rowTotalA} and multiply by 100: $\\frac{${star1}}{${rowTotalA}} \\times 100 \\approx ${round(percentage, 2)}$, which rounds to ${roundedPercent}% to the nearest whole percent. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
