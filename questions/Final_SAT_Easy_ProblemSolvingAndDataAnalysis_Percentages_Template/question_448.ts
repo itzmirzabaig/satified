@@ -39,15 +39,15 @@ export const generator_448 = {
     const result = Math.round((meetingPercent * workdayHours * 60) / 100);
     const hoursInMeetings = round(result / 60, 2); // clean short decimal
 
-    const distractorA = hoursInMeetings;               // hours, not minutes
-    const distractorB = meetingPercent;                // the percent value
-    const distractorC = Math.round(result * 0.65);     // a miscalculation
-
+    // Wrong choices: the hours in meetings, the percent itself, and the
+    // minutes not in meetings. The last used to be the answer times 0.65,
+    // "a miscalculation."
+    const rest = workdayHours * 60 - result;
     const optionsData = [
-      { text: `${distractorA}`, isCorrect: false, reason: "is the number of hours spent in meetings, not minutes" },
-      { text: `${distractorB}`, isCorrect: false, reason: "is the percentage value, not the actual amount of time" },
-      { text: `${distractorC}`, isCorrect: false, reason: "results from a miscalculation" },
-      { text: `${result}`, isCorrect: true }
+      { text: `${hoursInMeetings}`, isCorrect: false, reason: `${hoursInMeetings} is the number of hours the employee spent in meetings, not the number of minutes` },
+      { text: `${meetingPercent}`, isCorrect: false, reason: `${meetingPercent} is the percent of the workday spent in meetings, not the number of minutes` },
+      { text: `${rest}`, isCorrect: false, reason: `${rest} is the number of minutes of the workday the employee did not spend in meetings` },
+      { text: `${result}`, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -61,11 +61,11 @@ export const generator_448 = {
     const multiplier = `0.${meetingPercent.toString().padStart(2, '0')}`; // 0.10 .. 0.25
 
     return {
-      questionText: `An employee spent ${meetingPercent}% of her ${workdayHours}-hour workday in meetings. How many minutes of her workday did she spend in meetings?`,
+      questionText: `An employee's workday is ${workdayHours} hours long. The employee spent ${meetingPercent}% of the workday in meetings. How many minutes of the workday did the employee spend in meetings?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. First, find the number of hours spent in meetings: $${workdayHours} \\times ${multiplier} = ${hoursInMeetings}$ hours. Since there are 60 minutes in an hour, convert hours to minutes: $${hoursInMeetings} \\times 60 = ${result}$ minutes. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. First, find the number of hours spent in meetings: $${workdayHours} \\times ${multiplier} = ${hoursInMeetings}$ hours. Since there are 60 minutes in an hour, convert hours to minutes: $${hoursInMeetings} \\times 60 = ${result}$ minutes. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
