@@ -39,13 +39,15 @@ export const generator_470 = {
     const correctValue = malesNoPlay;
     const correctText = correctValue.toString();
 
-    const distractor1 = Math.abs(totalStudents - malesPlay - femalesPlay - femalesNoPlay - 50);
+    // Wrong choices: everyone who does not play, the total minus only the
+    // males who play, and everyone who plays. They used to include the
+    // answer minus 50 and a sum "of incompatible values."
+    const distractor1 = totalStudents - malesPlay;
     const distractor2 = totalStudents - totalPlay;
-    const distractor3 = malesPlay + femalesNoPlay;
+    const distractor3 = totalPlay;
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const mfmt = (n: number) => fmt(n).replace(/,/g, '{,}');
 
-    // Guard: all four option values must be distinct. distractor2 and
-    // distractor3 collide whenever totalStudents = 2*malesPlay + femalesPlay +
-    // femalesNoPlay; redraw rather than emit a duplicated choice.
     const optionValues = [correctValue, distractor1, distractor2, distractor3];
     if (new Set(optionValues).size !== 4) {
       return this.generate();
@@ -54,10 +56,10 @@ export const generator_470 = {
     const tableCode = `<table><thead><tr><th></th><th>Males</th><th>Females</th></tr></thead><tbody><tr><td>Play a school sport</td><td>${malesPlay}</td><td>${femalesPlay}</td></tr><tr><td>Do not play a school sport</td><td>?</td><td>${femalesNoPlay}</td></tr></tbody></table>`;
 
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "would result in an incorrect total count" },
-      { text: correctText, isCorrect: true },
-      { text: distractor2.toString(), isCorrect: false, reason: "represents the total number of students who do not play sports (both genders), not just males" },
-      { text: distractor3.toString(), isCorrect: false, reason: "results from adding incompatible values" }
+      { text: fmt(distractor1), isCorrect: false, reason: `${fmt(distractor1)} is the result of subtracting only the ${malesPlay} males who play a school sport from the ${fmt(totalStudents)} students surveyed; the females must be subtracted too` },
+      { text: correctText, isCorrect: true, reason: '' },
+      { text: fmt(distractor2), isCorrect: false, reason: `${fmt(distractor2)} is the number of students, both male and female, who do not play a school sport` },
+      { text: fmt(distractor3), isCorrect: false, reason: `${fmt(distractor3)} is the number of students, both male and female, who play a school sport` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -68,10 +70,10 @@ export const generator_470 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The total number of students surveyed is $${totalStudents}$. From the table, we have the following known values: Males who play a school sport: $${malesPlay}$, Females who play a school sport: $${femalesPlay}$, Females who do not play a school sport: $${femalesNoPlay}$. Let $x$ be the number of males who do not play a school sport. The sum of all entries in the table must equal the total number of students surveyed: $${malesPlay} + ${femalesPlay} + x + ${femalesNoPlay} = ${totalStudents}$. Solving for $x$ gives $x = ${correctValue}$. Therefore, the number of males who do not play a school sport is $${correctValue}$. Choice ${incorrectOptions[0].letter} is incorrect; this ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; this ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; this ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. All ${fmt(totalStudents)} students surveyed are in one of the four cells of the table. Let $x$ be the number of males who do not play a school sport. Then $${malesPlay} + ${femalesPlay} + x + ${femalesNoPlay} = ${mfmt(totalStudents)}$, so $x = ${correctValue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `A survey taken by $${totalStudents}$ students at a school asked whether they played school sports. The table below summarizes all $${totalStudents}$ responses from the students surveyed. How many of the males surveyed responded that they do not play a school sport?`,
+      questionText: `A survey taken by ${fmt(totalStudents)} students at a school asked whether they played school sports. The table summarizes all ${fmt(totalStudents)} responses from the students surveyed. How many of the males surveyed responded that they do not play a school sport?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
