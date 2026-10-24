@@ -27,26 +27,21 @@ export const generator_436 = {
     // multiple of 5, so originalPrice * discountPercent is divisible by 100 and
     // the discount amount (and sale price) are always exact integers. This makes
     // the explanation's "original x percent = discount" exact for every draw.
-    const originalPrice = 20 * getRandomInt(2, 5);   // 40, 60, 80, 100
+    // 100 is left out: there, subtracting the percent as dollars would give
+    // the sale price.
+    const originalPrice = [40, 60, 80, 120][getRandomInt(0, 3)];
     const discountPercent = 5 * getRandomInt(2, 7);  // 10, 15, 20, 25, 30, 35
     const discountAmount = (discountPercent * originalPrice) / 100; // exact integer
     const salePrice = originalPrice - discountAmount;
 
-    // Plausible-misconception distractors, chosen so that all four options are
-    // provably distinct for every draw in the declared range (verified across
-    // all originalPrice x discountPercent combinations):
-    //   - amount == salePrice would need discountPercent = 50 (out of range);
-    //   - orig-2*amount, amount, and orig+amount are pairwise distinct because
-    //     discountPercent is between 10 and 35, so amount is never 0, orig/3, etc.
-    const dReturnedDiscount = discountAmount;                    // gave the discount, not the price paid
-    const dDoubleDiscount = originalPrice - 2 * discountAmount;  // used twice the discount
-    const dAddedDiscount = originalPrice + discountAmount;       // added the discount instead of subtracting
-
+    // Wrong choices: the discount itself, the discount added instead of
+    // subtracted, and the percent subtracted as if it were dollars. The last
+    // replaced "applied twice the discount," an unlikely slip.
     const optionsData = [
-      { text: `\\$${dReturnedDiscount}`, isCorrect: false, reason: `is the size of the discount itself, not the price paid after the discount` },
-      { text: `\\$${dDoubleDiscount}`, isCorrect: false, reason: `applies twice the discount, a reduction of ${discountPercent * 2}% off` },
-      { text: `\\$${dAddedDiscount}`, isCorrect: false, reason: `adds the discount to the original price instead of subtracting it` },
-      { text: `\\$${salePrice}`, isCorrect: true }
+      { text: `\\$${salePrice}`, isCorrect: true, reason: '' },
+      { text: `\\$${discountAmount}`, isCorrect: false, reason: `\\$${discountAmount} is the amount of the discount, not the sale price` },
+      { text: `\\$${originalPrice + discountAmount}`, isCorrect: false, reason: `\\$${originalPrice + discountAmount} results from adding the discount to the original price instead of subtracting it` },
+      { text: `\\$${originalPrice - discountPercent}`, isCorrect: false, reason: `\\$${originalPrice - discountPercent} results from subtracting ${discountPercent} dollars from the original price instead of ${discountPercent}% of it` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -62,7 +57,7 @@ export const generator_436 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `\\$${salePrice}`,
-      explanation: `Choice ${correctOption.letter} is correct. The discount is ${discountPercent}% of \\$${originalPrice}, which is \\$${discountAmount}. Subtracting the discount from the original price gives \\$${originalPrice} - \\$${discountAmount} = \\$${salePrice}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The discount is ${discountPercent}% of \\$${originalPrice}, which is $${originalPrice} \\times ${discountPercent / 100} = ${discountAmount}$, or \\$${discountAmount}. Subtracting the discount from the original price gives a sale price of $${originalPrice} - ${discountAmount} = ${salePrice}$, or \\$${salePrice}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
