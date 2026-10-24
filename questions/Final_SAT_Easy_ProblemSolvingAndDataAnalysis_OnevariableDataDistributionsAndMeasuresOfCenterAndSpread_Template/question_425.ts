@@ -37,12 +37,21 @@ export const generator_425 = {
 ];
 
     // Generate options with different medians
-    const optionsData = [
-      { text: `${median - 2}, ${median - 2}, ${median - 1}, ${median - 1}, ${median}, ${median}`, isCorrect: false },
-      { text: `${median - 1}, ${median - 1}, ${median}, ${median}, ${median + 1}, ${median + 1}`, isCorrect: true },
-      { text: `${median}, ${median}, ${median + 1}, ${median + 1}, ${median + 2}, ${median + 2}`, isCorrect: false },
-      { text: `${median + 1}, ${median + 1}, ${median + 2}, ${median + 2}, ${median + 5}, ${median + 5}`, isCorrect: false }
+    // Each list has six values, so its median is the mean of the 3rd and 4th.
+    const lists = [
+      [median - 2, median - 2, median - 1, median - 1, median, median],
+      [median - 1, median - 1, median, median, median + 1, median + 1],
+      [median, median, median + 1, median + 1, median + 2, median + 2],
+      [median + 1, median + 1, median + 2, median + 2, median + 5, median + 5]
     ];
+    const optionsData = lists.map(l => {
+      const m = (l[2] + l[3]) / 2;
+      return {
+        text: l.join(', '),
+        isCorrect: m === median,
+        reason: m === median ? '' : `the two middle values of this list are ${l[2]} and ${l[3]}, so its median is ${m}, not ${median}`
+      };
+    });
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -50,13 +59,14 @@ export const generator_425 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: `Which of the following lists represents a data set that has the same median as the data set shown?\n\n${originalSet.join(', ')}`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The original median is ${median}. For an even data set, the median is the average of the two middle values. In choice ${correctOption.letter}, the middle values are ${median} and ${median}, giving a median of ${median}.`
+      explanation: `Choice ${correctOption.letter} is correct. The data set shown has 7 values listed in order, so its median is the 4th value, ${median}. Each list in the choices has 6 values listed in order, so its median is the mean of the 3rd and 4th values. In choice ${correctOption.letter}, these values are ${median} and ${median}, so the median is ${median}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
