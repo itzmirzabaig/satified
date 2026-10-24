@@ -25,7 +25,7 @@ export const generator_430 = {
   generate: (): QuestionData => {
     // Re-roll the employee counts until the four answer-choice values
     // (warehouse-department, department-supermarket, warehouse-supermarket,
-    // warehouse+supermarket) are pairwise distinct, so no distractor can
+    // and each pair's sum) are pairwise distinct, so no distractor can
     // collide with another or with the correct difference.
     let warehouse = 0, department = 0, supermarket = 0;
     let tries = 0;
@@ -39,7 +39,9 @@ export const generator_430 = {
         department - supermarket,
         warehouse - supermarket,
         warehouse + supermarket,
-      ]).size < 4 &&
+        warehouse + department,
+        department + supermarket,
+      ]).size < 6 &&
       tries++ < 50
     );
     const year = getRandomInt(2015, 2022);
@@ -53,13 +55,26 @@ export const generator_430 = {
       </table>
     `;
 
-    const difference = warehouse - supermarket;
-
+    // Compare a random pair of store types (it was always warehouse stores
+    // and supermarkets). Wrong choices are the other two differences and the
+    // sum of the pair.
+    const stores = [
+      { one: 'warehouse store', many: 'warehouse stores', v: warehouse },
+      { one: 'department store', many: 'department stores', v: department },
+      { one: 'supermarket', many: 'supermarkets', v: supermarket }
+    ];
+    const pairs = [[0, 1], [0, 2], [1, 2]];
+    const pick = getRandomInt(0, 2);
+    const [hi, lo] = pairs[pick].map(i => stores[i]);
+    const difference = hi.v - lo.v;
     const optionsData = [
-      { text: (warehouse - department).toString(), isCorrect: false },
-      { text: (department - supermarket).toString(), isCorrect: false },
-      { text: difference.toString(), isCorrect: true },
-      { text: (warehouse + supermarket).toString(), isCorrect: false }
+      { text: `${difference}`, isCorrect: true, reason: '' },
+      { text: `${hi.v + lo.v}`, isCorrect: false, reason: `${hi.v + lo.v} is the sum of the averages for ${hi.many} and ${lo.many}, not their difference` },
+      ...pairs.filter((_, i) => i !== pick).map(([a, b]) => ({
+        text: `${stores[a].v - stores[b].v}`,
+        isCorrect: false,
+        reason: `${stores[a].v - stores[b].v} is how much greater the average for ${stores[a].many} is than the average for ${stores[b].many}`
+      }))
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -68,13 +83,14 @@ export const generator_430 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `For a certain region, the table shows the average number of store employees in ${year} by type of store. Based on the table, how much greater was the average number of store employees in warehouse stores than in supermarkets?`,
+      questionText: `For a certain region, the table shows the average number of store employees in ${year} by type of store. Based on the table, how much greater was the average number of store employees in ${hi.many} than in ${lo.many}?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: difference.toString(),
-      explanation: `Choice ${correctOption.letter} is correct. Subtracting the supermarket average (${supermarket}) from the warehouse store average (${warehouse}) yields ${difference}.`
+      correctAnswer: `${difference}`,
+      explanation: `Choice ${correctOption.letter} is correct. The table shows that the average number of employees was ${hi.v} in ${hi.many} and ${lo.v} in ${lo.many}. The difference is $${hi.v} - ${lo.v} = ${difference}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
