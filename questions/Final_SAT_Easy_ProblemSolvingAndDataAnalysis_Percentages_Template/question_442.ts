@@ -30,15 +30,15 @@ export const generator_442 = {
     const check = (total * percentage) / 100;
     if (check !== result) return generator_442.generate();
 
-    const distractorA = percentage;
-    const distractorC = Math.round((20 / 100) * total);
-    const distractorD = total - percentage;
-
+    // Wrong choices: the percent used as a count, the objects that are not
+    // balls, and the percent subtracted from the total. The second used to
+    // be 20% of the total with the reason "might result from a calculation
+    // error."
     const optionsData = [
-      { text: `${distractorA}`, isCorrect: false, reason: "simply takes the number from the percentage without performing the calculation" },
-      { text: `${result}`, isCorrect: true },
-      { text: `${distractorC}`, isCorrect: false, reason: "might result from a calculation error" },
-      { text: `${distractorD}`, isCorrect: false, reason: "is obtained by subtracting the percentage value from the total" }
+      { text: `${result}`, isCorrect: true, reason: '' },
+      { text: `${percentage}`, isCorrect: false, reason: `${percentage} is the percent of the objects that are balls, not the number of balls` },
+      { text: `${total - result}`, isCorrect: false, reason: `${total - result} is the number of objects that are not balls, ${100 - percentage}% of ${total}` },
+      { text: `${total - percentage}`, isCorrect: false, reason: `${total - percentage} results from subtracting ${percentage} from ${total} instead of finding ${percentage}% of ${total}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -54,7 +54,7 @@ export const generator_442 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. Calculate ${percentage}% of ${total}: $${total} \\times \\frac{${percentage}}{100} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The number of balls is ${percentage}% of ${total}: $${total} \\times \\frac{${percentage}}{100} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
