@@ -30,18 +30,19 @@ export const generator_440 = {
 
     // Distractors are all distinct from the answer and from each other for every
     // draw in this range:
-    //   A = 10% of (roundedBase - 100)  (uses the wrong base)
+    //   A = 1% of roundedBase           (divides by 100 instead of 10; it
+    //                                    used to be 10% of roundedBase - 100)
     //   C = roundedBase - result        (90% of roundedBase)
     //   D = roundedBase - 10            (subtracts 10 instead of taking 10%)
-    const distractorA = (roundedBase - 100) / 10;
+    const distractorA = roundedBase / 100;
     const distractorC = roundedBase - result;
     const distractorD = roundedBase - 10;
 
     const optionsData = [
-      { text: `${distractorA}`, isCorrect: false, reason: `is 10% of ${roundedBase - 100}, not 10% of ${roundedBase}` },
-      { text: `${result}`, isCorrect: true },
-      { text: `${distractorC}`, isCorrect: false, reason: `is 90% of ${roundedBase}, not 10% of ${roundedBase}` },
-      { text: `${distractorD}`, isCorrect: false, reason: `is ${roundedBase} minus 10, not 10% of ${roundedBase}` }
+      { text: `${distractorA}`, isCorrect: false, reason: `${distractorA} is 1% of ${roundedBase}, which results from dividing by 100 instead of by 10` },
+      { text: `${result}`, isCorrect: true, reason: '' },
+      { text: `${distractorC}`, isCorrect: false, reason: `${distractorC} is 90% of ${roundedBase}, the amount that remains after 10% is subtracted` },
+      { text: `${distractorD}`, isCorrect: false, reason: `${distractorD} results from subtracting 10 from ${roundedBase} instead of finding 10% of it` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -53,11 +54,11 @@ export const generator_440 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `What is 10% of $${roundedBase}$?`,
+      questionText: `What is 10% of ${roundedBase}?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. Taking 10% of a quantity means multiplying it by $\\frac{10}{100}$. Therefore, 10% of ${roundedBase} is $\\frac{10}{100} \\times ${roundedBase} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Taking 10% of a quantity means multiplying it by $\\frac{10}{100}$. Therefore, 10% of ${roundedBase} is $\\frac{10}{100} \\times ${roundedBase} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
