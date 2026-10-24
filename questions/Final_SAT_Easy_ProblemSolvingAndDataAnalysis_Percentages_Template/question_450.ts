@@ -27,15 +27,15 @@ export const generator_450 = {
     const roundedBase = Math.floor(base / 20) * 20;
     const result = (roundedBase * 20) / 100;
 
-    const distractorA = result / 2;
-    const distractorC = roundedBase * 2;
-    const distractorD = roundedBase * 4;
-
+    // Wrong choices: 10% of the number, the number times 2 instead of 0.2,
+    // and the 80% that remains. The last replaced 400% of the number, which
+    // no likely slip produces.
+    const fmt = (n: number) => n.toLocaleString('en-US');
     const optionsData = [
-      { text: `${distractorA}`, isCorrect: false, reason: `this is 10%, not 20%, of ${roundedBase}` },
-      { text: `${result}`, isCorrect: true, reason: "" },
-      { text: `${distractorC}`, isCorrect: false, reason: `this is 200%, not 20%, of ${roundedBase}` },
-      { text: `${distractorD}`, isCorrect: false, reason: `this is 400%, not 20%, of ${roundedBase}` }
+      { text: fmt(result / 2), isCorrect: false, reason: `${fmt(result / 2)} is 10% of ${roundedBase}, not 20%` },
+      { text: fmt(result), isCorrect: true, reason: "" },
+      { text: fmt(roundedBase * 2), isCorrect: false, reason: `${fmt(roundedBase * 2)} results from multiplying ${roundedBase} by 2 instead of by 0.2` },
+      { text: fmt(roundedBase - result), isCorrect: false, reason: `${fmt(roundedBase - result)} is 80% of ${roundedBase}, the amount that remains after 20% is subtracted` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,8 +50,8 @@ export const generator_450 = {
       questionText: `What is 20% of ${roundedBase}?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. 20% of ${roundedBase} can be calculated as $\\left(\\frac{20}{100}\\right)(${roundedBase})$, which is equivalent to $\\frac{${roundedBase * 20}}{100}$, or ${result}. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      correctAnswer: fmt(result),
+      explanation: `Choice ${correctOption.letter} is correct. 20% of ${roundedBase} can be calculated as $\\left(\\frac{20}{100}\\right)(${roundedBase})$, which is equivalent to $\\frac{${fmt(roundedBase * 20).replace(/,/g, '{,}')}}{100}$, or ${result}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
