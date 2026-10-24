@@ -36,22 +36,20 @@ export const generator_444 = {
 
   generate: (): QuestionData => {
     // base multiple of 20, percent multiple of 5 => P*base/100 is an integer.
-    const base = getRandomElement([40, 60, 80, 100, 120]);
+    // 100 is left out: there, adding the percent as a number gives the answer.
+    const base = getRandomElement([40, 60, 80, 120, 140]);
     const increasePercent = getRandomElement([15, 20, 25, 30, 35]);
     const increaseAmount = (increasePercent * base) / 100; // exact integer
     const result = base + increaseAmount;
 
-    // inc >= 15*40/100 = 6 for every draw, so all four values below are
-    // pairwise distinct and all positive.
-    const distractorLess = base - increaseAmount;      // computed a decrease
-    const distractorDouble = base + 2 * increaseAmount; // doubled the increase
-    const distractorBase = base;                        // added nothing
-
+    // Wrong choices: a decrease instead of an increase, the increase alone,
+    // and the percent added as a number. The last two replaced "adds the
+    // increase twice" and the unchanged base.
     const optionsData = [
-      { text: `${distractorLess}`, isCorrect: false, reason: `is ${increasePercent}% less than ${base}, not greater` },
-      { text: `${result}`, isCorrect: true },
-      { text: `${distractorDouble}`, isCorrect: false, reason: `adds the increase twice, a ${2 * increasePercent}% increase` },
-      { text: `${distractorBase}`, isCorrect: false, reason: `is the original value with no increase applied` }
+      { text: `${base - increaseAmount}`, isCorrect: false, reason: `${base - increaseAmount} is ${increasePercent}% less than ${base}, not ${increasePercent}% greater` },
+      { text: `${result}`, isCorrect: true, reason: '' },
+      { text: `${increaseAmount}`, isCorrect: false, reason: `${increaseAmount} is ${increasePercent}% of ${base}, the amount of the increase; it must be added to ${base}` },
+      { text: `${base + increasePercent}`, isCorrect: false, reason: `${base + increasePercent} results from adding ${increasePercent} to ${base} instead of adding ${increasePercent}% of ${base}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -67,7 +65,7 @@ export const generator_444 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. First find ${increasePercent}% of ${base}: $${(increasePercent / 100).toFixed(2)} \\times ${base} = ${increaseAmount}$. Then add this to the original value: $${base} + ${increaseAmount} = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. First find ${increasePercent}% of ${base}: $${(increasePercent / 100).toFixed(2)} \\times ${base} = ${increaseAmount}$. Then add this to the original value: $${base} + ${increaseAmount} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
