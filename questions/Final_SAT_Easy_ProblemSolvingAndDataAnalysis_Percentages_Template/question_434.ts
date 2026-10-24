@@ -27,15 +27,15 @@ export const generator_434 = {
     const roundedBase = Math.floor(base / 10) * 10;
     const result = roundedBase / 10;
 
-    const distractorA = result - 10;
-    const distractorC = roundedBase - result;
-    const distractorD = roundedBase - 10;
-
+    // Wrong choices are real slips: 1% of the number (dividing by 100),
+    // 90% of the number, and multiplying by 10 instead of dividing. They used
+    // to include "might be a miscalculation" (the answer minus 10).
+    const fmt = (n: number) => n.toLocaleString('en-US');
     const optionsData = [
-      { text: `${distractorA}`, isCorrect: false, reason: "might be a miscalculation" },
-      { text: `${result}`, isCorrect: true },
-      { text: `${distractorC}`, isCorrect: false, reason: "likely results from calculating 90% instead of 10%" },
-      { text: `${distractorD}`, isCorrect: false, reason: "is obtained by subtracting 10 from the total" }
+      { text: fmt(result), isCorrect: true, reason: '' },
+      { text: fmt(roundedBase / 100), isCorrect: false, reason: `${fmt(roundedBase / 100)} is 1% of ${roundedBase}, which results from dividing by 100 instead of by 10` },
+      { text: fmt(roundedBase - result), isCorrect: false, reason: `${fmt(roundedBase - result)} is 90% of ${roundedBase}, the amount that remains after 10% is subtracted` },
+      { text: fmt(roundedBase * 10), isCorrect: false, reason: `${fmt(roundedBase * 10)} results from multiplying ${roundedBase} by 10 instead of dividing by 10` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -51,7 +51,7 @@ export const generator_434 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. To find 10% of a number, multiply by 0.10 or divide by 10: $${roundedBase} \\div 10 = ${result}$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. Since 10% means $\\frac{10}{100}$, or $\\frac{1}{10}$, 10% of ${roundedBase} is $${roundedBase} \\div 10 = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
