@@ -20,22 +20,16 @@ export const generator_433 = {
 
   generate: (): QuestionData => {
     // 1. Generate Data
-    const targetCount = getRandomInt(76, 80); // The "X" value (e.g., 78)
-    const freqTarget = getRandomInt(5, 9);    // The answer (Height of bar at X)
-    
-    const freq1 = getRandomInt(1, 4);
-    const freq2 = getRandomInt(2, 5);
-    const freq3 = getRandomInt(3, 6);
-
-    // Map data to objects for the loop
-    // X-axis: Number of walnuts (e.g., 75, 76, 77, 78)
-    // Y-axis: Frequency
-    const chartData = [
-      { label: (targetCount - 3).toString(), val: freq1 },
-      { label: (targetCount - 2).toString(), val: freq2 },
-      { label: (targetCount - 1).toString(), val: freq3 },
-      { label: targetCount.toString(), val: freqTarget }
-    ];
+    // Five bars at consecutive walnut counts with different heights. The
+    // asked-about bar is chosen at random; it used to be the last bar, which
+    // was always the tallest.
+    const start = getRandomInt(72, 80);
+    const heights = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 5);
+    const chartData = heights.map((val, i) => ({ label: `${start + i}`, val }));
+    const targetIdx = getRandomInt(0, 4);
+    const targetCount = start + targetIdx;
+    const freqTarget = heights[targetIdx];
+    const nbrIdx = targetIdx === 0 ? 1 : targetIdx === 4 ? 3 : targetIdx + (getRandomInt(0, 1) ? 1 : -1);
 
     const totalContainers = chartData.reduce((sum, d) => sum + d.val, 0);
 
@@ -56,7 +50,7 @@ export const generator_433 = {
     const getY = (v: number) => margin.top + plotHeight - (v / yMax) * plotHeight;
 
     // 3. Generate Grid Lines & Y-Axis Labels
-    const gridLines = [];
+    const gridLines: string[] = [];
     // Step by 1 for small frequencies, or 2 if max is large. Here max is ~9, so step by 1 is fine.
     const step = 1; 
     for (let v = 0; v <= yMax; v += step) {
@@ -70,7 +64,7 @@ export const generator_433 = {
     }
 
     // 4. Generate Bars & X-Axis Labels
-    const barWidth = 60;
+    const barWidth = 52;
     const totalBarSpace = chartData.length * barWidth;
     const totalSpacing = plotWidth - totalBarSpace;
     const spacing = totalSpacing / (chartData.length + 1); 
@@ -96,7 +90,8 @@ export const generator_433 = {
 
     // 5. Construct Final SVG String
     const figureCode = `
-      <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; user-select: none; overflow: visible;">
+      <div style="width:100%;max-width:460px;margin:0 auto;">
+      <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; display: block; user-select: none;">
         <!-- Grid -->
         ${gridLines.join('')}
         
@@ -110,16 +105,19 @@ export const generator_433 = {
         <text x="${margin.left - 30}" y="${margin.top - 20}" text-anchor="start" font-size="12" font-weight="bold" fill="currentColor" style="font-family: sans-serif; opacity: 0.7;">Frequency</text>
         
         <!-- X Axis Title -->
-        <text x="${margin.left + plotWidth / 2}" y="${height - 10}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor" style="font-family: sans-serif; opacity: 0.7;">Number of Walnuts</text>
+        <text x="${margin.left + plotWidth / 2}" y="${height - 10}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor" style="font-family: sans-serif; opacity: 0.7;">Number of walnuts</text>
       </svg>
+      </div>
     `;
 
     // 6. Generate Options
+    // Wrong choices: the walnut count itself, the height of a neighboring
+    // bar, and the total number of containers.
     const optionsData = [
-      { text: freq1.toString(), isCorrect: false },
-      { text: freqTarget.toString(), isCorrect: true }, // The frequency (height)
-      { text: targetCount.toString(), isCorrect: false }, // The value (x-axis label)
-      { text: (freqTarget + targetCount).toString(), isCorrect: false } // Distractor
+      { text: `${freqTarget}`, isCorrect: true, reason: '' },
+      { text: `${targetCount}`, isCorrect: false, reason: `${targetCount} is the number of walnuts, read from the horizontal axis, not the number of containers` },
+      { text: `${heights[nbrIdx]}`, isCorrect: false, reason: `${heights[nbrIdx]} is the number of containers that contain exactly ${start + nbrIdx} walnuts` },
+      { text: `${totalContainers}`, isCorrect: false, reason: `${totalContainers} is the total number of containers shown in the bar graph` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -128,13 +126,14 @@ export const generator_433 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: `The bar graph shows the frequency distribution of the number of walnuts in ${totalContainers} containers. How many of these containers contain exactly ${targetCount} walnuts?`,
       figureCode: figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To determine the number of containers with exactly ${targetCount} walnuts, find the label "${targetCount}" on the horizontal axis (Number of Walnuts). The height of the bar above ${targetCount} corresponds to ${freqTarget} on the vertical axis (Frequency).`
+      explanation: `Choice ${correctOption.letter} is correct. The bar above ${targetCount} on the horizontal axis (number of walnuts) has a height of ${freqTarget} on the vertical axis (frequency). So ${freqTarget} containers contain exactly ${targetCount} walnuts. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
