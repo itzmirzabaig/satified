@@ -23,46 +23,40 @@ export const generator_432 = {
   },
 
   generate: (): QuestionData => {
-    // Re-roll the five low temperatures until the four answer-choice values
-    // are pairwise distinct. Dividing an integer sum by 5 always terminates at
-    // one decimal place (tenths in {.0,.2,.4,.6,.8}), so .toFixed(1) is exact
-    // with no float artifact. We also require the mean to be non-integer so the
-    // "rounded to the nearest whole degree" distractor is genuinely different.
+    // Wrong choices are real slips: the mean high temperature, the mean of
+    // all ten temperatures, and the median low temperature. They used to be
+    // the mean rounded, plus 10, and minus 5. Sums divided by 5 or 10 end in
+    // at most one decimal place, so toFixed(1) is exact. Redraw until the
+    // mean low is not a whole number and the four choices differ.
     let lowTemps: number[] = [];
     let highTemps: number[] = [];
-    let sumLow = 0;
-    let meanLow = 0;
-    let roundedMean = 0;
-    let tries = 0;
+    let sumLow = 0, sumHigh = 0, medianLow = 0;
     do {
       lowTemps = [getRandomInt(35, 50), getRandomInt(30, 45), getRandomInt(35, 50), getRandomInt(45, 60), getRandomInt(55, 70)];
       highTemps = lowTemps.map(l => l + getRandomInt(10, 25));
       sumLow = lowTemps.reduce((a, b) => a + b, 0);
-      meanLow = sumLow / 5;
-      roundedMean = Math.round(meanLow);
+      sumHigh = highTemps.reduce((a, b) => a + b, 0);
+      medianLow = [...lowTemps].sort((a, b) => a - b)[2];
     } while (
-      (sumLow % 5 === 0 ||
-        new Set([
-          meanLow.toFixed(1),
-          roundedMean.toFixed(1),
-          (meanLow + 10).toFixed(1),
-          (meanLow - 5).toFixed(1),
-        ]).size < 4) &&
-      tries++ < 50
+      sumLow % 5 === 0 ||
+      new Set([(sumLow / 5).toFixed(1), (sumHigh / 5).toFixed(1), ((sumLow + sumHigh) / 10).toFixed(1), medianLow.toFixed(1)]).size < 4
     );
+    const meanLow = (sumLow / 5).toFixed(1);
+    const meanHigh = (sumHigh / 5).toFixed(1);
+    const meanAll = ((sumLow + sumHigh) / 10).toFixed(1);
 
     const tableCode = `
       <table>
-        <tr><th>Day</th><th>High temp</th><th>Low temp</th></tr>
-        ${["Mon", "Tue", "Wed", "Thu", "Fri"].map((d, i) => `<tr><td>${d}</td><td>${highTemps[i]}</td><td>${lowTemps[i]}</td></tr>`).join('')}
+        <tr><th>Day</th><th>High temperature (°F)</th><th>Low temperature (°F)</th></tr>
+        ${["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((d, i) => `<tr><td>${d}</td><td>${highTemps[i]}</td><td>${lowTemps[i]}</td></tr>`).join('')}
       </table>
     `;
 
     const optionsData = [
-      { text: meanLow.toFixed(1), isCorrect: true },
-      { text: roundedMean.toFixed(1), isCorrect: false },
-      { text: (meanLow + 10).toFixed(1), isCorrect: false },
-      { text: (meanLow - 5).toFixed(1), isCorrect: false }
+      { text: meanLow, isCorrect: true, reason: '' },
+      { text: meanHigh, isCorrect: false, reason: `${meanHigh} is the mean high temperature, $\\frac{${sumHigh}}{5} = ${meanHigh}$, not the mean low temperature` },
+      { text: meanAll, isCorrect: false, reason: `${meanAll} is the mean of all ten temperatures in the table, both high and low` },
+      { text: medianLow.toFixed(1), isCorrect: false, reason: `${medianLow} is the median low temperature, the middle value when the five low temperatures are listed in order, not the mean` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -71,13 +65,14 @@ export const generator_432 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: "The table below shows the high and low temperatures in a city during a five-day period. What was the mean low temperature, in degrees, during the five-day period?",
+      questionText: "The table shows the high and low temperatures, in degrees Fahrenheit (°F), in a city during a five-day period. What was the mean low temperature, in °F, during the five-day period?",
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: meanLow.toFixed(1),
-      explanation: `Choice ${correctOption.letter} is correct. The sum of the five low temperatures is ${sumLow}. Dividing by 5 days gives a mean of ${sumLow} ÷ 5 = ${meanLow.toFixed(1)} degrees.`
+      correctAnswer: meanLow,
+      explanation: `Choice ${correctOption.letter} is correct. The low temperatures are ${lowTemps.join(', ')}, and their sum is $${lowTemps.join(' + ')} = ${sumLow}$. Dividing by the 5 days gives a mean low temperature of $\\frac{${sumLow}}{5} = ${meanLow}$, or ${meanLow}°F. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
