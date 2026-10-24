@@ -33,8 +33,11 @@ export const generator_458 = {
     let greenCount = getRandomInt(15, 30);
     let tries = 0;
     while (tries++ < 50) {
-      const nums = [blueCount, redCount + greenCount, greenCount, redCount + blueCount];
-      if (new Set(nums).size === 4) break;
+      // Each count and each complement must differ for any target pair.
+      const t = redCount + blueCount + greenCount;
+      const cs = [redCount, blueCount, greenCount];
+      const nums = [...cs, ...cs.map(c => t - c)];
+      if (new Set(nums).size === 6) break;
       redCount = getRandomInt(5, 15);
       blueCount = getRandomInt(8, 18);
       greenCount = getRandomInt(15, 30);
@@ -43,15 +46,21 @@ export const generator_458 = {
 
     const tableCode = `<table><thead><tr><th>Color</th><th>Number</th></tr></thead><tbody><tr><td>Red</td><td>${redCount}</td></tr><tr><td>Blue</td><td>${blueCount}</td></tr><tr><td>Green</td><td>${greenCount}</td></tr><tr><td>Total</td><td>${totalCount}</td></tr></tbody></table>`;
 
-    const correctNumerator = blueCount;
-    const correctDenominator = totalCount;
-    const correctText = `\\frac{${correctNumerator}}{${correctDenominator}}`;
-
+    // The target color is chosen at random (it was always blue). Wrong
+    // choices: not the target color, another color, and not that color.
+    const colors = shuffle([
+      { name: 'red', n: redCount },
+      { name: 'blue', n: blueCount },
+      { name: 'green', n: greenCount }
+    ]);
+    const [target, other] = colors;
+    const f = (k: number) => `\\frac{${k}}{${totalCount}}`;
+    const correctText = f(target.n);
     const optionsData = [
-      { text: `\\frac{${correctNumerator}}{${correctDenominator}}`, isCorrect: true },
-      { text: `\\frac{${redCount + greenCount}}{${totalCount}}`, isCorrect: false, reason: "represents the probability that the marble chosen won't be blue" },
-      { text: `\\frac{${greenCount}}{${totalCount}}`, isCorrect: false, reason: "represents the probability that the marble chosen will be green" },
-      { text: `\\frac{${redCount + blueCount}}{${totalCount}}`, isCorrect: false, reason: "represents the probability that the marble chosen won't be green" }
+      { text: correctText, isCorrect: true, reason: '' },
+      { text: f(totalCount - target.n), isCorrect: false, reason: `$${f(totalCount - target.n)}$ is the probability that the marble chosen will not be ${target.name}` },
+      { text: f(other.n), isCorrect: false, reason: `$${f(other.n)}$ is the probability that the marble chosen will be ${other.name}` },
+      { text: f(totalCount - other.n), isCorrect: false, reason: `$${f(totalCount - other.n)}$ is the probability that the marble chosen will not be ${other.name}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -62,10 +71,10 @@ export const generator_458 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. If a marble is chosen at random from the bag, the probability of choosing a marble of a certain color is the number of marbles of that color divided by the total number of marbles in the bag. Since there are ${blueCount} blue marbles in the bag, and there are ${totalCount} total marbles in the bag, the probability that the marble chosen will be blue is $\\frac{${blueCount}}{${totalCount}}$. Choice ${incorrectOptions[0].letter} is incorrect; this ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; this ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; this ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. If a marble is chosen at random from the bag, the probability of choosing a marble of a certain color is the number of marbles of that color divided by the total number of marbles in the bag. Since there are ${target.n} ${target.name} marbles and ${totalCount} marbles in all, the probability that the marble chosen will be ${target.name} is $${correctText}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `The table shows the number of different colors of marbles in a bag. If a marble is chosen at random from the bag, what is the probability that the marble will be blue?`,
+      questionText: `The table shows the number of marbles of each color in a bag. If a marble is chosen at random from the bag, what is the probability that the marble will be ${target.name}?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
