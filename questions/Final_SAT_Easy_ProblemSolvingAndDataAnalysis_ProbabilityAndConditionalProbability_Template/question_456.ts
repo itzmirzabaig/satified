@@ -7,7 +7,17 @@ import type { QuestionData } from '../../study/types';
  * - Added a visual HTML table to `figureCode` to display the numbers.
  * - Shuffled the display order of numbers in the table.
  * - Used `currentColor` for table borders to support light/dark mode.
+ * - The data set now has 3 to 6 numbers with 1 or more negatives, so the
+ *   answer varies (it was always 1/3). Wrong choices are the probability of
+ *   a positive number, the ratio of negatives to positives, and 1 over the
+ *   number of values. Their reasons refer to this data set.
  */
+
+const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+const frac = (p: number, q: number): string => {
+  const g = gcd(p, q);
+  return q / g === 1 ? `${p / g}` : `\\frac{${p / g}}{${q / g}}`;
+};
 
 export const generator_456 = {
   metadata: {
@@ -19,23 +29,32 @@ export const generator_456 = {
   },
 
   generate(): QuestionData {
-    // 1. Generate Data (1 Negative, 2 Positive)
-    const negativeNum = getRandomInt(-25, -10);
-    const pos1 = getRandomInt(5, 30);
-    const pos2 = getRandomInt(5, 30);
+    // 1. Generate Data: n numbers, k of them negative, all different.
+    // Redraw until the four choices have different values.
+    let n = 0, k = 0;
+    let pool: { text: string; v: number; reason: string }[] = [];
+    do {
+      n = getRandomInt(3, 6);
+      k = getRandomInt(1, n - 1);
+      pool = [
+        { text: frac(n - k, n), v: (n - k) / n, reason: `$${frac(n - k, n)}$ is the probability of selecting a positive number, since ${n - k} of the ${n} numbers are positive` },
+        { text: frac(k, n - k), v: k / (n - k), reason: `$${frac(k, n - k)}$ is the ratio of the number of negative numbers, ${k}, to the number of positive numbers, ${n - k}; the denominator must be the total number of values, ${n}` },
+        { text: frac(1, n), v: 1 / n, reason: `$${frac(1, n)}$ is the probability of selecting any one particular number from the data set, not the probability of selecting a negative number` }
+      ];
+    } while (new Set([k / n, ...pool.map(o => o.v)].map(v => v.toFixed(6))).size < 4);
 
-    // 2. Prepare Display Data
-    // We shuffle these so the negative number isn't always in column 1
-    const dataSet = shuffle([negativeNum, pos1, pos2]);
+    const negatives = shuffle([...Array(26).keys()].map(i => -(i + 5))).slice(0, k);
+    const positives = shuffle([...Array(26).keys()].map(i => i + 5)).slice(0, n - k);
+    const dataSet = shuffle([...negatives, ...positives]);
 
-    // 3. Create Figure (HTML Table)
+    // 2. Create Figure (HTML Table). Negative numbers use a true minus sign.
     const tableHtml = `
       <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
         <table style="border-collapse: collapse; font-family: sans-serif; font-size: 1.2rem;">
           <tr>
             ${dataSet.map(num => `
-              <td style="border: 1px solid currentColor; padding: 12px 24px; text-align: center;">
-                ${num}
+              <td style="border: 1px solid currentColor; padding: 12px 20px; text-align: center;">
+                ${num < 0 ? `&minus;${-num}` : num}
               </td>
             `).join('')}
           </tr>
@@ -43,32 +62,10 @@ export const generator_456 = {
       </div>
     `;
 
-    // 4. Probability Logic
-    const negativeCount = 1;
-    const totalCount = 3;
-    // The correct answer is always 1/3 in this specific setup
-    const correctText = `\\frac{${negativeCount}}{${totalCount}}`;
-
+    const correctText = frac(k, n);
     const optionsData = [
-      { 
-        text: "0", 
-        isCorrect: false, 
-        reason: "probability of selecting from a data set with no negative numbers" 
-      },
-      { 
-        text: correctText, 
-        isCorrect: true 
-      },
-      { 
-        text: `\\frac{2}{3}`, 
-        isCorrect: false, 
-        reason: "probability of selecting a positive number from this data set" 
-      },
-      { 
-        text: "1", 
-        isCorrect: false, 
-        reason: "probability of selecting from a data set containing only negative numbers" 
-      }
+      { text: correctText, isCorrect: true, reason: '' },
+      ...pool.map(o => ({ text: o.text, isCorrect: false, reason: o.reason }))
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -78,13 +75,16 @@ export const generator_456 = {
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+    const words = ['', 'one', 'two', 'three', 'four', 'five', 'six'];
+    const negList = dataSet.filter(x => x < 0).map(x => `$${x}$`);
+    const negPhrase = k === 1 ? `Only ${negList[0]} is negative` : `${k} of them, ${negList.slice(0, -1).join(', ')}${k > 2 ? ',' : ''} and ${negList[k - 1]}, are negative`;
 
     return {
-      questionText: `A data set of three numbers is shown above. If a number from this data set is selected at random, what is the probability of selecting a negative number?`,
+      questionText: `The table shows a data set of ${words[n]} numbers. If a number from this data set is selected at random, what is the probability of selecting a negative number?`,
       figureCode: tableHtml,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. The data set contains three numbers: ${dataSet.join(', ')}. Only ${negativeNum} is negative. Therefore, the probability of selecting a negative number is $\\frac{${negativeCount}}{${totalCount}}$. Choice ${incorrectOptions[0].letter} is incorrect; this is the ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; this is the ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; this is the ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. The data set contains ${words[n]} numbers, and ${negPhrase}. So the probability of selecting a negative number is $\\frac{${k}}{${n}}$${gcd(k, n) > 1 ? `, or $${correctText}$` : ''}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
