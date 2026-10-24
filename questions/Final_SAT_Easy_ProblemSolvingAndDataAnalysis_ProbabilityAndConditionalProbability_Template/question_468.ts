@@ -49,7 +49,9 @@ export const generator_468 = {
       { text: `\\frac{1}{${totalMembers}}`, isCorrect: false, reason: "the probability of selecting one particular member, rather than any of the saxophone players" },
       { text: correctText, isCorrect: true },
       { text: `\\frac{${totalMembers - saxPlayers}}{${totalMembers}}`, isCorrect: false, reason: "the probability of selecting a member who does not play saxophone" },
-      { text: `\\frac{${totalMembers}}{${totalMembers}}`, isCorrect: false, reason: "the result of treating every member as a saxophone player" }
+      // Saxophone players compared with the other members; it used to be
+      // total/total, which no likely slip produces.
+      { text: `\\frac{${saxPlayers}}{${totalMembers - saxPlayers}}`, isCorrect: false, reason: `the ratio of the number of saxophone players, ${saxPlayers}, to the number of members who do not play saxophone, ${totalMembers - saxPlayers}; the denominator must be the total number of members, ${totalMembers}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -63,7 +65,7 @@ export const generator_468 = {
     const explanation = `Choice ${correctOption.letter} is correct. The probability is the number of favorable outcomes divided by the total number of outcomes. With ${saxPlayers} saxophone players out of ${totalMembers} total members, the probability of selecting a saxophone player is $\\frac{${saxPlayers}}{${totalMembers}}$. Choice ${incorrectOptions[0].letter} is incorrect because it is ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it is ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it is ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `A band with $${totalMembers}$ members has $${saxPlayers}$ members who play saxophone. If one band member is selected at random, what is the probability of selecting a band member who plays saxophone?`,
+      questionText: `A band with ${totalMembers} members has ${saxPlayers} members who play saxophone. If one band member is selected at random, what is the probability of selecting a band member who plays saxophone?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
