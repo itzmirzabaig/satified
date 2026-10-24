@@ -24,8 +24,8 @@ export const generator_451 = {
 
   generate: (): QuestionData => {
     // value is both the part and the percent. Since value = (value/100) * x,
-    // the whole x is always 100. Cap at 49 so value*2 (20..98) never hits the
-    // correct answer 100, and stays clear of the 0 and 1 distractors.
+    // the whole x is always 100. Values from 10 to 49 stay clear of
+    // the 0, 1, and 100 choices.
     const value = getRandomInt(10, 49);
     const whole = 100;
 
@@ -33,12 +33,13 @@ export const generator_451 = {
 
     const distractorA = 0;
     const distractorB = 1;
-    const distractorC = value * 2;
+    // The number given in the question (it used to be value * 2).
+    const distractorC = value;
 
     const optionsData = [
       { text: `${distractorA}`, isCorrect: false, reason: `${value}% of 0 is 0, not ${value}` },
       { text: `${distractorB}`, isCorrect: false, reason: `${value}% of 1 is ${(value / 100).toFixed(2)}, not ${value}` },
-      { text: `${distractorC}`, isCorrect: false, reason: `${value}% of ${distractorC} is ${(distractorC * value / 100).toFixed(2)}, not ${value}` },
+      { text: `${distractorC}`, isCorrect: false, reason: `${value} is the part, not the whole; ${value}% of ${value} is ${(value * value / 100).toFixed(2)}, not ${value}` },
       { text: `${whole}`, isCorrect: true }
     ];
 
@@ -55,7 +56,7 @@ export const generator_451 = {
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `${whole}`,
-      explanation: `Choice ${correctOption.letter} is correct. To find the number, set up the equation $x \\times ${decimal} = ${value}$ and solve for $x$: $x = \\frac{${value}}{${decimal}} = ${whole}$. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the number, set up the equation $x \\times ${decimal} = ${value}$ and solve for $x$: $x = \\frac{${value}}{${decimal}} = ${whole}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
