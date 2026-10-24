@@ -40,7 +40,7 @@ export const generator_461 = {
     ];
     const { prob: selectedProb, num, den } = probChoices[getRandomInt(0, probChoices.length - 1)];
 
-    // Redraw the multiplier (and the calc-error offset) until all four option
+    // Redraw the multiplier (and the dropped-decimal value) until all four option
     // values are pairwise distinct. totalMarbles stays in a natural 40-80 range.
     let groups = 0;
     let totalMarbles = 0;
@@ -55,7 +55,8 @@ export const generator_461 = {
       blueMarbles = num * groups;
       notBlue = totalMarbles - blueMarbles;
       percentValue = Math.round(selectedProb * 100);
-      offsetDistractor = blueMarbles + getRandomInt(3, 8);
+      // Dropping the decimal point: 0.6 read as 6, or 0.25 read as 25.
+      offsetDistractor = blueMarbles * (Number.isInteger(selectedProb * 10) ? 10 : 100);
     } while (
       tries++ < 50 &&
       new Set([blueMarbles, offsetDistractor, percentValue, notBlue]).size !== 4
@@ -64,10 +65,10 @@ export const generator_461 = {
     const correctText = blueMarbles.toString();
 
     const optionsData = [
-      { text: correctText, isCorrect: true },
-      { text: offsetDistractor.toString(), isCorrect: false, reason: "results from a calculation error when multiplying the probability by the total" },
-      { text: percentValue.toString(), isCorrect: false, reason: "confuses the probability with a percentage out of 100" },
-      { text: notBlue.toString(), isCorrect: false, reason: "gives the number of marbles that are not blue instead" }
+      { text: correctText, isCorrect: true, reason: '' },
+      { text: offsetDistractor.toLocaleString('en-US'), isCorrect: false, reason: `${offsetDistractor.toLocaleString('en-US')} results from multiplying ${totalMarbles} by ${Math.round(selectedProb * (Number.isInteger(selectedProb * 10) ? 10 : 100))} instead of by ${selectedProb}` },
+      { text: percentValue.toString(), isCorrect: false, reason: `${percentValue} is the probability written as a percent, ${percentValue}%, not the number of blue marbles` },
+      { text: notBlue.toString(), isCorrect: false, reason: `${notBlue} is the number of marbles that are not blue` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -78,7 +79,7 @@ export const generator_461 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The number of blue marbles equals the probability times the total number of marbles, so $x = ${selectedProb} \\times ${totalMarbles} = ${blueMarbles}$. You can check that $\\frac{${blueMarbles}}{${totalMarbles}} = ${selectedProb}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The number of blue marbles is the probability times the total number of marbles: $${selectedProb} \\times ${totalMarbles} = ${blueMarbles}$. You can check that $\\frac{${blueMarbles}}{${totalMarbles}} = ${selectedProb}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A bag contains a total of ${totalMarbles} marbles. A marble is to be chosen at random from the bag. If the probability that a blue marble will be chosen is ${selectedProb}, how many marbles in the bag are blue?`,
