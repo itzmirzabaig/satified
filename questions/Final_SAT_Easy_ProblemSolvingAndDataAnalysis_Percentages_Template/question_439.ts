@@ -35,7 +35,11 @@ export const generator_439 = {
   generate: (): QuestionData => {
     // Ranges chosen so the table sums to exactly 100% and every distractor
     // percent stays <= 100. doctor in [52,60], internet in [10,16].
-    const totalSurveyed = getRandomInt(800, 1500);
+    // A multiple of 100, so every percent of it is a whole number. It used
+    // to be any number from 800 to 1500, and the rounded answers were wrong
+    // (67% of 1375 is 921.25, not 921).
+    const totalSurveyed = 100 * getRandomInt(8, 15);
+    const fmt = (n: number) => n.toLocaleString('en-US');
     const doctorPct = getRandomInt(52, 60);
     const internetPct = getRandomInt(10, 16);
     const magazinesPct = 9;
@@ -45,7 +49,7 @@ export const generator_439 = {
     const otherPct = 100 - doctorPct - internetPct - magazinesPct - pharmacyPct - televisionPct;
 
     const combinedPct = doctorPct + internetPct;
-    const result = Math.round((combinedPct / 100) * totalSurveyed);
+    const result = combinedPct * totalSurveyed / 100;
 
     const tableCode = `
 <table>
@@ -72,15 +76,15 @@ export const generator_439 = {
     const doctorMagsPct = doctorPct + magazinesPct;           // wrong pair (doctor OR magazines)
     const threeSourcePct = doctorPct + internetPct + magazinesPct; // added an extra source
 
-    const doctorOnly = Math.round((doctorOnlyPct / 100) * totalSurveyed);
-    const doctorMags = Math.round((doctorMagsPct / 100) * totalSurveyed);
-    const threeSource = Math.round((threeSourcePct / 100) * totalSurveyed);
+    const doctorOnly = doctorOnlyPct * totalSurveyed / 100;
+    const doctorMags = doctorMagsPct * totalSurveyed / 100;
+    const threeSource = threeSourcePct * totalSurveyed / 100;
 
     const optionsData = [
-      { text: `${doctorOnly}`, isCorrect: false, reason: `is ${doctorOnlyPct}% of ${totalSurveyed} (only the doctor group), not ${combinedPct}%` },
-      { text: `${doctorMags}`, isCorrect: false, reason: `is ${doctorMagsPct}% of ${totalSurveyed} (doctor or magazines/brochures), not doctor or the Internet` },
-      { text: `${result}`, isCorrect: true },
-      { text: `${threeSource}`, isCorrect: false, reason: `is ${threeSourcePct}% of ${totalSurveyed} (doctor, Internet, and magazines/brochures), one source too many` }
+      { text: fmt(doctorOnly), isCorrect: false, reason: `${fmt(doctorOnly)} is the number who get most of their medical information from a doctor only, ${doctorOnlyPct}% of ${fmt(totalSurveyed)}; the Internet group must be included` },
+      { text: fmt(doctorMags), isCorrect: false, reason: `${fmt(doctorMags)} is the number who get most of their medical information from either a doctor or magazines/brochures, ${doctorMagsPct}% of ${fmt(totalSurveyed)}` },
+      { text: fmt(result), isCorrect: true, reason: '' },
+      { text: fmt(threeSource), isCorrect: false, reason: `${fmt(threeSource)} is the number who get most of their medical information from a doctor, the Internet, or magazines/brochures, ${threeSourcePct}% of ${fmt(totalSurveyed)}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -92,11 +96,11 @@ export const generator_439 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `The table above shows a summary of ${totalSurveyed} responses to a survey question. Based on the table, how many of those surveyed get most of their medical information from either a doctor or the Internet?`,
+      questionText: `The table shows a summary of ${fmt(totalSurveyed)} responses to a survey question. Based on the table, how many of those surveyed get most of their medical information from either a doctor or the Internet?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
-      correctAnswer: `${result}`,
-      explanation: `Choice ${correctOption.letter} is correct. According to the table, ${doctorPct}% of survey respondents get most of their medical information from a doctor and ${internetPct}% get most of their medical information from the Internet. Together that is ${doctorPct}% + ${internetPct}% = ${combinedPct}% of the ${totalSurveyed} respondents, and ${combinedPct}% of ${totalSurveyed} is ${result}. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      correctAnswer: fmt(result),
+      explanation: `Choice ${correctOption.letter} is correct. According to the table, ${doctorPct}% of those surveyed get most of their medical information from a doctor and ${internetPct}% get it from the Internet. Together, that is ${doctorPct}% + ${internetPct}%, or ${combinedPct}%, of the ${fmt(totalSurveyed)} people surveyed, which is $${combinedPct / 100} \\times ${totalSurveyed} = ${result}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
