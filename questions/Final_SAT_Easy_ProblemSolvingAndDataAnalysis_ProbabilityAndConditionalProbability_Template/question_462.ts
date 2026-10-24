@@ -49,14 +49,24 @@ export const generator_462 = {
 
     const tableCode = `<table><thead><tr><th></th><th>Live east of the river</th><th>Live west of the river</th><th>Total</th></tr></thead><tbody><tr><td>Less than 40 years old</td><td>${youngEast}</td><td>${youngWest}</td><td>${totalYoung}</td></tr><tr><td>At least 40 years old</td><td>${oldEast}</td><td>${oldWest}</td><td>${totalOld}</td></tr><tr><td>Total</td><td>${totalEast}</td><td>${totalWest}</td><td>${grandTotal}</td></tr></tbody></table>`;
 
-    const correctText = `\\frac{${totalOld}}{${grandTotal}}`;
-
-    const optionsData = [
-      { text: `\\frac{${totalYoung}}{${grandTotal}}`, isCorrect: false, reason: "probability that the selected member is less than 40 years old" },
-      { text: `\\frac{${totalEast}}{${grandTotal}}`, isCorrect: false, reason: "probability that the selected member lives east of the river" },
-      { text: `\\frac{${totalWest}}{${grandTotal}}`, isCorrect: false, reason: "probability that the selected member lives west of the river" },
-      { text: correctText, isCorrect: true }
+    // The asked-about group is chosen at random from the four row and column
+    // totals (it was always "at least 40 years old"); the other three totals
+    // are the wrong choices.
+    const groups = [
+      { n: totalYoung, cond: 'is less than 40 years old', row: 'less than 40 years old' },
+      { n: totalOld, cond: 'is at least 40 years old', row: 'at least 40 years old' },
+      { n: totalEast, cond: 'lives east of the river', row: 'who live east of the river' },
+      { n: totalWest, cond: 'lives west of the river', row: 'who live west of the river' }
     ];
+    const target = groups[getRandomInt(0, 3)];
+    const f = (k: number) => `\\frac{${k}}{${grandTotal}}`;
+    const correctText = f(target.n);
+
+    const optionsData = groups.map(g => ({
+      text: f(g.n),
+      isCorrect: g === target,
+      reason: g === target ? '' : `$${f(g.n)}$ is the probability that the selected member ${g.cond}`
+    }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -66,10 +76,10 @@ export const generator_462 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. If a member is selected at random, the probability is the number of members at least 40 years old divided by the total. There are ${totalOld} members at least 40 years old out of ${grandTotal} total, giving $\\frac{${totalOld}}{${grandTotal}}$. Choice ${incorrectOptions[0].letter} is incorrect; this is the ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect; this is the ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect; this is the ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. If a member is selected at random, the probability that the member ${target.cond} is the number of members ${target.row} divided by the total number of members. The table shows ${target.n} members ${target.row} out of ${grandTotal} members, so the probability is $${correctText}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `The table summarizes members of a local organization by age and whether they live east or west of the river. If a member of the organization is selected at random, what is the probability that the selected member is at least $40$ years old?`,
+      questionText: `The table summarizes members of a local organization by age and whether they live east or west of the river. If a member of the organization is selected at random, what is the probability that the selected member ${target.cond}?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
