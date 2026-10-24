@@ -54,14 +54,26 @@ export const generator_459 = {
 
     const tableCode = `<table><thead><tr><th>Voice type</th><th>Number of singers</th></tr></thead><tbody><tr><td>Countertenor</td><td>${countertenor}</td></tr><tr><td>Tenor</td><td>${tenor}</td></tr><tr><td>Baritone</td><td>${baritone}</td></tr><tr><td>Bass</td><td>${bass}</td></tr></tbody></table>`;
 
-    const correctText = asProb(baritone, totalSingers);
-
-    const optionsData = [
-      { text: correctText, isCorrect: true },
-      { text: asProb(countertenor, totalSingers), isCorrect: false, reason: "uses the number of countertenors instead of the number of baritones" },
-      { text: asProb(tenor, totalSingers), isCorrect: false, reason: "uses the number of tenors instead of the number of baritones" },
-      { text: asProb(bass, totalSingers), isCorrect: false, reason: "uses the number of basses instead of the number of baritones" }
+    // The asked-about voice type is chosen at random (it was always
+    // baritone), and the stem asks for the nearest hundredth, since the
+    // probabilities are rounded (15/31 is about 0.4839, not exactly 0.48).
+    const types = [
+      { one: 'countertenor', many: 'countertenors', n: countertenor },
+      { one: 'tenor', many: 'tenors', n: tenor },
+      { one: 'baritone', many: 'baritones', n: baritone },
+      { one: 'bass', many: 'basses', n: bass }
     ];
+    const target = types[getRandomInt(0, 3)];
+    const article = (w: string) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
+    const correctText = asProb(target.n, totalSingers);
+    // "=" when the hundredths value is exact, "≈" when it is rounded.
+    const rel = (n: number) => ((n * 100) % totalSingers === 0 ? '=' : '\\approx');
+
+    const optionsData = types.map(t => ({
+      text: asProb(t.n, totalSingers),
+      isCorrect: t === target,
+      reason: t === target ? '' : `${asProb(t.n, totalSingers)} is the probability that the singer selected is ${article(t.one)} ${t.one}, since $\\frac{${t.n}}{${totalSingers}} ${rel(t.n)} ${asProb(t.n, totalSingers)}$`
+    }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -71,10 +83,10 @@ export const generator_459 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The probability is found by dividing the number of baritone singers by the total number of men registered for singing lessons. There are ${baritone} baritones out of ${totalSingers} total singers, so the probability is $\\frac{${baritone}}{${totalSingers}} = ${correctText}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The probability is the number of ${target.many} divided by the total number of men registered for singing lessons. There are ${target.n} ${target.many} out of ${totalSingers} singers, so the probability is $\\frac{${target.n}}{${totalSingers}} ${rel(target.n)} ${correctText}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `A total of ${totalSingers} men registered for singing lessons. The frequency table shows how many of these singers have certain voice types. If one of these singers is selected at random, what is the probability he is a baritone?`,
+      questionText: `A total of ${totalSingers} men registered for singing lessons. The frequency table shows how many of these singers have certain voice types. If one of these singers is selected at random, what is the probability, to the nearest hundredth, that he is ${article(target.one)} ${target.one}?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
