@@ -29,20 +29,19 @@ export const generator_449 = {
     const totalCost = price + taxAmount;
     const formattedTotal = totalCost.toFixed(2);
     const formattedTax = taxAmount.toFixed(2);
-    const halfRate = taxRate / 2;
 
     // Distractors (all provably distinct from the correct total across the
     // full range 15<=price<=50, 4<=taxRate<=9 — verified: no collisions):
     //  A: treats the tax as $tax_rate/100 in dollars (decimal misplacement)
-    //  B: uses half the tax rate
+    //  B: the tax alone (it used to be the total at half the tax rate, a
+    //     rate the question never mentions)
     //  D: adds the tax rate as dollars instead of a percentage
     const distractorA = (price + taxRate / 100).toFixed(2);
-    const distractorB = (price + price * halfRate / 100).toFixed(2);
     const distractorD = (price + taxRate).toFixed(2);
 
     const optionsData = [
       { text: `\\$${distractorA}`, isCorrect: false, reason: `results from adding only \\$${(taxRate / 100).toFixed(2)} of tax (misplacing the decimal) instead of computing ${taxRate}% of \\$${price}` },
-      { text: `\\$${distractorB}`, isCorrect: false, reason: `would be the result if the tax rate were ${halfRate}% instead of ${taxRate}%` },
+      { text: `\\$${formattedTax}`, isCorrect: false, reason: `is the amount of the sales tax only; it must be added to the price of \\$${price}` },
       { text: `\\$${formattedTotal}`, isCorrect: true, reason: "" },
       { text: `\\$${distractorD}`, isCorrect: false, reason: `results from adding ${taxRate} dollars to the price (treating ${taxRate}% as \\$${taxRate}) instead of computing the percentage` }
     ];
