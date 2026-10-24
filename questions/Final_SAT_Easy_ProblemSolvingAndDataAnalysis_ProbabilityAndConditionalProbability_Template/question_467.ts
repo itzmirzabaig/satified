@@ -23,39 +23,35 @@ export const generator_467 = {
   },
 
   generate(): QuestionData {
-    // The four options all have numerator `igneous` over four different
-    // denominators: total, sedimentary, metamorphic, metamorphic+sedimentary.
-    // Two options are numerically equal exactly when their denominators are
-    // equal. total and met+sed are always > the single-category counts, so the
-    // only possible collision is metamorphic === sedimentary. Redraw (bounded)
-    // until all four denominators are pairwise distinct.
-    let igneousCount = 0, metamorphicCount = 0, sedimentaryCount = 0, totalRocks = 0;
-    let tries = 0;
+    // The asked-about classification is chosen at random (it was always
+    // igneous). All four choices have that count as the numerator; the
+    // denominators are the total (correct), each other count, and the number
+    // of rocks not in the class. Redraw until the four denominators differ.
+    const names = ['igneous', 'metamorphic', 'sedimentary'];
+    let counts: number[] = [];
+    let t = 0, totalRocks = 0;
+    let dens: number[] = [];
     do {
-      igneousCount = getRandomInt(8, 15);
-      metamorphicCount = getRandomInt(25, 40);
-      sedimentaryCount = getRandomInt(20, 35);
-      totalRocks = igneousCount + metamorphicCount + sedimentaryCount;
-      tries++;
-    } while (
-      tries < 50 &&
-      (sedimentaryCount === metamorphicCount ||
-        sedimentaryCount === metamorphicCount + sedimentaryCount ||
-        metamorphicCount === metamorphicCount + sedimentaryCount ||
-        totalRocks === sedimentaryCount ||
-        totalRocks === metamorphicCount ||
-        totalRocks === metamorphicCount + sedimentaryCount)
-    );
+      counts = [getRandomInt(8, 15), getRandomInt(25, 40), getRandomInt(20, 35)];
+      totalRocks = counts[0] + counts[1] + counts[2];
+      t = getRandomInt(0, 2);
+      const o = [0, 1, 2].filter(i => i !== t);
+      dens = [totalRocks, counts[o[0]], counts[o[1]], totalRocks - counts[t]];
+    } while (new Set(dens).size < 4 || counts[t] === dens[1] || counts[t] === dens[2]);
 
-    const tableCode = `<table><thead><tr><th>Classification</th><th>Frequency</th></tr></thead><tbody><tr><td>igneous</td><td>${igneousCount}</td></tr><tr><td>metamorphic</td><td>${metamorphicCount}</td></tr><tr><td>sedimentary</td><td>${sedimentaryCount}</td></tr></tbody></table>`;
+    const tableCode = `<table><thead><tr><th>Classification</th><th>Frequency</th></tr></thead><tbody>${names.map((n, i) => `<tr><td>${n}</td><td>${counts[i]}</td></tr>`).join('')}</tbody></table>`;
 
-    const correctText = `\\frac{${igneousCount}}{${totalRocks}}`;
+    const name = names[t];
+    const k = counts[t];
+    const others = [0, 1, 2].filter(i => i !== t);
+    const article = (w: string) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
+    const f = (d: number) => `\\frac{${k}}{${d}}`;
+    const correctText = f(totalRocks);
 
     const optionsData = [
-      { text: `\\frac{${igneousCount}}{${sedimentaryCount}}`, isCorrect: false, reason: "the number of igneous rocks divided by the number of sedimentary rocks, not the total" },
-      { text: `\\frac{${igneousCount}}{${metamorphicCount}}`, isCorrect: false, reason: "the number of igneous rocks divided by the number of metamorphic rocks, not the total" },
-      { text: `\\frac{${igneousCount}}{${totalRocks}}`, isCorrect: true },
-      { text: `\\frac{${igneousCount}}{${metamorphicCount + sedimentaryCount}}`, isCorrect: false, reason: "the number of igneous rocks divided by the number of rocks that are not igneous, not the total" }
+      { text: correctText, isCorrect: true, reason: '' },
+      ...others.map(i => ({ text: f(counts[i]), isCorrect: false, reason: `$${f(counts[i])}$ is the number of ${name} rocks divided by the number of ${names[i]} rocks, not by the total number of rocks` })),
+      { text: f(totalRocks - k), isCorrect: false, reason: `$${f(totalRocks - k)}$ is the number of ${name} rocks divided by the number of rocks that are not ${name}, not by the total number of rocks` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -66,10 +62,10 @@ export const generator_467 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The probability of selecting an igneous rock is the number of igneous rocks divided by the total number of rocks. From the table there are ${igneousCount} igneous rocks and ${totalRocks} rocks in all, so the probability is $\\frac{${igneousCount}}{${totalRocks}}$. Choice ${incorrectOptions[0].letter} is incorrect because it is ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it is ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it is ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The probability of selecting ${article(name)} ${name} rock is the number of ${name} rocks divided by the total number of rocks. From the table, there are ${k} ${name} rocks and ${totalRocks} rocks in all, so the probability is $${correctText}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `The table shows the classification of every rock in a collection. If one of these rocks is selected at random, what is the probability of selecting a rock that is igneous?`,
+      questionText: `The table shows the classification of every rock in a collection. If one of these rocks is selected at random, what is the probability of selecting a rock that is ${name}?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
