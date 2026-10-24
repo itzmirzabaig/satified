@@ -23,39 +23,38 @@ export const generator_466 = {
   },
 
   generate(): QuestionData {
-    // The four displayed options are P(white), P(orange), P(brown) and
-    // P(not white). They all share the denominator `total`, so two options are
-    // numerically equal exactly when their numerators are equal. Redraw (bounded)
-    // until the four numerators {white, orange, brown, orange+brown} are pairwise
-    // distinct, which also guarantees the correct answer is unique.
+    // The asked-about color is chosen at random (it was always white). All
+    // four choices share the denominator, the total; the correct one used to
+    // be reduced when possible while the others were not, which gave it away.
+    // Wrong choices: the other two colors and "not the asked-about color."
+    // Redraw until the four numerators differ.
+    const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
     let whiteCount = 0, orangeCount = 0, brownCount = 0, totalCount = 0;
-    let tries = 0;
+    let colors: { name: string; n: number }[] = [];
+    let t = 0;
     do {
       whiteCount = getRandomInt(5, 12);
       orangeCount = getRandomInt(1, 4);
       brownCount = getRandomInt(6, 15);
       totalCount = whiteCount + orangeCount + brownCount;
-      tries++;
-    } while (
-      tries < 50 &&
-      (whiteCount === orangeCount ||
-        whiteCount === brownCount ||
-        whiteCount === orangeCount + brownCount ||
-        orangeCount === brownCount)
-    );
+      colors = [
+        { name: 'white', n: whiteCount },
+        { name: 'orange', n: orangeCount },
+        { name: 'brown', n: brownCount }
+      ];
+      t = getRandomInt(0, 2);
+    } while (new Set([...colors.map(c => c.n), totalCount - colors[t].n]).size < 4);
 
-    const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
-    const divisor = gcd(whiteCount, totalCount);
-    const simplifiedNum = whiteCount / divisor;
-    const simplifiedDen = totalCount / divisor;
-    const isReduced = divisor === 1;
-    const correctText = `\\frac{${simplifiedNum}}{${simplifiedDen}}`;
+    const target = colors[t];
+    const others = colors.filter((_, i) => i !== t);
+    const f = (k: number) => `\\frac{${k}}{${totalCount}}`;
+    const article = (w: string) => (/^[aeiou]/i.test(w) ? 'an' : 'a');
+    const correctText = f(target.n);
 
     const optionsData = [
-      { text: `\\frac{${orangeCount}}{${totalCount}}`, isCorrect: false, reason: "the probability of selecting an orange button, not a white one" },
-      { text: correctText, isCorrect: true },
-      { text: `\\frac{${brownCount}}{${totalCount}}`, isCorrect: false, reason: "the probability of selecting a brown button, not a white one" },
-      { text: `\\frac{${orangeCount + brownCount}}{${totalCount}}`, isCorrect: false, reason: "the probability of selecting a button that is not white" }
+      { text: correctText, isCorrect: true, reason: '' },
+      ...others.map(c => ({ text: f(c.n), isCorrect: false, reason: `$${f(c.n)}$ is the probability of selecting ${article(c.name)} ${c.name} button, not ${article(target.name)} ${target.name} one` })),
+      { text: f(totalCount - target.n), isCorrect: false, reason: `$${f(totalCount - target.n)}$ is the probability of selecting a button that is not ${target.name}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -66,16 +65,12 @@ export const generator_466 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    // Counts are kept in plain text (not math) so the explanation never mixes a
-    // "$<digit>" span with a "$\frac" span (avoids the currency-collision heuristic).
-    const fractionText = isReduced
-      ? `\\frac{${whiteCount}}{${totalCount}}`
-      : `\\frac{${whiteCount}}{${totalCount}} = \\frac{${simplifiedNum}}{${simplifiedDen}}`;
-
-    const explanation = `Choice ${correctOption.letter} is correct. There are ${whiteCount} white buttons out of ${totalCount} total buttons, so the probability of selecting a white button is $${fractionText}$. Choice ${incorrectOptions[0].letter} is incorrect because it is ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it is ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it is ${incorrectOptions[2].reason}.`;
+    const d = gcd(target.n, totalCount);
+    const reduction = d > 1 ? `, which is equivalent to $\\frac{${target.n / d}}{${totalCount / d}}$` : '';
+    const explanation = `Choice ${correctOption.letter} is correct. There ${target.n === 1 ? 'is 1' : `are ${target.n}`} ${target.name} ${target.n === 1 ? 'button' : 'buttons'} out of ${totalCount} buttons, so the probability of selecting ${article(target.name)} ${target.name} button is $${correctText}$${reduction}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `There are $${totalCount}$ buttons in a bag: $${whiteCount}$ white buttons, $${orangeCount}$ orange buttons, and $${brownCount}$ brown buttons. If one of these buttons is selected at random, what is the probability of selecting a white button?`,
+      questionText: `There are ${totalCount} buttons in a bag: ${whiteCount} white buttons, ${orangeCount} orange ${orangeCount === 1 ? 'button' : 'buttons'}, and ${brownCount} brown buttons. If one of these buttons is selected at random, what is the probability of selecting ${article(target.name)} ${target.name} button?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
