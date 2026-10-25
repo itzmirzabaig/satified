@@ -45,12 +45,25 @@
     } catch (err) {}
   }
 
+  /* Light markdown on already escaped text, outside $...$ math: **bold**,
+     heading markers dropped, and "* " or "- " list items shown as bullets.
+     The models often reply with these, and they showed up as raw asterisks. */
+  function lightMarkdown(html) {
+    return html.split(/(\$[^$]*\$)/).map(function (part, i) {
+      if (i % 2 === 1) return part;
+      return part
+        .replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/(^|\n)#{1,6}\s+/g, '$1')
+        .replace(/(^|\n)\s*[*-]\s+/g, '$1&bull; ');
+    }).join('');
+  }
+
   /* message rendering: escape first, then let MathJax handle $...$ */
 
   function appendMessage(role, text) {
     var div = document.createElement('div');
     div.className = 'tutor-msg ' + role;
-    div.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
+    div.innerHTML = lightMarkdown(escapeHtml(text)).replace(/\n/g, '<br>');
     els.list.appendChild(div);
     els.list.scrollTop = els.list.scrollHeight;
     typesetNode(div);
