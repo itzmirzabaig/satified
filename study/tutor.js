@@ -54,7 +54,8 @@
       return part
         .replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>')
         .replace(/(^|\n)#{1,6}\s+/g, '$1')
-        .replace(/(^|\n)\s*[*-]\s+/g, '$1&bull; ');
+        .replace(/(^|\n)\s*[*-]\s+/g, '$1&bull; ')
+        .replace(/(^|[^*\w])\*([^*\s](?:[^*\n]*?[^*\s])?)\*(?![*\w])/g, '$1<em>$2</em>');
     }).join('');
   }
 
