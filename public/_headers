@@ -49,3 +49,9 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# The tutor script is copied into the build without a hashed name, so the 4 hour
+# default kept old copies around after a fix. Revalidate on every load instead
+# (a cheap 304 when nothing changed).
+/study/tutor.js
+  Cache-Control: no-cache
