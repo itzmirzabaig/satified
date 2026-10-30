@@ -1136,6 +1136,8 @@ class PracticeTestEngine {
   constructor(allIndex: QEntry[], allModules: Record<string,(()=>Promise<any>)>) {
     this.allIndex = allIndex;
     this.allModules = allModules;
+    // Dev only: lets a review script put a chosen question into a test.
+    if (import.meta.env.DEV) (window as any).__pt = this;
 
     this.overlay    = document.getElementById('pt-overlay')!;
     this.panel      = document.getElementById('pt-panel')!;
@@ -1536,7 +1538,8 @@ class PracticeTestEngine {
 
     if (d.figureCode) {
       const gid = `ptg-${this.cursor}-${this.currentModule}`;
-      if (d.figureCode.trim().startsWith('<table') || d.figureCode.trim().startsWith('<div')) {
+      const fc = d.figureCode.trim();
+      if (fc.startsWith('<table') || fc.startsWith('<div') || fc.startsWith('<svg')) {
         h += `<div class="figure">${d.figureCode}</div>`;
       } else {
         h += `<div class="figure mafs-container" id="${gid}" style="height:300px"></div>`;
@@ -1559,9 +1562,19 @@ class PracticeTestEngine {
         const letter = String.fromCharCode(65 + i);
         const txt = getOptText(opt);
         const selected = q.selectedOpt === i ? ' selected' : '';
-        h += `<li class="option${selected}" data-index="${i}" role="button" tabindex="0">
-          <span class="option-letter">${letter}.</span>
-          <span class="option-text">${optWrap(txt)}</span></li>`;
+        if (isGraphCode(txt)) {
+          // A graph choice is drawn, the same way the study view draws it.
+          // This view used to print the graph's Mafs source as the choice.
+          const oid = `ptog-${this.cursor}-${this.currentModule}-${i}`;
+          h += `<li class="option option-graph${selected}" data-index="${i}" role="button" tabindex="0">
+            <span class="option-letter">${letter}.</span>
+            <div id="${oid}" class="mafs-container option-mafs"></div></li>`;
+          setTimeout(() => this.mountGraph(oid, txt, 300), 100);
+        } else {
+          h += `<li class="option${selected}" data-index="${i}" role="button" tabindex="0">
+            <span class="option-letter">${letter}.</span>
+            <span class="option-text">${optWrap(txt)}</span></li>`;
+        }
       });
       h += `</ul>`;
     }
