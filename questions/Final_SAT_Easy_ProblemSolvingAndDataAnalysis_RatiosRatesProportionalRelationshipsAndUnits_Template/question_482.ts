@@ -23,42 +23,40 @@ export const generator_482 = {
   },
 
   generate: (): QuestionData => {
-    const earthWeight = 100;
+    // Real surface gravity, to the nearest tenth of Earth's (Jupiter uses the
+    // official question's 23/10). The fractions used to be random, so the
+    // question could claim an object weighs 12/10 as much on Venus.
+    const heavy = [
+      { name: 'Jupiter', num: 23 },
+      { name: 'Saturn', num: 11 },
+      { name: 'Neptune', num: 11 }
+    ];
+    const light = [
+      { name: 'Venus', num: 9 },
+      { name: 'Mars', num: 4 },
+      { name: 'Mercury', num: 4 }
+    ];
     const denominator = 10;
-    // earthWeight / denominator is exactly 10, so all weights are integers.
-    // Multiply by the integer factor (not the fraction) to avoid float artifacts.
-    const factor = earthWeight / denominator; // 10
+    let h = heavy[0], l = light[0], earthWeight = 100;
+    let lightWeight = 0, heavyWeight = 0, weightDifference = 0;
+    do {
+      h = heavy[getRandomInt(0, 2)];
+      l = light[getRandomInt(0, 2)];
+      // A multiple of 10, so every weight is a whole number.
+      earthWeight = 10 * getRandomInt(5, 20);
+      lightWeight = (l.num * earthWeight) / denominator;
+      heavyWeight = (h.num * earthWeight) / denominator;
+      weightDifference = heavyWeight - lightWeight;
+    } while (new Set([weightDifference, lightWeight, heavyWeight, lightWeight + heavyWeight]).size < 4);
 
-    const venusNum = getRandomInt(8, 12);
-    const jupiterNum = getRandomInt(venusNum + 5, venusNum + 15);
-
-    const venusWeight = venusNum * factor;       // 80..120
-    const jupiterWeight = jupiterNum * factor;    // 130..270
-    const weightDifference = (jupiterNum - venusNum) * factor; // 50..150
-
-    // Distractors, all provably distinct from the answer and from each other:
-    //  - venusWeight: picked Venus's weight instead of the difference. Collides
-    //    with the difference only when jupiterNum === 2*venusNum, so it is
-    //    guarded below with a bounded near-miss fallback.
-    //  - jupiterWeight: picked Jupiter's weight. jupiterWeight === difference
-    //    would need venusNum === 0 (impossible), so it never collides.
-    //  - venusWeight + jupiterWeight: added the two weights instead of
-    //    subtracting. Equals venusWeight/jupiterWeight/difference only if a
-    //    weight is 0 (impossible), so it never collides.
-    const distractor3 = jupiterWeight;
-    const sumTrap = venusWeight + jupiterWeight;
-
-    let d1 = venusWeight;
-    let d1tries = 0;
-    while ((d1 === weightDifference || d1 === distractor3 || d1 === sumTrap) && d1tries++ < 50) {
-      d1 = venusWeight - getRandomInt(1, 9); // stays >= 71 since venusWeight >= 80
-    }
-
+    // Wrong choices: the weight on each planet and the sum of the two. The
+    // first used to be nudged by a random amount when it collided, with the
+    // reason "a calculation error."
     const optionsData = [
-      { text: d1.toString(), isCorrect: false, reason: d1 === venusWeight ? "This is the weight of the object on Venus, not the difference between the two planets." : "This results from a calculation error and is not the difference between the two weights." },
-      { text: sumTrap.toString(), isCorrect: false, reason: "This adds the two weights together instead of subtracting to find the difference." },
-      { text: weightDifference.toString(), isCorrect: true, reason: null },
-      { text: distractor3.toString(), isCorrect: false, reason: "This is the weight of the object on Jupiter, not the difference between the two planets." }
+      { text: `${weightDifference}`, isCorrect: true, reason: '' },
+      { text: `${lightWeight}`, isCorrect: false, reason: `${lightWeight} pounds is the object's weight on ${l.name}, not how much more it weighs on ${h.name}` },
+      { text: `${heavyWeight}`, isCorrect: false, reason: `${heavyWeight} pounds is the object's weight on ${h.name}, not how much more it weighs there than on ${l.name}` },
+      { text: `${lightWeight + heavyWeight}`, isCorrect: false, reason: `${lightWeight + heavyWeight} results from adding the two weights instead of subtracting` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -67,16 +65,15 @@ export const generator_482 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `First, find the weight of the object on Venus. The object weighs ${earthWeight} pounds on Earth, so its weight on Venus is $${venusNum}/${denominator} \\times ${earthWeight} = ${venusWeight}$ pounds. Next, find the weight on Jupiter: $${jupiterNum}/${denominator} \\times ${earthWeight} = ${jupiterWeight}$ pounds. Finally, subtract the weight on Venus from the weight on Jupiter: $${jupiterWeight} - ${venusWeight} = ${weightDifference}$ pounds. Therefore, the object weighs ${weightDifference} pounds more on Jupiter than on Venus. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctOption.letter} is correct. The object weighs ${earthWeight} pounds on Earth, so its weight on ${l.name} is approximately $\\frac{${l.num}}{${denominator}} \\times ${earthWeight} = ${lightWeight}$ pounds, and its weight on ${h.name} is approximately $\\frac{${h.num}}{${denominator}} \\times ${earthWeight} = ${heavyWeight}$ pounds. The difference is $${heavyWeight} - ${lightWeight} = ${weightDifference}$, so the object weighs approximately ${weightDifference} more pounds on ${h.name} than on ${l.name}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `The weight of an object on Venus is approximately $${venusNum}/${denominator}$ of its weight on Earth. The weight of an object on Jupiter is approximately $${jupiterNum}/${denominator}$ of its weight on Earth. If an object weighs ${earthWeight} pounds on Earth, approximately how many more pounds does it weigh on Jupiter than it weighs on Venus?`,
+      questionText: `The weight of an object on ${l.name} is approximately $\\frac{${l.num}}{${denominator}}$ of its weight on Earth. The weight of an object on ${h.name} is approximately $\\frac{${h.num}}{${denominator}}$ of its weight on Earth. If an object weighs ${earthWeight} pounds on Earth, approximately how many more pounds does it weigh on ${h.name} than it weighs on ${l.name}?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
-      correctAnswer: weightDifference.toString(),
+      correctAnswer: `${weightDifference}`,
       explanation: explanation
     };
   }
