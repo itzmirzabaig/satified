@@ -29,7 +29,7 @@ export const generator_490 = {
     const correctTime = distance / speed;
 
     const questionText = `An object travels at a constant speed of ${speed} centimeters per second. At this speed, what is the time, in seconds, that it would take for the object to travel ${distance} centimeters?`;
-    const explanation = `The correct answer is ${correctTime}. The time can be calculated by solving the equation $${speed}=\\frac{${distance}}{x}$. Multiplying each side by $x$ yields $${speed}x=${distance}$, and dividing by ${speed} yields $x=${correctTime}$.`;
+    const explanation = `The correct answer is ${correctTime}. If $x$ is the time, in seconds, then speed is distance divided by time, so $x$ can be found by solving the equation $${speed}=\\frac{${distance}}{x}$. Multiplying each side by $x$ yields $${speed}x=${distance}$, and dividing by ${speed} yields $x=${correctTime}$.`;
 
     return {
       questionText: questionText,
