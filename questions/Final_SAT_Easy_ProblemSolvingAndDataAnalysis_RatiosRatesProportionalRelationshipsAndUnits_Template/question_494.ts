@@ -32,10 +32,10 @@ export const generator_494 = {
     const distractor3 = speed - time;
 
     const optionsData = [
-      { text: distance.toString(), isCorrect: true, reason: null },
-      { text: distractor1.toString(), isCorrect: false, reason: "This is incorrect. It likely results from adding the numbers instead of multiplying them." },
-      { text: distractor2.toString(), isCorrect: false, reason: "This is incorrect. It is just the speed per second, not the total distance." },
-      { text: distractor3.toString(), isCorrect: false, reason: "This is incorrect. It likely results from subtracting the numbers instead of multiplying them." }
+      { text: distance.toString(), isCorrect: true, reason: '' },
+      { text: distractor1.toString(), isCorrect: false, reason: `${distractor1} results from adding ${speed} and ${time} instead of multiplying them` },
+      { text: distractor2.toString(), isCorrect: false, reason: `${distractor2} is the distance the bird flies in 1 second, not in ${time} seconds` },
+      { text: distractor3.toString(), isCorrect: false, reason: `${distractor3} results from subtracting ${time} from ${speed} instead of multiplying` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,7 +47,7 @@ export const generator_494 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `To find the total distance flown, we can use the formula: $$ \\text{Distance} = \\text{Speed} \\times \\text{Time} $$ Substitute the values: $$ \\text{Distance} = ${speed} \\times ${time} = ${distance} \\text{ meters} $$ Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctLetter} is correct. To find the total distance flown, we can use the formula: $$ \\text{Distance} = \\text{Speed} \\times \\text{Time} $$ Substitute the values: $$ \\text{Distance} = ${speed} \\times ${time} = ${distance} \\text{ meters} $$ ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A certain bird species can fly at an average speed of $${speed}$ meters per second when in continuous flight. At this rate, how many meters would this bird species fly in $${time}$ seconds?`,
