@@ -27,16 +27,18 @@ export const generator_491 = {
     const cmPerMeter = 100;
     const centimeters = meters * cmPerMeter;
     const correctMeters = centimeters / cmPerMeter;
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const m = (n: number) => fmt(n).replace(/,/g, '{,}');
 
-    const distractor1 = parseFloat((cmPerMeter / centimeters).toFixed(3));
-    const distractor2 = centimeters + cmPerMeter;
-    const distractor3 = centimeters * cmPerMeter;
-
+    // Wrong choices are real slips: multiplying by 100, adding 100, and
+    // dividing by 1,000 (the conversion for millimeters). The last replaced
+    // 100 divided by the centimeters, explained only as "incorrect
+    // calculation." Large numbers now have commas.
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "incorrect calculation" },
-      { text: correctMeters.toString(), isCorrect: true, reason: null },
-      { text: distractor2.toString(), isCorrect: false, reason: "adding instead of dividing" },
-      { text: distractor3.toString(), isCorrect: false, reason: "multiplying instead of dividing" }
+      { text: `${centimeters / 1000}`, isCorrect: false, reason: `${centimeters / 1000} results from dividing ${fmt(centimeters)} by 1,000 instead of by ${cmPerMeter}` },
+      { text: `${correctMeters}`, isCorrect: true, reason: '' },
+      { text: fmt(centimeters + cmPerMeter), isCorrect: false, reason: `${fmt(centimeters + cmPerMeter)} results from adding ${cmPerMeter} to ${fmt(centimeters)} instead of dividing` },
+      { text: fmt(centimeters * cmPerMeter), isCorrect: false, reason: `${fmt(centimeters * cmPerMeter)} results from multiplying ${fmt(centimeters)} by ${cmPerMeter} instead of dividing; a meter is longer than a centimeter, so the number of meters must be less than ${fmt(centimeters)}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -45,16 +47,17 @@ export const generator_491 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `To convert centimeters to meters, divide by ${cmPerMeter}. ${centimeters} \\div ${cmPerMeter} = ${correctMeters}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
+    // The division is inside $...$; a bare "\div" used to turn the whole
+    // explanation into one italic math line.
+    const explanation = `Choice ${correctOption.letter} is correct. Since ${cmPerMeter} centimeters is equivalent to 1 meter, divide the number of centimeters by ${cmPerMeter}: $${m(centimeters)} \\div ${cmPerMeter} = ${correctMeters}$. So ${fmt(centimeters)} centimeters is equivalent to ${correctMeters} meters. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `How many meters are equivalent to ${centimeters} centimeters? (${cmPerMeter} centimeters = 1 meter)`,
+      questionText: `How many meters are equivalent to ${fmt(centimeters)} centimeters? (${cmPerMeter} centimeters = 1 meter)`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
-      correctAnswer: correctMeters.toString(),
+      correctAnswer: `${correctMeters}`,
       explanation: explanation
     };
   }
