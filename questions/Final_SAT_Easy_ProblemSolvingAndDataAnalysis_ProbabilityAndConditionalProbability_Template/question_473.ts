@@ -81,7 +81,7 @@ export const generator_473 = {
     const explanation = `Choice ${correctOption.letter} is correct. The total number of gas station customers on Tuesday was ${totalCustomers}. The table shows that the number of customers who did not purchase gasoline was ${totalNoGas}. Finding the ratio of the number of customers who did not purchase gasoline to the total number of customers gives the probability that a customer selected at random on that day did not purchase gasoline, which is $\\frac{${totalNoGas}}{${totalCustomers}}$. Choice ${incorrectOptions[0].letter} is incorrect and may result from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect and may result from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect and may result from ${incorrectOptions[2].reason}.`;
 
     return {
-      questionText: `On Tuesday, a local gas station had $${totalCustomers}$ customers. The table above summarizes whether or not the customers on Tuesday purchased gasoline, a beverage, both, or neither. Based on the data in the table, what is the probability that a gas station customer selected at random on that day did not purchase gasoline?`,
+      questionText: `On Tuesday, a local gas station had ${totalCustomers} customers. The table summarizes whether or not the customers on Tuesday purchased gasoline, a beverage, both, or neither. Based on the data in the table, what is the probability that a gas station customer selected at random on that day did not purchase gasoline?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
