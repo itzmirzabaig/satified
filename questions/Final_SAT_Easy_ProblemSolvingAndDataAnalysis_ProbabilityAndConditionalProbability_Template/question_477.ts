@@ -29,20 +29,27 @@ export const generator_477 = {
     // (1/numSides, requires target = 1) nor with the complementary distractors
     // (N-2)/N and (N-1)/N (require target = N-2 or N-1). Range is non-empty
     // because numSides >= 10.
-    const targetNumber = getRandomInt(2, numSides - 3);
+    // Also skip target * target = numSides (e.g. 4 on a 16 face die), where
+    // the 1/target choice would equal target/numSides.
+    let targetNumber = getRandomInt(2, numSides - 3);
+    while (targetNumber * targetNumber === numSides) targetNumber = getRandomInt(2, numSides - 3);
 
+    // "an 8", "an 11", "an 18", otherwise "a".
+    const aN = (n: number) => (/^(8|11|18)$/.test(String(n)) ? `an ${n}` : `a ${n}`);
     const correctText = `\\frac{1}{${numSides}}`;
 
     // Distractors, all provably distinct from 1/numSides and from each other
     // for numSides in [10,20] and targetNumber in [2, numSides-3]:
     //  - target/numSides : confuses the face value with a count of outcomes
-    //  - (N-2)/numSides  : mistaken "not the target and not 1" complement
     //  - (N-1)/numSides  : the complement, P(not rolling the target)
+    // 1/target replaced (N-2)/N, which was explained only as "a
+    // miscalculation." target is at least 2 and less than N, so 1/target
+    // differs from every other choice.
     const optionsData = [
-      { text: correctText, isCorrect: true },
-      { text: `\\frac{${targetNumber}}{${numSides}}`, isCorrect: false, reason: "confuses the value showing on the face with the number of favorable outcomes" },
-      { text: `\\frac{${numSides - 2}}{${numSides}}`, isCorrect: false, reason: "represents the probability of not rolling the target or a 1, which is a miscalculation" },
-      { text: `\\frac{${numSides - 1}}{${numSides}}`, isCorrect: false, reason: "represents the probability of not rolling the target number" }
+      { text: correctText, isCorrect: true, reason: '' },
+      { text: `\\frac{${targetNumber}}{${numSides}}`, isCorrect: false, reason: `$\\frac{${targetNumber}}{${numSides}}$ is the probability of rolling a number from 1 through ${targetNumber}; it uses the number ${targetNumber} as the count of favorable outcomes, but only one face shows ${targetNumber}` },
+      { text: `\\frac{1}{${targetNumber}}`, isCorrect: false, reason: `$\\frac{1}{${targetNumber}}$ treats ${targetNumber}, the number to be rolled, as the number of possible outcomes; the die has ${numSides} possible outcomes` },
+      { text: `\\frac{${numSides - 1}}{${numSides}}`, isCorrect: false, reason: `$\\frac{${numSides - 1}}{${numSides}}$ is the probability of not rolling ${aN(targetNumber)}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -53,10 +60,10 @@ export const generator_477 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. The die has ${numSides} faces in total, labeled 1 through ${numSides}, so there are ${numSides} equally likely outcomes when it is rolled. Only one face is labeled ${targetNumber}, so there is exactly one favorable outcome. The probability is $P = \\frac{\\text{favorable outcomes}}{\\text{total outcomes}} = \\frac{1}{${numSides}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The die has ${numSides} faces in total, labeled 1 through ${numSides}, so there are ${numSides} equally likely outcomes when it is rolled. Only one face is labeled ${targetNumber}, so there is exactly one favorable outcome. The probability is $P = \\frac{\\text{favorable outcomes}}{\\text{total outcomes}} = \\frac{1}{${numSides}}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `Each face of a fair $${numSides}$-sided die is labeled with a number from $1$ through $${numSides}$, with a different number appearing on each face. If the die is rolled one time, what is the probability of rolling a $${targetNumber}$?`,
+      questionText: `A fair die has ${numSides} faces. Each face is labeled with a number from 1 through ${numSides}, with a different number appearing on each face. If the die is rolled one time, what is the probability of rolling ${aN(targetNumber)}?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
