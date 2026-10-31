@@ -29,8 +29,11 @@ export const generator_480 = {
     const fractionNumerator = rods * 11;
     const fractionForm = `${fractionNumerator}/2`; // equivalent fraction, e.g. 671/2
 
-    const questionText = `How many yards are equivalent to ${rods} rods? (${yardsPerRod} yards = 1 rod) Enter your answer as a decimal or fraction.`;
-    const explanation = `It's given that ${yardsPerRod} yards = 1 rod. Therefore, ${rods} rods is equivalent to (${rods} rods)(${yardsPerRod} yards per rod), or ${yards} yards. So the correct answer is ${yards}. This can also be entered as the equivalent fraction ${fractionForm}.`;
+    // The explanation opens with the answer, as fill-in explanations do, and
+    // mentions the fraction form only when the answer is not a whole number
+    // (it used to offer "924/2" for 462).
+    const questionText = `How many yards are equivalent to ${rods} rods? (${yardsPerRod} yards = 1 rod)`;
+    const explanation = `The correct answer is ${yards}. It's given that ${yardsPerRod} yards = 1 rod. Therefore, ${rods} rods is equivalent to (${rods} rods)(${yardsPerRod} yards per rod), or ${yards} yards.${Number.isInteger(yards) ? '' : ` Note that ${fractionForm} and ${yards} are examples of ways to enter a correct answer.`}`;
 
     return {
       questionText: questionText,
