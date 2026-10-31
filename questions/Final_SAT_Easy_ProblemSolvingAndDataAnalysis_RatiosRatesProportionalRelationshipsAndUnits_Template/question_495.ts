@@ -23,45 +23,27 @@ export const generator_495 = {
   },
 
   generate: (): QuestionData => {
-    const ratioFirst = getRandomInt(10, 16);        // r  (numerator of the given ratio r : t)
-    const multiplier = getRandomInt(11, 16);        // m  (the correct coefficient of t)
-    const xValue = ratioFirst * multiplier;         // x = r * m  (so x / r = m exactly)
-    const correctCoefficient = multiplier;          // y = m * t
+    // r is the ratio's first term and m the answer's coefficient; they must
+    // differ so the "first term" choice differs from the answer.
+    let ratioFirst = 0, multiplier = 0;
+    do {
+      ratioFirst = getRandomInt(10, 16);
+      multiplier = getRandomInt(11, 16);
+    } while (ratioFirst === multiplier);
+    const xValue = ratioFirst * multiplier;
+    const m = multiplier;
 
-    // Candidate distractor coefficients modelling real student errors.
-    // Build a set of 4 DISTINCT coefficients so no two options can ever collide.
-    const coefficients: number[] = [correctCoefficient];
-    const addCoeff = (c: number): boolean => {
-      if (c > 0 && !coefficients.includes(c)) { coefficients.push(c); return true; }
-      return false;
-    };
-
-    // Error 1: read the ratio's first term as the answer (skips the division).
-    addCoeff(ratioFirst);
-    // Error 2: forget to divide entirely (leave the coefficient as x itself).
-    addCoeff(xValue);
-    // Error 3: add the two given numbers instead of dividing.
-    addCoeff(multiplier + ratioFirst);
-
-    // Backfill (bounded) in the unlikely event any candidate collided, so we
-    // always reach exactly 4 distinct positive coefficients.
-    let tries = 0;
-    while (coefficients.length < 4 && tries++ < 50) {
-      addCoeff(correctCoefficient + getRandomInt(1, 40));
-    }
-
-    const reasonFor = (c: number): string => {
-      if (c === ratioFirst) return "using the first term of the ratio directly instead of dividing $x$ by it";
-      if (c === xValue) return "forgetting to divide by the first term of the ratio";
-      if (c === multiplier + ratioFirst) return "adding the two given numbers instead of dividing";
-      return "a computational error";
-    };
-
-    const optionsData = coefficients.map((c, i) => ({
-      text: `${c}t`,
-      isCorrect: i === 0,
-      reason: i === 0 ? null : reasonFor(c),
-    }));
+    // Wrong choices: the first term of the ratio, x without dividing, and
+    // the ratio used upside down (y/x = r/t gives y = t/m). The old third
+    // choice, m + r, was explained as "adding the two given numbers," but m
+    // is the answer, not a given number, and backfilled values were
+    // explained only as "a computational error."
+    const optionsData = [
+      { text: `${m}t`, isCorrect: true, reason: '' },
+      { text: `${ratioFirst}t`, isCorrect: false, reason: `$${ratioFirst}t$ uses the first term of the ratio, ${ratioFirst}, as the coefficient instead of dividing ${xValue} by ${ratioFirst}` },
+      { text: `${xValue}t`, isCorrect: false, reason: `$${xValue}t$ uses the value of $x$ as the coefficient without dividing by ${ratioFirst}` },
+      { text: `\\frac{t}{${m}}`, isCorrect: false, reason: `$\\frac{t}{${m}}$ results from writing the ratio upside down, $\\frac{y}{x} = \\frac{${ratioFirst}}{t}$` }
+    ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -69,16 +51,15 @@ export const generator_495 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Since $x$ to $y$ has the same ratio as the numbers given, you can write $\\frac{x}{y} = \\frac{${ratioFirst}}{t}$. Substituting $x = ${xValue}$ gives $\\frac{${xValue}}{y} = \\frac{${ratioFirst}}{t}$. Solving for $y$: $y = \\frac{${xValue}\\,t}{${ratioFirst}} = ${correctCoefficient}t$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The ratio of $x$ to $y$ is ${ratioFirst} to $t$, so $\\frac{x}{y} = \\frac{${ratioFirst}}{t}$. Substituting $x = ${xValue}$ gives $\\frac{${xValue}}{y} = \\frac{${ratioFirst}}{t}$. Multiplying both sides by $yt$ gives $${xValue}t = ${ratioFirst}y$, and dividing both sides by ${ratioFirst} gives $y = ${m}t$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `The ratio $x$ to $y$ is equivalent to $x : y = ${ratioFirst} : t$. When $x = ${xValue}$, what is the value of $y$ in terms of $t$?`,
+      questionText: `The ratio $x$ to $y$ is equivalent to the ratio ${ratioFirst} to $t$. When $x = ${xValue}$, what is the value of $y$ in terms of $t$?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
-      correctAnswer: `${correctCoefficient}t`,
+      correctAnswer: `${m}t`,
       explanation: explanation
     };
   }
