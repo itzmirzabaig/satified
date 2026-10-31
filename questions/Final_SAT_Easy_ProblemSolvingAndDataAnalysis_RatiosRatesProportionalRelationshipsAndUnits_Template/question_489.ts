@@ -27,15 +27,16 @@ export const generator_489 = {
     const tspPerTbsp = 3;
     const teaspoons = tablespoons * tspPerTbsp;
 
-    const distractor1 = tablespoons + tspPerTbsp;
-    const distractor2 = tablespoons * 2;
-    const distractor3 = tablespoons * 4;
-
+    // Wrong choices are real slips: dividing by 3 instead of multiplying,
+    // adding 3, and subtracting 3. Two used to be "multiplying by 2" and
+    // "multiplying by 4," which no likely slip produces.
+    const g = tablespoons % 3 === 0;
+    const dividedText = g ? `${tablespoons / 3}` : `\\frac{${tablespoons}}{3}`;
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "adding instead of multiplying" },
-      { text: distractor2.toString(), isCorrect: false, reason: "multiplying by 2" },
-      { text: teaspoons.toString(), isCorrect: true, reason: null },
-      { text: distractor3.toString(), isCorrect: false, reason: "multiplying by 4" }
+      { text: dividedText, isCorrect: false, reason: `$${dividedText}$ results from dividing ${tablespoons} by ${tspPerTbsp} instead of multiplying; each tablespoon is more than one teaspoon, so the number of teaspoons must be greater than ${tablespoons}` },
+      { text: `${tablespoons + tspPerTbsp}`, isCorrect: false, reason: `${tablespoons + tspPerTbsp} results from adding ${tspPerTbsp} to ${tablespoons} instead of multiplying` },
+      { text: `${teaspoons}`, isCorrect: true, reason: '' },
+      { text: `${tablespoons - tspPerTbsp}`, isCorrect: false, reason: `${tablespoons - tspPerTbsp} results from subtracting ${tspPerTbsp} from ${tablespoons} instead of multiplying` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -44,16 +45,17 @@ export const generator_489 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `To convert tablespoons to teaspoons, multiply by ${tspPerTbsp}. ${tablespoons} \\times ${tspPerTbsp} = ${teaspoons}. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
+    // The multiplication is inside $...$; it used to be a bare "\times",
+    // which made the whole explanation render as one italic math line.
+    const explanation = `Choice ${correctOption.letter} is correct. Since 1 tablespoon is equivalent to ${tspPerTbsp} teaspoons, ${tablespoons} tablespoons is equivalent to $${tablespoons} \\times ${tspPerTbsp} = ${teaspoons}$ teaspoons. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `How many teaspoons are equivalent to ${tablespoons} tablespoons? (${tspPerTbsp} teaspoons = 1 tablespoon)`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
-      correctAnswer: teaspoons.toString(),
+      correctAnswer: `${teaspoons}`,
       explanation: explanation
     };
   }
