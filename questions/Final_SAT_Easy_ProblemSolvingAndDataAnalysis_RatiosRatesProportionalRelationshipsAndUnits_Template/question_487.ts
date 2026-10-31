@@ -42,9 +42,13 @@ export const generator_487 = {
     const y3 = ratio * x3;
     const correctK = ratio * x4;
 
-    const distractor1 = ratio * (x4 - x1);
+    // Wrong choices are real slips: adding the change in x to the last y
+    // (treating the pattern as adding instead of multiplying), adding the
+    // ratio to x, and subtracting the ratio from x. They used to include
+    // "the value of y when x is 44" and twice x, "the wrong ratio."
+    const distractor1 = y3 + (x4 - x3);
     const distractor2 = x4 - ratio;
-    const distractor3 = x4 * 2;
+    const distractor3 = x4 + ratio;
 
     // ---- Figure: house-style table ----
     const cell = 'style="border:1px solid currentColor;padding:4px 14px;text-align:center;"';
@@ -61,10 +65,10 @@ export const generator_487 = {
       `</table></div>`;
 
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "This is the value of y when the value of x is " + (x4 - x1) + ", not " + x4 + "." },
-      { text: distractor2.toString(), isCorrect: false, reason: "This may result from subtracting " + ratio + " from " + x4 + " instead of multiplying " + x4 + " by " + ratio + "." },
-      { text: distractor3.toString(), isCorrect: false, reason: "This may result from incorrectly setting up the proportion or using the wrong ratio." },
-      { text: correctK.toString(), isCorrect: true, reason: null }
+      { text: `${distractor1}`, isCorrect: false, reason: `${distractor1} results from adding the increase in $x$, $${x4} - ${x3} = ${x4 - x3}$, to ${y3}; since the ratio of $y$ to $x$ is constant, $y$ must be ${ratio} times $x$, not ${y3 - x3} more than $x$` },
+      { text: `${distractor2}`, isCorrect: false, reason: `${distractor2} results from subtracting ${ratio} from ${x4} instead of multiplying ${x4} by ${ratio}` },
+      { text: `${distractor3}`, isCorrect: false, reason: `${distractor3} results from adding ${ratio} to ${x4} instead of multiplying ${x4} by ${ratio}` },
+      { text: correctK.toString(), isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -76,10 +80,10 @@ export const generator_487 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Since the ratio of $y$ to $x$ is constant for each ordered pair in the table, the first row can be used to determine that the ratio of $y$ to $x$ is $${ratio}$ to $1$. The proportion $\\frac{${ratio}}{1} = \\frac{k}{${x4}}$ can be used to solve for $k$. Multiplying each side of the equation by $${x4}$ yields $${correctK} = k$. Choice ${incorrectOptions[0].letter} is incorrect. ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter} is incorrect and ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter} is incorrect and ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctLetter} is correct. Since the ratio of $y$ to $x$ is constant for each ordered pair in the table, the first row can be used to determine that the ratio of $y$ to $x$ is $${ratio}$ to $1$. The proportion $\\frac{${ratio}}{1} = \\frac{k}{${x4}}$ can be used to solve for $k$. Multiplying each side of the equation by $${x4}$ yields $${correctK} = k$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `In the table above, the ratio of $y$ to $x$ for each ordered pair is constant. What is the value of $k$?`,
+      questionText: `In the table, the ratio of $y$ to $x$ for each ordered pair is constant. What is the value of $k$?`,
       figureCode: tableCode,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: correctK.toString(),
