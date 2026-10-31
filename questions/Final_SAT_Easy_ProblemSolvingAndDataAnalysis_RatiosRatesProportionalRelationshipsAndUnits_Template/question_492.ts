@@ -24,17 +24,17 @@ export const generator_492 = {
 
   generate: (): QuestionData => {
     const multiplier = getRandomInt(25, 50);
-    const correctExpression = `${multiplier}p`;
+    const k = multiplier;
+    const correctExpression = `${k}p`;
 
-    const distractor1 = `\\frac{p}{${multiplier}}`;
-    const distractor2 = `p + ${multiplier}`;
-    const distractor3 = `p - ${multiplier}`;
-
+    // Wrong choices: dividing by the multiplier, adding it, and using the
+    // hourly rate p/w times the multiplier alone (forgetting the w in the
+    // hours). The last replaced "p minus the multiplier."
     const optionsData = [
-      { text: correctExpression, isCorrect: true, reason: null },
-      { text: distractor1, isCorrect: false, reason: "dividing instead of multiplying" },
-      { text: distractor2, isCorrect: false, reason: "adding instead of multiplying" },
-      { text: distractor3, isCorrect: false, reason: "subtracting instead of multiplying" }
+      { text: correctExpression, isCorrect: true, reason: '' },
+      { text: `\\frac{p}{${k}}`, isCorrect: false, reason: `$\\frac{p}{${k}}$ is the amount earned for $\\frac{w}{${k}}$ hours of work, not $${k}w$ hours` },
+      { text: `p + ${k}`, isCorrect: false, reason: `$p + ${k}$ adds ${k} dollars to $p$ instead of multiplying $p$ by ${k}` },
+      { text: `\\frac{${k}p}{w}`, isCorrect: false, reason: `$\\frac{${k}p}{w}$ is the hourly rate, $\\frac{p}{w}$ dollars per hour, times ${k} hours; the number of hours is $${k}w$, not ${k}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -43,13 +43,12 @@ export const generator_492 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `If the worker works $${multiplier}$ times as long, they will earn $${multiplier}$ times as much money. Earnings = $${multiplier} \\times p = ${multiplier}p$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The worker earns $p$ dollars for every $w$ hours, so the hourly rate is $\\frac{p}{w}$ dollars per hour. For $${k}w$ hours, the worker earns $\\frac{p}{w} \\cdot ${k}w = ${k}p$ dollars. In other words, working ${k} times as many hours earns ${k} times as much money. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `A worker earns $p$ dollars for every $w$ hours of work. Which expression represents the amount of money, in dollars, the worker earns for $${multiplier}w$ hours of work?`,
+      questionText: `A worker earns $p$ dollars for every $w$ hours of work. Which expression represents the amount of money, in dollars, the worker earns for $${k}w$ hours of work?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: correctExpression,
