@@ -46,20 +46,21 @@ export const generator_479 = {
 
     const totalOz = correctPounds * 16; // = ozPerMuffin * numMuffins, integer
 
-    // Distractors constructed to be provably distinct from the answer and,
-    // via a bounded uniqueness guard, from each other.
-    const dOunces = totalOz;              // forgot to convert oz -> pounds
-    const dHalfConversion = correctPounds * 2; // divided by 8 instead of 16
-    let dAdd = ozPerMuffin + numMuffins;  // just added the two given numbers
-    const used = new Set<number>([correctPounds, dOunces, dHalfConversion]);
-    let guard = 0;
-    while (used.has(dAdd) && guard++ < 50) dAdd += 1;
+    // Wrong choices are real slips: the total in ounces, the muffins divided
+    // by 16 (forgetting the ounces per muffin), and the ounces multiplied by
+    // 16 instead of divided. They used to include "divided by 8" and the
+    // sum of the two given numbers, which was sometimes nudged by 1 so its
+    // reason was false. ozPerMuffin is at least 2, so all four differ.
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const dOunces = totalOz;
+    const dNoRate = numMuffins / 16;
+    const dTimes = totalOz * 16;
 
     const optionsData = [
-      { text: correctPounds.toString(), isCorrect: true, reason: null },
-      { text: dHalfConversion.toString(), isCorrect: false, reason: "this results from dividing the total ounces by $8$ instead of by $16$." },
-      { text: dAdd.toString(), isCorrect: false, reason: "this is the result of simply adding the two numbers in the problem." },
-      { text: dOunces.toString(), isCorrect: false, reason: "this is the total amount in ounces, not pounds." }
+      { text: correctPounds.toString(), isCorrect: true, reason: '' },
+      { text: fmt(dOunces), isCorrect: false, reason: `${fmt(dOunces)} is the amount of chocolate needed in ounces, not pounds` },
+      { text: `${dNoRate}`, isCorrect: false, reason: `${dNoRate} results from dividing the number of muffins, ${numMuffins}, by 16 without first multiplying by the ${ozPerMuffin} ounces needed for each muffin` },
+      { text: fmt(dTimes), isCorrect: false, reason: `${fmt(dTimes)} results from multiplying the ${totalOz} ounces by 16 instead of dividing by 16` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -71,7 +72,7 @@ export const generator_479 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `The correct answer is Choice ${correctLetter}. First, find the total ounces of chocolate needed: $${ozPerMuffin} \\times ${numMuffins} = ${totalOz}$ ounces. Then convert ounces to pounds by dividing by $16$: $${totalOz} \\div 16 = ${correctPounds}$ pounds. So $${correctPounds}$ pounds of chocolate are needed. Choice ${incorrectOptions[0].letter} is incorrect because ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter} is incorrect because ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter} is incorrect because ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctLetter} is correct. First, find the total ounces of chocolate needed: $${ozPerMuffin} \\times ${numMuffins} = ${totalOz}$ ounces. Then convert ounces to pounds by dividing by $16$: $${totalOz} \\div 16 = ${correctPounds}$ pounds. So ${correctPounds} pounds of chocolate are needed. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `To make a bakery's signature chocolate muffins, a baker needs $${ozPerMuffin}$ ounces of chocolate for each muffin. How many pounds of chocolate are needed to make $${numMuffins}$ signature chocolate muffins? ($1$ pound $= 16$ ounces)`,
