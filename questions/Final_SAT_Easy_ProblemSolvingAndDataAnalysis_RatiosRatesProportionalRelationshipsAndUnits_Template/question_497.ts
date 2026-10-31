@@ -23,20 +23,29 @@ export const generator_497 = {
   },
 
   generate: (): QuestionData => {
-    const coefficient = getRandomInt(3, 6);
-    const multiplier = getRandomInt(2, 4);
-    const resultCoefficient = multiplier * coefficient;
+    // Skip coefficient = multiplier^2 (e.g. 4 and 2), where 4 / 2 would equal
+    // the multiplier choice.
+    let coefficient = 0, multiplier = 0;
+    do {
+      coefficient = getRandomInt(3, 6);
+      multiplier = getRandomInt(2, 4);
+    } while (coefficient === multiplier * multiplier || coefficient === multiplier);
+    const c = coefficient, k = multiplier;
+    const resultCoefficient = k * c;
     const correctAnswer = `${resultCoefficient}u`;
 
-    const distractor1 = `${multiplier}u`;
-    const distractor2 = `u`;
-    const distractor3 = `\\frac{1}{${multiplier}}u`;
-
+    // Wrong choices are real slips: adding the numbers, dropping the
+    // coefficient of u, and dividing the coefficient by the multiplier. Their
+    // reasons used to be "incorrect multiplication," "an invalid
+    // relationship," and "inversion."
+    const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+    const g = gcd(c, k);
+    const divided = c % k === 0 ? `${c / k}u` : `\\frac{${c / g}}{${k / g}}u`;
     const optionsData = [
-      { text: correctAnswer, isCorrect: true, reason: null },
-      { text: distractor1, isCorrect: false, reason: "incorrect multiplication" },
-      { text: distractor2, isCorrect: false, reason: "an invalid relationship" },
-      { text: distractor3, isCorrect: false, reason: "inversion" }
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: `${k + c}u`, isCorrect: false, reason: `$${k + c}u$ results from adding ${k} and ${c} instead of multiplying them` },
+      { text: `${k}u`, isCorrect: false, reason: `$${k}u$ results from replacing $t$ with $u$ instead of with $${c}u$` },
+      { text: divided, isCorrect: false, reason: `$${divided}$ results from dividing ${c} by ${k} instead of multiplying` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -45,13 +54,12 @@ export const generator_497 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `If $t = ${coefficient}u$, then $${multiplier}t = ${multiplier} \\cdot (${coefficient}u) = ${resultCoefficient}u$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Since $t = ${c}u$, substituting $${c}u$ for $t$ in $${k}t$ gives $${k}(${c}u)$, which is equivalent to $${resultCoefficient}u$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `If $t=${coefficient}u$, which of the following is equivalent to $${multiplier}t$?`,
+      questionText: `If $t = ${c}u$, which of the following is equivalent to $${k}t$?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: correctAnswer,
