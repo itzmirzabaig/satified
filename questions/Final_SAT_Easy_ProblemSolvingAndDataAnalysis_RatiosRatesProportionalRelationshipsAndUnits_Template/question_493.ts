@@ -24,24 +24,24 @@ export const generator_493 = {
 
   generate: (): QuestionData => {
     const ratioT = 1;
-    const ratioU = getRandomInt(2, 4);
-    const tValue = getRandomInt(5, 15);
+    // t is a multiple of the u part, so the upside down answer t / ratioU is
+    // a whole number; skip t = ratioU^2, where it would equal ratioU.
+    let ratioU = 0, tValue = 0;
+    do {
+      ratioU = getRandomInt(2, 4);
+      tValue = ratioU * getRandomInt(2, 5);
+    } while (tValue === ratioU * ratioU || tValue < 5);
     const uValue = tValue * ratioU;
 
-    // Distractors, all integers and provably distinct from each other and the
-    // answer across tValue in [5,15], ratioU in [2,4]:
-    //  - ratioU: the second number in the ratio (<= 4, never equals t >= 5 or u >= 10)
-    //  - tValue + ratioU: added instead of multiplied
-    //  - tValue: just the value of t
-    const distractor1 = ratioU;
-    const distractor2 = tValue + ratioU;
-    const distractor3 = tValue;
-
+    // Wrong choices: the u part of the ratio, t plus the u part, and the
+    // ratio used upside down (u as t divided by the u part). The last
+    // replaced the given value of t.
+    const upside = tValue / ratioU;
     const optionsData = [
-      { text: uValue.toString(), isCorrect: true, reason: null },
-      { text: distractor1.toString(), isCorrect: false, reason: "This is the second number in the ratio, not the value of $u$." },
-      { text: distractor2.toString(), isCorrect: false, reason: "This results from adding the two numbers instead of multiplying, which does not follow the proportion." },
-      { text: distractor3.toString(), isCorrect: false, reason: "This is the given value of $t$, not the value of $u$." }
+      { text: `${uValue}`, isCorrect: true, reason: '' },
+      { text: `${ratioU}`, isCorrect: false, reason: `${ratioU} is the second number in the ratio, not the value of $u$` },
+      { text: `${tValue + ratioU}`, isCorrect: false, reason: `${tValue + ratioU} results from adding ${ratioU} to ${tValue} instead of multiplying` },
+      { text: `${upside}`, isCorrect: false, reason: `${upside} results from using the ratio upside down, as if the ratio of $u$ to $t$ were ${ratioT} to ${ratioU}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,16 +50,15 @@ export const generator_493 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `The ratio of $t$ to $u$ is $${ratioT}$ to $${ratioU}$, which can be written as $\\frac{t}{u} = \\frac{${ratioT}}{${ratioU}}$. Because $t = ${tValue}$, substitute to get $\\frac{${tValue}}{u} = \\frac{${ratioT}}{${ratioU}}$. Cross-multiplying gives $${ratioT} \\cdot u = ${tValue} \\cdot ${ratioU}$, so $u = ${uValue}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctOption.letter} is correct. The ratio of $t$ to $u$ is ${ratioT} to ${ratioU}, which can be written as $\\frac{t}{u} = \\frac{${ratioT}}{${ratioU}}$. Substituting $t = ${tValue}$ gives $\\frac{${tValue}}{u} = \\frac{${ratioT}}{${ratioU}}$. Multiplying both sides by $${ratioU}u$ gives $${tValue} \\cdot ${ratioU} = u$, so $u = ${uValue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `The ratio of $t$ to $u$ is $${ratioT}$ to $${ratioU}$, and $t=${tValue}$. What is the value of $u$?`,
+      questionText: `The ratio of $t$ to $u$ is ${ratioT} to ${ratioU}, and $t = ${tValue}$. What is the value of $u$?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
-      correctAnswer: uValue.toString(),
+      correctAnswer: `${uValue}`,
       explanation: explanation
     };
   }
