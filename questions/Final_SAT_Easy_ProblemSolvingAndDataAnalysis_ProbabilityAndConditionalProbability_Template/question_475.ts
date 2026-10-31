@@ -36,12 +36,16 @@ export const generator_475 = {
     // each other across ratio in [2,5], targetCount in [2,6]:
     //  - flipped ratio: an integer >= 2 (total / target)         -> never a unit fraction
     //  - 1/totalCount: only one favorable outcome                -> totalCount = target*ratio > ratio
-    //  - 1/(ratio+1): off-by-one denominator                     -> denominator differs from ratio and from totalCount
+    //  - with : without, target/(total - target) = 1/(ratio - 1)  -> differs from 1/ratio and 1/totalCount
+    //    (it replaced 1/(ratio + 1), "a denominator one more than the
+    //    correct value," which no likely slip produces)
+    const without = totalCount - targetCount;
+    const ratioText = ratio - 1 === 1 ? '1' : `\\frac{1}{${ratio - 1}}`;
     const optionsData = [
-      { text: `\\frac{1}{${totalCount}}`, isCorrect: false, reason: "represents the probability if only 1 of the items had the characteristic" },
-      { text: `\\frac{1}{${ratio + 1}}`, isCorrect: false, reason: "uses a denominator that is one more than the correct simplified value" },
-      { text: correctText, isCorrect: true },
-      { text: ratio.toString(), isCorrect: false, reason: "divides the total by the number with the characteristic instead of the other way around" }
+      { text: `\\frac{1}{${totalCount}}`, isCorrect: false, reason: `$\\frac{1}{${totalCount}}$ is the probability of selecting one particular item, not any of the ${targetCount} items with the characteristic` },
+      { text: ratioText, isCorrect: false, reason: `$${ratioText}$ compares the ${targetCount} items with the characteristic to the ${without} items without it, $\\frac{${targetCount}}{${without}}$; the denominator must be all ${totalCount} items` },
+      { text: correctText, isCorrect: true, reason: '' },
+      { text: ratio.toString(), isCorrect: false, reason: `${ratio} is the total number of items divided by the number with the characteristic, $\\frac{${totalCount}}{${targetCount}}$, which is the reverse of the probability` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -52,10 +56,10 @@ export const generator_475 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    const explanation = `Choice ${correctOption.letter} is correct. If one of these items is selected at random, the probability is the number with the characteristic divided by the total number. There are ${targetCount} with the characteristic out of ${totalCount} total, giving $\\frac{${targetCount}}{${totalCount}} = \\frac{1}{${ratio}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. If one of these items is selected at random, the probability is the number with the characteristic divided by the total number. There are ${targetCount} with the characteristic out of ${totalCount} total, giving $\\frac{${targetCount}}{${totalCount}} = \\frac{1}{${ratio}}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `Of the $${totalCount}$ items in a group, $${targetCount}$ have a certain characteristic. If one item is selected at random from the group, what is the probability of selecting an item with that characteristic?`,
+      questionText: `Of the ${totalCount} items in a group, ${targetCount} have a certain characteristic. If one item is selected at random from the group, what is the probability of selecting an item with that characteristic?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctText,
