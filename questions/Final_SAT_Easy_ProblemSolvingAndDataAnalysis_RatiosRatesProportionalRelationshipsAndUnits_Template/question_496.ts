@@ -27,16 +27,13 @@ export const generator_496 = {
     const time = getRandomInt(5, 12);
     const distance = speed * time;
     const correctTime = distance / speed;
-
-    const distractor1 = distance - speed;
-    const distractor2 = distance + speed;
-    const distractor3 = distance * speed;
+    const fmt = (n: number) => n.toLocaleString('en-US');
 
     const optionsData = [
-      { text: correctTime.toString(), isCorrect: true, reason: null },
-      { text: distractor1.toString(), isCorrect: false, reason: `results from subtracting the speed from the distance (${distance} - ${speed}), which is an incorrect operation for this relationship.` },
-      { text: distractor2.toString(), isCorrect: false, reason: `results from adding the speed to the distance (${distance} + ${speed}), which is incorrect.` },
-      { text: distractor3.toString(), isCorrect: false, reason: `results from multiplying the distance by the speed (${distance} * ${speed}), which would calculate distance given rate and a time of ${distance} seconds, not time.` }
+      { text: `${correctTime}`, isCorrect: true, reason: '' },
+      { text: `${distance - speed}`, isCorrect: false, reason: `${distance - speed} results from subtracting the speed from the distance instead of dividing` },
+      { text: `${distance + speed}`, isCorrect: false, reason: `${distance + speed} results from adding the speed to the distance instead of dividing` },
+      { text: fmt(distance * speed), isCorrect: false, reason: `${fmt(distance * speed)} results from multiplying the distance by the speed instead of dividing` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -45,17 +42,18 @@ export const generator_496 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    // Fixed: Proper template literals and accessing array elements correctly
-    const explanation = `To find the time it takes to travel a certain distance at a constant speed, we use the formula: $t = d/r$ where $d$ is the distance and $r$ is the rate. Substitute the given values: $t = ${distance}/${speed} = ${correctTime}$. So, it would take ${correctTime} seconds. Why other options are incorrect: Choice ${incorrectOptions[0].letter} (${incorrectOptions[0].text}): ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter} (${incorrectOptions[1].text}): ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter} (${incorrectOptions[2].text}): ${incorrectOptions[2].reason}`;
+    // Standard format: the correct choice first, one sentence per wrong
+    // choice. It used to open without naming the correct choice, list the
+    // others under "Why other options are incorrect:", and write 98 * 14.
+    const explanation = `Choice ${correctOption.letter} is correct. Distance equals speed times time, so the time is the distance divided by the speed: $\\frac{${distance}}{${speed}} = ${correctTime}$. So it would take ${correctTime} seconds. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `An object travels at a constant speed of ${speed} centimeters per second. At this speed, what is the time, in seconds, that it would take for the object to travel ${distance} centimeters?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
-      correctAnswer: correctTime.toString(),
+      correctAnswer: `${correctTime}`,
       explanation: explanation
     };
   }
