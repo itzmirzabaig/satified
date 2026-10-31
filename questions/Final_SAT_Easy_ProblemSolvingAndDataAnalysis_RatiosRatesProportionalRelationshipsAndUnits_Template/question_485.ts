@@ -23,12 +23,17 @@ export const generator_485 = {
   },
 
   generate: (): QuestionData => {
-    const costPerPound = getRandomInt(8, 15);
-    const pounds = getRandomInt(4, 8);
+    // Prices are written as money ($13.00 per pound); the stem used to say
+    // "13.00 dollars per pound." A price ending in .50 comes with an even
+    // number of pounds, so the total is still a whole number of dollars.
+    const half = getRandomInt(0, 1) === 1;
+    const costPerPound = getRandomInt(8, 15) + (half ? 0.5 : 0);
+    const pounds = half ? 2 * getRandomInt(2, 4) : getRandomInt(4, 8);
     const totalCost = costPerPound * pounds;
+    const price = costPerPound.toFixed(2);
 
-    const questionText = `A product costs ${costPerPound}.00 dollars per pound. What is the cost, in dollars, for ${pounds} pounds of the product?`;
-    const explanation = `The correct answer is ${totalCost}. The cost for $${pounds}$ pounds is $\\left(\\frac{${costPerPound}.00 \\text{ dollars}}{1 \\text{ pound}}\\right) (${pounds} \\text{ pounds}) = ${totalCost}.00$ dollars.`;
+    const questionText = `A product costs \\$${price} per pound. What is the cost, in dollars, for ${pounds} pounds of the product?`;
+    const explanation = `The correct answer is ${totalCost}. The cost for ${pounds} pounds is $\\left(\\frac{${price} \\text{ dollars}}{1 \\text{ pound}}\\right)(${pounds} \\text{ pounds}) = ${totalCost.toFixed(2)}$ dollars, or \\$${totalCost.toFixed(2)}.`;
 
     return {
       questionText: questionText,
