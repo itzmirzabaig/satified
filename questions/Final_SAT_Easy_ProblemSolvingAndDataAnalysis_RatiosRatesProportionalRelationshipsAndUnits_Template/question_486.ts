@@ -29,7 +29,7 @@ export const generator_486 = {
 
     const questionText = `A printer produces posters at a constant rate of ${ratePerMinute} posters per minute. At what rate, in posters per hour, does the printer produce the posters?`;
 
-    const explanation = `The correct answer is ${ratePerHour}. There are 60 minutes in one hour. At a rate of ${ratePerMinute} posters per minute, the number of posters produced in one hour can be determined by \\( \\left(\\frac{${ratePerMinute} \\text{ posters }}{1 \\text{ minute }}\\right)\\left(\\frac{60 \\text{ minutes }}{1 \\text{ hour }}\\right) \\), which is ${ratePerHour} posters per hour.`;
+    const explanation = `The correct answer is ${ratePerHour}. There are 60 minutes in one hour. At a rate of ${ratePerMinute} posters per minute, the number of posters produced in one hour can be determined by \\( \\left(\\frac{${ratePerMinute} \\text{ posters }}{1 \\text{ minute }}\\right)\\left(\\frac{60 \\text{ minutes }}{1 \\text{ hour }}\\right) \\), which is ${ratePerHour.toLocaleString("en-US")} posters per hour.`;
 
     return {
       questionText: questionText,
