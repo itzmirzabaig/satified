@@ -23,39 +23,23 @@ export const generator_488 = {
   },
 
   generate: (): QuestionData => {
-    const ratioPart1 = getRandomInt(1, 3);
-    const ratioPart2 = getRandomInt(3, 8);
-    const multiplier = getRandomInt(3, 6);
-    const timeInterval = ratioPart2 * multiplier;      // = k
-    const correctDistance = ratioPart1 * multiplier;   // = m = (r1/r2) * k
+    // Sound travels about 1 mile in 5 seconds, so the ratio of m to k is
+    // about 1/5 (the official question's estimate). The ratio used to be
+    // random, up to 3/3, which put a storm 18 miles away after 30 seconds.
+    // The distance is never 5, so it differs from the "5" choice.
+    let correctDistance = 0;
+    do { correctDistance = getRandomInt(2, 9); } while (correctDistance === 5);
+    const timeInterval = 5 * correctDistance;
 
-    // Build three plausible-but-wrong integer distractors, then guarantee they
-    // are distinct from the answer and from each other with a bounded guard.
-    const used = new Set<number>([correctDistance]);
-    const distractors: number[] = [];
-    const candidates = [
-      timeInterval,                       // used the time value k as the distance
-      ratioPart1 + timeInterval,          // added r1 to the time instead of scaling
-      correctDistance + multiplier,       // one extra scaling step, (r1+1)*multiplier
-      ratioPart2 * multiplier + ratioPart1, // proportion set up upside down
-      correctDistance + ratioPart2,       // added r2 after finding m
-    ];
-    let ci = 0;
-    while (distractors.length < 3) {
-      let v = ci < candidates.length ? candidates[ci] : correctDistance + distractors.length + 1;
-      ci++;
-      let guard = 0;
-      while (used.has(v) && guard++ < 50) v += 1;
-      if (used.has(v)) continue;
-      used.add(v);
-      distractors.push(v);
-    }
-
+    // Wrong choices are real slips: the time used as the distance, the ratio
+    // used upside down (5 miles per second), and the 5 seconds per mile from
+    // the ratio. The old reasons were tied to fixed slots, so after a value
+    // was nudged to avoid a repeat, its reason no longer matched it.
     const optionsData = [
-      { text: distractors[0].toString(), isCorrect: false, reason: "confuses the time value with the number of miles rather than scaling the ratio." },
-      { text: distractors[1].toString(), isCorrect: false, reason: "comes from adding values in the problem instead of solving the proportion." },
-      { text: distractors[2].toString(), isCorrect: false, reason: "results from an error while scaling the ratio to the given time." },
-      { text: correctDistance.toString(), isCorrect: true, reason: null }
+      { text: `${timeInterval}`, isCorrect: false, reason: `${timeInterval} is the time interval, $k$, in seconds, not the distance in miles` },
+      { text: `${5 * timeInterval}`, isCorrect: false, reason: `${5 * timeInterval} results from using the ratio upside down, multiplying the ${timeInterval} seconds by 5 instead of multiplying by $\\frac{1}{5}$` },
+      { text: `5`, isCorrect: false, reason: `5 is the number of seconds per mile given by the ratio, not the distance for a time interval of ${timeInterval} seconds` },
+      { text: `${correctDistance}`, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -64,16 +48,15 @@ export const generator_488 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The ratio of miles $m$ to seconds $k$ is $\\frac{${ratioPart1}}{${ratioPart2}}$, so $\\frac{m}{k} = \\frac{${ratioPart1}}{${ratioPart2}}$. Substituting the given time $k = ${timeInterval}$ gives $\\frac{m}{${timeInterval}} = \\frac{${ratioPart1}}{${ratioPart2}}$. Multiplying both sides by the time gives $m = \\frac{${ratioPart1}}{${ratioPart2}} \\times ${timeInterval} = ${ratioPart1} \\times ${multiplier} = ${correctDistance}$. So the person is $m = ${correctDistance}$ miles from the flash of lightning. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctOption.letter} is correct. The ratio of $m$ to $k$ is estimated to be $\\frac{1}{5}$, so $\\frac{m}{k} = \\frac{1}{5}$. Substituting $k = ${timeInterval}$ gives $\\frac{m}{${timeInterval}} = \\frac{1}{5}$. Multiplying both sides by ${timeInterval} gives $m = \\frac{${timeInterval}}{5} = ${correctDistance}$. So the person is ${correctDistance} miles from the flash of lightning. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `For a person $m$ miles from a flash of lightning, the length of the time interval from the moment the person sees the lightning to the moment the person hears the thunder is $k$ seconds. The ratio of $m$ to $k$ can be estimated to be $\\frac{${ratioPart1}}{${ratioPart2}}$. According to this estimate, the person is how many miles from a flash of lightning if the time interval is $k = ${timeInterval}$ seconds?`,
+      questionText: `For a person $m$ miles from a flash of lightning, the length of the time interval from the moment the person sees the lightning to the moment the person hears the thunder is $k$ seconds. The ratio of $m$ to $k$ can be estimated to be 1 to 5. According to this estimate, the person is how many miles from a flash of lightning if the time interval is ${timeInterval} seconds?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
-      correctAnswer: correctDistance.toString(),
+      correctAnswer: `${correctDistance}`,
       explanation: explanation
     };
   }
