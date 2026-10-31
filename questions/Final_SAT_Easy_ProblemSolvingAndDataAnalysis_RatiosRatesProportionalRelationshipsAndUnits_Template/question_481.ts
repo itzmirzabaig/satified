@@ -28,15 +28,20 @@ export const generator_481 = {
     const population = area * density;
     const correctArea = population / density;
 
-    const distractorAdd = population + density;
-    const distractorPlaceValue = area / 10;
-    const distractorRandom = Math.round(population / 1000) * 10;
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const m = (n: number) => fmt(n).replace(/,/g, '{,}');
 
+    // Wrong choices are real slips: density divided by population, the
+    // density subtracted from the population, and the two multiplied. They
+    // used to include a rounded number explained as "some other
+    // miscalculation." The old explanation also printed literal "\n" text
+    // and raw markdown.
+    const inverse = String(+(density / population).toFixed(4));
     const optionsData = [
-      { text: distractorRandom.toString(), isCorrect: false, reason: "Incorrect. This number likely results from adding the population and density or some other miscalculation unrelated to the correct formula." },
-      { text: distractorAdd.toString(), isCorrect: false, reason: "Incorrect. This is the result of adding the population and the population density." },
-      { text: correctArea.toString(), isCorrect: true, reason: null },
-      { text: distractorPlaceValue.toString(), isCorrect: false, reason: "Incorrect. This is likely a place value error, resulting from dividing incorrectly (e.g., missing a zero in the calculation)." }
+      { text: `${correctArea}`, isCorrect: true, reason: '' },
+      { text: inverse, isCorrect: false, reason: `${inverse} is about the population density divided by the population, $\\frac{${density}}{${m(population)}}$; the population must be divided by the population density` },
+      { text: fmt(population - density), isCorrect: false, reason: `${fmt(population - density)} results from subtracting the population density from the population instead of dividing` },
+      { text: fmt(population * density), isCorrect: false, reason: `${fmt(population * density)} results from multiplying the population by the population density instead of dividing` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -45,16 +50,15 @@ export const generator_481 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `The problem asks for the area of Worthington in square miles given the population and population density.\\n\\n1. **Understand the relationship between Population Density, Population, and Area.**\\n The formula for population density is:\\n $$ \\text{Population Density} = \\frac{\\text{Population}}{\\text{Area}} $$\\n\\n2. **Identify the known values from the problem.**\\n * Population Density = $${density}$ people per square mile\\n * Population = $${population.toLocaleString('en-US')}$ people\\n\\n3. **Set up the equation.**\\n $$ ${density} = \\frac{${population}}{\\text{Area}} $$\\n\\n4. **Solve for Area.**\\n To isolate \"Area\", multiply both sides by \"Area\" and then divide by $${density}$.\\n $$ \\text{Area} \\times ${density} = ${population} $$\\n $$ \\text{Area} = \\frac{${population}}{${density}} $$\\n\\n5. **Calculate the value.**\\n $$ \\frac{${population}}{${density}} = ${correctArea} $$\\n\\n So, the area is $${correctArea}$ square miles.\\n\\n**Analysis of Options:**\\n* **Choice ${incorrectOptions[0].letter} ($${incorrectOptions[0].text}$):** ${incorrectOptions[0].reason}\\n* **Choice ${incorrectOptions[1].letter} ($${incorrectOptions[1].text}$):** ${incorrectOptions[1].reason}\\n* **Choice ${incorrectOptions[2].letter} ($${incorrectOptions[2].text}$):** ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctOption.letter} is correct. Population density is the population divided by the area: $\\text{population density} = \\frac{\\text{population}}{\\text{area}}$. So the area is the population divided by the population density: $\\frac{${m(population)}}{${density}} = ${correctArea}$. Worthington's area is ${correctArea} square miles. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `The population density of Worthington is $${density}$ people per square mile. Worthington has a population of $${population.toLocaleString('en-US')}$ people. What is the area, in square miles, of Worthington?`,
+      questionText: `The population density of Worthington is ${density} people per square mile. Worthington has a population of ${fmt(population)} people. What is the area, in square miles, of Worthington?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
-      correctAnswer: correctArea.toString(),
+      correctAnswer: `${correctArea}`,
       explanation: explanation
     };
   }
