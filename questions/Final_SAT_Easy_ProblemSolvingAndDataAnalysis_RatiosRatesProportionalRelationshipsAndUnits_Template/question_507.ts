@@ -23,15 +23,15 @@ export const generator_507 = {
   },
 
   generate: (): QuestionData => {
-    const massKg = getRandomInt(20, 80);
+    // Before: masses up to 80 kg (giant armadillos weigh at most about 50 to
+    // 60 kg), and the multiplication used a bare × outside math.
+    const massKg = getRandomInt(20, 50);
     const gramsPerKg = 1000;
     const massGrams = massKg * gramsPerKg;
 
-    // Fixed: Plain text for units, no \\text{} needed
     const questionText = `A giant armadillo has a mass of ${massKg} kilograms. What is the giant armadillo's mass in grams? (1 kilogram = ${gramsPerKg.toLocaleString('en-US')} grams)`;
-    
-    // Fixed: Plain text for words, $...$ only for math expressions
-    const explanation = `The correct answer is ${massGrams.toLocaleString('en-US')}. It's given that the giant armadillo has a mass of ${massKg} kilograms. Since 1 kilogram is equal to ${gramsPerKg.toLocaleString('en-US')} grams, ${massKg} kilograms is equal to ${massKg} × ${gramsPerKg.toLocaleString('en-US')} = ${massGrams.toLocaleString('en-US')} grams. Therefore, the giant armadillo's mass, in grams, is ${massGrams.toLocaleString('en-US')}.`;
+
+    const explanation = `The correct answer is ${massGrams.toLocaleString('en-US')}. It's given that the giant armadillo has a mass of ${massKg} kilograms. Since 1 kilogram is equal to ${gramsPerKg.toLocaleString('en-US')} grams, ${massKg} kilograms is equal to $${massKg} \\times 1{,}000 = ${massGrams.toLocaleString('en-US').replace(/,/g, '{,}')}$ grams. Therefore, the giant armadillo's mass, in grams, is ${massGrams.toLocaleString('en-US')}.`;
 
     return {
       questionText: questionText,
