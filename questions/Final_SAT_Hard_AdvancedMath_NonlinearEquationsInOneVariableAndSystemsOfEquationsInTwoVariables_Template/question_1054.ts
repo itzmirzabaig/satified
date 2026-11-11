@@ -39,10 +39,14 @@ export const generator_1054 = {
     const correctText = `$\\frac{1+\\sqrt{${k}}}{2}$`;
 
     // STEP 2: Create options (all four strings are distinct by construction)
+    // Before: choice "2" was a value no student slip produces (its reason only
+    // checked it by substitution), and the reasons were joined line by line
+    // with "is incorrect;" fragments. Now "2" is replaced by the sign slip on b
+    // in the quadratic formula, and each reason names the value and the slip.
     const optionsData = [
-      { text: `$2$`, isCorrect: false, reason: `is incorrect; substituting $x=2$ into the equation gives $\\,${8 - constantLeft}$ on the left-hand side and $\\,${4 + constantRight}$ on the right-hand side, which are not equal, so $x=2$ is not a solution` },
-      { text: `$1-\\sqrt{${k}}$`, isCorrect: false, reason: `is incorrect; this expression omits the denominator of 2 from the quadratic formula result $\\frac{1-\\sqrt{${k}}}{2}$` },
-      { text: `$\\frac{1}{2}+\\sqrt{${k}}$`, isCorrect: false, reason: `is incorrect; this results from dividing only the first term of the numerator by 2 instead of dividing the entire numerator $\\,1+\\sqrt{${k}}$ by 2` },
+      { text: `$\\frac{-1+\\sqrt{${k}}}{2}$`, isCorrect: false, reason: `$\\frac{-1+\\sqrt{${k}}}{2}$ results from using $b=${b}$ instead of $b=-${b}$ in the quadratic formula, which gives $x=\\frac{-${b}\\pm\\sqrt{${4 * k}}}{${2 * a}}$ and flips the sign of the first term` },
+      { text: `$1-\\sqrt{${k}}$`, isCorrect: false, reason: `$1-\\sqrt{${k}}$ is the numerator of the other solution $\\frac{1-\\sqrt{${k}}}{2}$; it leaves out the division by 2` },
+      { text: `$\\frac{1}{2}+\\sqrt{${k}}$`, isCorrect: false, reason: `$\\frac{1}{2}+\\sqrt{${k}}$ results from dividing only the first term of the numerator $1+\\sqrt{${k}}$ by 2 instead of dividing the whole numerator by 2` },
       { text: correctText, isCorrect: true, reason: `` }
     ];
 
@@ -55,13 +59,11 @@ export const generator_1054 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Subtracting $\\,${b}x+${constantRight}$ from both sides of $\\,${a}x^2-${constantLeft}=${b}x+${constantRight}$ gives $\\,${a}x^2-${b}x-${S}=0$. By the quadratic formula, $x=\\frac{${b}\\pm\\sqrt{${b * b}+${4 * a * S}}}{${2 * a}}=\\frac{${b}\\pm\\sqrt{${4 * k}}}{${2 * a}}=\\frac{${b}\\pm 2\\sqrt{${k}}}{${2 * a}}=\\frac{1\\pm\\sqrt{${k}}}{2}$. Of these two solutions, $\\frac{1+\\sqrt{${k}}}{2}$ is listed as choice ${correctLetter}.
-Choice ${incorrectOptions[0].letter} ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Subtracting $\\,${b}x+${constantRight}$ from both sides of $\\,${a}x^2-${constantLeft}=${b}x+${constantRight}$ gives $\\,${a}x^2-${b}x-${S}=0$. By the quadratic formula, $x=\\frac{${b}\\pm\\sqrt{${b * b}+${4 * a * S}}}{${2 * a}}=\\frac{${b}\\pm\\sqrt{${4 * k}}}{${2 * a}}=\\frac{${b}\\pm 2\\sqrt{${k}}}{${2 * a}}=\\frac{1\\pm\\sqrt{${k}}}{2}$. Of these two solutions, $\\frac{1+\\sqrt{${k}}}{2}$ is listed as choice ${correctLetter}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `$${a}x^2 - ${constantLeft} = ${b}x + ${constantRight}$\n\nWhich of the following is a solution to the equation above?`,
+      // Before: "the equation above"; the stem now names the equation as given.
+      questionText: `$${a}x^2 - ${constantLeft} = ${b}x + ${constantRight}$\n\nWhich of the following is a solution to the given equation?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
