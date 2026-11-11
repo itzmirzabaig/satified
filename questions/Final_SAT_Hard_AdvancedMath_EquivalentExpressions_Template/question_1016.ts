@@ -24,63 +24,54 @@ export const generator_1016 = {
   
   generate: (): QuestionData => {
     // STEP 1: Generate polynomials
-    const a = getRandomInt(2, 5);
-    const b = getRandomInt(1, 4);
-    
-    // f(x) = x³ - a²x = x(x² - a²) = x(x-a)(x+a)
-    // g(x) = x² - (a-b)x - ab = (x-a)(x+b)
-    
+    // Before: a and b could be equal, which made the answer x(x+a)/(x+a)
+    // (really just x) and gave g(x) a 0x term. Redraw until they differ.
+    let a = 0, b = 0;
+    do {
+      a = getRandomInt(2, 5);
+      b = getRandomInt(1, 4);
+    } while (a === b);
+
+    // f(x) = x^3 - a^2 x = x(x-a)(x+a)
+    // g(x) = x^2 + (b-a)x - ab = (x-a)(x+b)
     const gConst = -a * b;
     const gLinear = b - a;
 
-    // Format g(x) = x^2 + (b-a)x - ab cleanly for every draw (b-a may be 0, ±1)
-    const linTerm = gLinear === 0 ? ''
-      : gLinear === 1 ? ' + x'
+    // Format g(x) = x^2 + (b-a)x - ab cleanly for every draw (b-a may be ±1)
+    const linTerm = gLinear === 1 ? ' + x'
       : gLinear === -1 ? ' - x'
       : gLinear > 0 ? ` + ${gLinear}x`
       : ` - ${Math.abs(gLinear)}x`;
     const gPoly = `x^{2}${linTerm} - ${a * b}`;
 
     // STEP 2: Create options
+    // Before: "1/(x+b)" was explained as canceling the x factor, which does
+    // not produce it, and the explanation used markdown style line breaks.
+    // Every wrong choice now comes from a real factoring slip.
     const correctAnswer = `$\\frac{x(x+${a})}{x+${b}}$`;
 
     const optionsData = [
-      { text: `$\\frac{1}{x+${b}}$`, isCorrect: false, reason: `results from canceling too many factors, including the $x$ factor in the numerator` },
-      { text: `$\\frac{x+${a}}{x+${b}}$`, isCorrect: false, reason: `results from forgetting the $x$ factor in the numerator` },
-      { text: `$\\frac{x(x-${a})}{x+${b}}$`, isCorrect: false, reason: `results from canceling the wrong factor; $(x-${a})$ is the factor that should cancel, not remain` },
-      { text: correctAnswer, isCorrect: true }
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: `$\\frac{x+${a}}{x+${b}}$`, isCorrect: false, reason: `this expression leaves out the common factor $x$ of $f(x)$, factoring $x^{3} - ${a * a}x$ as if it were $(x-${a})(x+${a})$` },
+      { text: `$\\frac{x(x-${a})}{x+${b}}$`, isCorrect: false, reason: `this expression results from factoring $x^{2} - ${a * a}$ as $(x-${a})^{2}$ instead of $(x-${a})(x+${a})$` },
+      { text: `$\\frac{x(x-${a})}{x-${b}}$`, isCorrect: false, reason: `this expression results from factoring $g(x)$ with the signs reversed, as $(x+${a})(x-${b})$, and then canceling $x+${a}$` }
     ];
-    
+
     // STEP 3: Shuffle
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
     // STEP 4: Question text
-    const questionText = `$f(x) = x^{3} - ${a*a}x$ and $g(x) = ${gPoly}$. Which of the following expressions is equivalent to $\\frac{f(x)}{g(x)}$, for $x > ${a}$?`;
+    const questionText = `The functions $f$ and $g$ are defined by $f(x) = x^{3} - ${a * a}x$ and $g(x) = ${gPoly}$. Which of the following expressions is equivalent to $\\frac{f(x)}{g(x)}$, for $x > ${a}$?`;
 
-    // STEP 5: Explanation
-    const explanation = `Choice ${correctLetter} is correct. Factor both polynomials:
+    // STEP 5: Explanation (plain sentences, inline math)
+    const explanation = `Choice ${correctOption.letter} is correct. Factoring out $x$ and then using the difference of squares gives $f(x) = x(x^{2} - ${a * a}) = x(x-${a})(x+${a})$. For $g(x)$, the two numbers that multiply to $${gConst}$ and add to $${gLinear}$ are $${-a}$ and $${b}$, so $g(x) = (x-${a})(x+${b})$. Therefore $\\frac{f(x)}{g(x)} = \\frac{x(x-${a})(x+${a})}{(x-${a})(x+${b})}$. Since $x > ${a}$, the factor $x-${a}$ is not zero, so it can be canceled, which gives $\\frac{x(x+${a})}{x+${b}}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
-$f(x) = x^{3} - ${a*a}x = x(x^{2} - ${a*a}) = x(x-${a})(x+${a})$ (difference of squares)
-
-$g(x) = ${gPoly} = (x-${a})(x+${b})$ (find two numbers that multiply to ${gConst} and add to ${gLinear})
-
-Therefore:
-$$\\frac{f(x)}{g(x)} = \\frac{x(x-${a})(x+${a})}{(x-${a})(x+${b})}$$
-
-Since $x > ${a}$, we know $x \\neq ${a}$, so we can cancel $(x-${a})$:
-$$\\frac{x(x+${a})}{x+${b}}$$
-
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
-    
     return {
       questionText: questionText,
       figureCode: null,
