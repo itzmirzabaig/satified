@@ -28,15 +28,21 @@ export const generator_502 = {
     const totalArea = maxPeople * spacePerPerson;
     const correctMaxPeople = totalArea / spacePerPerson;
 
-    const distractor1 = correctMaxPeople - getRandomInt(50, 100);
-    const distractor2 = correctMaxPeople * 20 + getRandomInt(1000, 3000);
+    // Before: two wrong choices were random ("a random number", "a value that
+    // is much too large"), the stem used the hyphenated "square-foot room", the
+    // comma in the area sat bare inside math, and the explanation format was
+    // nonstandard. Every wrong choice is now a real slip with exact value.
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const mfmt = (n: number) => fmt(n).replace(/,/g, '{,}');
+    const distractor1 = totalArea - spacePerPerson;
+    const distractor2 = totalArea + spacePerPerson;
     const distractor3 = totalArea * spacePerPerson;
 
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "a random number" },
-      { text: correctMaxPeople.toString(), isCorrect: true, reason: null },
-      { text: distractor2.toString(), isCorrect: false, reason: "a value that is much too large" },
-      { text: distractor3.toString(), isCorrect: false, reason: "multiplying instead of dividing" }
+      { text: fmt(distractor1), isCorrect: false, reason: `${fmt(distractor1)} is the result of subtracting ${spacePerPerson} from ${fmt(totalArea)} instead of dividing` },
+      { text: correctMaxPeople.toString(), isCorrect: true, reason: '' },
+      { text: fmt(distractor2), isCorrect: false, reason: `${fmt(distractor2)} is the result of adding ${spacePerPerson} to ${fmt(totalArea)} instead of dividing` },
+      { text: fmt(distractor3), isCorrect: false, reason: `${fmt(distractor3)} is the result of multiplying ${fmt(totalArea)} by ${spacePerPerson} instead of dividing` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -45,13 +51,12 @@ export const generator_502 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `To find the maximum number of people, divide the total area by the area required per person: $${totalArea.toLocaleString('en-US')} \\div ${spacePerPerson} = ${correctMaxPeople}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it represents ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it represents ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Each person needs at least ${spacePerPerson} square feet, so the maximum number of people is the total area divided by the area for each person: $${mfmt(totalArea)} \\div ${spacePerPerson} = ${correctMaxPeople}$. So at most ${correctMaxPeople} people could attend. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `Makayla is planning an event in a $${totalArea.toLocaleString('en-US')}$-square-foot room. If there should be at least $${spacePerPerson}$ square feet per person, what is the maximum number of people that could attend this event?`,
+      questionText: `Makayla is planning an event in a room with an area of ${fmt(totalArea)} square feet. If there should be at least ${spacePerPerson} square feet per person, what is the maximum number of people who could attend this event?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: correctMaxPeople.toString(),
