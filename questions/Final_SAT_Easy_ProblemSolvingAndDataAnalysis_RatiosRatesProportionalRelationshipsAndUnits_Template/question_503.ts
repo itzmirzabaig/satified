@@ -28,30 +28,37 @@ export const generator_503 = {
     const inches = yards * inchesPerYard;
     const correctYards = inches / inchesPerYard;         // = yards (clean integer)
 
-    const distractorInverted = parseFloat((inchesPerYard / inches).toFixed(3)); // < 1, never collides
-    const distractorSubtract = inches - inchesPerYard;   // = 36*(yards-1), far from yards
-    const distractorMultiply = inches * inchesPerYard;   // huge, far from yards
+    // Before: the inverted choice was 36 / inches rounded to 3 decimals but
+    // shown as exact, reasons started with "this" instead of the value, the
+    // product had no thousands commas, and the explanation format was
+    // nonstandard. The wrong choices are now exact unit slips: dividing by 12
+    // (gives feet), dividing by 3 (feet per yard), and multiplying by 36.
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const mfmt = (n: number) => fmt(n).replace(/,/g, '{,}');
+    const distractorFeet = inches / 12;
+    const distractorByThree = inches / 3;
+    const distractorMultiply = inches * inchesPerYard;
 
     const optionsData = [
       {
-        text: distractorInverted.toString(),
+        text: fmt(distractorFeet),
         isCorrect: false,
-        reason: `this divides the conversion factor by the number of inches ($${inchesPerYard} \\div ${inches}$), which is the inverse of the correct operation`,
+        reason: `${fmt(distractorFeet)} is the result of dividing ${fmt(inches)} by 12, which gives the length in feet, not yards`,
       },
       {
         text: correctYards.toString(),
         isCorrect: true,
-        reason: null,
+        reason: '',
       },
       {
-        text: distractorSubtract.toString(),
+        text: fmt(distractorByThree),
         isCorrect: false,
-        reason: `this subtracts instead of dividing ($${inches} - ${inchesPerYard} = ${distractorSubtract}$), which is not how unit conversion works`,
+        reason: `${fmt(distractorByThree)} is the result of dividing ${fmt(inches)} by 3, the number of feet in a yard, instead of by ${inchesPerYard}, the number of inches in a yard`,
       },
       {
-        text: distractorMultiply.toString(),
+        text: fmt(distractorMultiply),
         isCorrect: false,
-        reason: `this multiplies ($${inches} \\times ${inchesPerYard} = ${distractorMultiply}$); you would multiply to convert yards to inches, but here the conversion goes the other way`,
+        reason: `${fmt(distractorMultiply)} is the result of multiplying ${fmt(inches)} by ${inchesPerYard} instead of dividing`,
       },
     ];
 
@@ -61,13 +68,12 @@ export const generator_503 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `To convert from a smaller unit (inches) to a larger unit (yards), divide by the number of inches in one yard. The conversion factor is $1 \\text{ yard} = ${inchesPerYard} \\text{ inches}$, so $${inches} \\div ${inchesPerYard} = ${correctYards}$ yards. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Since 1 yard is ${inchesPerYard} inches, divide the number of inches by ${inchesPerYard} to convert to yards: $${mfmt(inches)} \\div ${inchesPerYard} = ${correctYards}$. So ${fmt(inches)} inches is equivalent to ${correctYards} yards. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `How many yards are equivalent to $${inches}$ inches? (Use the conversion $1 \\text{ yard} = ${inchesPerYard} \\text{ inches}$.)`,
+      questionText: `How many yards are equivalent to ${fmt(inches)} inches? (1 yard = ${inchesPerYard} inches)`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: correctYards.toString(),
