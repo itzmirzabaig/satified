@@ -23,19 +23,23 @@ export const generator_500 = {
   },
 
   generate: (): QuestionData => {
-    const fathoms = getRandomInt(25, 50);
+    // Before: the "dividing" choice was Math.round(fathoms / 6), a rounded
+    // value presented as an exact quotient, and the reasons were vague ("adding
+    // the two numbers", "dividing the numbers"). The depth is now a multiple of
+    // 6 so the division slip is exact, and each reason names its value and slip.
+    const fathoms = 6 * getRandomInt(4, 12);
     const feetPerFathom = 6;
     const feet = fathoms * feetPerFathom;
 
     const distractor1 = fathoms * 3;
     const distractor2 = fathoms + feetPerFathom;
-    const distractor3 = Math.round(fathoms / feetPerFathom);
+    const distractor3 = fathoms / feetPerFathom;
 
     const optionsData = [
-      { text: feet.toString(), isCorrect: true, reason: null },
-      { text: distractor1.toString(), isCorrect: false, reason: "multiplying by 3 instead of 6" },
-      { text: distractor2.toString(), isCorrect: false, reason: "adding the two numbers" },
-      { text: distractor3.toString(), isCorrect: false, reason: "dividing the numbers" }
+      { text: feet.toString(), isCorrect: true, reason: '' },
+      { text: distractor1.toString(), isCorrect: false, reason: `${distractor1} is the result of multiplying ${fathoms} by 3, the number of feet in a yard, instead of by ${feetPerFathom}, the number of feet in a fathom` },
+      { text: distractor2.toString(), isCorrect: false, reason: `${distractor2} is the result of adding ${feetPerFathom} to ${fathoms} instead of multiplying` },
+      { text: distractor3.toString(), isCorrect: false, reason: `${distractor3} is the result of dividing ${fathoms} by ${feetPerFathom} instead of multiplying` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -44,11 +48,9 @@ export const generator_500 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    // Fixed: Plain text for words, $...$ only for math expressions
-    const explanation = `To find the depth in feet, multiply the depth in fathoms by the number of feet in one fathom. $${fathoms} \\times ${feetPerFathom} = ${feet}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Each fathom is ${feetPerFathom} feet, so multiply the depth in fathoms by ${feetPerFathom} to find the depth in feet: $${fathoms} \\times ${feetPerFathom} = ${feet}$. So the camera is at a depth of ${feet} feet. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       // Fixed: Plain text for units, no \\text{} needed
