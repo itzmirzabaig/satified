@@ -3,12 +3,23 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 530
- * 
+ *
  * FIXED ANALYSIS:
  * - Replaced broken Mafs code with semantic SVG.
  * - Context: Scatterplot of Wolf Weight (x) vs Number of Offspring (y).
  * - Task: Identify the y-value for a specific x-value.
  * - Constraints: Discrete integer values for offspring.
+ *
+ * FIXED (review):
+ * - The target weight was any integer 45..75 with gridlines only every 10
+ *   pounds and other wolves as close as 2 pounds away, so the point asked about
+ *   could not be told apart from its neighbors. The target is now a multiple of
+ *   5 sitting on a gridline (gridlines every 5 pounds), and no other wolf is
+ *   within 3 pounds of it.
+ * - Distractors were correct +2, -2, +1 and random fillers with no reasons.
+ *   They are now the offspring counts of the nearest wolf on each side and of
+ *   the wolf two gridlines (10 pounds) away, each with its reason.
+ * - "65-pound wolf" and the numbered list with literal newlines removed.
  */
 
 export const generator_530 = {
@@ -25,24 +36,33 @@ export const generator_530 = {
     const xMin = 30, xMax = 90; // Weight in pounds
     const yMin = 0, yMax = 10;  // Number of offspring
 
-    // 2. Generate Target Data
-    // We need a specific point to ask about: e.g., "The 65-pound wolf"
-    // To ensure legibility, we pick a weight that aligns with a "nice" number or is just distinct.
-    const targetWeight = getRandomInt(45, 75);
-    const targetOffspring = getRandomInt(3, 8);
+    // 2. Target wolf on a gridline (multiple of 5)
+    const targetWeight = 5 * getRandomInt(9, 15); // 45..75
+    // Three distinct offspring counts for the slip points, all different from the target's
+    const ys = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    const targetOffspring = ys.find(v => v >= 3 && v <= 8)!;
+    const [leftY, rightY, gridY] = ys.filter(v => v !== targetOffspring).slice(0, 3);
 
-    // 3. Generate Distractor Data
-    // Create ~12 other points. Ensure none have the exact same weight as target to avoid ambiguity.
-    const pointsData = [{ x: targetWeight, y: targetOffspring }];
-    const usedWeights = new Set([targetWeight]);
+    const leftWeight = targetWeight - getRandomInt(3, 6);
+    const rightWeight = targetWeight + getRandomInt(3, 6);
+    const gridSide = Math.random() < 0.5 ? -1 : 1;
+    const gridWeight = targetWeight + 10 * gridSide;
 
+    const pointsData = [
+      { x: targetWeight, y: targetOffspring },
+      { x: leftWeight, y: leftY },
+      { x: rightWeight, y: rightY },
+      { x: gridWeight, y: gridY }
+    ];
+    const usedWeights = new Set(pointsData.map(p => p.x));
+
+    // 3. Other wolves: farther than 6 pounds from the target (so the left and
+    // right points above stay the nearest neighbors) and not on the same
+    // weight as any other wolf.
     while (pointsData.length < 12) {
-      const w = getRandomInt(xMin + 5, xMax - 5);
+      const w = getRandomInt(xMin + 4, xMax - 4);
       const o = getRandomInt(1, 9);
-      
-      // Ensure we don't have duplicate weights (vertical line test for this specific question context)
-      // and keep points somewhat spread out (optional, just looks better)
-      if (!usedWeights.has(w) && Math.abs(w - targetWeight) > 1) {
+      if (!usedWeights.has(w) && Math.abs(w - targetWeight) > 6 && Math.abs(w - gridWeight) >= 2) {
         pointsData.push({ x: w, y: o });
         usedWeights.add(w);
       }
@@ -59,13 +79,16 @@ export const generator_530 = {
 
     // 5. Build SVG Elements
 
-    // Grid & Ticks (X-axis: Weight)
+    // Grid every 5 pounds, labels every 10 (X-axis: Weight)
     const xTicks = [];
-    for (let x = xMin; x <= xMax; x += 10) {
+    for (let x = xMin; x <= xMax; x += 5) {
       const xPos = mapX(x);
+      const label = x % 10 === 0
+        ? `<text x="${xPos}" y="${height - padding.bottom + 20}" text-anchor="middle" font-size="12" fill="currentColor">${x}</text>`
+        : '';
       xTicks.push(`
-        <line x1="${xPos}" y1="${mapY(yMin)}" x2="${xPos}" y2="${mapY(yMax)}" stroke="currentColor" stroke-opacity="0.1" />
-        <text x="${xPos}" y="${height - padding.bottom + 20}" text-anchor="middle" font-size="12" fill="currentColor">${x}</text>
+        <line x1="${xPos}" y1="${mapY(yMin)}" x2="${xPos}" y2="${mapY(yMax)}" stroke="currentColor" stroke-opacity="${x % 10 === 0 ? 0.15 : 0.08}" />
+        ${label}
       `);
     }
 
@@ -80,7 +103,7 @@ export const generator_530 = {
     }
 
     // Scatter Points
-    const pointsSvg = pointsData.map(p => 
+    const pointsSvg = pointsData.map(p =>
       `<circle cx="${mapX(p.x).toFixed(1)}" cy="${mapY(p.y).toFixed(1)}" r="5" fill="#3b82f6" stroke="white" stroke-width="1" />`
     ).join('');
 
@@ -106,58 +129,28 @@ export const generator_530 = {
       </div>
     `;
 
-    // 6. Generate Options
-    // Correct Answer: The Y value of the target point
-    const correctVal = targetOffspring;
-
-    // Distractors
-    // 1. A different Y value present in the graph (if possible)
-    // 2. Y value + 2
-    // 3. Y value - 2
-    // 4. Random small integer
-    const distractor1 = correctVal + 2;
-    const distractor2 = Math.max(1, correctVal - 2); 
-    const distractor3 = correctVal + 1 === 10 ? 8 : correctVal + 1; // Ensure valid range
-
+    // 6. Options: each wrong choice is a point a student could misread as the target
     const optionsData = [
-      { text: `${correctVal}`, isCorrect: true },
-      { text: `${distractor1}`, isCorrect: false },
-      { text: `${distractor2}`, isCorrect: false },
-      { text: `${distractor3}`, isCorrect: false }
+      { text: `${targetOffspring}`, isCorrect: true, reason: '' },
+      { text: `${leftY}`, isCorrect: false, reason: `${leftY} is the number of offspring of the nearest wolf to the left, which weighs a few pounds less than ${targetWeight} pounds` },
+      { text: `${rightY}`, isCorrect: false, reason: `${rightY} is the number of offspring of the nearest wolf to the right, which weighs a few pounds more than ${targetWeight} pounds` },
+      { text: `${gridY}`, isCorrect: false, reason: `${gridY} is the number of offspring of the wolf that weighs ${gridWeight} pounds, two gridlines ${gridSide > 0 ? 'to the right of' : 'to the left of'} ${targetWeight}` }
     ];
 
-    // Remove duplicates from options if randomness created any
-    const uniqueOptions = new Map();
-    optionsData.forEach(o => uniqueOptions.set(o.text, o));
-    // If we have fewer than 4 due to duplicates, fill with randoms
-    while (uniqueOptions.size < 4) {
-      const r = getRandomInt(1, 9);
-      if (!uniqueOptions.has(`${r}`)) {
-        uniqueOptions.set(`${r}`, { text: `${r}`, isCorrect: false });
-      }
-    }
-    
-    const finalOptionsList = Array.from(uniqueOptions.values());
-
-    const shuffledOptions = shuffle(finalOptionsList).map((opt, index) => ({
+    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `The scatterplot shows the weight, in pounds, and the number of offspring for a sample of ${pointsData.length} wolves. According to the scatterplot, how many offspring did the ${targetWeight}-pound wolf produce?`,
+      questionText: `The scatterplot shows the weight, in pounds, and the number of offspring for a sample of ${pointsData.length} wolves. According to the scatterplot, how many offspring did the wolf that weighs ${targetWeight} pounds produce?`,
       figureCode: svgCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To determine the number of offspring for the ${targetWeight}-pound wolf:
-      
-1. Locate ${targetWeight} on the horizontal axis (Wolf Weight).
-2. Move vertically up to find the data point corresponding to that weight.
-3. Move horizontally to the left to read the value on the vertical axis (Number of Offspring).
-
-The point corresponds to ${targetOffspring} offspring.`
+      explanation: `Choice ${correctOption.letter} is correct. Find ${targetWeight} on the horizontal axis, which is labeled Wolf Weight (pounds), and move straight up along that gridline to the data point there. Then move horizontally to the left to read the vertical axis, which is labeled Number of Offspring. The point lies at ${targetOffspring}, so the wolf that weighs ${targetWeight} pounds produced ${targetOffspring} offspring. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
