@@ -39,7 +39,12 @@ export const generator_529 = {
     const slope = -slopeTenths / 10;             // exact one-decimal value
     const slopeStr = `-0.${slopeTenths}`;        // exact display, no float artifact
     const absSlopeStr = `0.${slopeTenths}`;
-    const yIntercept = getRandomInt(10, 16);     // positive intercept
+    // Previously the line (and some points) ran below the x-axis and out of the
+    // plot when a steep slope met a small intercept (e.g. 10 - 0.9x at x = 14).
+    // Redraw until the line stays at y >= 3 across the plot, so points with
+    // variation of up to 2 stay above the axis.
+    let yIntercept = getRandomInt(10, 16);       // positive intercept
+    while (yIntercept * 10 - 14 * slopeTenths < 30) yIntercept = getRandomInt(10, 16);
 
     // --- Scatter data hugging the line of best fit ---
     const xMax = 14;
@@ -89,7 +94,9 @@ export const generator_529 = {
       `<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="4" fill="#3b82f6" stroke="white" stroke-width="1.5" />`
     ).join('');
 
-    const svgContent = `
+    // Wrapped in a div: a bare <svg> figure is sent to the graph renderer by the
+    // study page and showed up as an empty box.
+    const svgContent = `<div style="width:100%;max-width:460px;margin:0 auto;">
       <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; font-family: sans-serif; user-select: none;">
         ${gridLines.join('')}
         <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${margin.top + chartH}" stroke="currentColor" stroke-width="2"/>
@@ -98,8 +105,7 @@ export const generator_529 = {
         ${circles}
         <text x="${margin.left + chartW / 2}" y="${height - 6}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">x</text>
         <text transform="rotate(-90, 14, ${margin.top + chartH / 2})" x="14" y="${margin.top + chartH / 2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">y</text>
-      </svg>
-    `;
+      </svg></div>`;
 
     // --- Options: form y = a + bx (rendered with real +/- signs) ---
     // kinds: 'correct' (a>0,b<0), 'slope' (a>0,b>0), 'intercept' (a<0,b<0),
