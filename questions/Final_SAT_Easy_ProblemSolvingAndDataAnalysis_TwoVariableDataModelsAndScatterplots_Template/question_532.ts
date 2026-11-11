@@ -106,25 +106,43 @@ export const generator_532 = {
     `;
 
     // 5. Generate Options
-    // We are looking for the NOT TRUE statement.
-    const optionsData = [
+    // Previously the false statement was always the same one, the explanation
+    // used markdown bullets and literal newlines, and the three true statements
+    // had no reasons. Now one of the four statements is drawn to be the false
+    // one each time (its false wording is used), and every choice is explained.
+    const falseIdx = getRandomInt(0, 3);
+    const statements = [
       {
-        text: "The runner ran at a constant speed for five minutes.",
-        isCorrect: false // TRUE statement (5-10 min), so incorrect choice
+        trueText: "The runner ran at a constant speed for five minutes.",
+        falseText: "The runner ran at a constant speed for ten minutes.",
+        whyTrue: `the graph is horizontal only from 5 to 10 minutes, at ${speedMid} mph, so the runner ran at a constant speed for five minutes`,
+        whyFalse: `the graph is horizontal only from 5 to 10 minutes, so the runner ran at a constant speed for five minutes, not ten`
       },
       {
-        text: "The runner's speed was increasing for a longer period of time than it was decreasing.",
-        isCorrect: true // FALSE statement: Increasing (10) < Decreasing (15). Correct choice.
+        trueText: "The runner's speed was decreasing for a longer period of time than it was increasing.",
+        falseText: "The runner's speed was increasing for a longer period of time than it was decreasing.",
+        whyTrue: `the speed decreased from 10 to 20 minutes and from 25 to 30 minutes, for a total of $10 + 5 = 15$ minutes, and increased from 0 to 5 minutes and from 20 to 25 minutes, for a total of $5 + 5 = 10$ minutes, and 15 minutes is longer than 10 minutes`,
+        whyFalse: `the speed increased from 0 to 5 minutes and from 20 to 25 minutes, for a total of $5 + 5 = 10$ minutes, but decreased from 10 to 20 minutes and from 25 to 30 minutes, for a total of $10 + 5 = 15$ minutes, so the speed was increasing for a shorter period of time, not a longer one`
       },
       {
-        text: "The runner's speed decreased at a constant rate during the last five minutes.",
-        isCorrect: false // TRUE statement (25-30 min is decreasing), so incorrect choice
+        trueText: "The runner's speed decreased at a constant rate during the last five minutes.",
+        falseText: "The runner's speed increased during the last five minutes.",
+        whyTrue: `from 25 to 30 minutes the graph is a straight segment going down from ${speedMax} mph to ${speedEnd} mph, so the speed decreased at a constant rate`,
+        whyFalse: `from 25 to 30 minutes the graph goes down from ${speedMax} mph to ${speedEnd} mph, so the speed decreased during the last five minutes, not increased`
       },
       {
-        text: "The runner's speed reached its maximum during the last ten minutes.",
-        isCorrect: false // TRUE statement (Max is at 25 min, which is within the last 10 mins), so incorrect choice
+        trueText: "The runner's speed reached its maximum during the last ten minutes.",
+        falseText: "The runner's speed reached its maximum during the first ten minutes.",
+        whyTrue: `the highest point of the graph is ${speedMax} mph at 25 minutes, which is within the last ten minutes of the run`,
+        whyFalse: `the highest speed in the first ten minutes is ${speedMid} mph, but the highest point of the graph is ${speedMax} mph at 25 minutes, which is in the last ten minutes of the run`
       }
     ];
+
+    const optionsData = statements.map((s, i) => ({
+      text: i === falseIdx ? s.falseText : s.trueText,
+      isCorrect: i === falseIdx,
+      reason: i === falseIdx ? '' : `this statement is true: ${s.whyTrue}`
+    }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -132,18 +150,14 @@ export const generator_532 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: "A runner ran on a treadmill for thirty minutes. The graph shows her speed, in miles per hour (mph), during the run. Which statement is NOT true concerning her run?",
       figureCode: svgCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To determine which statement is not true, we analyze the intervals on the graph:
-      
-- **Increasing Speed:** From 0 to 5 minutes and 20 to 25 minutes. Total time = 5 + 5 = 10 minutes.
-- **Decreasing Speed:** From 10 to 20 minutes and 25 to 30 minutes. Total time = 10 + 5 = 15 minutes.
-
-The statement "The runner's speed was increasing for a longer period of time than it was decreasing" claims that 10 > 15, which is false. Therefore, this is the correct answer.`
+      explanation: `Choice ${correctOption.letter} is correct. This statement is not true because ${statements[falseIdx].whyFalse}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
