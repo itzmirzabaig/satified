@@ -23,19 +23,24 @@ export const generator_506 = {
   },
 
   generate: (): QuestionData => {
-    const yardsPerSec = getRandomInt(50, 80);
+    // Before: one wrong choice was yardsPerSec + 30 ("an unrelated
+    // calculation"), the reasons were vague ("adding the values"), and the
+    // explanation format was nonstandard. The speed is now a multiple of 3 so
+    // the "divided by 3" slip is exact, and the unrelated choice became the
+    // slip of multiplying by 36 (inches per yard).
+    const yardsPerSec = 3 * getRandomInt(17, 26);
     const feetPerYard = 3;
     const feetPerSec = yardsPerSec * feetPerYard;
 
-    const distractor1 = yardsPerSec - feetPerYard;
+    const distractor1 = yardsPerSec / feetPerYard;
     const distractor2 = yardsPerSec + feetPerYard;
-    const distractor3 = yardsPerSec + 30;
+    const distractor3 = yardsPerSec * 36;
 
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: "subtracting the values" },
-      { text: distractor2.toString(), isCorrect: false, reason: "adding the values" },
-      { text: distractor3.toString(), isCorrect: false, reason: "an unrelated calculation" },
-      { text: feetPerSec.toString(), isCorrect: true, reason: null }
+      { text: distractor1.toString(), isCorrect: false, reason: `${distractor1} is the result of dividing ${yardsPerSec} by ${feetPerYard} instead of multiplying` },
+      { text: distractor2.toString(), isCorrect: false, reason: `${distractor2} is the result of adding ${feetPerYard} to ${yardsPerSec} instead of multiplying` },
+      { text: distractor3.toLocaleString('en-US'), isCorrect: false, reason: `${distractor3.toLocaleString('en-US')} is the result of multiplying ${yardsPerSec} by 36, the number of inches in a yard, which gives the speed in inches per second` },
+      { text: feetPerSec.toString(), isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -44,14 +49,11 @@ export const generator_506 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    // Fixed: Use $...$ only for math, plain text for words
-    const explanation = `To convert from yards per second to feet per second, multiply the number of yards by ${feetPerYard}. $${yardsPerSec} \\times ${feetPerYard} = ${feetPerSec}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because it results from ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it results from ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it results from ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Since 1 yard is ${feetPerYard} feet, multiply the speed in yards per second by ${feetPerYard} to find the speed in feet per second: $${yardsPerSec} \\times ${feetPerYard} = ${feetPerSec}$. So the object's speed is ${feetPerSec} feet per second. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      // Fixed: Plain text for units, no \\text{} needed
       questionText: `An object's speed is ${yardsPerSec} yards per second. What is the object's speed, in feet per second? (1 yard = ${feetPerYard} feet)`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
