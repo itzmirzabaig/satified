@@ -3,7 +3,7 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1026
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [single fraction addition]
  * - Difficulty factors: [Common denominator, factoring, combining terms]
@@ -21,7 +21,7 @@ export const generator_1026 = {
     skill: "Equivalent Expressions",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
     // STEP 1: Generate parameters ($a$ and $k$ stay symbolic in the expression)
     const n = getRandomInt(30, 50);
@@ -30,42 +30,31 @@ export const generator_1026 = {
     // na/k + nak = na/k + nak^2/k = na(k^2+1)/k
     const correctAnswer = `\\frac{${n}a(k^{2}+1)}{k}`;
 
+    // Reasons used to start with "this would be equivalent to" and the
+    // explanation used "is incorrect;" on separate lines; each reason now
+    // names the value and the slip, in the standard one paragraph format.
     const optionsData = [
-      { text: `\\frac{${2 * n}a}{k}`, isCorrect: false, reason: `this would be equivalent to $\\frac{${n}a}{k} + \\frac{${n}a}{k}$, which treats the second term as if it were $\\frac{${n}a}{k}$` },
-      { text: `\\frac{${2 * n}ak^{2}}{k}`, isCorrect: false, reason: `this would be equivalent to $\\frac{${n}ak^{2}}{k} + \\frac{${n}ak^{2}}{k}$, which treats the first term as if it were also $\\frac{${n}ak^{2}}{k}$` },
-      { text: `\\frac{${n}a(k+1)}{k}`, isCorrect: false, reason: `this would be equivalent to $\\frac{${n}a}{k} + ${n}a$, which results from rewriting the second term as $\\frac{${n}ak}{k}$ without multiplying its numerator by $k$` },
-      { text: correctAnswer, isCorrect: true }
+      { text: `\\frac{${2 * n}a}{k}`, isCorrect: false, reason: `$\\frac{${2 * n}a}{k}$ results from treating $${n}ak$ as if it were $\\frac{${n}a}{k}$, dividing by $k$ instead of multiplying by $k$` },
+      { text: `\\frac{${2 * n}ak^{2}}{k}`, isCorrect: false, reason: `$\\frac{${2 * n}ak^{2}}{k}$ results from combining $${n}a$ and $${n}ak^{2}$ in the numerator as if they were like terms` },
+      { text: `\\frac{${n}a(k+1)}{k}`, isCorrect: false, reason: `$\\frac{${n}a(k+1)}{k}$ results from rewriting $${n}ak$ as $\\frac{${n}ak}{k}$ without multiplying its numerator by $k$` },
+      { text: correctAnswer, isCorrect: true, reason: '' }
     ];
-    
+
     // STEP 3: Shuffle
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
     // STEP 4: Question text
     const questionText = `Which expression is equivalent to $\\frac{${n}a}{k} + ${n}ak$, where $k > 0$?`;
-    
+
     // STEP 5: Explanation
-    const explanation = `Choice ${correctLetter} is correct. To add these terms, rewrite them with a common denominator.
+    const explanation = `Choice ${correctOption.letter} is correct. To add the two terms, rewrite them with the common denominator $k$. Multiplying $${n}ak$ by $\\frac{k}{k}$, which equals $1$, gives $\\frac{${n}ak^{2}}{k}$. Adding the numerators gives $\\frac{${n}a}{k} + \\frac{${n}ak^{2}}{k} = \\frac{${n}a + ${n}ak^{2}}{k}$. Factoring $${n}a$ out of the numerator gives $\\frac{${n}a(k^{2}+1)}{k}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
-Since $\\frac{k}{k} = 1$, multiply the second term by $\\frac{k}{k}$:
-$$\\frac{k}{k} \\cdot ${n}ak = \\frac{${n}ak^{2}}{k}$$
-
-Now add:
-$$\\frac{${n}a}{k} + \\frac{${n}ak^{2}}{k} = \\frac{${n}a + ${n}ak^{2}}{k}$$
-
-Factor out ${n}a from the numerator:
-$$\\frac{${n}a(1 + k^{2})}{k} = \\frac{${n}a(k^{2}+1)}{k}$$
-
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
-    
     return {
       questionText: questionText,
       figureCode: null,
