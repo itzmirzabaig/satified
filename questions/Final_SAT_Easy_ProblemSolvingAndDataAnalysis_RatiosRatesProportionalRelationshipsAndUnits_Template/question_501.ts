@@ -31,7 +31,10 @@ export const generator_501 = {
     const correctMph = yardsPerHour / yardsPerMile;
 
     const questionText = `A participant in a bicycle race completes the race with an average speed of ${yardsPerHour.toLocaleString('en-US')} yards per hour. What is this average speed, in miles per hour? (1 mile = ${yardsPerMile.toLocaleString('en-US')} yards)`;
-    const explanation = `The correct answer is ${correctMph}. This average speed is equivalent to \\(\\left(\\frac{${yardsPerHour.toLocaleString('en-US')} \\text{ yards}}{1 \\text{ hour}}\\right)\\left(\\frac{1 \\text{ mile}}{${yardsPerMile.toLocaleString('en-US')} \\text{ yards}}\\right)\\), which yields ${correctMph} miles per hour.`;
+    // Before: the thousands commas were plain "," inside math, which renders
+    // as "25, 872" with a gap; inside math they are now {,}.
+    const m = (n: number) => n.toLocaleString('en-US').replace(/,/g, '{,}');
+    const explanation = `The correct answer is ${correctMph}. Since 1 mile is ${yardsPerMile.toLocaleString('en-US')} yards, this average speed is equivalent to $\\left(\\frac{${m(yardsPerHour)} \\text{ yards}}{1 \\text{ hour}}\\right)\\left(\\frac{1 \\text{ mile}}{${m(yardsPerMile)} \\text{ yards}}\\right)$, which yields ${correctMph} miles per hour.`;
 
     return {
       questionText: questionText,
