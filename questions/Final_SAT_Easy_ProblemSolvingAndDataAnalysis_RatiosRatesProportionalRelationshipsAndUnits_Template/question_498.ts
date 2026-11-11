@@ -34,11 +34,16 @@ export const generator_498 = {
     const distractor2 = yards - yardsPerMile;
     const distractor3 = yards + yardsPerMile;
 
+    // Before: reasons were capitalized "This might be..." sentences, the
+    // explanation used a nonstandard "Why other options are incorrect" format,
+    // and 4 digit numbers had no commas (in math or in the choices).
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const mfmt = (n: number) => fmt(n).replace(/,/g, '{,}');
     const optionsData = [
-      { text: distractor1.toString(), isCorrect: false, reason: `This might be the result of dividing incorrectly or in reverse order (${yardsPerMile} / ${yards}).` },
-      { text: correctMiles.toString(), isCorrect: true, reason: null },
-      { text: distractor2.toString(), isCorrect: false, reason: `This is the result of subtracting ${yardsPerMile} from ${yards} (${yards} - ${yardsPerMile} = ${distractor2}).` },
-      { text: distractor3.toString(), isCorrect: false, reason: `This is the result of adding the two numbers together (${yards} + ${yardsPerMile} = ${distractor3}).` }
+      { text: distractor1.toString(), isCorrect: false, reason: `${distractor1} is $${mfmt(yardsPerMile)} \\div ${mfmt(yards)}$ rounded to the nearest tenth, which divides in the reverse order` },
+      { text: correctMiles.toString(), isCorrect: true, reason: '' },
+      { text: fmt(distractor2), isCorrect: false, reason: `${fmt(distractor2)} is the result of subtracting ${fmt(yardsPerMile)} from ${fmt(yards)} instead of dividing` },
+      { text: fmt(distractor3), isCorrect: false, reason: `${fmt(distractor3)} is the result of adding ${fmt(yards)} and ${fmt(yardsPerMile)} instead of dividing` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -47,11 +52,9 @@ export const generator_498 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    // Fixed: Proper template literals and correct array access
-    const explanation = `To convert yards to miles, you need to divide the number of yards by the number of yards in a mile. Calculation: $${yards}/${yardsPerMile} = ${correctMiles}$. So, the fish swam ${correctMiles} miles. Why other options are incorrect: Choice ${incorrectOptions[0].letter}: ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter}: ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter}: ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctOption.letter} is correct. Since 1 mile is ${fmt(yardsPerMile)} yards, divide the number of yards by ${fmt(yardsPerMile)} to convert to miles: $${mfmt(yards)} \\div ${mfmt(yardsPerMile)} = ${correctMiles}$. So the fish swam ${correctMiles} miles. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       // Fixed: Simplified math notation
