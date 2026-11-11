@@ -21,7 +21,9 @@ export const generator_525 = {
   generate: (): QuestionData => {
     // 1. Generate Realistic Data
     const startTemp = getRandomInt(60, 75); // Temp at sea level
-    const lapseRate = getRandomInt(4, 7); 
+    // Real air cools about 3.6 degrees F per 1,000 ft of elevation; the old
+    // range of 4 to 7 overstated it.
+    const lapseRate = getRandomInt(3, 5);
     
     const dataPoints = [];
     const xMax = 5; // 5000 ft, represented as 5
@@ -115,26 +117,30 @@ export const generator_525 = {
     `;
 
     // 4. Options
+    // Before: no wrong choice had a reason and the stem said "scatterplot
+    // above". Each wrong choice now names its slip.
     const optionsData = [
-      { text: "As the elevation increases, the temperature tends to increase.", isCorrect: false },
-      { text: "As the elevation increases, the temperature tends to decrease.", isCorrect: true },
-      { text: "As the elevation decreases, the temperature tends to decrease.", isCorrect: false },
-      { text: "There is no association between the elevation and the temperature.", isCorrect: false }
+      { text: "As the elevation increases, the temperature tends to increase.", isCorrect: false, reason: 'this describes a positive association, but the points trend downward from left to right, so higher elevations tend to have lower temperatures' },
+      { text: "As the elevation increases, the temperature tends to decrease.", isCorrect: true, reason: '' },
+      { text: "As the elevation decreases, the temperature tends to decrease.", isCorrect: false, reason: 'this also describes a positive association, but the points farther left, at lower elevations, are higher on the graph, so lower elevations tend to have higher temperatures' },
+      { text: "There is no association between the elevation and the temperature.", isCorrect: false, reason: 'the points follow a clear downward trend, so the two variables are associated' }
     ];
 
-    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
+    const relettered = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
+    const options = relettered.map(o => o.text);
 
-    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const correctOption = relettered.find(o => o.isCorrect)!;
+    const incorrectOptions = relettered.filter(o => !o.isCorrect);
 
     return {
-      questionText: "The scatterplot above shows the relationship between elevation and temperature for various locations. Which statement best describes the association between elevation and temperature?",
-      figureCode: svgContent,
-      options: shuffledOptions.map(o => o.text),
+      questionText: "The scatterplot shows the elevation, in thousands of feet, and the temperature, in degrees Fahrenheit, for several locations at the same time. Which statement best describes the association between elevation and temperature?",
+      figureCode: `<div style="width:100%;max-width:460px;margin:0 auto;">${svgContent}</div>`,
+      options,
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The scatterplot shows a downward trend: as values on the horizontal axis (Elevation) move to the right (increase), the values on the vertical axis (Temperature) move down (decrease). This indicates a negative association.`
+      explanation: `Choice ${correctOption.letter} is correct. Moving from left to right on the scatterplot, the elevation increases, and the points tend to move down, so the temperature tends to decrease. This is a negative association: as the elevation increases, the temperature tends to decrease. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
