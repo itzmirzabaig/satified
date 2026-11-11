@@ -1,4 +1,4 @@
-import { getRandomInt, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -20,19 +20,20 @@ export const generator_518 = {
 
   generate: (): QuestionData => {
     // 1. Generate Data
+    // Values are multiples of 10 and all distinct, so the lowest point is
+    // unique and every wrong choice can be described by its own value.
     const years = [1992, 1994, 1996, 1998];
-    
-    // Randomly select which year index will have the max population
     const maxIndex = getRandomInt(0, 3);
-    const maxPop = getRandomInt(460, 500);
-
+    const maxPop = getRandomInt(46, 50) * 10;
+    const used = new Set<number>();
     const dataPoints = years.map((year, i) => {
-      if (i === maxIndex) {
-        return { year, pop: maxPop };
-      }
-      // Ensure other years are distinctly lower
-      return { year, pop: getRandomInt(300, 420) };
+      if (i === maxIndex) return { year, pop: maxPop };
+      let v = 0;
+      do { v = getRandomInt(30, 42) * 10; } while (used.has(v));
+      used.add(v);
+      return { year, pop: v };
     });
+    const minPop = Math.min(...dataPoints.map(d => d.pop));
 
     // 2. SVG Configuration
     const width = 450;
@@ -91,7 +92,7 @@ export const generator_518 = {
         ${xLabels}
         
         <!-- Y-Axis Title -->
-        <text transform="rotate(-90, ${20}, ${height/2})" x="${20}" y="${height/2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Population</text>
+        <text transform="rotate(-90, ${20}, ${height/2})" x="${20}" y="${height/2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Chipmunks</text>
         
         <!-- X-Axis Title -->
         <text x="${margin.left + chartWidth/2}" y="${height - 2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Year</text>
@@ -99,24 +100,38 @@ export const generator_518 = {
     `;
 
     // 4. Options
-    const optionsData = dataPoints.map(d => ({
-      text: d.year.toString(),
-      isCorrect: d.pop === maxPop
-    }));
+    // Before: no wrong choice had a reason, the stem said "line graph above",
+    // and the choices were shuffled out of time order. Choices now stay in
+    // year order and each wrong year gets a reason naming its value and slip.
+    const maxYear = years[maxIndex];
+    const optionsData = dataPoints.map((d, i) => {
+      let reason = '';
+      if (i !== maxIndex) {
+        if (d.pop === minPop) {
+          reason = `${d.year} is the year with the fewest chipmunks, about ${d.pop}, which is the lowest point on the graph rather than the highest`;
+        } else if (i === years.length - 1) {
+          reason = `${d.year} is the most recent year shown, but its estimate of about ${d.pop} chipmunks is less than the estimate of about ${maxPop} in ${maxYear}`;
+        } else {
+          reason = `the estimate for ${d.year} is only about ${d.pop} chipmunks, which is less than the estimate of about ${maxPop} in ${maxYear}`;
+        }
+      }
+      return { text: d.year.toString(), isCorrect: i === maxIndex, reason };
+    });
 
-    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
+    const lettered = optionsData.map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
 
-    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const correctOption = lettered.find(o => o.isCorrect)!;
+    const incorrectOptions = lettered.filter(o => !o.isCorrect);
 
     return {
-      questionText: "The line graph above shows the estimated number of chipmunks in a state park over several years. In which year was the estimated number of chipmunks the greatest?",
-      figureCode: svgContent,
-      options: shuffledOptions.map(o => o.text),
+      questionText: "The line graph shows the estimated number of chipmunks in a state park for several years. In which year was the estimated number of chipmunks the greatest?",
+      figureCode: `<div style="width:100%;max-width:460px;margin:0 auto;">${svgContent}</div>`,
+      options: lettered.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To determine the year with the greatest number of chipmunks, look for the highest point on the graph. The highest point corresponds to the year ${correctOption.text}, where the population is approximately ${maxPop}.`
+      explanation: `Choice ${correctOption.letter} is correct. The greatest estimated number of chipmunks is shown by the highest point on the graph. The highest point is above ${maxYear}, where the estimate is about ${maxPop} chipmunks. Each of the other years has a lower point. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
