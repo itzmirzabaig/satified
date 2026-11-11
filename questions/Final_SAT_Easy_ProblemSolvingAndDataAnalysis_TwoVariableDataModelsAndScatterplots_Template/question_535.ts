@@ -32,7 +32,12 @@ export const generator_535 = {
       getMult5(40, 45),
       getMult5(50, 65)
     ];
-    const targetSeason = 4;
+    // Previously the season asked about was always the 4th, the stem never said
+    // what the scatterplot shows ("the tree" was never introduced), and the
+    // explanation was a numbered list joined with <br /> tags. Now the season is
+    // drawn each time and the stem introduces the tree and the plot.
+    const targetSeason = getRandomInt(1, 5);
+    const ordinal = ['first', 'second', 'third', 'fourth', 'fifth'][targetSeason - 1];
     const correctWeight = weights[targetSeason - 1];
 
     // 2. SVG Layout Configuration
@@ -118,19 +123,11 @@ export const generator_535 = {
     `;
 
     return {
-      questionText: `What was the weight, to the nearest pound, of all nectarines that grew on the tree in the ${targetSeason}th season?`,
+      questionText: `The scatterplot shows the total weight, in pounds, of all the nectarines that grew on a certain tree in each of its first 5 seasons. What was the weight, to the nearest pound, of all nectarines that grew on the tree in the ${ordinal} season?`,
       figureCode: svgContent,
       options: [],
       correctAnswer: correctWeight.toString(),
-      explanation: `The scatterplot shows the weight of nectarines over 5 seasons. 
-      <br />
-      1. Locate "Season ${targetSeason}" on the horizontal x-axis.
-      <br />
-      2. Move vertically up to the data point.
-      <br />
-      3. Look across to the vertical y-axis. The grid lines appear every 5 pounds.
-      <br />
-      The point is located exactly at height ${correctWeight}. Thus, the weight was ${correctWeight} pounds.`
+      explanation: `The correct answer is ${correctWeight}. Find season ${targetSeason} on the horizontal axis and move straight up to the data point for that season. Then move horizontally to the vertical axis, Weight (pounds), where the gridlines are 5 pounds apart. The point lies exactly on the gridline for ${correctWeight}, so the nectarines that grew on the tree in the ${ordinal} season weighed ${correctWeight} pounds.`
     };
 
   }
