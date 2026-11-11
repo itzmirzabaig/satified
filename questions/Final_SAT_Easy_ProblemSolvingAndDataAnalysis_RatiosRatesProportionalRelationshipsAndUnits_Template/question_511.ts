@@ -28,15 +28,23 @@ export const generator_511 = {
     const population = density * area;
     const calculatedDensity = population / area;
 
+    // Before: one choice was area + a random offset ("a random distractor"),
+    // another was population + density, and the explanation was built with
+    // literal "\n" text so it rendered as one italic math line. The stem also
+    // said "131-square-mile" and wrote 2,358 inside math. Each wrong choice
+    // is now a real slip: the area itself, or adding/subtracting the area
+    // instead of dividing by it.
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const fmtMath = (n: number) => fmt(n).replace(/,/g, '{,}');
     const distractorArea = area;
-    const distractorRandom = area + getRandomInt(10, 25);
-    const distractorAdd = population + calculatedDensity;
+    const distractorSub = population - area;
+    const distractorAdd = population + area;
 
     const optionsData = [
-      { text: calculatedDensity.toString(), isCorrect: true, reason: null },
-      { text: distractorArea.toString(), isCorrect: false, reason: "This is just the area, not the density." },
-      { text: distractorRandom.toString(), isCorrect: false, reason: "This is not the correct quotient; it looks like a random distractor or miscalculation." },
-      { text: distractorAdd.toString(), isCorrect: false, reason: "This is close to the total population plus the density, which is an incorrect operation. It could also just be a number near the total population." }
+      { text: calculatedDensity.toString(), isCorrect: true, reason: '' },
+      { text: distractorArea.toString(), isCorrect: false, reason: `${distractorArea} is the area in square miles, not the number of raccoons per square mile` },
+      { text: fmt(distractorSub), isCorrect: false, reason: `${fmt(distractorSub)} results from subtracting the area from the number of raccoons instead of dividing by it` },
+      { text: fmt(distractorAdd), isCorrect: false, reason: `${fmt(distractorAdd)} results from adding the area to the number of raccoons instead of dividing by it` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -45,13 +53,12 @@ export const generator_511 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `To find the population density, you divide the total population by the area.\\n$$\\text{Population Density} = \\frac{\\text{Number of Raccoons}}{\\text{Area in Square Miles}}$$\\n$$\\text{Population Density} = \\frac{${population}}{${area}}$$\\n$$\\text{Population Density} = ${calculatedDensity}$$\\n\\nTherefore, the estimated population density is $${calculatedDensity}$ raccoons per square mile.\\n\\nWhy other options are incorrect:\\nChoice ${incorrectOptions[0].letter}: ${incorrectOptions[0].reason}\\nChoice ${incorrectOptions[1].letter}: ${incorrectOptions[1].reason}\\nChoice ${incorrectOptions[2].letter}: ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctOption.letter} is correct. Population density is the number of raccoons divided by the area in square miles. So the estimated population density is $\\frac{${fmtMath(population)}}{${area}} = ${calculatedDensity}$ raccoons per square mile. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `The number of raccoons in a $${area}$-square-mile area is estimated to be $${population.toLocaleString('en-US')}$. What is the estimated population density, in raccoons per square mile, of this area?`,
+      questionText: `The number of raccoons in an area of ${area} square miles is estimated to be ${fmt(population)}. What is the estimated population density, in raccoons per square mile, of this area?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: calculatedDensity.toString(),
