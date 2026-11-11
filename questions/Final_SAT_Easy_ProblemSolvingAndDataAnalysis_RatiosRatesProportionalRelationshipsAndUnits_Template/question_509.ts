@@ -28,8 +28,11 @@ export const generator_509 = {
     const inches = yards * inchesPerYard;
     const correctYards = inches / inchesPerYard;
 
-    const questionText = `How many yards are equivalent to $${inches.toLocaleString('en-US')}$ inches? (1 yard = ${inchesPerYard} inches)`;
-    const explanation = `The correct answer is ${correctYards}. Since $1$ yard equals $${inchesPerYard}$ inches, $${inches.toLocaleString('en-US')}$ inches is equivalent to $${inches.toLocaleString('en-US')} \\div ${inchesPerYard} = ${correctYards}$ yards.`;
+    // Inside $...$ a plain comma (1,116) renders with a space after it, so
+    // the thousands separator is written {,} in math.
+    const inchesMath = inches.toLocaleString('en-US').replace(/,/g, '{,}');
+    const questionText = `How many yards are equivalent to $${inchesMath}$ inches? (1 yard = ${inchesPerYard} inches)`;
+    const explanation = `The correct answer is ${correctYards}. Since $1$ yard equals $${inchesPerYard}$ inches, $${inchesMath}$ inches is equivalent to $${inchesMath} \\div ${inchesPerYard} = ${correctYards}$ yards.`;
 
     return {
       questionText: questionText,
