@@ -35,7 +35,10 @@ export const generator_517 = {
 
     // Positive slope (tenths, 0.6..1.5) and positive integer intercept (1..5).
     // Both render as clean strings (e.g. "0.7", "3") with no float artifacts.
-    const m = getRandomInt(6, 15) / 10;
+    // Skip 1.0, which rendered as "y=1x+..." in every choice.
+    let mTenths = getRandomInt(6, 15);
+    while (mTenths === 10) mTenths = getRandomInt(6, 15);
+    const m = mTenths / 10;
     const b = getRandomInt(1, 5);
     const mStr = String(m);       // e.g. "0.9"
     const bStr = String(b);       // e.g. "2"
@@ -58,7 +61,11 @@ export const generator_517 = {
     const xMax = 10;
     const lineYAtXMax = m * xMax + b;          // top of the fitted line
     const rawYMax = Math.max(lineYAtXMax, ...dataPoints.map(p => p.y));
-    const yMax = Math.ceil((rawYMax + 1) / 2) * 2; // round up to even for tidy grid
+    // Round up to a multiple of 5 so yStep = yMax / 5 is a whole number. It
+    // used to round to an even number (e.g. 14), giving a step of 2.8 whose
+    // gridlines were labeled with rounded values (3, 6, 8, 11), so the labels
+    // did not match the scale.
+    const yMax = Math.ceil((rawYMax + 1) / 5) * 5;
 
     const getX = (x: number) => margin.left + (x / xMax) * chartWidth;
     const getY = (y: number) => margin.top + chartHeight - (y / yMax) * chartHeight;
@@ -86,7 +93,7 @@ export const generator_517 = {
       .map(p => `<circle cx="${getX(p.x).toFixed(1)}" cy="${getY(p.y).toFixed(1)}" r="4" fill="#3b82f6" stroke="white" stroke-width="1.5" />`)
       .join('');
 
-    const figureCode = `
+    const figureCode = `<div style="width:100%;max-width:460px;margin:0 auto;">
       <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; font-family: sans-serif; user-select: none;">
         ${gridLines.join('')}
         <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${height - margin.bottom}" stroke="currentColor" stroke-width="2"/>
@@ -96,15 +103,17 @@ export const generator_517 = {
         ${xLabels.join('')}
         <text x="${margin.left + chartWidth / 2}" y="${height - 4}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">x</text>
         <text transform="rotate(-90, 12, ${height / 2})" x="12" y="${height / 2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">y</text>
-      </svg>
+      </svg></div>
     `;
 
     // ---- Options (correct + three sign-variant distractors) -------------------
+    // Each wrong choice now carries its own reason (the explanation used to
+    // lump them together in one sentence).
     const optionsData = [
-      { text: `$y=${mStr}x+${bStr}$`, isCorrect: true },   // positive slope, positive intercept
-      { text: `$y=-${mStr}x+${bStr}$`, isCorrect: false },  // negative slope
-      { text: `$y=-${mStr}x-${bStr}$`, isCorrect: false },  // negative slope, negative intercept
-      { text: `$y=${mStr}x-${bStr}$`, isCorrect: false }    // positive slope, negative intercept
+      { text: `$y=${mStr}x+${bStr}$`, isCorrect: true, reason: '' },   // positive slope, positive intercept
+      { text: `$y=-${mStr}x+${bStr}$`, isCorrect: false, reason: `$y=-${mStr}x+${bStr}$ has a negative slope, so its line would fall from left to right, but the line shown rises` },
+      { text: `$y=-${mStr}x-${bStr}$`, isCorrect: false, reason: `$y=-${mStr}x-${bStr}$ has a negative slope and a negative y-intercept, but the line shown rises and crosses the y-axis above the origin` },
+      { text: `$y=${mStr}x-${bStr}$`, isCorrect: false, reason: `$y=${mStr}x-${bStr}$ has a negative y-intercept, so its line would cross the y-axis below the origin, but the line shown crosses at $${bStr}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -120,7 +129,7 @@ export const generator_517 = {
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The line of best fit rises from left to right, so its slope is positive (about ${mStr}), and it crosses the y-axis above the origin, so the y-intercept is positive (${bStr}). Only $y=${mStr}x+${bStr}$ has both a positive slope and a positive y-intercept. The other choices are incorrect because they use a negative slope (a line that falls from left to right) or a negative y-intercept (crossing the y-axis below the origin), neither of which matches the graph.`
+      explanation: `Choice ${correctOption.letter} is correct. The line of best fit rises from left to right, so its slope is positive (about ${mStr}), and it crosses the y-axis above the origin, so the y-intercept is positive (${bStr}). Only $y=${mStr}x+${bStr}$ has both a positive slope and a positive y-intercept. ${incorrect.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
 
   }
