@@ -86,59 +86,45 @@ export const generator_1017 = {
     const yDen = yExp.den;
 
     // STEP 3: Build the correct answer as a fraction of powers.
-    // Since the x-exponent is negative it moves to the denominator with a
-    // positive exponent; the y-exponent is positive so y stays on top.
     const correctAnswer = `$\\frac{${renderPow('y', yNum, yDen)}}{${renderPow('x', xMagNum, xMagDen)}}$`;
 
-    // STEP 4: Build distractors from well-defined WRONG error patterns.
-    // Each is stored as {yN,yD,xN,xD} (all exponents positive, y over x) so
-    // we can guard against collisions numerically before rendering.
+    // STEP 4: Distractors.
+    // Before: every wrong choice was explained with a generic line ("an
+    // arithmetic error when combining the exponents"), and some came from
+    // made up patterns (x exponent A + C as an integer, a +1 "bump"
+    // fallback). Now each candidate is a named slip with its own reason, and
+    // the pool always holds at least three distinct values: the y slips and
+    // the x slips change different parts of the answer, so they never match.
     type Frac = { n: number; d: number };
+    type Key = { y: Frac; x: Frac; reason: string };
     const cNorm = (num: number, den: number): Frac => {
       const r = reduceFrac(Math.abs(num), Math.abs(den));
       return { n: r.num, d: r.den };
     };
-    const correctKey = {
-      y: cNorm(yNum, yDen),
-      x: cNorm(xMagNum, xMagDen)
-    };
     const keyStr = (k: { y: Frac; x: Frac }) => `${k.y.n}/${k.y.d}|${k.x.n}/${k.x.d}`;
+    const texFrac = (f: Frac) => f.d === 1 ? `${f.n}` : `\\frac{${f.n}}{${f.d}}`;
 
-    // Distractor A: sign error on x in the denominator — treats x^{-A} as x^{+A}
-    //   so x-exponent = A - C/D = (A*D - C)/D. If that is positive, x stays in
-    //   the denominator with that exponent; if negative/zero we fall through to
-    //   another pattern below via the collision guard.
-    const dxA = reduceFrac(A * D - C, D);
-    // Distractor B: forgets to add the +G from the negative y exponent —
-    //   uses y-exponent = E/F only, and correct x.
-    const dyB = reduceFrac(E, F);
-    // Distractor C: adds instead of subtracts the denominator x-exponent —
-    //   x-exponent magnitude = A + ... but drops the /D denominator wrongly to
-    //   A + C (integer). Combined with correct y.
-    // Distractor D (fallback pool): swaps numerator/denominator sizes.
-    const candidateKeys: Array<{ y: Frac; x: Frac }> = [];
-
-    // Pattern 1: x sign error (only if it yields a positive x-exponent).
-    if (dxA.num > 0) {
-      candidateKeys.push({ y: cNorm(yNum, yDen), x: cNorm(dxA.num, dxA.den) });
+    const candidates: Key[] = [];
+    // Slip 1: adding the x exponents instead of subtracting, -A + C/D. Only
+    // usable when that sum is negative, so x stays in the denominator.
+    if (A * D - C > 0) {
+      const x1 = cNorm(A * D - C, D);
+      candidates.push({ y: cNorm(yNum, yDen), x: x1, reason: `this expression results from adding the exponents of $x$ instead of subtracting them, $-${A} + \\frac{${C}}{${D}} = -${texFrac(x1)}$` });
     }
-    // Pattern 2: dropped the +G on y.
-    candidateKeys.push({ y: cNorm(dyB.num, dyB.den), x: cNorm(xMagNum, xMagDen) });
-    // Pattern 3: x-exponent treated as integer A + C.
-    candidateKeys.push({ y: cNorm(yNum, yDen), x: cNorm(A + C, 1) });
-    // Pattern 4: y dropped-G AND x integer error (compound).
-    candidateKeys.push({ y: cNorm(dyB.num, dyB.den), x: cNorm(A + C, 1) });
-    // Pattern 5: x magnitude uses den D only on the fractional part but adds
-    //   A as if same denominator: (A + C)/D.
-    candidateKeys.push({ y: cNorm(yNum, yDen), x: cNorm(A + C, D) });
-    // Pattern 6: y-exponent uses E/F + G but reduced against wrong denom -> E+G over F wrong: (E+G)/F
-    candidateKeys.push({ y: cNorm(E + G, F), x: cNorm(xMagNum, xMagDen) });
+    // Slip 2: writing A + C/D as (A + C)/D, adding A to the numerator only.
+    const x2 = cNorm(A + C, D);
+    candidates.push({ y: cNorm(yNum, yDen), x: x2, reason: `this expression results from writing $${A} + \\frac{${C}}{${D}}$ as $\\frac{${A} + ${C}}{${D}}$, so the exponent of $x$ becomes $-${texFrac(x2)}$ instead of $-${texFrac(cNorm(xMagNum, xMagDen))}$` });
+    // Slip 3: ignoring the factor y^{-G} in the denominator.
+    const y3 = cNorm(E, F);
+    candidates.push({ y: y3, x: cNorm(xMagNum, xMagDen), reason: `this expression ignores the factor $y^{-${G}}$ in the denominator and keeps $y^{\\frac{${E}}{${F}}}$ unchanged` });
+    // Slip 4: writing E/F + G as (E + G)/F, adding G to the numerator only.
+    const y4 = cNorm(E + G, F);
+    candidates.push({ y: y4, x: cNorm(xMagNum, xMagDen), reason: `this expression results from writing $\\frac{${E}}{${F}} + ${G}$ as $\\frac{${E} + ${G}}{${F}}$, so the exponent of $y$ becomes $${texFrac(y4)}$ instead of $${texFrac(cNorm(yNum, yDen))}$` });
 
-    // Select three distinct distractors that do not collide with the correct
-    // answer or with each other (bounded, deterministic order + shuffle).
+    const correctKey = { y: cNorm(yNum, yDen), x: cNorm(xMagNum, xMagDen) };
     const seen = new Set<string>([keyStr(correctKey)]);
-    const chosen: Array<{ y: Frac; x: Frac }> = [];
-    for (const k of shuffle(candidateKeys)) {
+    const chosen: Key[] = [];
+    for (const k of shuffle(candidates)) {
       const s = keyStr(k);
       if (!seen.has(s)) {
         seen.add(s);
@@ -146,24 +132,13 @@ export const generator_1017 = {
         if (chosen.length === 3) break;
       }
     }
-    // Safety net: if we somehow have < 3 distinct distractors, synthesize
-    // guaranteed-distinct ones by bumping the x-denominator exponent.
-    let bump = 1;
-    while (chosen.length < 3 && bump < 50) {
-      const k = { y: cNorm(yNum, yDen), x: cNorm(xMagNum + bump, xMagDen) };
-      const s = keyStr(k);
-      if (!seen.has(s)) { seen.add(s); chosen.push(k); }
-      bump++;
-    }
 
     const renderKey = (k: { y: Frac; x: Frac }) =>
       `$\\frac{${renderPow('y', k.y.n, k.y.d)}}{${renderPow('x', k.x.n, k.x.d)}}$`;
 
     const optionsData = [
-      { text: correctAnswer, isCorrect: true },
-      { text: renderKey(chosen[0]), isCorrect: false, reason: "results from an arithmetic error when combining the exponents" },
-      { text: renderKey(chosen[1]), isCorrect: false, reason: "results from mishandling the negative exponents in the quotient" },
-      { text: renderKey(chosen[2]), isCorrect: false, reason: "results from an error in finding a common denominator for the exponents" }
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      ...chosen.map(k => ({ text: renderKey(k), isCorrect: false, reason: k.reason }))
     ];
 
     // STEP 5: Shuffle
@@ -173,27 +148,18 @@ export const generator_1017 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // STEP 6: Question text
     const questionText = `The expression $\\frac{x^{-${A}}y^{\\frac{${E}}{${F}}}}{x^{\\frac{${C}}{${D}}}y^{-${G}}}$, where $x > 1$ and $y > 1$, is equivalent to which of the following?`;
 
-    // STEP 7: Explanation (every number computed from the live draw).
-    const xCombinedNum = -A * D - C;      // over D, before reduction
-    const yCombinedNumRaw = E + G * F;    // over F, before reduction
+    // STEP 7: Explanation (one paragraph, every number from the live draw).
+    // gcd(C, D) = 1 and gcd(E, F) = 1, so both combined fractions are
+    // already in lowest terms with denominators D and F.
+    const xLine = renderNegPow('x', xMagNum, xMagDen);
+    const yLine = renderPow('y', yNum, yDen);
 
-    const explanation = `Choice ${correctLetter} is correct. Apply the quotient rule $\\frac{a^{m}}{a^{n}} = a^{m-n}$ to the $x$ factors and the $y$ factors separately.
-
-For $x$: $\\frac{x^{-${A}}}{x^{\\frac{${C}}{${D}}}} = x^{-${A} - \\frac{${C}}{${D}}} = x^{\\frac{${xCombinedNum}}{${D}}} = ${renderNegPow('x', xMagNum, xMagDen)}$
-
-For $y$: $\\frac{y^{\\frac{${E}}{${F}}}}{y^{-${G}}} = y^{\\frac{${E}}{${F}} + ${G}} = y^{\\frac{${yCombinedNumRaw}}{${F}}} = ${renderPow('y', yNum, yDen)}$
-
-Because the exponent on $x$ is negative, the $x$ factor moves to the denominator with a positive exponent, giving $\\frac{${renderPow('y', yNum, yDen)}}{${renderPow('x', xMagNum, xMagDen)}}$.
-
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Apply the quotient rule $\\frac{a^{m}}{a^{n}} = a^{m-n}$ to the $x$ factors and the $y$ factors separately. For $x$: $\\frac{x^{-${A}}}{x^{\\frac{${C}}{${D}}}} = x^{-${A} - \\frac{${C}}{${D}}} = x^{-\\frac{${A * D}}{${D}} - \\frac{${C}}{${D}}} = ${xLine}$. For $y$: $\\frac{y^{\\frac{${E}}{${F}}}}{y^{-${G}}} = y^{\\frac{${E}}{${F}} + ${G}} = y^{\\frac{${E}}{${F}} + \\frac{${G * F}}{${F}}} = ${yLine}$. Because the exponent on $x$ is negative, the $x$ factor moves to the denominator with a positive exponent, giving $${correctAnswer.slice(1, -1)}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: questionText,
