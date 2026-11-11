@@ -29,7 +29,10 @@ export const generator_514 = {
 
     const questionText = `A mechanical device in a workshop produces items at a constant rate of ${ratePerHour} items per hour. At this rate, how many items will the mechanical device produce in ${hours} hours?`;
 
-    const explanation = `The correct answer is ${totalItems}. It's given that a mechanical device produces items at a constant rate of ${ratePerHour} items per hour. This rate can be written as \\( \\frac{${ratePerHour} \\text { items }}{1 \\text { hour }} \\). Let \\( x \\) represent the number of items the mechanical device will produce in ${hours} hours at the given rate. It follows that \\( \\frac{${ratePerHour} \\text { items }}{1 \\text { hour }}=\\frac{x \\text { items }}{${hours} \\text { hours }} \\), which can be written as \\( \\frac{${ratePerHour}}{1}=\\frac{x}{${hours}} \\), or \\( ${ratePerHour}=\\frac{x}{${hours}} \\). Multiplying each side of this equation by ${hours} yields \\( ${totalItems}=x \\). Therefore, at the given rate, the mechanical device will produce ${totalItems} items in ${hours} hours.\\n\\nAlternate approach: It's given that a mechanical device produces items at a constant rate of ${ratePerHour} items per hour. At this rate, the mechanical device will produce (${ratePerHour} items/1 hour)(${hours} hours), or ${totalItems} items in ${hours} hours.`;
+    // Before: the explanation contained literal "\n\n" text before an
+    // "Alternate approach" paragraph that wrote the rate as plain text
+    // "(60 items/1 hour)(3 hours)". Now plain sentences with math in $...$.
+    const explanation = `The correct answer is ${totalItems}. The device produces items at a constant rate of ${ratePerHour} items per hour. Let $x$ represent the number of items the device will produce in ${hours} hours. Then $\\frac{${ratePerHour} \\text{ items}}{1 \\text{ hour}} = \\frac{x \\text{ items}}{${hours} \\text{ hours}}$, which can be written as $${ratePerHour} = \\frac{x}{${hours}}$. Multiplying each side of this equation by $${hours}$ yields $x = ${ratePerHour} \\cdot ${hours} = ${totalItems}$. Therefore, at the given rate, the device will produce ${totalItems} items in ${hours} hours.`;
 
     return {
       questionText: questionText,
