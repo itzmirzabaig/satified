@@ -1,4 +1,4 @@
-import { getRandomInt, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -23,15 +23,19 @@ export const generator_521 = {
     const baseYear = getRandomInt(2012, 2015);
     const years = [baseYear, baseYear + 1, baseYear + 2, baseYear + 3];
     
-    // We need one minimum value (2-4%) and others higher (6-9%)
+    // One minimum value (2 to 4 percent) and three distinct higher values,
+    // so the highest point is unique and each wrong choice has its own value.
     const minVal = getRandomInt(2, 4);
-    const minIndex = getRandomInt(0, 3); // Randomly decide which year is the minimum
-
+    const minIndex = getRandomInt(0, 3);
+    const used = new Set<number>();
     const dataPoints = years.map((year, i) => {
       if (i === minIndex) return { year, val: minVal };
-      // Generate a higher value for other years
-      return { year, val: getRandomInt(6, 9) };
+      let v = 0;
+      do { v = getRandomInt(5, 9); } while (used.has(v));
+      used.add(v);
+      return { year, val: v };
     });
+    const maxVal = Math.max(...dataPoints.map(d => d.val));
 
     const correctYear = dataPoints[minIndex].year;
 
@@ -50,13 +54,14 @@ export const generator_521 = {
 
     // 3. Generate SVG Elements
 
-    // Grid Lines & Y-Axis Labels (0, 2, 4, 6, 8, 10)
+    // Grid lines every 1 percent (labels every 2) so odd values such as 5%
+    // can be read exactly from the graph.
     const gridLines = [];
-    for (let v = 0; v <= yMax; v += 2) {
+    for (let v = 0; v <= yMax; v += 1) {
       const y = getY(v);
       gridLines.push(`
-        <line x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" />
-        <text x="${margin.left - 10}" y="${y + 4}" text-anchor="end" font-size="12" fill="currentColor">${v}%</text>
+        <line x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" stroke="currentColor" stroke-opacity="${v % 2 === 0 ? 0.15 : 0.07}" stroke-width="1" />
+        ${v % 2 === 0 ? `<text x="${margin.left - 10}" y="${y + 4}" text-anchor="end" font-size="12" fill="currentColor">${v}%</text>` : ''}
       `);
     }
 
@@ -92,7 +97,7 @@ export const generator_521 = {
         ${xLabels}
         
         <!-- Y Title -->
-        <text transform="rotate(-90, ${15}, ${height/2})" x="${15}" y="${height/2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Percent</text>
+        <text transform="rotate(-90, ${15}, ${height/2})" x="${15}" y="${height/2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Percent of cars</text>
         
         <!-- X Title -->
         <text x="${margin.left + chartWidth/2}" y="${height - 2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Model Year</text>
@@ -100,24 +105,35 @@ export const generator_521 = {
     `;
 
     // 4. Options
-    const optionsData = dataPoints.map(d => ({
-      text: d.year.toString(),
-      isCorrect: d.year === correctYear
-    }));
+    // Before: no wrong choice had a reason, the stem said "line graph above",
+    // and the choices were shuffled out of year order. Choices now stay in
+    // year order and each wrong year gets a reason naming its value and slip.
+    const optionsData = dataPoints.map((d, i) => {
+      let reason = '';
+      if (i !== minIndex) {
+        if (d.val === maxVal) {
+          reason = `${d.year} has the greatest percent, ${d.val}%, which is the highest point on the graph rather than the lowest`;
+        } else {
+          reason = `the percent for model year ${d.year} is ${d.val}%, which is greater than the ${minVal}% for ${correctYear}`;
+        }
+      }
+      return { text: d.year.toString(), isCorrect: i === minIndex, reason };
+    });
 
-    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
+    const lettered = optionsData.map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
 
-    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const correctOption = lettered.find(o => o.isCorrect)!;
+    const incorrectOptions = lettered.filter(o => !o.isCorrect);
 
     return {
-      questionText: "The line graph above shows the percent of cars for sale at a used car lot for various model years. For what model year is the percent of cars for sale the smallest?",
-      figureCode: svgContent,
-      options: shuffledOptions.map(o => o.text),
+      questionText: "The line graph shows, for several model years, the percent of the cars for sale at a used car lot that are of that model year. For which model year is the percent of cars for sale the smallest?",
+      figureCode: `<div style="width:100%;max-width:460px;margin:0 auto;">${svgContent}</div>`,
+      options: lettered.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To determine the model year with the smallest percent of cars for sale, identify the lowest point on the line graph. The lowest point corresponds to the model year ${correctYear}, which has a value of ${minVal}%.`
+      explanation: `Choice ${correctOption.letter} is correct. The smallest percent is shown by the lowest point on the graph. The lowest point is above model year ${correctYear}, where the percent is ${minVal}%. Each of the other model years has a higher point. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
