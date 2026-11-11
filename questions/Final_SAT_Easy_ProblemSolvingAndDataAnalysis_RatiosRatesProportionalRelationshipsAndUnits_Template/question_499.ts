@@ -28,8 +28,11 @@ export const generator_499 = {
     const totalCost = unitCost * quantity;
     const poundsPurchased = totalCost / unitCost;
 
-    const questionText = `A customer spent ${totalCost} to purchase oranges at ${unitCost} per pound. How many pounds of oranges did the customer purchase?`;
-    const explanation = `The correct answer is ${poundsPurchased}. It's given that the customer spent $${totalCost} to purchase oranges at $${unitCost} per pound. Therefore, the number of pounds of oranges the customer purchased is $${totalCost}\\left(\\frac{1 \\text{ pound}}{${unitCost}}\\right)$, or ${poundsPurchased} pounds.`;
+    // Before: the stem showed the money amounts with no dollar signs ("spent 45
+    // ... at 5 per pound"), and the explanation's bare "$45 ... $5" opened a
+    // math span that swallowed the sentence. Money is now written \\$.
+    const questionText = `A customer spent \\$${totalCost} to purchase oranges at \\$${unitCost} per pound. How many pounds of oranges did the customer purchase?`;
+    const explanation = `The correct answer is ${poundsPurchased}. The customer spent \\$${totalCost} on oranges that cost \\$${unitCost} per pound. Dividing the total cost by the cost per pound gives the number of pounds: $${totalCost} \\div ${unitCost} = ${poundsPurchased}$. So the customer purchased ${poundsPurchased} pounds of oranges.`;
 
     return {
       questionText: questionText,
