@@ -41,7 +41,9 @@ export const generator_515 = {
     // 2. SVG Configuration
     const width = 450;
     const height = 250; // Compact height to avoid scrolling
-    const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+    // Left margin widened from 50 so the rotated "Probability" title no
+    // longer overlaps the percent labels.
+    const margin = { top: 20, right: 30, bottom: 40, left: 66 };
     const graphWidth = width - margin.left - margin.right;
     const graphHeight = height - margin.top - margin.bottom;
 
@@ -53,9 +55,10 @@ export const generator_515 = {
 
     // 3. Generate SVG Elements
     
-    // Grid Lines (Y-axis) - every 20%
+    // Grid Lines (Y-axis) - every 10%. They used to be every 20%, so a
+    // target of 30% or 50% fell between grid lines and had to be guessed.
     const gridLines = [];
-    for (let p = 0; p <= 100; p += 20) {
+    for (let p = 0; p <= 100; p += 10) {
       const y = getY(p);
       gridLines.push(`
         <line x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" />
@@ -79,7 +82,7 @@ export const generator_515 = {
       return `<text x="${x}" y="${height - 10}" text-anchor="middle" font-size="12" fill="currentColor">${d.day.substring(0, 3)}</text>`;
     }).join('');
 
-    const svgContent = `
+    const svgContent = `<div style="width:100%;max-width:460px;margin:0 auto;">
       <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; font-family: sans-serif; user-select: none;">
         <!-- Grid -->
         ${gridLines.join('')}
@@ -99,13 +102,14 @@ export const generator_515 = {
         
         <!-- Axis Titles -->
         <text transform="rotate(-90, ${15}, ${height/2})" x="${15}" y="${height/2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Probability</text>
-      </svg>
+      </svg></div>
     `;
 
-    // 4. Options
+    // 4. Options. Each wrong day now carries a reason (there were none).
     const optionsData = dataPoints.map(d => ({
       text: d.day,
-      isCorrect: d.prob === targetProb
+      isCorrect: d.prob === targetProb,
+      reason: d.prob === targetProb ? '' : `the graph shows that the probability of snow on ${d.day} is ${d.prob}%, not ${targetProb}%`
     }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -114,13 +118,14 @@ export const generator_515 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: `The line graph shows the probability of snow for four days. According to the graph, for which day is the probability of snow ${targetProb}%?`,
       figureCode: svgContent,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To find the day with a ${targetProb}% probability of snow, locate ${targetProb}% on the vertical axis (Probability). Follow the grid line across to the data point, then look down to the horizontal axis to identify the day, which is ${correctOption.text}.`
+      explanation: `Choice ${correctOption.letter} is correct. To find the day with a ${targetProb}% probability of snow, locate ${targetProb}% on the vertical axis (Probability). Follow the grid line across to the data point, then look down to the horizontal axis to identify the day, which is ${correctOption.text}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
