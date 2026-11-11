@@ -1,4 +1,4 @@
-import { getRandomInt, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -25,15 +25,19 @@ export const generator_526 = {
     const baseYear = getRandomInt(2002, 2006);
     const years = [baseYear, baseYear + 1, baseYear + 2, baseYear + 3];
 
-    // Determine which index will be the minimum
+    // Values are multiples of 10 and all distinct, so the lowest and highest
+    // points are unique and each wrong choice can be described by its value.
     const minIndex = getRandomInt(0, 3);
-    const minEnrollment = getRandomInt(120, 160);
-
+    const minEnrollment = getRandomInt(12, 16) * 10;
+    const used = new Set<number>();
     const dataPoints = years.map((year, i) => {
       if (i === minIndex) return { year, val: minEnrollment };
-      // Generate higher values for other years
-      return { year, val: getRandomInt(200, 280) };
+      let v = 0;
+      do { v = getRandomInt(20, 28) * 10; } while (used.has(v));
+      used.add(v);
+      return { year, val: v };
     });
+    const maxEnrollment = Math.max(...dataPoints.map(d => d.val));
 
     const correctYear = dataPoints[minIndex].year;
 
@@ -94,7 +98,7 @@ export const generator_526 = {
         ${xLabels}
         
         <!-- Y-Axis Title -->
-        <text transform="rotate(-90, ${20}, ${height/2})" x="${20}" y="${height/2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Graduates Enrolled</text>
+        <text transform="rotate(-90, ${20}, ${height/2})" x="${20}" y="${height/2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Graduates enrolled</text>
         
         <!-- X-Axis Title -->
         <text x="${margin.left + chartWidth/2}" y="${height - 2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">Class Year</text>
@@ -102,24 +106,33 @@ export const generator_526 = {
     `;
 
     // 4. Options
-    const optionsData = dataPoints.map(d => ({
-      text: d.year.toString(),
-      isCorrect: d.year === correctYear
-    }));
+    // Before: no wrong choice had a reason, the stem said "line graph above",
+    // and the choices were shuffled out of year order. Choices now stay in
+    // year order and each wrong year gets a reason naming its value and slip.
+    const optionsData = dataPoints.map((d, i) => {
+      let reason = '';
+      if (i !== minIndex) {
+        reason = d.val === maxEnrollment
+          ? `${d.year} is the class year with the most graduates who enrolled, about ${d.val}, which is the highest point on the graph rather than the lowest`
+          : `the class of ${d.year} had about ${d.val} graduates enroll, which is more than the ${minEnrollment} for the class of ${correctYear}`;
+      }
+      return { text: d.year.toString(), isCorrect: i === minIndex, reason };
+    });
 
-    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
+    const lettered = optionsData.map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
 
-    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const correctOption = lettered.find(o => o.isCorrect)!;
+    const incorrectOptions = lettered.filter(o => !o.isCorrect);
 
     return {
-      questionText: "The line graph above shows the number of graduates from a certain high school who enrolled in college within 24 months of graduation. Which class year had the fewest graduates who enrolled?",
-      figureCode: svgContent,
-      options: shuffledOptions.map(o => o.text),
+      questionText: "The line graph shows the number of graduates from a certain high school who enrolled in college within 24 months of graduation, for four class years. Which class year had the fewest graduates who enrolled in college within 24 months?",
+      figureCode: `<div style="width:100%;max-width:460px;margin:0 auto;">${svgContent}</div>`,
+      options: lettered.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To find the class with the fewest graduates enrolled, identify the lowest point on the line graph. The lowest point corresponds to the year ${correctOption.text}, where approximately ${minEnrollment} graduates enrolled.`
+      explanation: `Choice ${correctOption.letter} is correct. The smallest number of graduates enrolled is shown by the lowest point on the graph. The lowest point is above ${correctYear}, where about ${minEnrollment} graduates enrolled. Each of the other class years has a higher point. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
