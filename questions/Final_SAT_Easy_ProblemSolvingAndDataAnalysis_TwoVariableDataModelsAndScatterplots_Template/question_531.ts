@@ -60,8 +60,9 @@ export const generator_531 = {
     const chartW = width - margin.left - margin.right;
     const chartH = height - margin.top - margin.bottom;
 
+    // yLo was -4, but y = -2x + 5 reaches -5 at x = 5, so the line ran out of the plot.
     const xLo = 0, xHi = 5;
-    const yLo = -4, yHi = 9;
+    const yLo = -6, yHi = 9;
     const sx = (x: number) => margin.left + ((x - xLo) / (xHi - xLo)) * chartW;
     const sy = (y: number) => margin.top + chartH - ((y - yLo) / (yHi - yLo)) * chartH;
 
@@ -92,7 +93,9 @@ export const generator_531 = {
       `<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="4" fill="#3b82f6" stroke="white" stroke-width="1.5" />`
     ).join('');
 
-    const svgContent = `
+    // Wrapped in a div: a bare <svg> figure is sent to the graph renderer by the
+    // study page and showed up as an empty box.
+    const svgContent = `<div style="width:100%;max-width:460px;margin:0 auto;">
       <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; font-family: sans-serif; user-select: none;">
         ${gridLines.join('')}
         <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${margin.top + chartH}" stroke="currentColor" stroke-width="2"/>
@@ -102,19 +105,21 @@ export const generator_531 = {
         ${circles}
         <text x="${margin.left + chartW / 2}" y="${height - 6}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">x</text>
         <text transform="rotate(-90, 14, ${margin.top + chartH / 2})" x="14" y="${margin.top + chartH / 2}" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">y</text>
-      </svg>
-    `;
+      </svg></div>`;
 
     // --- Options: form y = mx + b ---
-    // kinds: 'correct'   -> negative slope, positive intercept
-    //        'intercept' -> negative slope, negative intercept
-    //        'posSlopeP' -> positive slope (= intercept), +1
-    //        'posSlopeM' -> positive slope (= intercept), -1
+    // Previously two distractors were "y = (intercept)x + 1" and "y = (intercept)x - 1"
+    // with the same reason and an arbitrary constant. Now each wrong choice is
+    // one real slip: intercept sign flipped, slope sign flipped, or slope and
+    // y-intercept swapped.
     const optionsData = [
-      { text: `$y = ${slopeTerm(slope)} + ${intercept}$`, isCorrect: true,  kind: 'correct' },
-      { text: `$y = ${slopeTerm(slope)} - ${intercept}$`, isCorrect: false, kind: 'intercept' },
-      { text: `$y = ${slopeTerm(intercept)} + 1$`,        isCorrect: false, kind: 'posSlopeP' },
-      { text: `$y = ${slopeTerm(intercept)} - 1$`,        isCorrect: false, kind: 'posSlopeM' }
+      { text: `$y = ${slopeTerm(slope)} + ${intercept}$`, isCorrect: true,  reason: '' },
+      { text: `$y = ${slopeTerm(slope)} - ${intercept}$`, isCorrect: false,
+        reason: `$y = ${slopeTerm(slope)} - ${intercept}$ has the correct negative slope but a y-intercept of $${-intercept}$, while the line of best fit crosses the y-axis at a positive value, near $${intercept}$` },
+      { text: `$y = ${slopeTerm(slopeMag)} + ${intercept}$`, isCorrect: false,
+        reason: `$y = ${slopeTerm(slopeMag)} + ${intercept}$ has a positive slope of $${slopeMag}$, but the data decrease as $x$ increases, so the slope must be negative` },
+      { text: `$y = ${slopeTerm(intercept)} - ${slopeMag}$`, isCorrect: false,
+        reason: `$y = ${slopeTerm(intercept)} - ${slopeMag}$ swaps the slope and the y-intercept, giving a positive slope of $${intercept}$ and a y-intercept of $${slope}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -125,21 +130,9 @@ export const generator_531 = {
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correctOption.letter;
 
-    const reason = (kind: string) => {
-      switch (kind) {
-        case 'intercept':
-          return 'has the correct negative slope but crosses the y-axis at a negative value, whereas the data trend crosses at a positive value';
-        case 'posSlopeP':
-        case 'posSlopeM':
-          return 'has a positive slope, but the data show a decreasing (negative) trend';
-        default:
-          return '';
-      }
-    };
-
     const distractorText = shuffledOptions
       .filter(o => !o.isCorrect)
-      .map(o => `Choice ${o.letter} is incorrect because it ${reason(o.kind)}.`)
+      .map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`)
       .join(' ');
 
     return {
@@ -147,7 +140,7 @@ export const generator_531 = {
       figureCode: svgContent,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. The data points fall as $x$ increases, so the line of best fit has a negative slope, and it crosses the y-axis at a positive value near $b = ${intercept}$. Only choice ${correctLetter} has a negative slope, where $m = ${slope}$, together with a positive y-intercept, where $b = ${intercept}$. ${distractorText}`
+      explanation: `Choice ${correctLetter} is correct. The graph of an equation of the form $y = mx + b$ has slope $m$ and crosses the y-axis at $b$. The data points fall as $x$ increases, so the line of best fit has a negative slope, and it crosses the y-axis at a positive value near $b = ${intercept}$. Only choice ${correctLetter} has a negative slope, where $m = ${slope}$, together with a positive y-intercept, where $b = ${intercept}$. ${distractorText}`
     };
 
   }
