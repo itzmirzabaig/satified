@@ -36,8 +36,11 @@ export const generator_536 = {
     // Positive y-intercept in [1.0, 4.0], positive slope in [1.0, 3.0], one decimal.
     // Using integer tenths keeps both values clean (no float artifacts) and always
     // strictly positive, so the four sign-combination options can never collide.
-    const bTenths = getRandomInt(10, 40); // 1.0 .. 4.0
-    const mTenths = getRandomInt(10, 30); // 1.0 .. 3.0
+    // Whole numbers are skipped so no choice shows "1.0x" or "2.0".
+    let bTenths = getRandomInt(10, 40); // 1.0 .. 4.0
+    while (bTenths % 10 === 0) bTenths = getRandomInt(10, 40);
+    let mTenths = getRandomInt(10, 30); // 1.0 .. 3.0
+    while (mTenths % 10 === 0) mTenths = getRandomInt(10, 30);
     const b = bTenths / 10;
     const m = mTenths / 10;
     const bStr = b.toFixed(1);
@@ -116,11 +119,15 @@ export const generator_536 = {
 
     // ── Options ──────────────────────────────────────────────────────────────
     // b > 0 and m > 0 always, so these four sign combinations are all distinct.
+    // Previously the three wrong choices shared one vague sentence ("use the
+    // wrong sign"), and x and y were written outside math. Each choice now has
+    // its own reason.
+    const eq = (bNeg: boolean, mNeg: boolean) => `$y=${bNeg ? '-' : ''}${bStr}${mNeg ? '-' : '+'}${mStr}x$`;
     const optionsData = [
-      { text: `\\(y=${bStr}+${mStr}x\\)`, isCorrect: true },
-      { text: `\\(y=${bStr}-${mStr}x\\)`, isCorrect: false },
-      { text: `\\(y=-${bStr}+${mStr}x\\)`, isCorrect: false },
-      { text: `\\(y=-${bStr}-${mStr}x\\)`, isCorrect: false }
+      { text: eq(false, false), isCorrect: true, reason: '' },
+      { text: eq(false, true), isCorrect: false, reason: `${eq(false, true)} has a slope of $-${mStr}$, so its graph falls from left to right, but the line of best fit rises` },
+      { text: eq(true, false), isCorrect: false, reason: `${eq(true, false)} has a y-intercept of $-${bStr}$, so its graph crosses the y-axis below the origin, but the line of best fit crosses above it` },
+      { text: eq(true, true), isCorrect: false, reason: `${eq(true, true)} has a negative slope and a negative y-intercept, but the line of best fit rises from left to right and crosses the y-axis above the origin` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -129,13 +136,14 @@ export const generator_536 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: "Which of the following equations best represents the line of best fit shown in the scatterplot?",
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. As x increases, y increases, so the line has a positive slope of ${mStr}. The line crosses the y-axis above the origin, so the y-intercept is positive at ${bStr}. This gives the equation \\(y=${bStr}+${mStr}x\\). The other choices use the wrong sign for the slope or the y-intercept.`
+      explanation: `Choice ${correctOption.letter} is correct. The graph of an equation of the form $y=a+bx$, where $a$ and $b$ are constants, crosses the y-axis at $a$ and has slope $b$. The line of best fit rises from left to right, so its slope is positive, and it crosses the y-axis above the origin, so its y-intercept is positive. Only ${eq(false, false)} has a positive y-intercept, $${bStr}$, and a positive slope, $${mStr}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
 
   }
