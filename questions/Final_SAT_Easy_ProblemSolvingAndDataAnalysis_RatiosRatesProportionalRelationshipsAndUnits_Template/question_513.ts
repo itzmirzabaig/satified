@@ -24,52 +24,31 @@ export const generator_513 = {
   },
 
   generate: (): QuestionData => {
-    const ratePerMinute = getRandomInt(3, 6);
-    const initialTime = getRandomInt(2, 4);
+    // Before: two wrong choices were the answer minus/plus a random offset,
+    // explained only as "a miscalculation of the rate", and the explanation
+    // said "cross-multiplying". Each wrong choice is now a real slip.
+    // Redraw while rate === initialTime, since then dividing by the minutes
+    // gives the correct answer.
+    let ratePerMinute = getRandomInt(3, 6);
+    let initialTime = getRandomInt(2, 4);
+    while (ratePerMinute === initialTime) {
+      ratePerMinute = getRandomInt(3, 6);
+      initialTime = getRandomInt(2, 4);
+    }
     const initialPounds = ratePerMinute * initialTime;
     const targetMultiplier = getRandomInt(6, 10);
     const targetPounds = initialPounds * targetMultiplier;
     const correctTime = initialTime * targetMultiplier;   // whole number of minutes
+    const fmt = (n: number) => n.toLocaleString('en-US');
 
-    // Build three DISTINCT wrong answers, none equal to correctTime or each other.
-    // targetMultiplier (<= 10) is always < correctTime (>= 12), so it is a safe,
-    // pedagogically meaningful distractor (the ratio of amounts, not the time).
-    const wrongs: number[] = [];
-    const addWrong = (v: number): boolean => {
-      if (v > 0 && v !== correctTime && !wrongs.includes(v)) { wrongs.push(v); return true; }
-      return false;
-    };
-
-    addWrong(targetMultiplier);                     // stopped at the ratio of amounts
-
-    // A plausible value below the answer, then one above — guarded and bounded.
-    let tries = 0;
-    while (wrongs.length < 2 && tries++ < 50) {
-      addWrong(correctTime - getRandomInt(2, 6));   // slightly under the answer
-    }
-    tries = 0;
-    while (wrongs.length < 3 && tries++ < 50) {
-      addWrong(correctTime + getRandomInt(2, 8));   // slightly over the answer
-    }
-    // Final safety backfill (extremely unlikely to be needed).
-    tries = 0;
-    while (wrongs.length < 3 && tries++ < 50) {
-      addWrong(correctTime + getRandomInt(9, 30));
-    }
-
-    const reasonFor = (v: number): string => {
-      if (v === targetMultiplier) {
-        return `dividing ${targetPounds} by ${initialPounds} gives ${targetMultiplier}, the number of times as much cherries, but that is the ratio of the amounts, not the time in minutes`;
-      }
-      if (v < correctTime) return `this is less than the correct time and comes from a miscalculation of the rate`;
-      return `this is more than the correct time and comes from a miscalculation of the rate`;
-    };
+    const byMinutes = targetPounds / initialTime;          // divided by the minutes, not the rate
+    const timesRate = targetPounds * ratePerMinute;        // multiplied by the rate instead of dividing
 
     const optionsData = [
-      { text: correctTime.toString(), isCorrect: true, reason: null },
-      { text: wrongs[0].toString(), isCorrect: false, reason: reasonFor(wrongs[0]) },
-      { text: wrongs[1].toString(), isCorrect: false, reason: reasonFor(wrongs[1]) },
-      { text: wrongs[2].toString(), isCorrect: false, reason: reasonFor(wrongs[2]) },
+      { text: `${correctTime}`, isCorrect: true, reason: '' },
+      { text: `${targetMultiplier}`, isCorrect: false, reason: `${targetMultiplier} is $\\frac{${targetPounds}}{${initialPounds}}$, the number of times as many pounds to be pitted, not the time in minutes` },
+      { text: `${byMinutes}`, isCorrect: false, reason: `${byMinutes} results from dividing ${targetPounds} pounds by the ${initialTime} minutes instead of by the rate of ${ratePerMinute} pounds per minute` },
+      { text: fmt(timesRate), isCorrect: false, reason: `${fmt(timesRate)} results from multiplying ${targetPounds} pounds by the rate of ${ratePerMinute} pounds per minute instead of dividing` },
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -78,12 +57,9 @@ export const generator_513 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    // Every math span starts with a digit or \frac (never a bare variable right
-    // after $), so no currency/math dollar-pairing risk.
-    const explanation = `The machine pits cherries at a rate of $\\frac{${initialPounds} \\text{ pounds}}{${initialTime} \\text{ minutes}} = ${ratePerMinute}$ pounds per minute. To pit ${targetPounds} pounds, divide the total pounds by the rate: $\\frac{${targetPounds}}{${ratePerMinute}} = ${correctTime}$ minutes. You can also set up a proportion $\\frac{${initialPounds}}{${initialTime}} = \\frac{${targetPounds}}{t}$, where $t$ is the time; cross-multiplying gives $t \\times ${initialPounds} = ${initialTime * targetPounds}$, so $t = ${correctTime}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect because ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The machine pits cherries at a rate of $\\frac{${initialPounds} \\text{ pounds}}{${initialTime} \\text{ minutes}} = ${ratePerMinute}$ pounds per minute. To pit ${targetPounds} pounds, divide the total pounds by the rate: $\\frac{${targetPounds}}{${ratePerMinute}} = ${correctTime}$ minutes. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A cherry pitting machine pits ${initialPounds} pounds of cherries in ${initialTime} minutes. At this rate, how many minutes does it take the machine to pit ${targetPounds} pounds of cherries?`,
