@@ -52,16 +52,22 @@ export const generator_512 = {
     const redCards = simplifiedRed * multiplier;
     const blueCards = simplifiedBlue * multiplier;
 
+    // Before: one choice was the raw counts (e.g. 6 to 15), which is EQUAL in
+    // value to the correct 2 to 5, so two choices were correct. Its partner
+    // (raw counts reversed) is just the reversed ratio again. They are
+    // replaced by the part-to-whole slips (red to total, blue to total), all
+    // reduced like the answer; gcd(r, b) = 1 keeps every choice distinct.
+    const total = simplifiedRed + simplifiedBlue;
     const correctRatio = `${simplifiedRed} to ${simplifiedBlue}`;
     const reversedRatio = `${simplifiedBlue} to ${simplifiedRed}`;
-    const rawUnsimplified = `${redCards} to ${blueCards}`;
-    const rawReversed = `${blueCards} to ${redCards}`;
+    const redToTotal = `${simplifiedRed} to ${total}`;
+    const blueToTotal = `${simplifiedBlue} to ${total}`;
 
     const optionsData = [
-      { text: correctRatio, isCorrect: true, reason: null },
-      { text: reversedRatio, isCorrect: false, reason: "This is the ratio of blue cards to red cards. The question asks for red to blue, so the order is reversed." },
-      { text: rawUnsimplified, isCorrect: false, reason: "This is the ratio of the actual counts, but it has not been reduced to lowest terms." },
-      { text: rawReversed, isCorrect: false, reason: "This uses the actual counts and also reverses the order, giving blue to red instead of the reduced red to blue." }
+      { text: correctRatio, isCorrect: true, reason: '' },
+      { text: reversedRatio, isCorrect: false, reason: `${reversedRatio} is the ratio of blue cards to red cards, which reverses the order the question asks for` },
+      { text: redToTotal, isCorrect: false, reason: `${redToTotal} is the ratio of red cards to all $${redCards + blueCards}$ cards, not to the blue cards` },
+      { text: blueToTotal, isCorrect: false, reason: `${blueToTotal} is the ratio of blue cards to all $${redCards + blueCards}$ cards, not red cards to blue cards` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -70,10 +76,9 @@ export const generator_512 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `The ratio of red cards to blue cards compares the number of red cards to the number of blue cards. There are $${redCards}$ red cards and $${blueCards}$ blue cards, so the ratio is $${redCards}$ to $${blueCards}$. Both numbers share the common factor $${multiplier}$: $${redCards} \\div ${multiplier} = ${simplifiedRed}$ and $${blueCards} \\div ${multiplier} = ${simplifiedBlue}$. The simplified ratio is $${simplifiedRed}$ to $${simplifiedBlue}$. Choice ${correctLetter} is correct. Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctOption.letter} is correct. There are $${redCards}$ red cards and $${blueCards}$ blue cards, so the ratio of red cards to blue cards is $${redCards}$ to $${blueCards}$. Both numbers share the common factor $${multiplier}$: $${redCards} \\div ${multiplier} = ${simplifiedRed}$ and $${blueCards} \\div ${multiplier} = ${simplifiedBlue}$. So the ratio is equivalent to $${simplifiedRed}$ to $${simplifiedBlue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A student has $${redCards}$ red cards and $${blueCards}$ blue cards. What is the ratio of red cards to blue cards that the student has?`,
