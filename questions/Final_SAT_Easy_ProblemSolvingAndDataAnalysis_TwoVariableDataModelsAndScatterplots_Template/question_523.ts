@@ -20,21 +20,20 @@ export const generator_523 = {
 
   generate: (): QuestionData => {
     // 1. Define Scenarios
-    const scenarios = [
-      { speed: 50, k: 0.08, dist: 200 },        
-      { speed: 60, k: 0.05, dist: 180 },        
-      { speed: 40, k: 0.1, dist: 160 },         
-      { speed: 70, k: 0.06, dist: 294 }         
-    ];
-
-    const scenario = getRandomElement(scenarios);
-    const { speed, k, dist } = scenario;
+    // Before: the four scenarios used different, unrealistic coefficients
+    // (200 ft of braking at 50 mph). One realistic model, d = 0.05s^2
+    // (about 180 ft at 60 mph), is now used for every speed.
+    const k = 0.05;
+    const speed = getRandomElement([40, 50, 60, 70]);
+    const dist = Math.round(k * speed * speed);
 
     // 2. SVG Configuration
     // WIDE margins to prevent clipping
     const width = 450;
-    const height = 400; 
-    const margin = { top: 40, right: 40, bottom: 100, left: 80 }; 
+    // Trimmed the oversized empty band under the x axis (was 400 tall with a
+    // 100 bottom margin).
+    const height = 350;
+    const margin = { top: 40, right: 40, bottom: 60, left: 80 };
     
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
@@ -92,7 +91,7 @@ export const generator_523 = {
     `;
 
     // Title Positions
-    const xTitleY = height - 20; // 20px from the very bottom
+    const xTitleY = height - 12;
     const yTitleX = 25; // 25px from the left edge
 
     const svgContent = `
@@ -111,7 +110,7 @@ export const generator_523 = {
         ${guideLines}
         
         <!-- Y-Axis Title -->
-        <text transform="rotate(-90, ${yTitleX}, ${height/2})" x="${yTitleX}" y="${height/2}" text-anchor="middle" font-size="14" font-weight="bold" fill="currentColor">Stopping Distance (ft)</text>
+        <text transform="rotate(-90, ${yTitleX}, ${height/2})" x="${yTitleX}" y="${height/2}" text-anchor="middle" font-size="14" font-weight="bold" fill="currentColor">Stopping distance (ft)</text>
         
         <!-- X-Axis Title -->
         <text x="${margin.left + chartWidth/2}" y="${xTitleY}" text-anchor="middle" font-size="14" font-weight="bold" fill="currentColor">Speed (mph)</text>
@@ -119,11 +118,16 @@ export const generator_523 = {
     `;
 
     // 4. Options
+    // Before: the wrong choices were 0.5, 0.75 and 1.25 times the answer with
+    // no reasons. Now each is a real misreading: the curve 10 mph too low,
+    // 10 mph too high, or the speed itself read as the distance.
+    const below = Math.round(k * (speed - 10) * (speed - 10));
+    const above = Math.round(k * (speed + 10) * (speed + 10));
     const optionsData = [
-      { text: `${Math.round(dist * 0.5)}`, isCorrect: false },
-      { text: `${Math.round(dist * 0.75)}`, isCorrect: false },
-      { text: `${dist}`, isCorrect: true },
-      { text: `${Math.round(dist * 1.25)}`, isCorrect: false }
+      { text: `${dist}`, isCorrect: true, reason: '' },
+      { text: `${below}`, isCorrect: false, reason: `${below} is the stopping distance at ${speed - 10} mph, not ${speed} mph` },
+      { text: `${above}`, isCorrect: false, reason: `${above} is the stopping distance at ${speed + 10} mph, not ${speed} mph` },
+      { text: `${speed}`, isCorrect: false, reason: `${speed} is the speed in miles per hour, not the stopping distance in feet` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -132,13 +136,14 @@ export const generator_523 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `The graph above shows the braking distance for a car at various speeds. According to the model, which is the best estimate for stopping distance at ${speed} mph?`,
-      figureCode: svgContent,
+      questionText: `The graph shows the stopping distance, in feet, of a car at various speeds, in miles per hour (mph), according to a model. According to the model, which of the following is the best estimate of the stopping distance, in feet, for a speed of ${speed} mph?`,
+      figureCode: `<div style="width:100%;max-width:460px;margin:0 auto;">${svgContent}</div>`,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To find the stopping distance at ${speed} mph, locate ${speed} on the horizontal axis (Speed). Follow the dashed vertical line up to the curve, and then follow the dashed horizontal line to the left to read the value on the vertical axis (Stopping Distance). The value corresponds to ${dist} feet.`
+      explanation: `Choice ${correctOption.letter} is correct. Locate ${speed} on the horizontal axis, follow the dashed vertical line up to the curve, and then follow the dashed horizontal line left to the vertical axis. The curve reaches a stopping distance of about ${dist} feet at ${speed} mph. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
