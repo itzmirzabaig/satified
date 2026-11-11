@@ -27,16 +27,22 @@ export const generator_504 = {
     const gramsPerKg = 1000;
     const massGrams = massKg * gramsPerKg;
 
+    // Before: one wrong choice was massKg squared (a "seemingly random number"),
+    // the reasons were "This answer is incorrect..." sentences, 1,031 style
+    // choices had no comma, the explanation had a bare × outside math and a
+    // nonstandard format, and correctAnswer ("31000") did not match the choice
+    // text ("31,000"). The squared value is replaced by the real slip of
+    // dividing by 1,000.
+    const fmt = (n: number) => n.toLocaleString('en-US');
     const distractor1 = gramsPerKg + massKg;
     const distractor2 = gramsPerKg - massKg;
-    const distractor3 = massKg * massKg;
+    const distractor3 = massKg / gramsPerKg;
 
-    // Fixed: Changed to template literals (backticks) for reason strings with ${}
     const optionsData = [
-      { text: massGrams.toLocaleString('en-US'), isCorrect: true, reason: null },
-      { text: distractor1.toString(), isCorrect: false, reason: `This answer is incorrect. It appears to result from adding ${massKg} to ${gramsPerKg} instead of multiplying.` },
-      { text: distractor2.toString(), isCorrect: false, reason: `This answer is incorrect. It appears to result from subtracting ${massKg} from ${gramsPerKg}.` },
-      { text: distractor3.toString(), isCorrect: false, reason: `This answer is incorrect. It is a seemingly random number unrelated to the correct conversion calculation.` }
+      { text: fmt(massGrams), isCorrect: true, reason: '' },
+      { text: fmt(distractor1), isCorrect: false, reason: `${fmt(distractor1)} is the result of adding ${massKg} to ${fmt(gramsPerKg)} instead of multiplying` },
+      { text: distractor2.toString(), isCorrect: false, reason: `${distractor2} is the result of subtracting ${massKg} from ${fmt(gramsPerKg)} instead of multiplying` },
+      { text: distractor3.toString(), isCorrect: false, reason: `${distractor3} is the result of dividing ${massKg} by ${fmt(gramsPerKg)} instead of multiplying, which converts in the wrong direction` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -45,18 +51,15 @@ export const generator_504 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    // Fixed: Proper array access [0], [1], [2] and simplified text
-    const explanation = `To convert kilograms to grams, you multiply the number of kilograms by ${gramsPerKg.toLocaleString('en-US')}. ${massKg} kilograms × ${gramsPerKg.toLocaleString('en-US')} grams/kilogram = ${massGrams.toLocaleString('en-US')} grams. Therefore, the correct answer is ${massGrams.toLocaleString('en-US')}. Why other options are incorrect: Choice ${incorrectOptions[0].letter}: ${incorrectOptions[0].reason} Choice ${incorrectOptions[1].letter}: ${incorrectOptions[1].reason} Choice ${incorrectOptions[2].letter}: ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctOption.letter} is correct. Since 1 kilogram is ${fmt(gramsPerKg)} grams, multiply the mass in kilograms by ${fmt(gramsPerKg)} to convert to grams: $${massKg} \\times 1{,}000 = ${fmt(massGrams).replace(/,/g, '{,}')}$. So the kangaroo's mass is ${fmt(massGrams)} grams. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      // Fixed: Plain text for units, no \\text{} needed
-      questionText: `A kangaroo has a mass of ${massKg} kilograms. What is the kangaroo's mass, in grams? (1 kilogram = ${gramsPerKg.toLocaleString('en-US')} grams)`,
+      questionText: `A kangaroo has a mass of ${massKg} kilograms. What is the kangaroo's mass, in grams? (1 kilogram = ${fmt(gramsPerKg)} grams)`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
-      correctAnswer: massGrams.toString(),
+      correctAnswer: fmt(massGrams),
       explanation: explanation
     };
   }
