@@ -92,7 +92,9 @@ export const generator_519 = {
       .map(p => `<circle cx="${getX(p.x).toFixed(1)}" cy="${getY(p.y).toFixed(1)}" r="4.5" fill="#3b82f6" stroke="white" stroke-width="1.5" />`)
       .join('');
     const pointLabels = marked
-      .map(p => `<text x="${(getX(p.x) + 8).toFixed(1)}" y="${(getY(p.y) - 8).toFixed(1)}" font-size="11" fill="currentColor">(${p.x}, ${p.y})</text>`)
+      // Labels sit below and to the right of each point so the rising line
+      // does not run through them (they used to overlap the line).
+      .map(p => `<text x="${(getX(p.x) + 8).toFixed(1)}" y="${(getY(p.y) + 17).toFixed(1)}" font-size="11" fill="currentColor">(${p.x}, ${p.y})</text>`)
       .join('');
 
     const figureCode = `
@@ -110,26 +112,35 @@ export const generator_519 = {
     `;
 
     // ---- Options -------------------------------------------------------------
+    // Before: the explanation lumped the wrong choices into one sentence with
+    // no per choice reasons, and always wrote \approx even when the slope was
+    // exact (3/4 = 0.75). Each wrong
+    // choice names its slip, and = is used whenever the decimal is exact.
+    const isExact = Math.abs(slopeExact * 100 - Math.round(slopeExact * 100)) < 1e-9;
+    const rel = isExact ? '=' : '\\approx';
     const optionsData = [
-      { text: slope, isCorrect: true },
-      { text: negSlope, isCorrect: false },
-      { text: recip, isCorrect: false },
-      { text: negRecip, isCorrect: false }
+      { text: slope, isCorrect: true, reason: '' },
+      { text: negSlope, isCorrect: false, reason: `${negSlope} has the correct size but the wrong sign; the line rises from left to right, so its slope is positive` },
+      { text: recip, isCorrect: false, reason: `${recip} is the change in $x$ divided by the change in $y$, $${run} \\div ${rise}$, which is the reciprocal of the slope` },
+      { text: negRecip, isCorrect: false, reason: `${negRecip} is the negative reciprocal of the slope, which is the slope of a line perpendicular to this one` }
     ];
 
-    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
-      ...opt,
-      letter: String.fromCharCode(65 + index)
-    }));
+    // Shuffled, not sorted: in increasing order the answer would always be C.
+    const sortedOptions = shuffle(optionsData)
+      .map((opt, index) => ({
+        ...opt,
+        letter: String.fromCharCode(65 + index)
+      }));
 
-    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const correctOption = sortedOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = sortedOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: "The graph shows a line of best fit with two points marked. Which of the following is closest to the slope of the line?",
       figureCode,
-      options: shuffledOptions.map(o => o.text),
+      options: sortedOptions.map(o => o.text),
       correctAnswer: slope,
-      explanation: `Choice ${correctOption.letter} is correct. Slope is the change in y divided by the change in x. Using the marked points $(0, ${yInt})$ and $(${x2}, ${y2})$, the slope is $\\frac{${y2} - ${yInt}}{${x2} - 0} = \\frac{${rise}}{${run}} \\approx ${slope}$. The other choices come from common errors: making the slope negative even though the line rises, or dividing the change in x by the change in y (the reciprocal) instead of the other way around.`
+      explanation: `Choice ${correctOption.letter} is correct. The slope of a line is the change in $y$ divided by the change in $x$. The marked points are $(0, ${yInt})$ and $(${x2}, ${y2})$. From the first point to the second, $x$ increases by $${run}$ and $y$ increases from $${yInt}$ to $${y2}$, an increase of $${rise}$. So the slope is $\\frac{${rise}}{${run}} ${rel} ${slope}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
 
   }
