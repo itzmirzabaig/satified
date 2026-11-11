@@ -36,7 +36,10 @@ export const generator_524 = {
 
     // Negative slope (magnitude in tenths, 0.6..2.0) and positive integer
     // intercept (8..12). Both render as clean strings (no float artifacts).
-    const mag = getRandomInt(6, 20) / 10;   // 0.6 .. 2.0
+    // Skip 1.0, which would print as "1x" in the choices.
+    let magTenths = 10;
+    while (magTenths === 10) magTenths = getRandomInt(6, 20);
+    const mag = magTenths / 10;             // 0.6 .. 2.0, never 1
     const b = getRandomInt(8, 12);          // positive intercept
     const magStr = String(mag);             // e.g. "1.9"
     const bStr = String(b);                 // e.g. "10"
@@ -103,11 +106,14 @@ export const generator_524 = {
     `;
 
     // ---- Options (correct + three sign-variant distractors) -------------------
+    // Before: the wrong choices shared one lumped sentence instead of a reason
+    // each, and the slope value sat outside $...$. Each choice now has its
+    // own reason.
     const optionsData = [
-      { text: `$y=-${magStr}x+${bStr}$`, isCorrect: true },   // negative slope, positive intercept
-      { text: `$y=-${magStr}x-${bStr}$`, isCorrect: false },  // negative slope, negative intercept
-      { text: `$y=${magStr}x+${bStr}$`, isCorrect: false },   // positive slope, positive intercept
-      { text: `$y=${magStr}x-${bStr}$`, isCorrect: false }    // positive slope, negative intercept
+      { text: `$y=-${magStr}x+${bStr}$`, isCorrect: true, reason: '' },
+      { text: `$y=-${magStr}x-${bStr}$`, isCorrect: false, reason: `$y=-${magStr}x-${bStr}$ has the correct negative slope, but its y-intercept is $-${bStr}$, below the origin, while the line of best fit crosses the y-axis above the origin` },
+      { text: `$y=${magStr}x+${bStr}$`, isCorrect: false, reason: `$y=${magStr}x+${bStr}$ has the correct positive y-intercept, but its slope is positive, so its graph would rise from left to right, while the line of best fit falls` },
+      { text: `$y=${magStr}x-${bStr}$`, isCorrect: false, reason: `$y=${magStr}x-${bStr}$ has both signs reversed: its graph would rise from left to right and cross the y-axis below the origin` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -116,13 +122,14 @@ export const generator_524 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: "The scatterplot shows the relationship between two variables, along with a line of best fit. Which equation best represents the line of best fit shown?",
       figureCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The line of best fit falls from left to right, so its slope is negative (about ${slopeVal}), and it crosses the y-axis above the origin, so the y-intercept is positive (${bStr}). Only $y=-${magStr}x+${bStr}$ has both a negative slope and a positive y-intercept. The other choices are incorrect because they use a positive slope (a line that rises from left to right) or a negative y-intercept (crossing the y-axis below the origin), neither of which matches the graph.`
+      explanation: `Choice ${correctOption.letter} is correct. The line of best fit falls from left to right, so its slope is negative, and it crosses the y-axis above the origin, at about $y=${bStr}$, so its y-intercept is positive. Of the choices, only $y=-${magStr}x+${bStr}$ has both a negative slope and a positive y-intercept. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
 
   }
