@@ -28,26 +28,29 @@ export const generator_1028 = {
     const nSq = n * n;
 
     // (a + b/n)^2 = a^2 + 2ab/n + b^2/n^2; for n = 2 the middle term simplifies to ab.
-    const middleBody = n === 2 ? 'ab' : `\\frac{2ab}{${n}}`;
+    // For n = 4 the middle term used to show as the unreduced 2ab/4; it is now ab/2.
+    const middleBody = n === 2 ? 'ab' : n === 4 ? `\\frac{ab}{2}` : `\\frac{2ab}{${n}}`;
     const correctBody = `a^{2}+${middleBody}+\\frac{b^{2}}{${nSq}}`;
     const correctAnswer = `$${correctBody}$`;
 
     // STEP 2: Create options (all four are structurally distinct for every n)
+    // Reasons now start with the value, and the explanation no longer uses
+    // markdown bullets; it is one paragraph in the standard format.
     const optionsData = [
       {
         text: `$a^{2}+\\frac{b^{2}}{${n}}$`,
         isCorrect: false,
-        reason: `it omits the middle term and does not square the denominator: $\\left(\\frac{b}{${n}}\\right)^{2} = \\frac{b^{2}}{${nSq}}$, not $\\frac{b^{2}}{${n}}$`
+        reason: `$a^{2}+\\frac{b^{2}}{${n}}$ results from omitting the middle term and not squaring the denominator; $\\left(\\frac{b}{${n}}\\right)^{2} = \\frac{b^{2}}{${nSq}}$, not $\\frac{b^{2}}{${n}}$`
       },
       {
         text: `$a^{2}+\\frac{b^{2}}{${nSq}}$`,
         isCorrect: false,
-        reason: `it squares each term separately and omits the middle term $\\frac{2ab}{${n}}$, which comes from twice the product of $a$ and $\\frac{b}{${n}}$`
+        reason: `$a^{2}+\\frac{b^{2}}{${nSq}}$ results from squaring each term separately and omitting the middle term $${middleBody}$, which is twice the product of $a$ and $\\frac{b}{${n}}$`
       },
       {
         text: `$a^{2}+\\frac{ab}{${n}}+\\frac{b^{2}}{${nSq}}$`,
         isCorrect: false,
-        reason: `it uses $\\frac{ab}{${n}}$ as the middle term instead of $\\frac{2ab}{${n}}$; the middle term is twice the product of the two terms being squared`
+        reason: `$a^{2}+\\frac{ab}{${n}}+\\frac{b^{2}}{${nSq}}$ results from using the product $\\frac{ab}{${n}}$ as the middle term instead of twice the product`
       },
       { text: correctAnswer, isCorrect: true, reason: '' }
     ];
@@ -65,20 +68,7 @@ export const generator_1028 = {
     const questionText = `Which of the following is equivalent to $\\left(a+\\frac{b}{${n}}\\right)^{2}$?`;
 
     // STEP 5: Explanation (computed from the same live variables as the options)
-    const explanation = `Choice ${correctLetter} is correct. Use the formula $(x+y)^{2} = x^{2} + 2xy + y^{2}$ with $x = a$ and $y = \\frac{b}{${n}}$.
-
-$$\\left(a+\\frac{b}{${n}}\\right)^{2} = a^{2} + 2 \\cdot a \\cdot \\frac{b}{${n}} + \\left(\\frac{b}{${n}}\\right)^{2}$$
-
-Simplify each term:
-- First term: $a^{2}$
-- Middle term: $\\frac{2ab}{${n}}${n === 2 ? ' = ab' : ''}$
-- Last term: $\\left(\\frac{b}{${n}}\\right)^{2} = \\frac{b^{2}}{${nSq}}$
-
-So the expression is equivalent to $${correctBody}$.
-
-Choice ${incorrectOptions[0].letter} is incorrect because ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Using the identity $(x+y)^{2} = x^{2} + 2xy + y^{2}$ with $x = a$ and $y = \\frac{b}{${n}}$ gives $\\left(a+\\frac{b}{${n}}\\right)^{2} = a^{2} + 2(a)\\left(\\frac{b}{${n}}\\right) + \\left(\\frac{b}{${n}}\\right)^{2}$. The middle term is $\\frac{2ab}{${n}}${n === 3 ? '' : ` = ${middleBody}`}$, and the last term is $\\left(\\frac{b}{${n}}\\right)^{2} = \\frac{b^{2}}{${nSq}}$. So the expression is equivalent to $${correctBody}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: questionText,
