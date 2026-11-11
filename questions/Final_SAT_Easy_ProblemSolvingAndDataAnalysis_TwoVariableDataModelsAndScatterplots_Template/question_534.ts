@@ -23,29 +23,32 @@ export const generator_534 = {
     // 1. Math Setup
     // We want the target to be easily readable, so we pick a multiple of 500.
     // Range: 6000 to 9000 ft.
-    const targetElev = getRandomInt(13, 17) * 500; // 6500, 7000, 7500, 8000, or 8500
-    
-    // Define a realistic lapse rate (slope): approx -3.5 to -5 degrees F per 1000ft
-    const slope = -1 * (getRandomInt(35, 50) / 10000); 
-    
-    // Define a base point (e.g., at 6000ft temp is around 50-60F)
-    const baseElev = 6000;
-    const baseTemp = getRandomInt(50, 60);
+    // Previously the answer was Math.round of a line with a random slope, so the
+    // "predicted" temperature was only approximate and the line did not pass
+    // through it. Now the line passes exactly through (targetElev, correctTemp),
+    // a gridline intersection, and drops a whole number (4 or 5) of degrees per
+    // 1,000 feet, a realistic lapse rate.
+    const targetElev = getRandomInt(13, 16) * 500; // 6500, 7000, 7500, or 8000
+    const correctTemp = 5 * getRandomInt(7, 10);   // 35, 40, 45, or 50
+    const lapse = getRandomInt(4, 5);              // degrees F per 1,000 feet
+    const slope = -lapse / 1000;
 
     // Linear Function
-    const getPredTemp = (elev: number) => baseTemp + slope * (elev - baseElev);
-
-    // Calculate correct answer (rounded to nearest integer for multiple choice)
-    const correctTemp = Math.round(getPredTemp(targetElev));
+    const getPredTemp = (elev: number) => correctTemp + slope * (elev - targetElev);
 
     // 2. Generate Scatter Data
-    // Generate 10-12 random points scattered around the line
-    const pointsData = [];
+    // One data point sits at the target elevation, 3 degrees off the line (a
+    // student may read this point instead of the line). The others stay at
+    // least 200 feet away from the target so that point is unambiguous.
+    const pointOffset = Math.random() < 0.5 ? 3 : -3;
+    const pointsData = [{ x: targetElev, y: correctTemp + pointOffset }];
     const numPoints = 12;
-    for (let i = 0; i < numPoints; i++) {
+    while (pointsData.length < numPoints) {
       const e = getRandomInt(6000, 9000);
+      if (Math.abs(e - targetElev) < 200) continue;
       const noise = (Math.random() - 0.5) * 6; // +/- 3 degrees noise
       const t = getPredTemp(e) + noise;
+      if (t < 21 || t > 69) continue;
       pointsData.push({ x: e, y: t });
     }
 
@@ -69,7 +72,7 @@ export const generator_534 = {
     for (let x = xMin; x <= xMax; x += 500) {
       const xPos = mapX(x);
       // Only label multiples of 1000 to avoid crowding, but draw lines for 500
-      const label = x % 1000 === 0 ? x : ""; 
+      const label = x % 1000 === 0 ? x.toLocaleString("en-US") : "";
       xTicks.push(`
         <line x1="${xPos}" y1="${mapY(yMin)}" x2="${xPos}" y2="${mapY(yMax)}" stroke="currentColor" stroke-opacity="0.1" />
         <text x="${xPos}" y="${height - padding.bottom + 20}" text-anchor="middle" font-size="12" fill="currentColor">${label}</text>
@@ -92,8 +95,8 @@ export const generator_534 = {
     ).join('');
 
     // Line of Best Fit
-    const startLineX = 5800;
-    const endLineX = 9200;
+    const startLineX = 5500; // was 5800: the line now spans the whole axis so the 1,000 foot neighbors of the target are on it
+    const endLineX = 9500;
     const startLineY = getPredTemp(startLineX);
     const endLineY = getPredTemp(endLineX);
 
@@ -130,16 +133,20 @@ export const generator_534 = {
     `;
 
     // 5. Generate Options
-    const distractor1 = correctTemp - 2;
-    const distractor2 = correctTemp + 2;
-    // Calculate a distractor based on a different elevation (e.g., target - 1000ft)
-    const distractor3 = Math.round(getPredTemp(targetElev - 1000)); 
+    // Previously two distractors were the answer plus or minus 2 (no real slip)
+    // and none had reasons. Now each wrong choice is a reading slip.
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const leftElev = targetElev - 1000;
+    const rightElev = targetElev + 1000;
+    const leftTemp = correctTemp + lapse;
+    const rightTemp = correctTemp - lapse;
+    const pointTemp = correctTemp + pointOffset;
 
     const optionsData = [
-      { text: `${correctTemp}°F`, isCorrect: true },
-      { text: `${distractor1}°F`, isCorrect: false },
-      { text: `${distractor2}°F`, isCorrect: false },
-      { text: `${distractor3}°F`, isCorrect: false }
+      { text: `${correctTemp}°F`, isCorrect: true, reason: '' },
+      { text: `${leftTemp}°F`, isCorrect: false, reason: `${leftTemp}°F is the temperature predicted by the line of best fit at an elevation of ${fmt(leftElev)} feet, not ${fmt(targetElev)} feet` },
+      { text: `${rightTemp}°F`, isCorrect: false, reason: `${rightTemp}°F is the temperature predicted by the line of best fit at an elevation of ${fmt(rightElev)} feet, not ${fmt(targetElev)} feet` },
+      { text: `${pointTemp}°F`, isCorrect: false, reason: `${pointTemp}°F is the temperature of the data point at ${fmt(targetElev)} feet, which lies ${pointOffset > 0 ? 'above' : 'below'} the line, but the question asks for the temperature predicted by the line of best fit` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -148,19 +155,14 @@ export const generator_534 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `The scatterplot above shows the high temperature on a certain day and the elevation of ${numPoints} different locations in the Lake Tahoe Basin. A line of best fit for the data is also shown. What temperature is predicted by the line of best fit for a location in the Lake Tahoe Basin with an elevation of ${targetElev} feet?`,
+      questionText: `The scatterplot shows the high temperature on a certain day and the elevation of ${numPoints} different locations in the Lake Tahoe Basin. A line of best fit for the data is also shown. What temperature is predicted by the line of best fit for a location in the Lake Tahoe Basin with an elevation of ${fmt(targetElev)} feet?`,
       figureCode: svgCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. To find the predicted temperature:
-      
-1. Locate ${targetElev} on the horizontal axis (Elevation).
-2. Move vertically up to intersect the line of best fit.
-3. Move horizontally to the left to read the value on the vertical axis (Temperature).
-
-The line of best fit passes through the point corresponding to an elevation of ${targetElev} feet at a temperature of approximately ${correctTemp}°F.`
+      explanation: `Choice ${correctOption.letter} is correct. Find ${fmt(targetElev)} feet on the horizontal axis and move straight up to the line of best fit, not to the data point. Then move horizontally to the vertical axis: the line crosses the gridline for ${fmt(targetElev)} feet exactly at the gridline for ${correctTemp}°F. So the line of best fit predicts a temperature of ${correctTemp}°F at an elevation of ${fmt(targetElev)} feet. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
