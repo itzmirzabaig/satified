@@ -64,23 +64,10 @@ export const generator_1014 = {
     const questionText = `$ \\sqrt[${root1}]{70n}(\\sqrt[${root2}]{70n})^{2} $ For what value of $x$ is the given expression equivalent to $(70n)^{30x}$, where $n > 1$? (Enter your answer as a fraction.)`;
     
     // STEP 4: Explanation
-    const explanation = `Rewrite the radicals using rational exponents:
-- $ \\sqrt[${root1}]{70n} = (70n)^{\\frac{1}{${root1}}} $
-- $ \\sqrt[${root2}]{70n} = (70n)^{\\frac{1}{${root2}}} $, so $(\\sqrt[${root2}]{70n})^{2} = (70n)^{\\frac{2}{${root2}}} $
-
-Multiply the expressions by adding exponents:
-$$ (70n)^{\\frac{1}{${root1}}} \\cdot (70n)^{\\frac{2}{${root2}}} = (70n)^{\\frac{1}{${root1}} + \\frac{2}{${root2}}} $$
-
-Write both fractions with the common denominator ${root1 * root2}:
-$$ \\frac{1}{${root1}} + \\frac{2}{${root2}} = \\frac{${root2}}{${root1 * root2}} + \\frac{${2 * root1}}{${root1 * root2}} = \\frac{${root2} + ${2 * root1}}{${root1 * root2}} = \\frac{${sumNum}}{${sumDen}} $$
-
-The given expression equals $(70n)^{30x}$ exactly when the exponents are equal (since $n > 1$, the base is greater than 1):
-$$ \\frac{${sumNum}}{${sumDen}} = 30x $$
-
-Solve for $x$:
-$$ x = \\frac{${sumNum}}{30 \\cdot ${sumDen}} = \\frac{${finalNum}}{${finalDen}}${g > 1 ? ` = ${answerTex}` : ''} $$
-
-So $x = ${answerTex}$; enter ${correctAnswer}.`;
+    // Before: markdown bullets, display math on separate lines, and no
+    // "The correct answer is" opening. Now plain sentences with inline math.
+    const sumTex = `\\frac{${sumNum}}{${sumDen}}`;
+    const explanation = `The correct answer is ${correctAnswer}. Rewrite each radical with a rational exponent: $\\sqrt[${root1}]{70n} = (70n)^{\\frac{1}{${root1}}}$ and $\\sqrt[${root2}]{70n} = (70n)^{\\frac{1}{${root2}}}$, so $(\\sqrt[${root2}]{70n})^{2} = (70n)^{\\frac{2}{${root2}}}$. Multiplying powers with the same base adds the exponents, so the expression equals $(70n)^{\\frac{1}{${root1}} + \\frac{2}{${root2}}}$. With the common denominator ${root1 * root2}, $\\frac{1}{${root1}} + \\frac{2}{${root2}} = \\frac{${root2}}{${root1 * root2}} + \\frac{${2 * root1}}{${root1 * root2}} = ${sumTex}$. Since $n > 1$, the base $70n$ is greater than 1, so the two expressions are equivalent exactly when their exponents are equal: $30x = ${sumTex}$. Dividing both sides by 30 gives $x = \\frac{${finalNum}}{${finalDen}}${g > 1 ? ` = ${answerTex}` : ''}$.`;
     
     return {
       questionText: questionText,
