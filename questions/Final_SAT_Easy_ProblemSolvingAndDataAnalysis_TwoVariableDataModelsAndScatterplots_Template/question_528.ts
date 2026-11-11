@@ -103,18 +103,28 @@ export const generator_528 = {
     `;
 
     // 5. Options and Logic
-    const getDrop = (tStart: number, tEnd: number) => Math.round(getTemp(tStart) - getTemp(tEnd));
-    const drop0_10 = getDrop(0, 10);
-    const drop30_40 = getDrop(30, 40);
-    const drop50_60 = getDrop(50, 60);
-    const drop90_100 = getDrop(90, 100);
+    // Previously: the choices were always the same four intervals (answer always
+    // "0 to 10"), the explanation used markdown bullets, "~" and literal newlines,
+    // wrong choices had no reasons, and the stem said "10-minute intervals".
+    // Now four distinct intervals are drawn each time (earliest one starts at 30 or
+    // sooner) and the earliest is correct, since a cooling curve is steepest first.
+    const getDrop = (tStart: number) => getTemp(tStart) - getTemp(tStart + timeInterval);
+    const fmtDrop = (d: number) => `${Number(d.toFixed(1))}`;
+    let starts: number[] = [];
+    do {
+      starts = shuffle([0, 10, 20, 30, 40, 50, 60, 70, 80, 90]).slice(0, 4).sort((a, b) => a - b);
+    } while (starts[0] > 30);
+    const bestStart = starts[0];
+    const bestDrop = getDrop(bestStart);
+    const intervalText = (s: number) => `between ${s} and ${s + timeInterval} minutes`;
 
-    const optionsData = [
-      { text: `Between 0 and ${timeInterval} minutes`, isCorrect: true },
-      { text: `Between ${3 * timeInterval} and ${4 * timeInterval} minutes`, isCorrect: false },
-      { text: `Between ${5 * timeInterval} and ${6 * timeInterval} minutes`, isCorrect: false },
-      { text: `Between ${9 * timeInterval} and ${10 * timeInterval} minutes`, isCorrect: false }
-    ];
+    const optionsData = starts.map(s => ({
+      text: `Between ${s} and ${s + timeInterval} minutes`,
+      isCorrect: s === bestStart,
+      reason: s === bestStart
+        ? ''
+        : `${intervalText(s)} the temperature drops by only about ${fmtDrop(getDrop(s))}°F, less than the drop of about ${fmtDrop(bestDrop)}°F ${intervalText(bestStart)}; the graph is flatter there because the coffee is getting closer to room temperature`
+    }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -122,21 +132,14 @@ export const generator_528 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `In an experiment, a heated cup of coffee is removed from a heat source and left in a room at a constant temperature of ${roomTemp}°F. The graph shows the temperature, in degrees Fahrenheit (°F), of the coffee at ${timeInterval}-minute intervals. During which interval does the temperature decrease at the greatest average rate?`,
+      questionText: `In an experiment, a heated cup of coffee is removed from a heat source and left in a room at a constant temperature of ${roomTemp}°F. The graph shows the temperature, in degrees Fahrenheit (°F), of the coffee at intervals of ${timeInterval} minutes. During which interval does the temperature decrease at the greatest average rate?`,
       figureCode: svgCode,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The average rate of change corresponds to the slope of the graph. For a cooling object following an exponential decay model, the temperature decreases most rapidly at the beginning (steepest negative slope) and levels off over time.
-
-We can also verify this by comparing the temperature drops over the 10-minute intervals shown in the graph:
-- Between 0 and 10 minutes: Drop of ~${drop0_10}°F
-- Between 30 and 40 minutes: Drop of ~${drop30_40}°F
-- Between 50 and 60 minutes: Drop of ~${drop50_60}°F
-- Between 90 and 100 minutes: Drop of ~${drop90_100}°F
-
-Since the largest temperature drop (${drop0_10}°F) occurs in the first interval, the average rate of decrease is greatest between 0 and 10 minutes.`
+      explanation: `Choice ${correctOption.letter} is correct. Each choice is an interval of ${timeInterval} minutes, so the interval with the greatest average rate of decrease is the one where the temperature drops the most, which is where the graph is steepest. The coffee cools fastest when it is much hotter than the room, and the curve levels off as the temperature approaches ${roomTemp}°F, so the earliest of the four intervals has the steepest part of the graph. Reading the graph, the temperature drops by about ${fmtDrop(bestDrop)}°F ${intervalText(bestStart)}, a greater drop than in any of the other intervals listed. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
