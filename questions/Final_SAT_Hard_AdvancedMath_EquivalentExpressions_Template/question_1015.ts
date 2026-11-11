@@ -26,58 +26,48 @@ export const generator_1015 = {
     // STEP 1: Generate parameters
     const c = getRandomInt(8, 15);
     const a = getRandomInt(5, 10);
-    
+
     const linearCoeff = c + 1;
-    
+
     // STEP 2: Create options
+    // Before: the wrong choices were explained only as "conceptual or
+    // calculation errors", and one choice was used twice in a nonsense pairing.
+    // Each wrong choice now comes from a named slip.
     const correctNumerator = `xy^{2}+${linearCoeff}xy-${a}y`;
     const correctDenominator = `x^{2}y-${a}xy`;
     const correctAnswer = `$\\frac{${correctNumerator}}{${correctDenominator}}$`;
-    
-    // Wrong denominator (cubed)
-    const wrongDen1 = `x^{3}y-${2*a}x^{2}y+${a*a}xy`;
-    
-    // Wrong numerator
-    const wrongNum = `xy+${Math.floor(linearCoeff/2)}y+${c}`;
-    const wrongDen2 = `x^{2}y-${a}xy+x-${a}`;
-    
+
+    // Slip 1: product of the two denominators, (x-a)(x^2y-axy) = xy(x-a)^2,
+    // used as the denominator while the numerator is built for xy(x-a).
+    const productDen = `x^{3}y-${2 * a}x^{2}y+${a * a}xy`;
+    // Slip 2: adding numerators and adding denominators straight across.
+    const straightNum = `xy-${a - 1}y+${c}`;
+    const straightDen = `x^{2}y-${a}xy+x-${a}`;
+    // Slip 3: dropping the xy term when expanding y(x-a), leaving only -ay.
+    const droppedNum = `xy^{2}+${c}xy-${a}y`;
+
     const optionsData = [
-      { text: `$\\frac{${wrongNum}}{${wrongDen1}}$`, isCorrect: false, reason: "results from conceptual or calculation errors in handling the complex denominators" },
-      { text: `$\\frac{${wrongNum}}{${wrongDen2}}$`, isCorrect: false, reason: "results from conceptual or calculation errors in finding common denominators" },
-      { text: correctAnswer, isCorrect: true },
-      { text: `$\\frac{${correctNumerator}}{${wrongDen1}}$`, isCorrect: false, reason: "results from conceptual or calculation errors in determining the final denominator" }
+      { text: correctAnswer, isCorrect: true, reason: '' },
+      { text: `$\\frac{${correctNumerator}}{${productDen}}$`, isCorrect: false, reason: `this expression uses the product of the two denominators, $(x-${a})(x^{2}y-${a}xy) = ${productDen}$, as the denominator while keeping the numerator built for the common denominator $xy(x-${a})$` },
+      { text: `$\\frac{${straightNum}}{${straightDen}}$`, isCorrect: false, reason: `this expression results from adding the numerators, $(y+${c}) + y(x-${a})$, and adding the denominators, $(x-${a}) + (x^{2}y-${a}xy)$, instead of using a common denominator` },
+      { text: `$\\frac{${droppedNum}}{${correctDenominator}}$`, isCorrect: false, reason: `this expression results from expanding $y(x-${a})$ as $-${a}y$ only, which drops the $xy$ term, so the $xy$ coefficient is ${c} instead of ${linearCoeff}` }
     ];
-    
+
     // STEP 3: Shuffle
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
     // STEP 4: Question text
     const questionText = `Which expression is equivalent to $\\frac{y+${c}}{x-${a}}+\\frac{y(x-${a})}{x^{2}y-${a}xy}$?`;
-    
-    // STEP 5: Explanation
-    const explanation = `Choice ${correctLetter} is correct. First, factor the denominator in the second term:
-$$x^{2}y-${a}xy = xy(x-${a})$$
 
-Rewrite with common denominator $xy(x-${a})$:
-- First term: $\\frac{y+${c}}{x-${a}} \\cdot \\frac{xy}{xy} = \\frac{xy(y+${c})}{xy(x-${a})}$
-- Second term stays: $\\frac{y(x-${a})}{xy(x-${a})}$
+    // STEP 5: Explanation (plain sentences, inline math)
+    const explanation = `Choice ${correctOption.letter} is correct. The denominator of the second fraction factors as $x^{2}y-${a}xy = xy(x-${a})$, so $xy(x-${a})$ is a common denominator. Multiplying the numerator and denominator of the first fraction by $xy$ gives $\\frac{xy(y+${c})}{xy(x-${a})}$, and the second fraction is already $\\frac{y(x-${a})}{xy(x-${a})}$. Adding the numerators gives $xy(y+${c}) + y(x-${a}) = xy^{2} + ${c}xy + xy - ${a}y = ${correctNumerator}$. So the sum is $\\frac{${correctNumerator}}{xy(x-${a})}$, which is $\\frac{${correctNumerator}}{${correctDenominator}}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
-Add the numerators:
-$$xy(y+${c}) + y(x-${a}) = xy^{2} + ${c}xy + xy - ${a}y = xy^{2} + ${linearCoeff}xy - ${a}y$$
-
-Result: $\\frac{xy^{2} + ${linearCoeff}xy - ${a}y}{xy(x-${a})} = \\frac{xy^{2} + ${linearCoeff}xy - ${a}y}{x^{2}y - ${a}xy}$
-
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
-    
     return {
       questionText: questionText,
       figureCode: null,
