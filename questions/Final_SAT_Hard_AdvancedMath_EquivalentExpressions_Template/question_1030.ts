@@ -24,7 +24,8 @@ export const generator_1030 = {
   
   generate: (): QuestionData => {
     // STEP 1: Generate parameters
-    const base = 4;
+    // The base used to be 4 on every draw; it now varies.
+    const base = getRandomElement([2, 3, 4, 5, 7]);
     const n = getRandomInt(6, 10);
     const m = getRandomInt(5, 9);
     const root = getRandomInt(2, 4);
@@ -47,22 +48,14 @@ export const generator_1030 = {
     const answerTex = finalDen === 1 ? `${finalNum}` : `\\frac{${finalNum}}{${finalDen}}`;
 
     // STEP 3: Question text ("\\," keeps a digit from directly following "$")
-    const questionText = `If $\\,${base}^{${n}c} = \\sqrt[${root}]{${base}^{${m}}}$, what is the value of $c$? Enter your answer as a fraction.`;
+    // A square root used to show as \sqrt[2]{...}; index 2 is now left off.
+    const rad = root === 2 ? `\\sqrt` : `\\sqrt[${root}]`;
+    const questionText = `If $\\,${base}^{${n}c} = ${rad}{${base}^{${m}}}$, what is the value of $c$? Enter your answer as a fraction.`;
 
     // STEP 4: Explanation
-    const explanation = `Rewrite the radical using a rational exponent:
-$$\\sqrt[${root}]{${base}^{${m}}} = ${base}^{\\frac{${m}}{${root}}}$$
-
-So the equation becomes:
-$$\\,${base}^{${n}c} = ${base}^{\\frac{${m}}{${root}}}$$
-
-Since the bases are equal, the exponents must be equal:
-$$\\,${n}c = \\frac{${m}}{${root}}$$
-
-Solve for $c$ by dividing both sides by ${n}:
-$$c = \\frac{${m}}{${root} \\cdot ${n}} = \\frac{${num}}{${den}}${g > 1 ? ` = ${answerTex}` : ''}$$
-
-So $c = ${answerTex}$, which is entered as ${correctAnswer}.`;
+    // The explanation used to skip "The correct answer is" and was split
+    // across display lines; it is now one paragraph that leads with the answer.
+    const explanation = `The correct answer is $${answerTex}$, which is entered as ${correctAnswer}. Rewriting the radical with a rational exponent gives $${rad}{${base}^{${m}}} = ${base}^{\\frac{${m}}{${root}}}$, so the equation becomes $${base}^{${n}c} = ${base}^{\\frac{${m}}{${root}}}$. Since the bases are equal, the exponents must be equal, so $${n}c = \\frac{${m}}{${root}}$. Dividing both sides by ${n} gives $c = \\frac{${m}}{${root}(${n})} = \\frac{${num}}{${den}}${g > 1 ? ` = ${answerTex}` : ''}$.`;
     
     return {
       questionText: questionText,
