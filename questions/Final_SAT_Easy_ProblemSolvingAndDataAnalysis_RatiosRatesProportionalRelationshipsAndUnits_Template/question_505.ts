@@ -28,15 +28,22 @@ export const generator_505 = {
     const totalRevolutions = rate * minutes;
     const correctRate = totalRevolutions / minutes;
 
+    // Before: the explanation was full of literal "\n" text and $$ display
+    // blocks (it rendered as one italic math line), one wrong choice was a
+    // random offset ("might result from a multiplication error"), and 4 digit
+    // numbers had no commas. The random choice is now the real slip of
+    // multiplying instead of dividing.
+    const fmt = (n: number) => n.toLocaleString('en-US');
+    const mfmt = (n: number) => fmt(n).replace(/,/g, '{,}');
     const distractorSubtract = totalRevolutions - minutes;
     const distractorAdd = totalRevolutions + minutes;
-    const distractorRandom = totalRevolutions + getRandomInt(400, 600);
+    const distractorMultiply = totalRevolutions * minutes;
 
     const optionsData = [
-      { text: correctRate.toString(), isCorrect: true, reason: null },
-      { text: distractorSubtract.toString(), isCorrect: false, reason: "This result comes from subtracting the minutes from the revolutions, which is an incorrect operation for finding a rate." },
-      { text: distractorAdd.toString(), isCorrect: false, reason: "This result comes from adding the minutes to the revolutions, which is an incorrect operation." },
-      { text: distractorRandom.toString(), isCorrect: false, reason: "This number does not result from a standard arithmetic mistake but is significantly off. It might result from a multiplication error or miscalculation, but it is not the correct rate." }
+      { text: correctRate.toString(), isCorrect: true, reason: '' },
+      { text: fmt(distractorSubtract), isCorrect: false, reason: `${fmt(distractorSubtract)} is the result of subtracting ${minutes} from ${fmt(totalRevolutions)} instead of dividing` },
+      { text: fmt(distractorAdd), isCorrect: false, reason: `${fmt(distractorAdd)} is the result of adding ${minutes} to ${fmt(totalRevolutions)} instead of dividing` },
+      { text: fmt(distractorMultiply), isCorrect: false, reason: `${fmt(distractorMultiply)} is the result of multiplying ${fmt(totalRevolutions)} by ${minutes} instead of dividing` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -45,13 +52,12 @@ export const generator_505 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `To find the number of revolutions per minute, you need to divide the total number of revolutions by the total number of minutes.\\n\\nGiven:\\nTotal revolutions $= ${totalRevolutions}$\\nTotal time $= ${minutes}$ minutes\\n\\nFormula for rate:\\n$$\\text{Rate} = \\frac{\\text{Total revolutions}}{\\text{Total time}}$$\\n\\nCalculation:\\n$$\\text{Rate} = \\frac{${totalRevolutions}}{${minutes}}$$\\n$$\\text{Rate} = ${correctRate}$$\\n\\nSo, the turbine completes $${correctRate}$ revolutions per minute.\\n\\nWhy other options are incorrect:\\nChoice ${incorrectOptions[0].letter}: ${incorrectOptions[0].reason}\\nChoice ${incorrectOptions[1].letter}: ${incorrectOptions[1].reason}\\nChoice ${incorrectOptions[2].letter}: ${incorrectOptions[2].reason}`;
+    const explanation = `Choice ${correctOption.letter} is correct. To find the number of revolutions per minute, divide the total number of revolutions by the number of minutes: $${mfmt(totalRevolutions)} \\div ${minutes} = ${correctRate}$. So the turbine completes ${correctRate} revolutions per minute. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `A wind turbine completes $${totalRevolutions}$ revolutions in $${minutes}$ minutes. At this rate, how many revolutions per minute does this turbine complete?`,
+      questionText: `A wind turbine completes ${fmt(totalRevolutions)} revolutions in ${minutes} minutes. At this rate, how many revolutions per minute does this turbine complete?`,
       figureCode: null,
       options: shuffledOptions.map(opt => opt.text),
       correctAnswer: correctRate.toString(),
