@@ -36,30 +36,30 @@ export const generator_1037 = {
     const correctAnswer = `\\frac{prs}{pr+ps+rs}`;
     
     // STEP 2: Create distractors
-    const distractorA = `p+r+s`;
-    const distractorB = `${k}(p+r+s)`;
-    const distractorD = `\\frac{prs}{${k}p+${k}r+${k}s}`;
-    
-    const optionsData = [
-      { text: `$${distractorA}$`, isCorrect: false, reason: "incorrectly adds the variables instead of using reciprocal relationship" },
-      { text: `$${distractorB}$`, isCorrect: false, reason: "incorrectly includes the common factor and uses addition" },
-      { text: `$${correctAnswer}$`, isCorrect: true },
-      { text: `$${distractorD}$`, isCorrect: false, reason: "incorrectly includes the common factor in the denominator" }
+    // Before: the wrong choices were k(p+r+s) and prs/(kp+kr+ks), which no
+    // real solving slip produces, with vague reasons, and the explanation was
+    // split over lines. Now each wrong choice comes from a named slip, three
+    // of four slips are drawn each time, and the explanation is one paragraph.
+    const slips = [
+      { text: `$p+r+s$`, reason: `$p+r+s$ comes from taking the reciprocal of each term separately, but the reciprocal of $\\frac{1}{p}+\\frac{1}{r}+\\frac{1}{s}$ is not $p+r+s$` },
+      { text: `$\\frac{pr+ps+rs}{prs}$`, reason: `$\\frac{pr+ps+rs}{prs}$ is the value of $\\frac{1}{q}$; the last step of taking the reciprocal was skipped` },
+      { text: `$\\frac{prs}{rs-ps-pr}$`, reason: `$\\frac{prs}{rs-ps-pr}$ comes from keeping the minus signs when moving $\\frac{1}{r}$ and $\\frac{1}{s}$ to the other side, which gives $\\frac{1}{q}=\\frac{1}{p}-\\frac{1}{r}-\\frac{1}{s}$ instead of a sum` },
+      { text: `$\\frac{prs}{${k}(pr+ps+rs)}$`, reason: `$\\frac{prs}{${k}(pr+ps+rs)}$ comes from writing $\\frac{${k}}{q}=\\frac{${k}(pr+ps+rs)}{prs}$ and then treating $\\frac{${k}}{q}$ as if it were $\\frac{1}{q}$` }
     ];
-    
+    const optionsData = [
+      { text: `$${correctAnswer}$`, isCorrect: true, reason: '' },
+      ...shuffle(slips).slice(0, 3).map(s => ({ ...s, isCorrect: false }))
+    ];
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    const explanation = `Choice ${correctLetter} is correct. Dividing both sides of the equation by ${k} gives $\\frac{1}{p}=\\frac{1}{q}-\\frac{1}{r}-\\frac{1}{s}$. Rearranging to isolate the term with $q$ gives $\\frac{1}{q}=\\frac{1}{p}+\\frac{1}{r}+\\frac{1}{s}=\\frac{rs+ps+pr}{prs}$. Taking the reciprocal of both sides gives $q=\\frac{prs}{pr+ps+rs}$.
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+
+    const explanation = `Choice ${correctOption.letter} is correct. Dividing both sides of the equation by ${k} gives $\\frac{1}{p}=\\frac{1}{q}-\\frac{1}{r}-\\frac{1}{s}$. Adding $\\frac{1}{r}$ and $\\frac{1}{s}$ to both sides gives $\\frac{1}{q}=\\frac{1}{p}+\\frac{1}{r}+\\frac{1}{s}=\\frac{rs+ps+pr}{prs}$. Taking the reciprocal of both sides gives $q=\\frac{prs}{pr+ps+rs}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
     
     return {
       questionText: `$\\frac{${k}}{p} = \\frac{${k}}{q} - \\frac{${k}}{r} - \\frac{${k}}{s}$\n\nThe given equation relates the positive variables $p, q, r,$ and $s$. Which of the following is equivalent to $q$?`,
