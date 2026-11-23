@@ -35,16 +35,22 @@ export const generator_1039 = {
     // Max integer b = 2*root - 1
     
     const maxB = 2 * root - 1;
-    
+
+    // c and 4c reach four digits and used to print with no thousands comma.
+    // Inside math the comma is written {,}.
+    const tex = (n: number) => n.toLocaleString('en-US').replace(/,/g, '{,}');
+    const cTex = tex(c);
+    const fourCTex = tex(4 * c);
+
     // STEP 2: No figure needed
     const figureCode = null;
-    
+
     return {
-      questionText: `$-x^2 + bx - ${c} = 0$\n\nIn the given equation, $b$ is a positive integer. The equation has no real solution. What is the greatest possible value of $b$?`,
+      questionText: `$-x^2 + bx - ${cTex} = 0$\n\nIn the given equation, $b$ is a positive integer. The equation has no real solution. What is the greatest possible value of $b$?`,
       figureCode: figureCode,
       options: [],
       correctAnswer: maxB.toString(),
-      explanation: `The correct answer is $${maxB}$. For no real solutions, the discriminant must be negative: $b^2-4(-1)(-${c})=b^2-${4*c}<0$. Thus $b^2<${4*c}$, so $|b|<${2*root}$. Since $b$ is a positive integer, the greatest possible value is $${maxB}$.`
+      explanation: `The correct answer is ${maxB}. An equation of this form has no real solution exactly when its discriminant is negative: $b^2-4(-1)(-${cTex})=b^2-${fourCTex}<0$. Thus $b^2<${fourCTex}$. Since $${2 * root}^2=${fourCTex}$, this means $|b|<${2 * root}$. Since $b$ is a positive integer, the greatest possible value of $b$ is ${maxB}.`
     };
   }
 };
