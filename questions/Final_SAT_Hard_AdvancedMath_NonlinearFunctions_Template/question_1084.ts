@@ -25,15 +25,23 @@ export const generator_1084 = {
   },
   
   generate: (): QuestionData => {
-    const h = -getRandomInt(3, 10);
-    const k = getRandomInt(2, 8);
-    
+    // Before: the answer was always negative and k always positive, the stem
+    // opened on a bare equation, and the explanation never said why the square
+    // decides the minimum. Now both signs occur and |k| never equals |h|, so
+    // the minimum value cannot be mistaken for the x value.
+    const h = getRandomElement([-1, 1]) * getRandomInt(3, 10);
+    let k = getRandomElement([-1, 1]) * getRandomInt(2, 9);
+    while (Math.abs(k) === Math.abs(h)) k = getRandomElement([-1, 1]) * getRandomInt(2, 9);
+
+    const shift = h > 0 ? `-${h}` : `+${-h}`;
+    const kTerm = k > 0 ? `+${k}` : `-${-k}`;
+
     return {
-      questionText: `$f(x)=(x${h >= 0 ? `-${h}` : `+${Math.abs(h)}`})^2+${k}$. For what value of $x$ does $f(x)$ reach its minimum?`,
+      questionText: `The function $f$ is defined by $f(x)=(x${shift})^2${kTerm}$. For what value of $x$ does $f(x)$ reach its minimum?`,
       figureCode: null,
       options: [],
       correctAnswer: h.toString(),
-      explanation: `In vertex form $f(x)=(x-h)^2+k$, the minimum occurs at $x=h$. Here $h=${h}$, so the minimum is at $x=${h}$.`
+      explanation: `The correct answer is $${h}$. A squared expression is never negative, so $(x${shift})^2$ has its smallest value, $0$, when $x${shift}=0$, which means $x=${h}$. At that value, $f(${h})=0${kTerm}=${k}$, so the minimum value of $f$ is $${k}$, and it occurs at $x=${h}$.`
     };
   }
 };
