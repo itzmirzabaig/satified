@@ -28,15 +28,14 @@ export const generator_1040 = {
     // The product is given as kab, so k = 1/A.
     const A = getRandomInt(30, 80);
 
-    // Distractor denominator: floor(A/3) lies in [10, 26] while A >= 30,
-    // so 1/wrongDenom can never collide with the correct 1/A.
-    const wrongDenom = Math.floor(A / 3);
-
+    // Before: one wrong choice was 1/floor(A/3), an arbitrary number no solving
+    // slip produces. It is now the sign slip -1/A, every reason names its value
+    // and slip, and the explanation is one paragraph.
     const optionsData = [
       { text: `$\\frac{1}{${A}}$`, isCorrect: true, reason: "" },
-      { text: `$\\frac{1}{${wrongDenom}}$`, isCorrect: false, reason: "uses a denominator other than the leading coefficient" },
-      { text: `$1$`, isCorrect: false, reason: "comes from forgetting to divide the constant term by the leading coefficient" },
-      { text: `$${A}$`, isCorrect: false, reason: "inverts the relationship, using the leading coefficient itself instead of its reciprocal" }
+      { text: `$-\\frac{1}{${A}}$`, isCorrect: false, reason: `$-\\frac{1}{${A}}$ comes from using $-\\frac{r}{p}$ for the product of the solutions, but the negative sign belongs to the sum of the solutions, $-\\frac{q}{p}$` },
+      { text: `$1$`, isCorrect: false, reason: `$1$ comes from taking the product of the solutions to be the constant term $ab$ without dividing by the leading coefficient ${A}` },
+      { text: `$${A}$`, isCorrect: false, reason: `$${A}$ comes from multiplying the constant term $ab$ by the leading coefficient instead of dividing by it` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -45,13 +44,9 @@ export const generator_1040 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. For a quadratic equation $px^2+qx+r=0$, the product of the solutions is $\\frac{r}{p}$. Here $p=${A}$, $q=${A}b+a$, and $r=ab$, so the product of the solutions is $\\frac{ab}{${A}}$. Since this product is given as $kab$, it follows that $k=\\frac{1}{${A}}$.
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. For a quadratic equation $px^2+qx+r=0$, the product of the solutions is $\\frac{r}{p}$. Here $p=${A}$, $q=${A}b+a$, and $r=ab$, so the product of the solutions is $\\frac{ab}{${A}}$. Since this product is given as $kab$, it follows that $k=\\frac{1}{${A}}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `$ ${A}x^2 + (${A}b + a)x + ab = 0$\n\nIn the given equation, $a$ and $b$ are positive constants. The product of the solutions to the given equation is $kab$, where $k$ is a constant. What is the value of $k$?`,
