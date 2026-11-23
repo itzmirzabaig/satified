@@ -31,6 +31,7 @@ export const generator_1073 = {
     
     // Discriminant: b² - 4c < 0 → 4p² - 4c < 0 → c > p²
     const threshold = p * p;
+    // Fix: b^2 reaches 2,500 and was printed in the explanation with no comma.
     
     // STEP 2: No figure needed
     const figureCode = null;
@@ -40,7 +41,7 @@ export const generator_1073 = {
       figureCode: figureCode,
       options: [],
       correctAnswer: threshold.toString(),
-      explanation: `The correct answer is $${threshold}$. For no real solutions, the discriminant is negative: $(-${b})^2-4c<0$, so $${b*b}<4c$, thus $c>${threshold}$. The least possible value of $n$ is $${threshold}$.`
+      explanation: `The correct answer is $${threshold}$. For no real solutions, the discriminant is negative: $(-${b})^2-4c<0$, so $${(b*b).toLocaleString('en-US').replace(/,/g, '{,}')}<4c$, thus $c>${threshold}$. The least possible value of $n$ is $${threshold}$.`
     };
   }
 };
