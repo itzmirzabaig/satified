@@ -4,9 +4,8 @@ import type { QuestionData } from '../../study/types';
 /**
  * Question 527
  * FIXED:
- * - Set SVG height to 500px (very tall) to prevent clipping.
- * - Set Bottom Margin to 130px to create a massive safe zone for labels.
- * - Positioned X-axis numbers and titles well within the visible boundary.
+ * - SVG is 280 tall with a 60 bottom margin, enough for the x axis numbers
+ *   and title without clipping or a large empty band.
  */
 
 export const generator_527 = {
@@ -41,8 +40,10 @@ export const generator_527 = {
 
     // 2. SVG Configuration
     const width = 450;
-    const height = 350  ; // Drastically increased height
-    const margin = { top: 20, right: 30, bottom: 130, left: 60 }; // Huge bottom margin
+    // Trimmed the oversized empty band under the x axis (was a 130 bottom
+    // margin); the plot area keeps the same 200 height.
+    const height = 280;
+    const margin = { top: 20, right: 30, bottom: 60, left: 60 };
     
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
@@ -72,7 +73,7 @@ export const generator_527 = {
     for (let v = 0; v <= xMax; v += 1) {
       const x = getX(v);
       // Labels positioned 30px below axis line (well within the 130px margin)
-      const labelY = margin.top + chartHeight + 30;
+      const labelY = margin.top + chartHeight + 22;
       gridLines.push(`
         <line x1="${x}" y1="${margin.top}" x2="${x}" y2="${margin.top + chartHeight}" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" />
         <text x="${x}" y="${labelY}" text-anchor="middle" font-size="12" fill="currentColor">${v}</text>
@@ -87,7 +88,7 @@ export const generator_527 = {
     // Axis Titles Positions
     // Y Title: centered vertically
     // X Title: positioned 80px below the graph (still has 50px buffer before bottom edge)
-    const xTitleY = margin.top + chartHeight + 80;
+    const xTitleY = margin.top + chartHeight + 48;
 
     const svgContent = `
       <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; font-family: sans-serif; overflow: visible;">
@@ -110,27 +111,29 @@ export const generator_527 = {
     `;
 
     // 4. Generate Options
+    // Before: the explanation contained raw line breaks and a numbered list,
+    // and when a = 1 one choice printed as "1x^{2}". Coefficients of 1 are now
+    // dropped and the explanation is plain sentences.
+    const coef = (n: number) => (n === 1 ? '' : `${n}`);
+    const lead = `y=${coef(a)}x^{2}`;
     const termB = b >= 0 ? `+${b}x` : `${b}x`;
-    
-    // Correct: y = ax^2 + bx + c
-    const optCorrect = `y=${a}x^{2}${termB}+${c}`;
-    
-    // Distractor 1: Wrong intercept sign (y = ax^2 + bx - c)
-    const optWrongInt = `y=${a}x^{2}${termB}-${c}`;
-    
-    // Distractor 2: Wrong Vertex Direction/Sign
     const wrongBVal = -b;
     const termWrongB = wrongBVal >= 0 ? `+${wrongBVal}x` : `${wrongBVal}x`;
-    const optWrongVertex = `y=${a}x^{2}${termWrongB}+${c}`;
 
-    // Distractor 3: Linear/Wrong form
-    const optWrongShape = `y=${a}x^{2}-${h}x+${k}`;
+    // Correct: y = ax^2 + bx + c
+    const optCorrect = `${lead}${termB}+${c}`;
+    // Constant term with the wrong sign
+    const optWrongInt = `${lead}${termB}-${c}`;
+    // x term with the wrong sign, which moves the vertex to x = -h
+    const optWrongVertex = `${lead}${termWrongB}+${c}`;
+    // Vertex coordinates dropped straight into standard form
+    const optWrongShape = `${lead}-${h}x+${k}`;
 
     const optionsData = [
-      { text: `$${optWrongInt}$`, isCorrect: false, kind: 'wrongInt' },
-      { text: `$${optCorrect}$`, isCorrect: true, kind: 'correct' },
-      { text: `$${optWrongVertex}$`, isCorrect: false, kind: 'wrongVertex' },
-      { text: `$${optWrongShape}$`, isCorrect: false, kind: 'wrongShape' }
+      { text: `$${optWrongInt}$`, isCorrect: false, reason: `the constant term of $${optWrongInt}$ is $-${c}$, so its graph would cross the y-axis at $y=-${c}$, but the data cross the y-axis near the positive value $y=${c}$` },
+      { text: `$${optCorrect}$`, isCorrect: true, reason: '' },
+      { text: `$${optWrongVertex}$`, isCorrect: false, reason: `the x term of $${optWrongVertex}$ has the wrong sign, so its axis of symmetry is $x=-${h}$, placing the lowest point to the left of the y-axis instead of near $x=${h}$` },
+      { text: `$${optWrongShape}$`, isCorrect: false, reason: `$${optWrongShape}$ uses the coordinates of the lowest point, ${h} and ${k}, directly as coefficients; its graph would cross the y-axis at $y=${k}$, not near $y=${c}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -139,24 +142,14 @@ export const generator_527 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
-    // Look up each distractor by its ROLE (not shuffle position) so every
-    // per-choice reason describes the option it actually points to.
-    const wrongIntOpt = shuffledOptions.find(o => o.kind === 'wrongInt')!;
-    const wrongVertexOpt = shuffledOptions.find(o => o.kind === 'wrongVertex')!;
-    const wrongShapeOpt = shuffledOptions.find(o => o.kind === 'wrongShape')!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: "Of the following, which is the best model for the data in the scatterplot?",
-      figureCode: svgContent,
+      figureCode: `<div style="width:100%;max-width:460px;margin:0 auto;">${svgContent}</div>`,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct. The scatterplot shows data that forms an upward-opening parabola. The data suggests a y-intercept (where $x=0$) near $y=${c}$ and a vertex (lowest point) around $x=${h}$.
-
-      Looking at the correct equation $${correctOption.text}$:
-      1. The constant term is $+${c}$, matching the y-intercept.
-      2. The axis of symmetry for $y=ax^2+bx+c$ is $x = -b/(2a)$. Here, $x = -(${b}) / (2 \\cdot ${a}) = ${h}$, which matches the vertex x-coordinate.
-
-      Choice ${wrongIntOpt.letter} is incorrect because its constant term is $-${c}$, giving a negative y-intercept, but the data crosses the y-axis at the positive value $y=${c}$. Choice ${wrongVertexOpt.letter} is incorrect because its axis of symmetry is $x = -${wrongBVal >= 0 ? wrongBVal : -wrongBVal}/(2 \\cdot ${a}) = ${-h}$, placing the vertex to the left of the y-axis instead of at $x=${h}$. Choice ${wrongShapeOpt.letter} is incorrect because its constant term $+${k}$ does not match the y-intercept $y=${c}$, and its vertex does not fall at $x=${h}$.`
+      explanation: `Choice ${correctOption.letter} is correct. The data form a parabola that opens upward, with its lowest point near $(${h}, ${k})$ and a y-intercept near $y=${c}$. The constant term of $${optCorrect}$ is ${c}, which matches the y-intercept. Its axis of symmetry is $x=-\\frac{${b}}{2(${a})}=${h}$, which matches the x-coordinate of the lowest point, and substituting $x=${h}$ gives $y=${a === 1 ? '' : `${a}`}(${h})^{2}${b < 0 ? '-' : '+'}${Math.abs(b)}(${h})+${c}=${k}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
