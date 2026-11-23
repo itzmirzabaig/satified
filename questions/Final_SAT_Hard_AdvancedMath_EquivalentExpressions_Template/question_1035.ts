@@ -46,11 +46,13 @@ export const generator_1035 = {
     const bEx2 = absC - h;
 
     // STEP 3: Create options
+    // Reasons now start with the value and name the slip (before they opened
+    // with generic clauses and the explanation used "is incorrect;").
     const optionsData = [
-      { text: `$\\frac{b}{h}$`, isCorrect: false, reason: `the factorization only requires $kj = -${absC}$; taking $k = 1$ and $j = -${absC}$ gives $b = hj + k = ${bEx1}$, and $\\frac{b}{h} = \\frac{${bEx1}}{${h}}$ is not an integer` },
-      { text: `$\\frac{b}{k}$`, isCorrect: false, reason: `taking $k = ${absC}$ and $j = -1$ gives $b = hj + k = ${bEx2}$, and $\\frac{b}{k} = \\frac{${bEx2}}{${absC}}$ is not an integer` },
-      { text: `$\\frac{${absC}}{h}$`, isCorrect: false, reason: `matching leading coefficients gives $h = ${h}$, and ${absC} is not divisible by ${h}, so $\\frac{${absC}}{${h}}$ is not an integer` },
-      { text: correctAnswer, isCorrect: true }
+      { text: `$\\frac{b}{h}$`, isCorrect: false, reason: `$\\frac{b}{h}$ is not always an integer: the factorization only requires $kj = -${absC}$, so $k = 1$ and $j = -${absC}$ are allowed, which gives $b = hj + k = ${bEx1}$ and $\\frac{b}{h} = \\frac{${bEx1}}{${h}}$, not an integer` },
+      { text: `$\\frac{b}{k}$`, isCorrect: false, reason: `$\\frac{b}{k}$ is not always an integer: $k = ${absC}$ and $j = -1$ are allowed, which gives $b = hj + k = ${bEx2}$ and $\\frac{b}{k} = \\frac{${bEx2}}{${absC}}$, not an integer` },
+      { text: `$\\frac{${absC}}{h}$`, isCorrect: false, reason: `$\\frac{${absC}}{h}$ assumes $h$ divides the constant term, but matching leading coefficients gives $h = ${h}$, and $\\frac{${absC}}{${h}}$ is not an integer` },
+      { text: correctAnswer, isCorrect: true, reason: '' }
     ];
 
     // STEP 4: Shuffle
@@ -60,25 +62,15 @@ export const generator_1035 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
     // STEP 5: Question text (b remains symbolic)
     const questionText = `The expression $\\,${h}x^{2} + bx - ${absC}$, where $b$ is a constant, can be rewritten as $(hx + k)(x + j)$, where $h$, $k$, and $j$ are integer constants. Which of the following must be an integer?`;
 
     // STEP 6: Explanation
-    const explanation = `Choice ${correctLetter} is correct. Expanding the factored form:
-$$(hx + k)(x + j) = hx^{2} + (hj + k)x + kj$$
-
-Matching this to $\\,${h}x^{2} + bx - ${absC}$ shows that $h = ${h}$, that $b = hj + k$, and that $kj = -${absC}$.
-
-Because $k$ and $j$ are integers with $kj = -${absC}$, dividing both sides by $k$ gives $j = -\\frac{${absC}}{k}$. So $\\frac{${absC}}{k} = -j$, which is an integer for every allowed pair of values of $k$ and $j$. Therefore $\\frac{${absC}}{k}$ must be an integer.
-
-The other choices can fail to be integers because the condition $kj = -${absC}$ does not pin down which factor pair is used.
-
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
+    // Before: display math split over several lines. Now one paragraph in the
+    // standard format.
+    const explanation = `Choice ${correctOption.letter} is correct. Expanding the factored form gives $(hx + k)(x + j) = hx^{2} + (hj + k)x + kj$. Matching this to $${h}x^{2} + bx - ${absC}$ shows that $h = ${h}$, $b = hj + k$, and $kj = -${absC}$. Because $k$ and $j$ are integers with $kj = -${absC}$, dividing both sides by $k$ gives $j = -\\frac{${absC}}{k}$. So $\\frac{${absC}}{k} = -j$, which is an integer for every allowed pair of values of $k$ and $j$. Therefore $\\frac{${absC}}{k}$ must be an integer. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: questionText,
