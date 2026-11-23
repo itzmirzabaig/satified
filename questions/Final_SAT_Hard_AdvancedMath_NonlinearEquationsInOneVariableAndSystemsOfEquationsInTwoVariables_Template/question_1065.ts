@@ -71,7 +71,9 @@ export const generator_1065 = {
       figureCode: figureCode,
       options: [], // Fill-in-the-blank
       correctAnswer: aDisplay,
-      explanation: `The correct answer is $${aDisplay}$. According to the first equation in the given system, the value of $y$ is ${horizontalYDisplay}. Substituting ${horizontalYDisplay} for $y$ in the second equation yields $${horizontalYDisplay} = x^2 + ${linearCoeff}x + a$. Adding ${Math.abs(horizontalY)} to both sides yields $0 = x^2 + ${linearCoeff}x + (a + ${Math.abs(horizontalY)})$. If the given system has exactly one distinct real solution, the discriminant must equal 0. The discriminant is $(${linearCoeff})^2 - 4(1)(a + ${Math.abs(horizontalY)}) = ${linearCoeff * linearCoeff} - 4a - ${4 * Math.abs(horizontalY)}$. Setting this equal to 0 and solving: $4a = ${linearCoeff * linearCoeff - 4 * Math.abs(horizontalY)}$, so $a = ${aDisplay}$.`
+      // Fix: the explanation printed negatives with a plain hyphen outside math, showed the
+      // answer as a slash inside math, and ended on a sentence fragment.
+      explanation: `The correct answer is ${aDisplay}. According to the first equation in the given system, the value of $y$ is $${horizontalYDisplay}$. Substituting $${horizontalYDisplay}$ for $y$ in the second equation yields $${horizontalYDisplay} = x^2 + ${linearCoeff}x + a$. Adding ${Math.abs(horizontalY)} to both sides yields $0 = x^2 + ${linearCoeff}x + (a + ${Math.abs(horizontalY)})$. If the given system has exactly one distinct real solution, the discriminant must equal 0. The discriminant is $(${linearCoeff})^2 - 4(1)(a + ${Math.abs(horizontalY)}) = ${linearCoeff * linearCoeff} - 4a - ${4 * Math.abs(horizontalY)}$. Setting this equal to 0 gives $4a = ${linearCoeff * linearCoeff - 4 * Math.abs(horizontalY)}$, so $a = \\frac{${simplifiedNum}}{${simplifiedDen}}$, which is equivalent to ${aValue}.`
     };
   }
 };
