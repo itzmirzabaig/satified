@@ -42,7 +42,8 @@ export const generator_1048 = {
       figureCode: null,
       options: [],
       correctAnswer: cValue.toString(),
-      explanation: `The correct answer is $${cValue}$. A quadratic equation has exactly one solution when its discriminant, $b^2 - 4ac$, is equal to zero. In the given equation, $a = ${a}$ and $b = ${bCoef}$, so the discriminant is $(${bCoef})^2 - 4(${a})c = ${4 * h * h} + ${-4 * a}c$. Setting the discriminant equal to zero gives $c = -\\frac{${4 * h * h}}{${-4 * a}} = ${cValue}$.`
+      // Before: a and b were used without saying which form they come from.
+      explanation: `The correct answer is $${cValue}$. A quadratic equation of the form $ax^2 + bx + c = 0$ has exactly one solution when its discriminant, $b^2 - 4ac$, is equal to zero. In the given equation, $a = ${a}$ and $b = ${bCoef}$, so the discriminant is $(${bCoef})^2 - 4(${a})c = ${4 * h * h} + ${-4 * a}c$. Setting the discriminant equal to zero gives $${4 * h * h} + ${-4 * a}c = 0$, so $c = -\\frac{${4 * h * h}}{${-4 * a}} = ${cValue}$.`
     };
   }
 };
