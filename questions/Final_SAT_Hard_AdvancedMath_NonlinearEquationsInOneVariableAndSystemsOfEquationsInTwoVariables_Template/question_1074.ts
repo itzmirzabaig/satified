@@ -38,8 +38,10 @@ export const generator_1074 = {
     // STEP 2: No figure needed
     const figureCode = null;
     
+    // Fixed: the stem used the hyphenated compound "5-second time interval";
+    // reworded as "a time interval of 5 seconds" (no hyphenated phrasing in copy).
     return {
-      questionText: `During a $${time}$-second time interval, the average acceleration $a$, in meters per second squared, of an object with an initial velocity of $${initialVelocity}$ meters per second is defined by the equation $a=\\frac{v_f-${initialVelocity}}{${time}}$, where $v_f$ is the final velocity of the object in meters per second. If the equation is rewritten in the form $v_f=xa+y$, where $x$ and $y$ are constants, what is the value of $x$?`,
+      questionText: `During a time interval of $${time}$ seconds, the average acceleration $a$, in meters per second squared, of an object with an initial velocity of $${initialVelocity}$ meters per second is defined by the equation $a=\\frac{v_f-${initialVelocity}}{${time}}$, where $v_f$ is the final velocity of the object in meters per second. If the equation is rewritten in the form $v_f=xa+y$, where $x$ and $y$ are constants, what is the value of $x$?`,
       figureCode: figureCode,
       options: [],
       correctAnswer: xValue.toString(),
