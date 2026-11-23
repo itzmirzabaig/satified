@@ -45,6 +45,9 @@ export const generator_1022 = {
       const cT = getRandomInt(2, 6);
       const dT = getRandomInt(1, 4);
       const signErrConst = aT * dT - cT;
+      // Skip a first fraction that reduces, such as 3/(3x-3).
+      const gcd = (p: number, q: number): number => (q === 0 ? p : gcd(q, p % q));
+      if (gcd(aT, gcd(bT, cT)) !== 1) continue;
       if (signErrConst !== 0 && !(aT === bT && signErrConst === aT - 1)) {
         a = aT; b = bT; c = cT; d = dT;
         break;
