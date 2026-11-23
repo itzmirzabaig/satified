@@ -50,8 +50,9 @@ export const generator_1020 = {
     const correctAnswer = finalDen === 1 ? `${finalNum}` : `${finalNum}/${finalDen}`;
     const answerDisplay = finalDen === 1 ? `${finalNum}` : `\\frac{${finalNum}}{${finalDen}}`;
 
-    // STEP 3: Build question
-    const questionText = `If $\\frac{\\sqrt{x^{${m}}}}{\\sqrt[3]{x^{${n}}}} = x^{\\frac{a}{b}}$ for all positive values of $x$, what is the value of $\\frac{a}{b}$? (If your answer is a fraction, enter it as a fraction, for example 7/6.)`;
+    // STEP 3: Build question. The entry hint used to give 7/6 as an example,
+    // which is the actual answer when m = 5, n = 4 or m = 7, n = 7.
+    const questionText = `If $\\frac{\\sqrt{x^{${m}}}}{\\sqrt[3]{x^{${n}}}} = x^{\\frac{a}{b}}$ for all positive values of $x$, what is the value of $\\frac{a}{b}$? (If your answer is not an integer, enter it as a fraction.)`;
 
     // STEP 4: Explanation (one paragraph, inline math)
     const explanation = `The correct answer is ${correctAnswer}. Rewrite each radical as a power with a rational exponent: $\\sqrt{x^{${m}}} = x^{\\frac{${m}}{2}}$ and $\\sqrt[3]{x^{${n}}} = x^{\\frac{${n}}{3}}$. Dividing powers with the same base subtracts the exponents, so the expression equals $x^{\\frac{${m}}{2} - \\frac{${n}}{3}}$. With the common denominator 6, $\\frac{${m}}{2} - \\frac{${n}}{3} = \\frac{${3 * m}}{6} - \\frac{${2 * n}}{6} = \\frac{${numerator}}{6}${g > 1 ? ` = ${answerDisplay}` : ''}$. Therefore $\\frac{a}{b} = ${answerDisplay}$.`;
