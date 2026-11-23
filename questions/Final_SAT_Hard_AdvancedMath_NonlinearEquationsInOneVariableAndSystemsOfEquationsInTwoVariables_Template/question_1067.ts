@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -7,7 +7,7 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [quadratic with b=-2, c=-9, discriminant gives 40 under radical]
  * - Difficulty factors: [Quadratic formula, simplifying radical, identifying k in form 1+√k]
- * - Distractor patterns: [8 = incorrect radicand, 20 = half of discriminant, 40 = unsimplified discriminant]
+ * - Distractor patterns: [k-1 = forgot to add 1 when completing the square, 2k = sqrt(4k)/2 taken as sqrt(2k), 4k = left 1 + sqrt(4k)]
  * - Constraints: [Discriminant must be positive but not perfect square, must simplify to form with √k where k is square-free]
  * - Question type: [Multiple choice text]
  * - Figure generation: [None]
@@ -23,64 +23,44 @@ export const generator_1067 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values preserving difficulty
-    // Original: x² - 2x - 9 = 0, solution form 1 ± √10, so k = 10
-    // We need discriminant = b² - 4ac to simplify to 4k where k is the answer
-    
-    // For equation x² + bx + c = 0 to give solutions (-b ± √(b²-4c))/2
-    // If we want form 1 ± √k, then -b/2 = 1, so b = -2
-    // And √(b²-4c)/2 = √k, so (b²-4c)/4 = k, thus b²-4c = 4k
-    
-    const b = -2; // Fixed to get the "1 +" part
-    const k = getRandomInt(6, 15); // The answer, should be square-free
-    // Check if k is square-free (not divisible by perfect squares > 1)
-    // Simple check: not divisible by 4 or 9
-    
+    // Equation x^2 - 2x + (1-k) = 0 has solutions 1 +/- sqrt(k).
+    // Fix: before, k could be the perfect square 9 (then 1 + sqrt(9) is just 4),
+    // two choices were floor(k/2) and 2k with made up reasons ("might result from
+    // dividing the correct value by 2"), the reasons did not follow the
+    // "Choice X is incorrect because" form, and they were printed on separate
+    // lines. Now k is never a perfect square and every wrong choice is a real slip:
+    //  - k-1: completing the square without adding 1 to the right side
+    //  - 2k: simplifying sqrt(4k)/2 as sqrt(4k/2)
+    //  - 4k: dividing only the 2 by 2, leaving 1 + sqrt(4k)
+    const pool = [5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20];
+    const k = pool[getRandomInt(0, pool.length - 1)];
+    const b = -2;
+    const c = 1 - k; // always negative
     const discriminant = 4 * k;
-    // b² - 4c = discriminant → 4 - 4c = 4k → c = 1 - k
-    const c = 1 - k;
-    
-    // STEP 2: Calculate derived values
-    // Solutions: (2 ± √(4-4(1-k)))/2 = (2 ± √(4k))/2 = (2 ± 2√k)/2 = 1 ± √k
-    // So one solution is 1 + √k
-    
-    // STEP 3: Create distractors
-    // Distractor A: k/2 or some incorrect calculation
-    const distractorA = Math.floor(k / 2);
-    // Distractor C: 2*k
-    const distractorC = 2 * k;
-    // Distractor D: discriminant value (unsimplified)
-    const distractorD = discriminant;
-    
-    // STEP 4: Create options with tracking
+
     const optionsData = [
-      { text: distractorA.toString(), isCorrect: false, reason: "is incorrect; this might result from dividing the correct value by 2" },
-      { text: k.toString(), isCorrect: true },
-      { text: distractorC.toString(), isCorrect: false, reason: "is incorrect; this might result from multiplying instead of simplifying the discriminant" },
-      { text: distractorD.toString(), isCorrect: false, reason: "is incorrect; this is the discriminant before simplification, not the value of k" }
+      { text: `${k - 1}`, isCorrect: false, reason: `${k - 1} results from completing the square without adding 1 to both sides, writing $(x-1)^2=${k - 1}$ instead of $(x-1)^2=${k}$` },
+      { text: `${k}`, isCorrect: true, reason: '' },
+      { text: `${2 * k}`, isCorrect: false, reason: `${2 * k} results from simplifying $\\frac{\\sqrt{${discriminant}}}{2}$ as $\\sqrt{\\frac{${discriminant}}{2}}=\\sqrt{${2 * k}}$; moving the 2 inside the radical requires dividing by 4, not 2` },
+      { text: `${4 * k}`, isCorrect: false, reason: `${4 * k} results from dividing only the 2 by 2 in $\\frac{2+\\sqrt{${discriminant}}}{2}$, which gives $1+\\sqrt{${discriminant}}$ instead of $1+\\sqrt{${k}}$` }
     ];
-    
-    // STEP 5: Shuffle and assign letters
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    // STEP 6: Build explanation
-    const explanation = `Choice ${correctLetter} is correct. Using the quadratic formula for $x^2 ${b >= 0 ? '+' : ''}${b}x ${c >= 0 ? '+' : ''}${c} = 0$ where $a=1$, $b=${b}$, and $c=${c}$: $x = \\frac{${-b} \\pm \\sqrt{${b*b} - 4(1)(${c})}}{2} = \\frac{2 \\pm \\sqrt{${discriminant}}}{2} = \\frac{2 \\pm 2\\sqrt{${k}}}{2} = 1 \\pm \\sqrt{${k}}$. Comparing $1 + \\sqrt{${k}}$ to $1 + \\sqrt{k}$, we get $k = ${k}$.
-Choice ${incorrectOptions[0].letter} ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} ${incorrectOptions[2].reason}.`;
-    
+
+    const explanation = `Choice ${correctLetter} is correct. By the quadratic formula with $a=1$, $b=${b}$, and $c=${c}$, the solutions are $x=\\frac{2\\pm\\sqrt{(${b})^2-4(1)(${c})}}{2}=\\frac{2\\pm\\sqrt{${discriminant}}}{2}$. Since $\\sqrt{${discriminant}}=\\sqrt{4}\\cdot\\sqrt{${k}}=2\\sqrt{${k}}$, this is $\\frac{2\\pm2\\sqrt{${k}}}{2}=1\\pm\\sqrt{${k}}$. One solution is $1+\\sqrt{${k}}$, so $k=${k}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
+
     return {
-      questionText: `One solution to the given equation can be written as $1 + \\sqrt{k}$, where $k$ is a constant. What is the value of $k$?\n\n$x^2 ${b >= 0 ? '+' : ''}${b}x ${c >= 0 ? '+' : ''}${c} = 0$`,
+      questionText: `One solution to the given equation can be written as $1 + \\sqrt{k}$, where $k$ is a constant. What is the value of $k$?\n\n$x^2 - 2x - ${-c} = 0$`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: `$${o.text}$` })),
-      correctAnswer: k.toString(),
+      correctAnswer: String(k),
       explanation: explanation
     };
   }
