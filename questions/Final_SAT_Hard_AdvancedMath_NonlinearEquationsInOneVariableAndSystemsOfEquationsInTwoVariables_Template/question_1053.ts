@@ -50,13 +50,17 @@ export const generator_1053 = {
     const correctSet = `$\\{${validSol}\\}$`;
     const onlyExtraneous = `$\\{${extraneousSol}\\}$`;
     const bothRoots = `$\\{${extraneousSol}, ${validSol}\\}$`;
-    const withZero = `$\\{0, ${extraneousSol}, ${validSol}\\}$`;
+    // Before: a choice added 0 to the set for no reason, the stem said
+    // "equation above", the reasons were generic and the explanation was split
+    // over several lines. The new choice reads the roots straight off the
+    // factors, keeping the signs shown in them.
+    const factorSigns = `$\\{${-validSol}, ${-extraneousSol}\\}$`;
 
     const optionsData = [
-      { text: onlyExtraneous, isCorrect: false, reason: `includes only the extraneous value $x = ${extraneousSol}$, which does not satisfy the original equation` },
+      { text: onlyExtraneous, isCorrect: false, reason: `${onlyExtraneous} keeps the extraneous value and rejects the real solution; $x = ${extraneousSol}$ makes $x - ${eAbs}$ negative, while $x = ${validSol}$ satisfies the original equation` },
       { text: correctSet, isCorrect: true, reason: "" },
-      { text: bothRoots, isCorrect: false, reason: `includes the extraneous value $x = ${extraneousSol}$; squaring both sides can introduce values that fail the original equation, so each candidate must be checked` },
-      { text: withZero, isCorrect: false, reason: `incorrectly includes both the extraneous value $x = ${extraneousSol}$ and the value zero, neither of which satisfies the original equation` }
+      { text: bothRoots, isCorrect: false, reason: `${bothRoots} lists both roots of the squared equation without checking them; $x = ${extraneousSol}$ makes $x - ${eAbs}$ negative, so it is extraneous` },
+      { text: factorSigns, isCorrect: false, reason: `${factorSigns} results from reading the numbers in $(x - ${validSol})(x + ${-extraneousSol})$ with the signs shown instead of setting each factor equal to zero` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -68,13 +72,10 @@ export const generator_1053 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Subtracting ${c} from both sides isolates the radical: $\\sqrt{${a}x+${b}} = x - ${eAbs}$. Squaring both sides gives $x^2 - ${2 * eAbs}x + ${eAbs * eAbs} = ${a}x + ${b}$, which rearranges to $x^2 - ${linearCoef}x - ${constTerm} = 0$. This factors as $(x - ${validSol})(x + ${-extraneousSol}) = 0$, so $x = ${validSol}$ or $x = ${extraneousSol}$. Checking $x = ${validSol}$ in the original equation: the left side is $\\sqrt{${radicandAtValid}} + ${c} = ${sqrtAtValid} + ${c} = ${validSol + d}$ and the right side is $x + ${d} = ${validSol + d}$, so it is a solution. Checking $x = ${extraneousSol}$: the right side of the isolated equation becomes $(${extraneousSol}) - ${eAbs} = ${extraneousSol - eAbs}$, which is negative, and a square root cannot equal a negative number, so $x = ${extraneousSol}$ is extraneous. The solution set is $\\{${validSol}\\}$.
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Subtracting ${c} from both sides isolates the radical: $\\sqrt{${a}x+${b}} = x - ${eAbs}$. Squaring both sides gives $x^2 - ${2 * eAbs}x + ${eAbs * eAbs} = ${a}x + ${b}$, which rearranges to $x^2 - ${linearCoef}x - ${constTerm} = 0$. This factors as $(x - ${validSol})(x + ${-extraneousSol}) = 0$, so $x = ${validSol}$ or $x = ${extraneousSol}$. Checking $x = ${validSol}$ in the original equation: the left side is $\\sqrt{${radicandAtValid}} + ${c} = ${sqrtAtValid} + ${c} = ${validSol + d}$ and the right side is $x + ${d} = ${validSol + d}$, so it is a solution. Checking $x = ${extraneousSol}$: the right side of the isolated equation becomes $(${extraneousSol}) - ${eAbs} = ${extraneousSol - eAbs}$, which is negative, and a square root cannot equal a negative number, so $x = ${extraneousSol}$ is extraneous. The solution set is $\\{${validSol}\\}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `$\\sqrt{${a}x+${b}} + ${c} = x + ${d}$\n\nWhat is the solution set of the equation above?`,
+      questionText: `$\\sqrt{${a}x+${b}} + ${c} = x + ${d}$\n\nWhat is the solution set of the given equation?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
