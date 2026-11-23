@@ -44,16 +44,21 @@ export const generator_1041 = {
     // a - 0.5 <= a, so the tangent-case solution is valid.
     
     const min4k = 4 * a - 1;
-    
+
+    // a^2 is always 1,600 or more and used to print with no thousands comma.
+    // The double root also printed as an unfinished subtraction ("58-0.5").
+    const aSquaredTex = (a * a).toLocaleString('en-US').replace(/,/g, '{,}');
+    const doubleRoot = a - 0.5;
+
     // STEP 2: No figure needed
     const figureCode = null;
-    
+
     return {
       questionText: `$\\sqrt{k-x}=${a}-x$\n\nIn the given equation, $k$ is a constant. The equation has exactly one real solution. What is the minimum possible value of $4k$?`,
       figureCode: figureCode,
       options: [],
       correctAnswer: min4k.toString(),
-      explanation: `The correct answer is $${min4k}$. Squaring both sides gives $k-x=(${a}-x)^2$, which rearranges to $x^2-(2\\cdot${a}-1)x+(${a}^2-k)=0$, i.e. $x^2-${2*a-1}x+(${a*a}-k)=0$. For this quadratic in $x$, the discriminant is $(2\\cdot${a}-1)^2-4(${a}^2-k)=4\\cdot${a}^2-4\\cdot${a}+1-4\\cdot${a}^2+4k=4k-${4*a-1}$. As $k$ increases from small values, the discriminant $4k-${4*a-1}$ is first negative (no real solution), then zero, then positive. The smallest $k$ giving a real solution is where the discriminant equals $0$, i.e. $4k-${4*a-1}=0$, so $4k=${min4k}$. At that value there is exactly one (double) root $x=${a}-0.5$, which satisfies the domain requirement $${a}-x\\ge 0$. Therefore the minimum possible value of $4k$ is $${min4k}$.`
+      explanation: `The correct answer is ${min4k}. Squaring both sides gives $k-x=(${a}-x)^2$, which rearranges to $x^2-${2*a-1}x+(${aSquaredTex}-k)=0$. The discriminant of this quadratic is $(-${2*a-1})^2-4(${aSquaredTex}-k)$, which simplifies to $4k-${min4k}$. If $4k<${min4k}$, the discriminant is negative and the equation has no real solution, so no smaller value of $4k$ is possible. If $4k=${min4k}$, the discriminant is $0$ and the quadratic has the single solution $x=\\frac{${2*a-1}}{2}=${doubleRoot}$. This value satisfies the original equation because $${a}-${doubleRoot}=0.5$ is not negative and $k-x=\\frac{${min4k}}{4}-${doubleRoot}=0.25=(0.5)^2$. Therefore the minimum possible value of $4k$ is ${min4k}.`
     };
   }
 };
