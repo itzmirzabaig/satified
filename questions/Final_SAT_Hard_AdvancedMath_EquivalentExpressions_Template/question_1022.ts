@@ -71,42 +71,29 @@ export const generator_1022 = {
     const distractorC = `\\frac{${wrongNumerator}}{${denom}}`;
 
     const optionsData = [
-      { text: distractorA, isCorrect: false, reason: "results from subtracting the numerators directly without first rewriting each fraction over the common denominator" },
-      { text: distractorB, isCorrect: false, reason: "results from incorrectly subtracting the numerators and the denominators separately" },
-      { text: distractorC, isCorrect: false, reason: `results from not distributing the negative sign across $(${b}x-${c})$, which changes the constant term of the numerator from ${numConst} to ${a * d - c}` },
-      { text: correctAnswerText, isCorrect: true }
+      { text: distractorA, isCorrect: false, reason: `this expression results from subtracting the numerators, $${a} - 1 = ${a - 1}$, without first rewriting each fraction over the common denominator` },
+      { text: distractorB, isCorrect: false, reason: `this expression results from subtracting the numerators and subtracting the denominators separately, $(${b}x-${c}) - (x+${d}) = ${formatLinear(b - 1, -(c + d))}$` },
+      { text: distractorC, isCorrect: false, reason: `this expression results from not distributing the negative sign across $${b}x-${c}$, which changes the constant term of the numerator from ${numConst} to ${a * d - c}` },
+      { text: correctAnswerText, isCorrect: true, reason: '' }
     ];
-    
+
     // STEP 4: Shuffle
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
     // STEP 5: Question text
     const questionText = `Which expression is equivalent to $\\frac{${a}}{${b}x-${c}} - \\frac{1}{x+${d}}$?`;
-    
+
     // STEP 6: Explanation
-    const explanation = `Choice ${correctLetter} is correct. To subtract these fractions, rewrite them with a common denominator of $(x+${d})(${b}x-${c})$.
+    // Before: separate lines per step; now one paragraph in the standard
+    // format, and the two negative sign steps are spelled out.
+    const explanation = `Choice ${correctOption.letter} is correct. Rewrite both fractions with the common denominator $(x+${d})(${b}x-${c})$. The first fraction becomes $\\frac{${a}(x+${d})}{(x+${d})(${b}x-${c})} = \\frac{${a}x+${a * d}}{(x+${d})(${b}x-${c})}$, and the second becomes $\\frac{${b}x-${c}}{(x+${d})(${b}x-${c})}$. Subtracting the numerators gives $(${a}x+${a * d}) - (${b}x-${c}) = ${a}x+${a * d}-${b}x+${c} = ${numerator}$, so the expression is equivalent to $\\frac{${numerator}}{(x+${d})(${b}x-${c})}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
-The first term: $\\frac{${a}}{${b}x-${c}} \\cdot \\frac{x+${d}}{x+${d}} = \\frac{${a}(x+${d})}{(x+${d})(${b}x-${c})} = \\frac{${a}x+${a * d}}{(x+${d})(${b}x-${c})}$
-
-The second term: $\\frac{1}{x+${d}} \\cdot \\frac{${b}x-${c}}{${b}x-${c}} = \\frac{${b}x-${c}}{(x+${d})(${b}x-${c})}$
-
-Subtracting: $\\frac{${a}x+${a * d}}{(x+${d})(${b}x-${c})} - \\frac{${b}x-${c}}{(x+${d})(${b}x-${c})} = \\frac{(${a}x+${a * d}) - (${b}x-${c})}{(x+${d})(${b}x-${c})}$
-
-Simplifying the numerator: $(${a}x+${a * d}) - (${b}x-${c}) = ${a}x+${a * d}-${b}x+${c} = ${numerator}$
-
-This gives $\\frac{${numerator}}{(x+${d})(${b}x-${c})}$.
-
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
-    
     return {
       questionText: questionText,
       figureCode: null,
