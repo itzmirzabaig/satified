@@ -57,7 +57,22 @@ export const generator_1043 = {
     } else {
       kDisplay = `${numerator / commonFactor}/${denominator / commonFactor}`;
     }
-    
+
+    // Before: the explanation printed "x^2+-6x" and "(-6)^2" from a negated
+    // coefficient and skipped the algebra that isolates k. The denominator is
+    // 1, 2, 4, or 8, so k always has an exact decimal; it is mentioned only
+    // when it fits the 5 character answer field.
+    const coeff = 1 - c2; // positive, so the middle term prints as "- coeff x"
+    const kDecimal = String(kValue);
+    const answerLead = kDisplay.includes('/') && kDecimal.length <= 5
+      ? `${kDisplay}, which can also be entered as ${kDecimal}`
+      : kDisplay;
+    const kSteps = denominator / commonFactor === 1
+      ? `k=\\frac{${numerator}}{8}=${kDisplay}`
+      : commonFactor === 1
+        ? `k=\\frac{${numerator}}{8}`
+        : `k=\\frac{${numerator}}{8}=\\frac{${numerator / commonFactor}}{${denominator / commonFactor}}`;
+
     // STEP 2: No figure needed
     const figureCode = null;
     
@@ -66,7 +81,7 @@ export const generator_1043 = {
       figureCode: figureCode,
       options: [],
       correctAnswer: kDisplay,
-      explanation: `The correct answer is $${kDisplay}$. Subtracting the second equation from the first: $2k=-x^2+${1-c2}x+${c1}$, or $x^2+${-(1-c2)}x+(2k-${c1})=0$. For exactly one solution, the discriminant equals 0: $(${-(1-c2)})^2-4(2k-${c1})=0$, so $${linearCoeff*linearCoeff}=8k-${4*c1}$, thus $k=${kDisplay}$.`
+      explanation: `The correct answer is ${answerLead}. Subtracting the second equation from the first gives $2k=-x^2+${coeff}x+${c1}$, which rearranges to $x^2-${coeff}x+(2k-${c1})=0$. The system has exactly one distinct real solution when the discriminant of this quadratic equals $0$: $(-${coeff})^2-4(2k-${c1})=0$. This simplifies to $${coeff * coeff}-8k+${4 * c1}=0$, so $8k=${numerator}$ and $${kSteps}$.`
     };
   }
 };
