@@ -37,28 +37,28 @@ export const generator_1062 = {
     const b = p + q + 1; // So that b-1 = p+q
     const cDiff = p * q; // c2 - c1 = pq
     
-    // c1 and c2: c2 = c1 + pq, let's pick c1.
-    // Guard: c1 is used as a distractor and q (range 5..13) overlaps its range,
-    // so bump c1 deterministically if it collides with q. All other option
-    // pairs are distinct by construction: -p < 0 < q, c1; c2 = c1 + pq >= 25
-    // exceeds both q (<= 13) and c1 (<= 12).
-    let c1 = getRandomInt(5, 12);
-    if (c1 === q) c1 = c1 < 12 ? c1 + 1 : 11;
-    const c2 = c1 + cDiff;
-    
     // Solutions: x = -p and x = -q, greatest is -p
-    
     const greatestX = -p;
-    const distractorB = q; // Positive version
-    const distractorC = c1; // The constant
-    const distractorD = c2; // The larger constant
-    
+
+    // Before: two wrong choices were just the constants c1 and c2 from the
+    // system, c1 was nudged by 1 to dodge a collision, and the other solution
+    // -q was never offered. The wrong choices are now real slips: the lesser
+    // solution (-q), the factor numbers read without changing sign (q), and
+    // the y-coordinate of the solution. c1 is redrawn until all four differ.
+    // -q < -p < 0 < q, so only y = c1 - p can collide, and only with q.
+    let c1 = 0, yAtGreatest = 0;
+    do {
+      c1 = getRandomInt(5, 12);
+      yAtGreatest = greatestX + c1;
+    } while (new Set([greatestX, -q, q, yAtGreatest]).size < 4);
+    const c2 = c1 + cDiff;
+
     // STEP 2: Create options
     const optionsData = [
-      { text: `$${greatestX}$`, isCorrect: true },
-      { text: `$${distractorB}$`, isCorrect: false, reason: `is the opposite of the other solution, $x=-${q}$, not the greatest value of $x$` },
-      { text: `$${distractorC}$`, isCorrect: false, reason: "is the y-intercept of the line, not a solution" },
-      { text: `$${distractorD}$`, isCorrect: false, reason: "is the constant term in the parabola, not a solution" }
+      { text: `$${greatestX}$`, isCorrect: true, reason: '' },
+      { text: `$${-q}$`, isCorrect: false, reason: `$${-q}$ is the lesser of the two solutions; it results from choosing the number with the greater absolute value` },
+      { text: `$${q}$`, isCorrect: false, reason: `$${q}$ results from reading the solutions from $(x+${p})(x+${q})=0$ as $x=${p}$ and $x=${q}$ without changing the signs, then choosing the greater number` },
+      { text: `$${yAtGreatest}$`, isCorrect: false, reason: `$${yAtGreatest}$ is the $y$-coordinate of the solution with the greatest $x$, since $y=${greatestX}+${c1}=${yAtGreatest}$, but the question asks for $x$` }
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -70,10 +70,7 @@ export const generator_1062 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. Setting the expressions equal: $x+${c1}=x^2+${b}x+${c2}$, so $x^2+${b-1}x+${cDiff}=0$. This factors as $(x+${p})(x+${q})=0$. The solutions are $x=-${p}$ and $x=-${q}$. The greatest value is $${greatestX}$.
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Setting the expressions equal: $x+${c1}=x^2+${b}x+${c2}$, so $x^2+${b-1}x+${cDiff}=0$. This factors as $(x+${p})(x+${q})=0$. The solutions are $x=-${p}$ and $x=-${q}$. The greatest value is $${greatestX}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
     
     return {
       questionText: `$y = x + ${c1}$\n$y = x^2 + ${b}x + ${c2}$\n\nA solution to the given system of equations is $(x,y)$. What is the greatest possible value of $x$?`,
