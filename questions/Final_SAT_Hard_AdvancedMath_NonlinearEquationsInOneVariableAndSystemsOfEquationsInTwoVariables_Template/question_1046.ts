@@ -30,11 +30,12 @@ export const generator_1046 = {
 
     const A = getRandomInt(3, 8); // |a|
     const a = -A;
+    // Before: c was nudged by +1 to dodge a collision; now c is redrawn.
+    // The "one solution alone" distractor (b - c)/A equals the negated sum
+    // -2b/A exactly when c = 3b (only reachable at b = 20, c = 60).
     const b = getRandomInt(10, 20);
     let c = getRandomInt(60, 90);
-    // Guard: the "one solution alone" distractor (b - c)/A equals the negated
-    // sum -2b/A exactly when c = 3b (only reachable at b = 20, c = 60).
-    if (c === 3 * b) c += 1;
+    while (c === 3 * b) c = getRandomInt(60, 90);
 
     const gcd = (m: number, n: number): number => n === 0 ? m : gcd(n, m % n);
     // Render num/den as a simplified LaTeX value: integer when den divides num,
@@ -56,11 +57,15 @@ export const generator_1046 = {
     // Distinctness for every draw: 2b/A > 0 while -2b/A < 0, (b - c)/A < 0, and
     // 0 differ from it; (b - c)/A = -2b/A only when c = 3b (guarded above);
     // (b - c)/A = 0 needs b = c (impossible, c >= 60 > 20 >= b).
+    // Before: reasons did not name the values and the explanation was split
+    // over several lines with "Case 1:" labels. Now each reason states the
+    // number and the slip, and the explanation is one paragraph.
+    const wrongSignText = fmt(-2 * b, A);
     const optionsData = [
       { text: `$${sumText}$`, isCorrect: true, reason: "" },
-      { text: `$${fmt(-2 * b, A)}$`, isCorrect: false, reason: "results from a sign error when dividing by the negative coefficient of $x$" },
-      { text: `$${x1Text}$`, isCorrect: false, reason: "is only one of the two solutions, not the sum of both" },
-      { text: `$0$`, isCorrect: false, reason: "would be the sum only if the two solutions were opposites, which they are not because of the constant term inside the absolute value" }
+      { text: `$${wrongSignText}$`, isCorrect: false, reason: `$${wrongSignText}$ results from dividing by $${A}$ instead of $${a}$ in each case, which flips the sign of both solutions and of their sum` },
+      { text: `$${x1Text}$`, isCorrect: false, reason: `$${x1Text}$ is only the solution of $${a}x + ${b} = ${c}$; the other case, $${a}x + ${b} = ${-c}$, gives $${x2Text}$, which must be added to it` },
+      { text: `$0$`, isCorrect: false, reason: `0 results from assuming the two solutions are opposites, as they are for an equation like $|x| = ${c}$; the constant ${b} inside the absolute value shifts both solutions, so they are not opposites` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -72,13 +77,7 @@ export const generator_1046 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The absolute value equation $|${a}x + ${b}| = ${c}$ requires two cases.
-Case 1: $${a}x + ${b} = ${c}$, so $${a}x = ${c - b}$ and $x = ${x1Text}$.
-Case 2: $${a}x + ${b} = ${-c}$, so $${a}x = ${-c - b}$ and $x = ${x2Text}$.
-The sum of the solutions is $${x1Text} + ${x2Text} = ${sumText}$.
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The equation $|${a}x + ${b}| = ${c}$ is true when $${a}x + ${b} = ${c}$ or $${a}x + ${b} = ${-c}$. In the first case, $${a}x = ${c - b}$, so $x = ${x1Text}$. In the second case, $${a}x = ${-c - b}$, so $x = ${x2Text}$. The sum of the solutions is $${x1Text} + ${x2Text} = ${sumText}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `What is the sum of the solutions to the given equation?\n\n$|${a}x + ${b}| = ${c}$`,
