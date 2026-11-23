@@ -577,7 +577,10 @@ class QuestionTester {
 
     if(d.figureCode){
       const code=d.figureCode;
-      if(code.trim().startsWith('<table')||code.trim().startsWith('<div')){
+      // A figure that starts with <svg> is HTML too. It used to go to the graph
+      // renderer, which put it in a fixed 400px graph box where it showed blank.
+      const fc=code.trim();
+      if(fc.startsWith('<table')||fc.startsWith('<div')||fc.startsWith('<svg')){
         h+=`<div class="figure">${code}</div>`;
       } else {
         const gid=`mg-${Date.now()}`;
