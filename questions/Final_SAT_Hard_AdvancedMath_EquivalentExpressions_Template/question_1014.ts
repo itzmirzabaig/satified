@@ -24,12 +24,21 @@ export const generator_1014 = {
   
   generate: (): QuestionData => {
     // STEP 1: Generate root indices
-    const root1 = getRandomInt(3, 6);
-    let root2 = getRandomInt(3, 6);
-    while (root1 === root2) {
+    // Redraw pairs whose answer needs 6 characters, such as 11/360: the SAT
+    // entry box holds 5 characters for a positive answer.
+    const answerLength = (r1: number, r2: number): number => {
+      const div = (a: number, b: number): number => b === 0 ? a : div(b, a % b);
+      const top = r2 + 2 * r1;
+      const bottom = 30 * r1 * r2;
+      const d = div(top, bottom);
+      return `${top / d}/${bottom / d}`.length;
+    };
+    let root1 = 0, root2 = 0;
+    do {
+      root1 = getRandomInt(3, 6);
       root2 = getRandomInt(3, 6);
-    }
-    
+    } while (root1 === root2 || answerLength(root1, root2) > 5);
+
     // The expression: (70n)^(1/root1) * (70n)^(2/root2) = (70n)^(1/root1 + 2/root2)
     const numerator1 = 1;
     const denominator1 = root1;
@@ -61,7 +70,7 @@ export const generator_1014 = {
       : `\\frac{${simplifiedNum}}{${simplifiedDen}}`;
 
     // STEP 3: Build question
-    const questionText = `$ \\sqrt[${root1}]{70n}(\\sqrt[${root2}]{70n})^{2} $ For what value of $x$ is the given expression equivalent to $(70n)^{30x}$, where $n > 1$? (Enter your answer as a fraction.)`;
+    const questionText = `$ \\sqrt[${root1}]{70n}(\\sqrt[${root2}]{70n})^{2} $\n\nFor what value of $x$ is the given expression equivalent to $(70n)^{30x}$, where $n > 1$? (Enter your answer as a fraction.)`;
     
     // STEP 4: Explanation
     // Before: markdown bullets, display math on separate lines, and no
