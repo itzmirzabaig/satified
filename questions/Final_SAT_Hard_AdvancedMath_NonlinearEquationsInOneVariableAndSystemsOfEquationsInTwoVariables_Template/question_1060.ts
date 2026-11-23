@@ -47,10 +47,12 @@ export const generator_1060 = {
     // Options are distinct for every draw by construction:
     // -m < 0 < n < n² < m²  (n >= 7 → n² > n;  n <= m - 2 → n² < m²).
     const optionsData = [
-      { text: `$${-m}$`, isCorrect: false, reason: `is one of the two solutions for $x$, not the value of $x^2$` },
-      { text: `$${n}$`, isCorrect: false, reason: `is the other solution for $x$, not the value of $x^2$` },
-      { text: `$${xSqSmall}$`, isCorrect: false, reason: `is the other possible value of $x^2$ (from $x = ${n}$), but it is not the greatest possible value` },
-      { text: `$${xSqBig}$`, isCorrect: true }
+      // Before: reasons were fragments that did not start with the value, and
+      // the explanation listed them on separate lines.
+      { text: `$${-m}$`, isCorrect: false, reason: `$${-m}$ is the value of $x$ that produces the greatest $x^2$, but the question asks for $x^2$, not $x$` },
+      { text: `$${n}$`, isCorrect: false, reason: `$${n}$ is the greater solution for $x$, not a value of $x^2$` },
+      { text: `$${xSqSmall}$`, isCorrect: false, reason: `$${xSqSmall}$ is $x^2$ for the greater solution $x = ${n}$; it results from assuming the greater $x$ gives the greater $x^2$, but $(${-m})^2 = ${xSqBig}$ is greater` },
+      { text: `$${xSqBig}$`, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -62,10 +64,7 @@ export const generator_1060 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Solving the first equation for $y$ gives $y = ${c1} - ${a}x$, and the second equation gives $y = ${d}x^2 - ${c2}$. Setting these equal: $${c1} - ${a}x = ${d}x^2 - ${c2}$. Moving every term to one side and dividing by ${d} yields $x^2 + ${m - n}x - ${m * n} = 0$, which factors as $(x + ${m})(x - ${n}) = 0$. So $x = ${-m}$ or $x = ${n}$, giving $x^2 = ${xSqBig}$ or $x^2 = ${xSqSmall}$. The greatest possible value is $x^2 = ${xSqBig}$.
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. Solving the first equation for $y$ gives $y = ${c1} - ${a}x$, and the second equation gives $y = ${d}x^2 - ${c2}$. Setting these equal: $${c1} - ${a}x = ${d}x^2 - ${c2}$. Moving every term to one side and dividing by ${d} yields $x^2 + ${m - n}x - ${m * n} = 0$, which factors as $(x + ${m})(x - ${n}) = 0$. So $x = ${-m}$ or $x = ${n}$, giving $x^2 = ${xSqBig}$ or $x^2 = ${xSqSmall}$. The greatest possible value is $x^2 = ${xSqBig}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `$y + ${a}x = ${c1}$\n$y = ${d}x^2 - ${c2}$\n\nIf $(x, y)$ is a solution to the given system of equations, what is the greatest possible value of $x^2$?`,
