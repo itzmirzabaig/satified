@@ -24,41 +24,32 @@ export const generator_1021 = {
   
   generate: (): QuestionData => {
     // STEP 1: Generate the polynomial
-    // Pattern: 2x³ + (2a+2b)x² + 2abx = 2x(x² + (a+b)x + ab) = 2x(x+a)(x+b)
-    
-    // Choose two factors
-    const factor1 = getRandomInt(6, 10);
-    const factor2 = getRandomInt(10, 15);
-    
+    // Pattern: 2x^3 + (2a+2b)x^2 + 2abx = 2x(x^2 + (a+b)x + ab) = 2x(x+a)(x+b)
+    // Before: the two roots could both be 10 (a repeated factor), and the
+    // explanation used markdown bullets and display math with no
+    // "The correct answer is" opening. Now the two values always differ.
+    let factor1 = 0, factor2 = 0;
+    do {
+      factor1 = getRandomInt(6, 10);
+      factor2 = getRandomInt(10, 15);
+    } while (factor1 === factor2);
+
     const a = Math.min(factor1, factor2);
     const b = Math.max(factor1, factor2);
-    
+
     // Calculate coefficients
     const quadCoeff = 2 * (a + b);
     const linearCoeff = 2 * a * b;
-    
+
     // STEP 2: Calculate answer
     const correctAnswer = a.toString();
-    
+
     // STEP 3: Question text
     const questionText = `One of the factors of $2x^{3}+${quadCoeff}x^{2}+${linearCoeff}x$ is $x+b$, where $b$ is a positive constant. What is the smallest possible value of $b$?`;
-    
-    // STEP 4: Explanation
-    const explanation = `Factor out the greatest common factor $2x$:
-$$2x^{3}+${quadCoeff}x^{2}+${linearCoeff}x = 2x(x^{2}+${a+b}x+${a*b})$$
 
-Factor the quadratic $x^{2}+${a+b}x+${a*b}$ by finding two numbers with sum ${a+b} and product ${a*b}:
-- The numbers are ${a} and ${b}
+    // STEP 4: Explanation (one paragraph, inline math)
+    const explanation = `The correct answer is ${a}. Each term has the common factor $2x$, so $2x^{3}+${quadCoeff}x^{2}+${linearCoeff}x = 2x(x^{2}+${a + b}x+${a * b})$. The two numbers with a sum of ${a + b} and a product of ${a * b} are ${a} and ${b}, so $x^{2}+${a + b}x+${a * b} = (x+${a})(x+${b})$, and the complete factorization is $2x(x+${a})(x+${b})$. The factors of the form $x+b$ with $b$ positive are $x+${a}$ and $x+${b}$, so the possible values of $b$ are ${a} and ${b}. The smallest of these is ${a}.`;
 
-So: $x^{2}+${a+b}x+${a*b} = (x+${a})(x+${b})$
-
-The complete factorization is:
-$$2x(x+${a})(x+${b})$$
-
-The factors of the form $x+b$ where $b$ is positive are $(x+${a})$ and $(x+${b})$.
-The corresponding values of $b$ are ${a} and ${b}.
-Therefore, the smallest possible value of $b$ is ${a}.`;
-    
     return {
       questionText: questionText,
       figureCode: null,
