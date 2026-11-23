@@ -29,10 +29,13 @@ export const generator_1056 = {
     const k = getRandomInt(2, 10);
 
     // STEP 2: Create options ("Zero" is correct — no real solutions)
+    // Before: the explanation put each wrong choice on its own line with
+    // "is incorrect;" fragments and used the hyphenated "right-hand side", and
+    // the reasons did not name the slip behind each choice.
     const optionsData = [
-      { text: `Exactly one`, isCorrect: false, reason: `the equation would have exactly one real solution only if the right-hand side were equal to zero, since $(x-${h})^2=0$ has the single solution $x=${h}$` },
-      { text: `Exactly two`, isCorrect: false, reason: `the equation would have exactly two real solutions only if the right-hand side were a positive number` },
-      { text: `Infinitely many`, isCorrect: false, reason: `the equation would have infinitely many solutions only if it were true for every value of $x$, which it is not` },
+      { text: `Exactly one`, isCorrect: false, reason: `exactly one solution comes from reading the squared factor $(x-${h})^2$ as giving the single repeated solution $x=${h}$; that is true only when the right side is $0$, not $-${k}$` },
+      { text: `Exactly two`, isCorrect: false, reason: `exactly two solutions comes from taking square roots as if the right side were $${k}$, giving $x-${h}=\\pm\\sqrt{${k}}$; a negative number such as $-${k}$ has no real square root` },
+      { text: `Infinitely many`, isCorrect: false, reason: `infinitely many solutions would require the equation to be true for every value of $x$, but $(x-${h})^2$ is never negative, so it is true for no value of $x$` },
       { text: `Zero`, isCorrect: true, reason: `` }
     ];
 
@@ -45,10 +48,7 @@ export const generator_1056 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. For any real value of $x$, the expression $(x-${h})^2$ is the square of a real number, so its value is always greater than or equal to zero. However, the equation states that $(x-${h})^2=-${k}$, and $-${k}$ is negative. Since a nonnegative number can never equal a negative number, no real value of $x$ satisfies the equation, so it has zero real solutions.
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. For any real value of $x$, the expression $(x-${h})^2$ is the square of a real number, so its value is always greater than or equal to zero. However, the equation states that $(x-${h})^2=-${k}$, and $-${k}$ is negative. Since a nonnegative number can never equal a negative number, no real value of $x$ satisfies the equation, so it has zero real solutions. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `How many distinct real solutions does the given equation have?\n\n$(x-${h})^2=-${k}$`,
