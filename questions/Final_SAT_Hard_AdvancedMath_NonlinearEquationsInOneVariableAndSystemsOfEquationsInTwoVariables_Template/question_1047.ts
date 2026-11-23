@@ -27,7 +27,8 @@ export const generator_1047 = {
     // Original: 2|4-x| + 3|4-x| = 25
     // Pattern: a|b-x| + c|b-x| = d where a + c = some value that divides d nicely
     
-    const coeff1 = getRandomInt(1, 4);
+    // Before: coeff1 could be 1, which showed "1|4-x|" in the stem; now 2 to 4.
+    const coeff1 = getRandomInt(2, 4);
     const coeff2 = getRandomInt(2, 5);
     const totalCoeff = coeff1 + coeff2;
 
