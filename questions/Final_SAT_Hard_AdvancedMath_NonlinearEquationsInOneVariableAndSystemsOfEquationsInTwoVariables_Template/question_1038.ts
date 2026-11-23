@@ -41,11 +41,12 @@ export const generator_1038 = {
     const distractorB = `w=\\left(\\frac{x}{y}\\right)^2+${d}`;           // sign error isolating w
     const distractorD = `w=\\left(\\frac{${c}x}{y}\\right)^2-${d}`;       // kept the factor of c when squaring
 
+    // Reasons now start with the value (they used to start with "it").
     const optionsData = [
-      { text: `$${distractorA}$`, isCorrect: false, reason: `takes the square root of $\\frac{x}{y}$ instead of squaring both sides to eliminate the radical` },
-      { text: `$${distractorB}$`, isCorrect: false, reason: `adds ${d} to both sides instead of subtracting ${d} when isolating $w$` },
-      { text: `$${correctAnswer}$`, isCorrect: true },
-      { text: `$${distractorD}$`, isCorrect: false, reason: `results from squaring without first dividing both sides of the equation by ${c}, leaving an extra factor of ${c}` }
+      { text: `$${distractorA}$`, isCorrect: false, reason: `$${distractorA}$ takes the square root of $\\frac{x}{y}$ instead of squaring both sides to eliminate the radical` },
+      { text: `$${distractorB}$`, isCorrect: false, reason: `$${distractorB}$ adds ${d} to both sides instead of subtracting ${d} when isolating $w$` },
+      { text: `$${correctAnswer}$`, isCorrect: true, reason: '' },
+      { text: `$${distractorD}$`, isCorrect: false, reason: `$${distractorD}$ comes from simplifying the fraction to $\\frac{${c}x}{y}$ but ignoring the factor of ${c} in front of the radical, so the ${c} is never divided out` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -54,13 +55,12 @@ export const generator_1038 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Dividing both sides of the equation by ${c} gives $\\frac{${lhsNum}x}{${lhsNum}y}=\\sqrt{w+${d}}$, which simplifies to $\\frac{x}{y}=\\sqrt{w+${d}}$. Squaring both sides gives $\\left(\\frac{x}{y}\\right)^2=w+${d}$. Subtracting ${d} from both sides gives $w=\\left(\\frac{x}{y}\\right)^2-${d}$.
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    // Before: the explanation claimed dividing by c turned the left side into
+    // (cb x)/(cb y), which is wrong (the denominator is b y, not cb y), and it
+    // was split over lines. Now the left side is simplified first.
+    const explanation = `Choice ${correctOption.letter} is correct. Dividing the numerator and denominator of the fraction by ${b} gives $\\frac{${lhsNum}x}{${b}y}=\\frac{${c}x}{y}$, so the equation is $\\frac{${c}x}{y}=${c}\\sqrt{w+${d}}$. Dividing both sides by ${c} gives $\\frac{x}{y}=\\sqrt{w+${d}}$. Squaring both sides gives $\\left(\\frac{x}{y}\\right)^2=w+${d}$. Subtracting ${d} from both sides gives $w=\\left(\\frac{x}{y}\\right)^2-${d}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `$\\frac{${lhsNum}x}{${b}y} = ${c}\\sqrt{w+${d}}$\n\nThe given equation relates the distinct positive real numbers $w$, $x$, and $y$. Which equation correctly expresses $w$ in terms of $x$ and $y$?`,
