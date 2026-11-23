@@ -3,7 +3,7 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1033
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [coefficients: varied, constants: multiples of b]
  * - Difficulty factors: [Factor theorem application, testing values, finding valid b]
@@ -21,7 +21,7 @@ export const generator_1033 = {
     skill: "Equivalent Expressions",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
     // STEP 1: Choose the positive integer b-value the correct option works for.
     // Every option has the form 3x^2 + Lx + 14b. By the Factor Theorem,
@@ -29,48 +29,51 @@ export const generator_1033 = {
     // i.e. (for b > 0) when b = (L - 7)/6. So the correct option uses
     // L = 6*correctB + 7, which gives b = correctB (a positive integer).
     const correctB = getRandomInt(5, 10);
-    const dLinear = 6 * correctB + 7; // 37..67, never equal to 7, 28, or 42
+    const dLinear = 6 * correctB + 7; // 37..67
 
-    // Distractor linear coefficients: L = 7 gives b = 0 (not positive),
-    // L = 28 gives b = 7/2, L = 42 gives b = 35/6 (not integers).
-    const aLinear = 7;
-    const bLinear = 28;
-    const cLinear = 42;
+    // The wrong choices used to be 7, 28, and 42 on every draw, with reasons
+    // that did not start with the value and an explanation spread over many
+    // lines. They now vary: one gives b = 0, and two give a
+    // b that is not an integer (L - 7 not a multiple of 6).
+    const gcd = (x: number, y: number): number => (y === 0 ? x : gcd(y, x % y));
+    const bText = (L: number): string => {
+      const num = L - 7;
+      if (num % 6 === 0) return `${num / 6}`;
+      const g = gcd(Math.abs(num), 6);
+      return `\\frac{${num / g}}{${6 / g}}`;
+    };
+    const smallL = 7; // b = 0 (L = 1 for b = -1 would show "1x")
+    let fracL1 = 0, fracL2 = 0;
+    do {
+      fracL1 = getRandomInt(10, 70);
+      fracL2 = getRandomInt(10, 70);
+    } while ((fracL1 - 7) % 6 === 0 || (fracL2 - 7) % 6 === 0 || fracL1 === fracL2);
 
+    const optText = (L: number) => `$3x^{2} + ${L}x + 14b$`;
     const optionsData = [
-      { text: `$3x^{2} + ${aLinear}x + 14b$`, isCorrect: false, reason: `this expression has a factor of $x + 2b$ only when $b = \\frac{${aLinear} - 7}{6} = 0$, which is not positive` },
-      { text: `$3x^{2} + ${bLinear}x + 14b$`, isCorrect: false, reason: `this expression has a factor of $x + 2b$ only when $b = \\frac{${bLinear} - 7}{6} = \\frac{7}{2}$, which is not an integer` },
-      { text: `$3x^{2} + ${cLinear}x + 14b$`, isCorrect: false, reason: `this expression has a factor of $x + 2b$ only when $b = \\frac{${cLinear} - 7}{6} = \\frac{35}{6}$, which is not an integer` },
-      { text: `$3x^{2} + ${dLinear}x + 14b$`, isCorrect: true }
+      { L: smallL, text: optText(smallL), isCorrect: false, reason: `${optText(smallL)} has a factor of $x + 2b$ only when $b = \\frac{${smallL} - 7}{6} = ${bText(smallL)}$, which is not positive` },
+      { L: fracL1, text: optText(fracL1), isCorrect: false, reason: `${optText(fracL1)} has a factor of $x + 2b$ only when $b = \\frac{${fracL1} - 7}{6} = ${bText(fracL1)}$, which is not an integer` },
+      { L: fracL2, text: optText(fracL2), isCorrect: false, reason: `${optText(fracL2)} has a factor of $x + 2b$ only when $b = \\frac{${fracL2} - 7}{6} = ${bText(fracL2)}$, which is not an integer` },
+      { L: dLinear, text: optText(dLinear), isCorrect: true, reason: '' }
     ];
-    
-    // STEP 2: Shuffle
+
+    // STEP 2: Shuffle (sorting by coefficient would always make the b = 0
+    // expression choice A, so A could never be correct)
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
+
     // STEP 3: Question text
     const questionText = `Which of the following expressions has a factor of $x + 2b$, where $b$ is a positive integer constant?`;
-    
+
     // STEP 4: Explanation using Factor Theorem
-    const explanation = `Choice ${correctLetter} is correct. By the Factor Theorem, $x + 2b$ is a factor of a polynomial in $x$ exactly when the polynomial equals zero at $x = -2b$.
+    const explanation = `Choice ${correctLetter} is correct. By the factor theorem, $x + 2b$ is a factor of a polynomial in $x$ exactly when the polynomial equals $0$ at $x = -2b$. Each choice has the form $3x^{2} + Lx + 14b$, where $L$ is the coefficient of $x$. Substituting $-2b$ for $x$ gives $3(-2b)^{2} + L(-2b) + 14b = 12b^{2} - (2L - 14)b$, which equals $0$ for a positive $b$ only when $12b = 2L - 14$, or $b = \\frac{L - 7}{6}$. For choice ${correctLetter}, $L = ${dLinear}$, so $3(-2b)^{2} + ${dLinear}(-2b) + 14b = 12b^{2} - ${2 * dLinear}b + 14b = 12b^{2} - ${2 * dLinear - 14}b = 12b(b - ${correctB})$, which equals $0$ when $b = ${correctB}$, a positive integer. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
-Substituting $x = -2b$ into $\\,3x^{2} + ${dLinear}x + 14b$:
-$$\\,3(-2b)^{2} + ${dLinear}(-2b) + 14b = 12b^{2} - ${2 * dLinear}b + 14b = 12b^{2} - ${2 * dLinear - 14}b = 12b(b - ${correctB})$$
-
-This equals zero when $b = ${correctB}$, which is a positive integer. So $x + 2b$ is a factor of the expression in choice ${correctLetter} when $b = ${correctB}$.
-
-In general, substituting $x = -2b$ into $\\,3x^{2} + px + 14b$ gives $\\,12b^{2} - (2p - 14)b$, which equals zero for a positive constant $b$ only when $b = \\frac{p - 7}{6}$ is a positive integer.
-
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
-    
     return {
       questionText: questionText,
       figureCode: null,
