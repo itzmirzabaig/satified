@@ -1,4 +1,4 @@
-import { getRandomInt, shuffle } from '../../utils/math';
+import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -20,65 +20,69 @@ export const generator_1050 = {
   },
   
   generate: (): QuestionData => {
-    // 1. Generate coefficients
-    // Parabola: y = -a(x - h)^2 + k  (Opens downward, vertex at (h, k))
-    // Line:     y = c
-    
-    const h = getRandomInt(2, 12);     // Vertex x
-    const k = getRandomInt(5, 15);     // Vertex y (max height)
-    const a = getRandomInt(2, 5);      // Stretch factor
-    
-    // Ensure line is strictly above the vertex to create "Zero" intersections
-    const lineY = k + getRandomInt(3, 8); 
+    // Parabola: y = -a(x - h)^2 + k (opens downward, vertex at (h, k)).
+    // Line: y = L. Setting them equal gives (x - h)^2 = (k - L)/a.
+    //
+    // Before: the answer was always "Zero", the wrong choices had no reasons,
+    // and the explanation was HTML with bold text and bullets. Now the case
+    // is randomized, L = k + a*d^2, k, or k - a*d^2 keeps (x - h)^2 an exact
+    // integer, and each wrong choice names a real slip.
+    const kind = getRandomElement(['zero', 'one', 'two'] as const);
+    const h = getRandomInt(2, 12);
+    const a = getRandomInt(2, 5);
+    const d = getRandomInt(1, 4);
+    let k = 0, L = 0;
+    do {
+      k = getRandomInt(5, 15);
+      L = kind === 'zero' ? k + a * d * d : kind === 'one' ? k : k - a * d * d;
+    } while (L === 0);
+    const R = kind === 'zero' ? -d * d : kind === 'one' ? 0 : d * d;
+    const para = `-${a}(x - ${h})^2 + ${k}`;
+    const sq = `(x - ${h})^2`;
 
-    // 2. Format the equations using 'cases' environment
-    // Note: We use \\\\ to produce a literal \\ for LaTeX newline
     const equations = `$$
     \\begin{cases}
-    y = -${a}(x - ${h})^2 + ${k} \\\\
-    y = ${lineY}
+    y = ${para} \\\\
+    y = ${L}
     \\end{cases}
     $$`;
 
-    // 3. Define Options
+    const infReason = `infinitely many would require the two graphs to be the same, but one is a parabola and the other is a horizontal line`;
+    let zeroReason = '', oneReason = '', twoReason = '', conclusion = '';
+    if (kind === 'zero') {
+      conclusion = `The square of a real number cannot be negative, so no value of $x$ works and the graphs do not intersect.`;
+      oneReason = `exactly one would require the line to pass through the vertex $(${h}, ${k})$, but the line $y = ${L}$ is above the vertex`;
+      twoReason = `exactly two results from dropping the negative sign and writing $${sq} = ${d * d}$, but the correct equation is $${sq} = ${R}$`;
+    } else if (kind === 'one') {
+      conclusion = `The only solution is $x = ${h}$, so the graphs intersect at exactly one point, the vertex $(${h}, ${k})$.`;
+      zeroReason = `zero results from reading $${sq} = 0$ as having no solution, but $x = ${h}$ makes it true`;
+      twoReason = `exactly two counts the repeated solution of $${sq} = 0$ twice, but $x = ${h}$ is a single value`;
+    } else {
+      conclusion = `Taking square roots gives $x - ${h} = ${d}$ or $x - ${h} = -${d}$, so $x = ${h + d}$ or $x = ${h - d}$. The graphs intersect at exactly two points.`;
+      zeroReason = `zero results from ignoring the negative sign in front of ${a} and treating the vertex as a minimum, which would keep the graph above the line $y = ${L}$, but the parabola opens downward`;
+      oneReason = `exactly one results from taking only the positive square root, $x - ${h} = ${d}$, and missing the solution $x = ${h - d}$`;
+    }
+
     const optionsData = [
-      { text: "Zero", isCorrect: true },
-      { text: "Exactly one", isCorrect: false },
-      { text: "Exactly two", isCorrect: false },
-      { text: "Infinitely many", isCorrect: false }
+      { text: "Zero", isCorrect: kind === 'zero', reason: zeroReason },
+      { text: "Exactly one", isCorrect: kind === 'one', reason: oneReason },
+      { text: "Exactly two", isCorrect: kind === 'two', reason: twoReason },
+      { text: "Infinitely many", isCorrect: false, reason: infReason }
     ];
 
-    // 4. Shuffle Options
-    const shuffledOptions = shuffle(optionsData);
+    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
+      ...opt,
+      letter: String.fromCharCode(65 + index)
+    }));
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    // 5. Build Explanation
-    const explanation = `
-      We are asked to find the number of intersection points for the system:
-      $y = -${a}(x - ${h})^2 + ${k}$ and $y = ${lineY}$.
-      <br/><br/>
-      <strong>1. Analyze the parabola:</strong><br/>
-      The equation $y = -${a}(x - ${h})^2 + ${k}$ is a parabola in vertex form.
-      <ul>
-        <li>The vertex is at $(${h}, ${k})$.</li>
-        <li>Since the coefficient $-${a}$ is negative, the parabola opens <strong>downward</strong>.</li>
-        <li>This means the maximum value of $y$ for the parabola is ${k}.</li>
-      </ul>
-      <br/>
-      <strong>2. Analyze the line:</strong><br/>
-      The equation $y = ${lineY}$ is a horizontal line where $y$ is always ${lineY}.
-      <br/><br/>
-      <strong>3. Compare:</strong><br/>
-      The maximum height of the parabola is ${k}. The line sits at height ${lineY}.
-      Since ${lineY} > ${k}, the line is strictly above the parabola.
-      <br/><br/>
-      They never touch. Therefore, there are <strong>zero</strong> points of intersection.
-    `;
+    const explanation = `Choice ${correctOption.letter} is correct. The graphs intersect where the two expressions for $y$ are equal: $${para} = ${L}$. Subtracting ${k} from both sides gives $-${a}${sq} = ${L - k}$. Dividing both sides by $-${a}$ gives $${sq} = ${R}$. ${conclusion} ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `The system of equations is given by:\n${equations}\nIf the given equations are graphed in the $xy$-plane, at how many points do the graphs of the equations intersect?`,
       figureCode: null,
-      options: shuffledOptions.map(o => o.text),
+      options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
       explanation: explanation
     };
