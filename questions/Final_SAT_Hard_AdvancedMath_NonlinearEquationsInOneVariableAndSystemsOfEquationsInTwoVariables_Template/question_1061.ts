@@ -35,18 +35,23 @@ export const generator_1061 = {
 
     const cValue = -aPos * m * m; // = b²/(4a), always a negative integer (-18 .. -180)
 
-    // Distractors — constructed to always differ from cValue, from 0, and from each other:
-    // signError is positive, cValue is negative, arithError is strictly below cValue.
+    // Before: one wrong choice was cValue minus a random offset, explained only
+    // as "an arithmetic error". It is now the value from leaving the 4 out of
+    // the discriminant: b^2 + |a|c = 0 gives c = -b^2/|a| = 4 * cValue.
+    // cValue < 0, so cValue, -cValue, 4 * cValue and 0 are always distinct.
     const signError = -cValue; // from treating the leading coefficient as +|a|
-    const arithError = cValue - getRandomInt(10, 20);
+    const noFourError = 4 * cValue;
     const distractorZero = 0;
+
+    // b^2 reaches 3,600; inside math a comma must be written {,}.
+    const bSq = (b * b).toLocaleString('en-US').replace(/,/g, '{,}');
 
     // STEP 2: Create options
     const optionsData = [
-      { text: `$${arithError}$`, isCorrect: false, reason: `results from an arithmetic error when solving for $c$` },
+      { text: `$${noFourError}$`, isCorrect: false, reason: `$${noFourError}$ results from leaving the 4 out of the discriminant and solving $${bSq} + ${aPos}c = 0$` },
       { text: `$${cValue}$`, isCorrect: true, reason: `` },
-      { text: `$${signError}$`, isCorrect: false, reason: `results from a sign error: using $a = ${aPos}$ instead of $a = ${a}$ when solving $b^2 - 4ac = 0$` },
-      { text: `$${distractorZero}$`, isCorrect: false, reason: `would make the equation $${a}x^2 + ${b}x = 0$, which factors as $x(${a}x + ${b}) = 0$ and has two distinct solutions` }
+      { text: `$${signError}$`, isCorrect: false, reason: `$${signError}$ results from using $a = ${aPos}$ instead of $a = ${a}$ when solving $b^2 - 4ac = 0$` },
+      { text: `$${distractorZero}$`, isCorrect: false, reason: `$0$ results from assuming the constant term must vanish for a single solution, but $${a}x^2 + ${b}x = 0$ factors as $x(${a}x + ${b}) = 0$ and has two solutions, $x = 0$ and $x = ${2 * m}$` }
     ];
     
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -58,10 +63,7 @@ export const generator_1061 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
     
-    const explanation = `Choice ${correctLetter} is correct. A quadratic equation has exactly one solution when its discriminant equals 0. Here $a = ${a}$ and $b = ${b}$, so the discriminant is $b^2 - 4ac = (${b})^2 - 4(${a})c = ${b * b} + ${4 * aPos}c$. Setting this equal to 0 gives $c = -\\frac{${b * b}}{${4 * aPos}} = ${cValue}$.
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. A quadratic equation has exactly one solution when its discriminant equals 0. Here $a = ${a}$ and $b = ${b}$, so the discriminant is $b^2 - 4ac = (${b})^2 - 4(${a})c = ${bSq} + ${4 * aPos}c$. Setting this equal to 0 gives $c = -\\frac{${bSq}}{${4 * aPos}} = ${cValue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `$${a}x^2 + ${b}x + c = 0$\n\nIn the given equation, $c$ is a constant. The equation has exactly one solution. What is the value of $c$?`,
