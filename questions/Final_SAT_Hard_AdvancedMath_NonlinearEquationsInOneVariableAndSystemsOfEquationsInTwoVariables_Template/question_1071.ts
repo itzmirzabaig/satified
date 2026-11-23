@@ -28,43 +28,22 @@ export const generator_1071 = {
     // New roots: (-3-√2)+(-4-2√2) = -7-3√2 and (-3+√2)+(-4+2√2) = -7+3√2
     // Product: (-7-3√2)(-7+3√2) = 49 - 18 = 31
     
-    // Pattern: Create two quadratics that complete to (x+p)² = q form
+    // Fix: before, p2 and qBase were drawn independently, so p2^2 - 4*qBase could be
+    // 0 or negative ("x^2+8x+0=0", "x^2+8x+-4=0"), and qBase = 4 made the radical
+    // a whole number (sqrt{4}). Now qBase is never a perfect square and p2 is
+    // redrawn until the constant of the second equation is positive.
+    // Roots: r, s = -p1 -/+ sqrt(q) and t, u = -p2 -/+ 2 sqrt(q), so
+    // (r+t)(s+u) = (p1+p2)^2 - 9q.
     const p1 = getRandomInt(3, 8);
-    const q1 = getRandomInt(2, 5); // Not perfect square
-    
-    const p2 = getRandomInt(4, 9);
-    const q2 = getRandomInt(3, 6) * 2; // Even multiple for clean combination
-    
-    // First equation: x² + 2p1x + (p1²-q1) = 0, roots are -p1±√q1
-    // Second equation: x² + 2p2x + (p2²-q2) = 0, roots are -p2±√q2
-    
-    const c1 = p1*p1 - q1;
-    const c2 = p2*p2 - q2;
-    
-    // New roots: (-p1-√q1) + (-p2-√q2) = -(p1+p2) - (√q1+√q2) ... this gets messy
-    
-    // Alternative: Use the pattern where √q2 = 2√q1 so they combine nicely
-    // Let q2 = 4*q1, then √q2 = 2√q1
-    
-    const qBase = getRandomInt(2, 5);
+    const qBase = [2, 3, 5][getRandomInt(0, 2)];
+    let p2 = getRandomInt(4, 9);
+    while (p2 * p2 <= 4 * qBase) p2 = getRandomInt(4, 9);
     const finalQ1 = qBase;
-    const finalQ2 = 4 * qBase; // So √finalQ2 = 2√finalQ1
-    
+    const finalQ2 = 4 * qBase; // So sqrt(finalQ2) = 2 sqrt(finalQ1)
+
     const finalC1 = p1*p1 - finalQ1;
     const finalC2 = p2*p2 - finalQ2;
-    
-    // Roots: -p1±√finalQ1 and -p2±2√finalQ1
-    // New roots: (-p1-p2)±3√finalQ1 ... wait that's not right either
-    
-    // Let's just compute directly
-    // r = -p1 - √finalQ1, s = -p1 + √finalQ1
-    // t = -p2 - 2√finalQ1, u = -p2 + 2√finalQ1
-    
-    // r+t = -p1-p2 - 3√finalQ1
-    // s+u = -p1-p2 + 3√finalQ1
-    
-    // Product: (-(p1+p2))² - (3√finalQ1)² = (p1+p2)² - 9*finalQ1
-    
+
     const cValue = (p1 + p2) * (p1 + p2) - 9 * finalQ1;
     
     // STEP 2: No figure needed
@@ -75,7 +54,7 @@ export const generator_1071 = {
       figureCode: figureCode,
       options: [],
       correctAnswer: cValue.toString(),
-      explanation: `The correct answer is $${cValue}$. Completing the square for the first equation: $(x+${p1})^2=${finalQ1}$, so $r=-${p1}-\\sqrt{${finalQ1}}$ and $s=-${p1}+\\sqrt{${finalQ1}}$. For the second: $(x+${p2})^2=${finalQ2}$, so $t=-${p2}-2\\sqrt{${finalQ1}}$ and $u=-${p2}+2\\sqrt{${finalQ1}}$. Thus $r+t=-${p1+p2}-3\\sqrt{${finalQ1}}$ and $s+u=-${p1+p2}+3\\sqrt{${finalQ1}}$. The product $c=(-${p1+p2})^2-(3\\sqrt{${finalQ1}})^2=${(p1+p2)*(p1+p2)}-${9*finalQ1}=${cValue}$.`
+      explanation: `The correct answer is ${cValue}. Completing the square in the first equation gives $(x+${p1})^2=${finalQ1}$, so $r=-${p1}-\\sqrt{${finalQ1}}$ and $s=-${p1}+\\sqrt{${finalQ1}}$. Completing the square in the second equation gives $(x+${p2})^2=${finalQ2}$, so $t=-${p2}-2\\sqrt{${finalQ1}}$ and $u=-${p2}+2\\sqrt{${finalQ1}}$. Thus $r+t=-${p1+p2}-3\\sqrt{${finalQ1}}$ and $s+u=-${p1+p2}+3\\sqrt{${finalQ1}}$. In an equation of the form $x^2+bx+c=0$, the constant $c$ equals the product of the solutions, so $c=(r+t)(s+u)=(-${p1+p2})^2-(3\\sqrt{${finalQ1}})^2=${(p1+p2)*(p1+p2)}-${9*finalQ1}=${cValue}$.`
     };
   }
 };
