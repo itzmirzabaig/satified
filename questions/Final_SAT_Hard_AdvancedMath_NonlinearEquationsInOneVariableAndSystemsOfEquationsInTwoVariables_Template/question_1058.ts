@@ -31,20 +31,27 @@ export const generator_1058 = {
     const xValue = getRandomInt(4, 8);        // the correct answer
     const d = getRandomInt(2, 5);             // slope of the line
     const b = d - 4 * xValue;                 // in [-30, -11], always negative
-    const c = getRandomInt(50, 80);           // constant term of the parabola
-
     const bd = b - d;                         // = -4x, always negative
 
-    // Distractors: never collide with xValue (>= 4 > 0) or each other.
-    const distractorA = -xValue - 2;
-    const distractorB = -xValue;
-    const distractorD = xValue + 2;
+    // Before: two wrong choices were x - 2 shifted values ("-x - 2", "x + 2")
+    // explained only as "an arithmetic error". Now every wrong choice is a
+    // real slip: dropping the negative sign (-x), dividing by 2 instead of
+    // 2(2) (2x), and answering with the y-coordinate of the intersection
+    // point instead of x. With a discriminant of 0, a = c - 2x^2, so the
+    // y-coordinate is y = dx + a = c + dx - 2x^2. c is redrawn until all four
+    // values are distinct.
+    let c = 0, aValue = 0, yValue = 0;
+    do {
+      c = getRandomInt(50, 80);               // constant term of the parabola
+      aValue = c - 2 * xValue * xValue;
+      yValue = d * xValue + aValue;
+    } while (aValue === 0 || new Set([xValue, -xValue, 2 * xValue, yValue]).size < 4);
 
     const optionsData = [
-      { text: `$${distractorA}$`, isCorrect: false, reason: `results from a sign error and an arithmetic error when solving for the $x$-coordinate of the intersection point` },
-      { text: `$${distractorB}$`, isCorrect: false, reason: `is the opposite of the correct value; it results from dropping the negative sign in $x=-\\frac{${bd}}{2(2)}$` },
+      { text: `$${-xValue}$`, isCorrect: false, reason: `$${-xValue}$ results from dropping the negative sign in $x=-\\frac{${bd}}{2(2)}$` },
+      { text: `$${2 * xValue}$`, isCorrect: false, reason: `$${2 * xValue}$ results from dividing $${-bd}$ by $2$ instead of by $2(2)=4$, forgetting that the leading coefficient of the quadratic is $2$` },
       { text: `$${xValue}$`, isCorrect: true, reason: '' },
-      { text: `$${distractorD}$`, isCorrect: false, reason: `results from an arithmetic error when evaluating $-\\frac{${bd}}{2(2)}$` }
+      { text: `$${yValue}$`, isCorrect: false, reason: `$${yValue}$ is the $y$-coordinate of the intersection point, not the $x$-coordinate: setting the discriminant equal to zero gives $a=${aValue}$, and then $y=${d}(${xValue})${aValue < 0 ? '' : '+'}${aValue}=${yValue}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -56,10 +63,7 @@ export const generator_1058 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. The graphs intersect where the two expressions for $y$ are equal: $ 2x^2 - ${-b}x + ${c} = ${d}x + a$. Rewriting gives $ 2x^2 - ${-bd}x + (${c} - a) = 0$. Because the graphs intersect at exactly one point, this quadratic equation must have exactly one solution, so its discriminant, $(${bd})^2 - 4(2)(${c} - a)$, equals zero. A quadratic equation with a discriminant of zero has its single solution at $x = -\\frac{${bd}}{2(2)} = \\frac{${-bd}}{4} = ${xValue}$.
-Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}.
-Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}.
-Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctLetter} is correct. The graphs intersect where the two expressions for $y$ are equal: $2x^2 - ${-b}x + ${c} = ${d}x + a$. Rewriting gives $2x^2 - ${-bd}x + (${c} - a) = 0$. Because the graphs intersect at exactly one point, this quadratic equation must have exactly one solution, so its discriminant, $(${bd})^2 - 4(2)(${c} - a)$, equals zero. A quadratic equation with a discriminant of zero has its single solution at $x = -\\frac{${bd}}{2(2)} = \\frac{${-bd}}{4} = ${xValue}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `$y = 2x^2 - ${-b}x + ${c}$\n$y = ${d}x + a$\n\nIn the given system of equations, $a$ is a constant. The graphs of the equations in the given system intersect at exactly one point, $(x, y)$, in the $xy$-plane. What is the value of $x$?`,
