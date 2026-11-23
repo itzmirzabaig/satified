@@ -41,16 +41,19 @@ export const generator_1036 = {
 
     // Show the exact fraction; add a clean 2-decimal approximation only when
     // the threshold is not an integer (never interpolate the raw float).
+    // b^2 is always 1,600 or more: it used to print without a thousands comma
+    // (e.g. 3136). Inside math the comma is written {,}.
+    const numTex = numerator.toLocaleString('en-US').replace(/,/g, '{,}');
     const thresholdTex = numerator % denominator === 0
-      ? `\\frac{${numerator}}{${denominator}}=${threshold}`
-      : `\\frac{${numerator}}{${denominator}}\\approx ${round(threshold, 2)}`;
+      ? `\\frac{${numTex}}{${denominator}}=${threshold}`
+      : `\\frac{${numTex}}{${denominator}}\\approx ${round(threshold, 2)}`;
 
     return {
       questionText: `$x(kx-${b})=-${c}$\n\nIn the given equation, $k$ is an integer constant. If the equation has no real solution, what is the least possible value of $k$?`,
       figureCode: null,
       options: [],
       correctAnswer: minK.toString(),
-      explanation: `The correct answer is ${minK}. Rewriting the given equation in standard form gives $kx^2-${b}x+${c}=0$. A quadratic equation has no real solutions exactly when its discriminant is negative: $(-${b})^2-4(k)(${c})<0$. Solving this inequality for $k$ gives $k>${thresholdTex}$. Since $k$ must be an integer, the least possible value of $k$ is ${minK}.`
+      explanation: `The correct answer is ${minK}. Rewriting the given equation in standard form gives $kx^2-${b}x+${c}=0$. A quadratic equation has no real solutions exactly when its discriminant is negative: $(-${b})^2-4(k)(${c})<0$, or $${numTex}-${denominator}k<0$. Solving this inequality for $k$ gives $k>${thresholdTex}$. Since $k$ must be an integer, the least possible value of $k$ is ${minK}.`
     };
   }
 };
