@@ -36,7 +36,8 @@ export const generator_1118 = {
       figureCode: null,
       options: [],
       correctAnswer: length.toString(),
-      explanation: `Let the width be $w$ feet. Then the length is $w+${diff}$, and the area equation is $w(w+${diff})=${area}$, so $w^2+${diff}w-${area}=0$. Factoring gives $(w-${w})(w+${w + diff})=0$, so the positive solution is $w=${w}$. The length is therefore $w+${diff}=${length}$ feet.`
+      // Explanation now opens by stating the answer.
+      explanation: `The correct answer is ${length}. Let the width be $w$ feet. Then the length is $w+${diff}$, and the area equation is $w(w+${diff})=${area}$, so $w^2+${diff}w-${area}=0$. Factoring gives $(w-${w})(w+${w + diff})=0$, so the positive solution is $w=${w}$. The length is therefore $w+${diff}=${length}$ feet.`
     };
   }
 };
