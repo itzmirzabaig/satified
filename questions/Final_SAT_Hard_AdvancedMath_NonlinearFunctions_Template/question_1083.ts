@@ -43,7 +43,9 @@ export const generator_1083 = {
     const fX1 = c * t;                  // f(x1) = c(x1+3) = m(x1 - r)
     const yInt = -m * r;                // f(0) = m|r|, in [12, 50]
 
-    // Distractors — pairwise distinct from yInt and each other for every draw:
+    // Fixed: the sign choice had the vague reason "a sign error" and two reasons
+    // used "is incorrect;" instead of naming the slip after "because".
+    // Distractors are pairwise distinct from yInt and each other for every draw:
     // yInt >= 12 > |r| (6..10) > m (2..5) > 0 > r (-10..-6) > -yInt (<= -12).
     const optionsData = [
       { key: 'correct', text: `$(0, ${yInt})$`, isCorrect: true },
@@ -84,7 +86,7 @@ export const generator_1083 = {
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `$(0, ${yInt})$`,
-      explanation: `Choice ${correctLetter} is correct. Because $g(x)=\\frac{f(x)}{x+3}$, it follows that $f(x)=g(x)(x+3)$ for each $x$-value in the table. From the table, $g(${x1})=${c}$, so $f(${x1})=${c}(${x1}+3)=${fX1}$; also $g(${r})=0$, so $f(${r})=0$. The slope of $f$ is therefore $\\frac{${fX1}-0}{${x1}-(${r})}=${m}$, and since $f(${r})=0$, we can write $f(x)=${m}(x+${-r})$. The $y$-intercept occurs where $x=0$: $f(0)=${m}(${-r})=${yInt}$, so the graph of $y=f(x)$ crosses the $y$-axis at $(0, ${yInt})$. Choice ${letterOf('slope')} is incorrect; ${m} is the slope of $f$, not the $y$-coordinate of the $y$-intercept. Choice ${letterOf('sign')} is incorrect because it results from a sign error when evaluating $f(0)$. Choice ${letterOf('root')} is incorrect; $x=${r}$ is where $f(x)=0$, which gives the $x$-intercept of the graph, not the $y$-intercept.`
+      explanation: `Choice ${correctLetter} is correct. Because $g(x)=\\frac{f(x)}{x+3}$, it follows that $f(x)=g(x)(x+3)$ for each value of $x$ in the table. From the table, $g(${x1})=${c}$, so $f(${x1})=${c}(${x1}+3)=${fX1}$; also $g(${r})=0$, so $f(${r})=0$. From $x=${r}$ to $x=${x1}$, the value of $f(x)$ increases by $${fX1}$ while $x$ increases by $${x1 - r}$, so the slope of $f$ is $\\frac{${fX1}}{${x1 - r}}=${m}$, and since $f(${r})=0$, we can write $f(x)=${m}(x+${-r})$. The $y$-intercept occurs where $x=0$: $f(0)=${m}(${-r})=${yInt}$, so the graph of $y=f(x)$ crosses the $y$-axis at $(0, ${yInt})$. Choice ${letterOf('slope')} is incorrect because $${m}$ is the slope of $f$, not the value of $f(0)$. Choice ${letterOf('sign')} is incorrect because $${-yInt}$ results from writing $f(x)=${m}(x-${-r})$, which uses the wrong sign for the zero at $x=${r}$. Choice ${letterOf('root')} is incorrect because $${r}$ is the value of $x$ where $f(x)=0$, so it gives the $x$-intercept $(${r}, 0)$, not the $y$-intercept.`
     };
   }
 };
