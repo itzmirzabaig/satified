@@ -35,34 +35,41 @@ export const generator_1145 = {
     const newCoeff = getRandomInt(3, 19);          // the coefficient of h(x)
     const coeff = newCoeff * powBaseShift;         // original coefficient (exact multiple)
 
-    const correctText = `$h(x)=${newCoeff}(${base})^x$`;
+    // Fixed: coefficients of 1,000 or more had no comma, the stem was a fragment,
+    // the choice that kept the right coefficient but raised the base was not a real
+    // slip (now the wrong shift direction), and wrong choices had no reasons.
+    const m = (n: number) => n.toLocaleString('en-US').replace(/,/g, '{,}');
+    const wrongDirection = coeff * powBaseShift;   // f(x + shift) instead of f(x - shift)
+
+    const correctText = `$h(x)=${m(newCoeff)}(${base})^x$`;
 
     const optionsData = [
       // Correct: dividing the coefficient by base^shift, base unchanged.
-      { text: correctText, isCorrect: true },
+      { text: correctText, isCorrect: true, reason: '' },
       // Distractor: forgot to apply the shift at all (keeps original coefficient).
-      { text: `$h(x)=${coeff}(${base})^x$`, isCorrect: false },
+      { text: `$h(x)=${m(coeff)}(${base})^x$`, isCorrect: false, reason: `$${m(coeff)}$ is the coefficient of $f$, so this choice ignores the shift and is just $f(x)$` },
       // Distractor: changed the base to base^shift instead of the coefficient.
-      { text: `$h(x)=${coeff}(${powBaseShift})^x$`, isCorrect: false },
-      // Distractor: kept the correct coefficient but wrongly raised the base.
-      { text: `$h(x)=${newCoeff}(${powBaseShift})^x$`, isCorrect: false }
+      { text: `$h(x)=${m(coeff)}(${powBaseShift})^x$`, isCorrect: false, reason: `$${powBaseShift}$ is $${base}^{${shift}}$, which should divide the coefficient rather than replace the base` },
+      // Distractor: multiplied by base^shift, which is the shift in the wrong direction.
+      { text: `$h(x)=${m(wrongDirection)}(${base})^x$`, isCorrect: false, reason: `$${m(wrongDirection)}$ comes from multiplying $${m(coeff)}$ by $${powBaseShift}$ instead of dividing, which gives $f(x+${shift})$` }
     ];
     // Every option is pairwise distinct for all draws: base^shift > base (shift >= 2)
-    // and coeff = newCoeff·base^shift > newCoeff, so no coefficient/base pair repeats.
+    // and newCoeff < coeff < wrongDirection, so no coefficient/base pair repeats.
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
 
-    const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `$f(x)=${coeff}(${base})^x$ and $h(x)=f(x-${shift})$. Which defines $h$?`,
+      questionText: `The function $f$ is defined by $f(x)=${m(coeff)}(${base})^x$, and the function $h$ is defined by $h(x)=f(x-${shift})$. Which equation defines $h$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. $h(x)=f(x-${shift})=${coeff}(${base})^{x-${shift}}=${coeff}(${base})^{-${shift}}(${base})^x=\\frac{${coeff}}{${powBaseShift}}(${base})^x=${newCoeff}(${base})^x$. The other choices come from shifting the base instead of the coefficient, or from not applying the shift.`
+      explanation: `Choice ${correctOption.letter} is correct. Substituting $x-${shift}$ for $x$ in $f$ gives $h(x)=${m(coeff)}(${base})^{x-${shift}}$. By the laws of exponents, this equals $${m(coeff)}(${base})^{-${shift}}(${base})^x=\\frac{${m(coeff)}}{${powBaseShift}}(${base})^x=${m(newCoeff)}(${base})^x$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
