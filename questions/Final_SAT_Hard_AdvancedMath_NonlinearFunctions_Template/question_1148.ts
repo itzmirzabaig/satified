@@ -28,26 +28,30 @@ export const generator_1148 = {
     const diff = getRandomInt(3, 8) * 4;
     const extra = diff * 4;
     
+    // Fixed: f was never defined in the stem, two choices such as (176x+44)^2 were
+    // not real slips, and wrong choices had no reasons.
+    const correctText = `$f(x)=(x+${diff})^2$`;
     const optionsData = [
-      { text: `$(x+${diff})^2$`, isCorrect: true },
-      { text: `$(x+${extra})^2$`, isCorrect: false },
-      { text: `$(${extra}x+${diff})^2$`, isCorrect: false },
-      { text: `$(${extra}x+${extra})^2$`, isCorrect: false }
+      { text: correctText, isCorrect: true, reason: '' },
+      { text: `$f(x)=(x+${extra})^2$`, isCorrect: false, reason: `$${extra}$ is the difference in the perimeters, but the side length of square Q is only $${diff}$ inches greater than $x$` },
+      { text: `$f(x)=(4x+${extra})^2$`, isCorrect: false, reason: `$4x+${extra}$ is the perimeter of square Q, and this choice squares the perimeter instead of the side length` },
+      { text: `$f(x)=x^2+${extra}$`, isCorrect: false, reason: `it adds the difference in the perimeters, $${extra}$, to the area of square P, but a difference in perimeter is not the same as a difference in area` }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
-    
+
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+
     return {
-      questionText: `Square P has side length $x$ inches. Square Q has perimeter ${extra} inches greater than P's perimeter. Which function $f$ gives Q's area?`,
+      questionText: `Square P has a side length of $x$ inches. Square Q has a perimeter that is ${extra} inches greater than the perimeter of square P. The function $f$ gives the area of square Q, in square inches. Which of the following defines $f$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `$(x+${diff})^2$`,
-      explanation: `Choice ${correctLetter} is correct. P's perimeter is $4x$. Q's perimeter is $4x+${extra}$, so Q's side is $\\frac{4x+${extra}}{4}=x+${diff}$. The area is $(x+${diff})^2$.`
+      correctAnswer: correctText,
+      explanation: `Choice ${correctOption.letter} is correct. The perimeter of square P is $4x$ inches, so the perimeter of square Q is $4x+${extra}$ inches. A square has four equal sides, so the side length of square Q is $\\frac{4x+${extra}}{4}=x+${diff}$ inches. The area of square Q is the square of its side length, so $f(x)=(x+${diff})^2$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
