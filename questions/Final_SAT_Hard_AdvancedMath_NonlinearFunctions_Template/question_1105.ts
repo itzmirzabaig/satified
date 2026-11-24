@@ -38,11 +38,12 @@ export const generator_1105 = {
     // Option values are pairwise distinct for every draw:
     // pct in [2,10] (integer), months in [13,24] (integer), rate in 1.02..1.10,
     // decimal form in 0.02..0.10 — the four ranges never overlap.
+    // Previously the explanation used a hyphenated "N-month period"; reasons now follow the standard format.
     const optionsData = [
-      { key: 'correct', text: `$${pct}$`, isCorrect: true },
-      { key: 'decimal', text: `$${decStr}$`, isCorrect: false },
-      { key: 'factor', text: `$${rateStr}$`, isCorrect: false },
-      { key: 'months', text: `$${months}$`, isCorrect: false }
+      { text: `$${pct}$`, isCorrect: true, reason: '' },
+      { text: `$${decStr}$`, isCorrect: false, reason: `${decStr} is the increase written as a decimal rather than as a percent` },
+      { text: `$${rateStr}$`, isCorrect: false, reason: `${rateStr} is the growth factor for each period of ${months} months, not the percent increase` },
+      { text: `$${months}$`, isCorrect: false, reason: `${months} is the number of months in each period, not the percent increase` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -51,14 +52,14 @@ export const generator_1105 = {
     }));
 
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
-    const letterOf = (key: string) => shuffledOptions.find(o => o.key === key)!.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: `The function $P$ models the population of a city, in thousands, $t$ years after 2005, where $P(t)=${P0}(${rateStr})^{\\frac{12t}{${months}}}$. According to the model, the population increases by $n\\%$ every ${months} months. What is the value of $n$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `$${pct}$`,
-      explanation: `Choice ${correctLetter} is correct. The exponent $\\frac{12t}{${months}}$ increases by exactly 1 whenever $t$ increases by $\\frac{${months}}{12}$ of a year, that is, every ${months} months. Each such increase multiplies the population by a factor of ${rateStr}, which is an increase of ${pct}%, so $n=${pct}$. Choice ${letterOf('decimal')} is incorrect; ${decStr} is the increase written as a decimal rather than as a percent. Choice ${letterOf('factor')} is incorrect; ${rateStr} is the growth factor for each ${months}-month period, not the percent increase. Choice ${letterOf('months')} is incorrect; ${months} is the number of months in each period, not the percent increase.`
+      explanation: `Choice ${correctLetter} is correct. The exponent $\\frac{12t}{${months}}$ increases by exactly 1 whenever $t$ increases by $\\frac{${months}}{12}$ of a year, that is, every ${months} months. Each such increase multiplies the population by a factor of ${rateStr}, which is an increase of ${pct}%, so $n=${pct}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
