@@ -42,7 +42,8 @@ export const generator_1107 = {
       figureCode: null,
       options: [],
       correctAnswer: correctAnswer,
-      explanation: `Let the second integer be $x$ and the first integer be $2x + 5$. The product is $x(2x + 5) = ${product}$, which gives $2x^2 + 5x - ${product} = 0$. Factoring yields $(2x + ${firstInteger})(x - ${n}) = 0$ (or equivalent), giving $x = ${n}$ or $x = -${firstInteger}/2$. Since $x$ must be positive, the smaller integer is ${n}.`
+      // Previously the explanation did not open with the answer or show why x is the smaller integer.
+      explanation: `The correct answer is ${n}. Let the second integer be $x$, so the first integer is $2x+5$. Their product is $x(2x+5)=${product}$, which gives $2x^2+5x-${product}=0$. Factoring gives $(2x+${firstInteger})(x-${n})=0$, so $x=${n}$ or $x=-\\frac{${firstInteger}}{2}$. Because $x$ is a positive integer, $x=${n}$. The first integer is then $2(${n})+5=${firstInteger}$, so the smaller of the two integers is ${n}.`
     };
   }
 };
