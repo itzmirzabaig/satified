@@ -31,11 +31,13 @@ export const generator_1090 = {
     const vertexY = -getRandomInt(40, 80);
     
     return {
-      questionText: `Function $f$ is a quadratic where $f(${r1})=0$ and $f(${r2})=0$. The graph has a vertex at $(r, ${vertexY})$. What is the value of $r$?`,
+      // Before: broken grammar ("Function f is a quadratic where") and the
+      // explanation did not state the answer or say why the average works.
+      questionText: `The function $f$ is a quadratic function where $f(${r1})=0$ and $f(${r2})=0$. The graph of $y=f(x)$ in the $xy$ plane has a vertex at $(r, ${vertexY})$. What is the value of $r$?`,
       figureCode: null,
       options: [],
       correctAnswer: vertexX.toString(),
-      explanation: `The x-coordinate of the vertex is the average of the roots: $r=\\frac{${r1}+(${r2})}{2}=\\frac{${r1 + r2}}{2}=${vertexX}$.`
+      explanation: `The correct answer is $${vertexX}$. The graph of a quadratic function is symmetric about the vertical line through its vertex, so the $x$ coordinate of the vertex is the average of the two zeros, $${r1}$ and $${r2}$. Therefore, $r=\\frac{${r1}+(${r2})}{2}=\\frac{${r1 + r2}}{2}=${vertexX}$.`
     };
   }
 };
