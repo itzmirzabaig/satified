@@ -28,26 +28,29 @@ export const generator_1109 = {
     const height = getRandomInt(8, 15);
     const moreThan = getRandomInt(1, 4);
     
+    // Previously the stem said "2 inch more" and the wrong choices had no reasons.
+    const inchWord = moreThan === 1 ? 'inch' : 'inches';
     const optionsData = [
-      { text: `$V(x)=${height}x(x-${moreThan})$`, isCorrect: true },
-      { text: `$V(x)=${height}x(x+${moreThan})$`, isCorrect: false },
-      { text: `$V(x)=x(x+${height})(x-${moreThan})$`, isCorrect: false },
-      { text: `$V(x)=x(x+${height})(x+${moreThan})$`, isCorrect: false }
+      { text: `$V(x)=${height}x(x-${moreThan})$`, isCorrect: true, reason: '' },
+      { text: `$V(x)=${height}x(x+${moreThan})$`, isCorrect: false, reason: `$V(x)=${height}x(x+${moreThan})$ uses $x+${moreThan}$ for the width, which makes the width greater than the length instead of less` },
+      { text: `$V(x)=x(x+${height})(x-${moreThan})$`, isCorrect: false, reason: `$V(x)=x(x+${height})(x-${moreThan})$ multiplies by $x+${height}$ instead of by the height, ${height}` },
+      { text: `$V(x)=x(x+${height})(x+${moreThan})$`, isCorrect: false, reason: `$V(x)=x(x+${height})(x+${moreThan})$ multiplies by $x+${height}$ instead of by the height, ${height}, and also uses $x+${moreThan}$ for the width` }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
-    
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+
     return {
-      questionText: `A park ranger hung squirrel houses each in the shape of a right rectangular prism. Each house has a height of $${height}$ inches. The length of each house's base is $x$ inches, which is ${moreThan} inch more than the width of the house's base. Which function $V$ gives the volume of each house, in cubic inches, in terms of the length of the house's base?`,
+      questionText: `A park ranger hung squirrel houses, each in the shape of a right rectangular prism. Each house has a height of $${height}$ inches. The length of each house's base is $x$ inches, which is ${moreThan} ${inchWord} more than the width of the house's base. Which function $V$ gives the volume of each house, in cubic inches, in terms of the length of the house's base?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `$V(x)=${height}x(x-${moreThan})$`,
-      explanation: `Choice ${correctLetter} is correct. The width is $x-${moreThan}$ inches. Volume $V = \\text{length} \\times \\text{width} \\times \\text{height} = x(x-${moreThan})(${height}) = ${height}x(x-${moreThan})$.`
+      explanation: `Choice ${correctLetter} is correct. The length is ${moreThan} ${inchWord} more than the width, so the width is $x-${moreThan}$ inches. The volume of a right rectangular prism is the product of its length, width, and height, so $V(x)=x(x-${moreThan})(${height})=${height}x(x-${moreThan})$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
