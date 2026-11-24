@@ -1,4 +1,4 @@
-import { getRandomInt, shuffle } from '../../utils/math';
+import { getRandomElement, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -9,14 +9,16 @@ import type { QuestionData } from '../../study/types';
  * - Skill: Nonlinear Functions (Equivalent Forms)
  * - Logic: Identify which equivalent form displays the y-coordinate of the
  *   y-intercept as a single visible constant or coefficient.
- * - Function: f(x) = a(base^x + base^b), with a a concrete integer coefficient
- *   and b a symbolic integer exponent (0 < a < b).
- * - Y-Intercept: f(0) = a(1 + base^b) = a + a*base^b.
- * - Form I:  g(x) = a(base^x + k).  Equivalent => k = base^b.
- *            Displayed constants: a, k. Intercept a(1+k) is not a lone constant.
- * - Form II: h(x) = a(base)^x + m.   Equivalent => m = a*base^b.
- *            Displayed constants: a, m. Intercept a + m is not a lone constant.
- * - Answer is always "Neither I nor II".
+ * - Function: f(x) = A(B)^x, so the y-intercept value is f(0) = A.
+ * - A form that displays it:       A(B^k)^(x/k), coefficient A.
+ * - A form that does not:          (A*B^n)(B)^(x-n), coefficient A*B^n != A.
+ * - Each equation is drawn independently, so all four answers occur.
+ * - A is drawn from {5,7,11,13}, which never equals B, B^k, n, k or A*B^n, so a
+ *   displayed number can never match the intercept by accident.
+ *
+ * Before, the stem called a a constant though it never appeared in f, b stayed
+ * an unknown exponent, the answer was always "Neither I nor II", and the wrong
+ * choices had no reasons.
  */
 
 export const generator_1122 = {
@@ -29,19 +31,55 @@ export const generator_1122 = {
   },
 
   generate: (): QuestionData => {
-    // 1. Randomize parameters. a is a concrete coefficient; b stays symbolic.
-    const a = getRandomInt(2, 9);
-    const b = a + getRandomInt(2, 6); // ensures 0 < a < b
+    // 1. Randomize parameters.
+    const A = getRandomElement([5, 7, 11, 13]);
+    const B = getRandomElement([2, 3, 4]);
+    const showsI = getRandomElement([true, false]);
+    const showsII = getRandomElement([true, false]);
 
-    // Base is a decimal in [1.2, 3.8] to avoid static numbers.
-    const base = (getRandomInt(12, 38) / 10).toString();
+    // Equation I uses k = 2 or n = 1; equation II uses k = 3 or n = 2, so the
+    // two equations are never identical.
+    const build = (name: string, shows: boolean, k: number, n: number) => {
+      if (shows) {
+        const inner = B ** k;
+        return {
+          eq: `${name}(x)=${A}(${inner})^{\\frac{x}{${k}}}`,
+          work: `$${name}(0)=${A}(${inner})^{0}=${A}$, and ${A} appears as the coefficient, so this equation displays the $y$-coordinate of the $y$-intercept`,
+          coef: A
+        };
+      }
+      const coef = A * B ** n;
+      return {
+        eq: `${name}(x)=${coef}(${B})^{x-${n}}`,
+        work: `$${name}(0)=${coef}(${B})^{-${n}}=${A}$, but the coefficient shown is ${coef}, so this equation does not display the $y$-coordinate of the $y$-intercept`,
+        coef
+      };
+    };
+    const eqI = build('g', showsI, 2, 1);
+    const eqII = build('h', showsII, 3, 2);
 
-    // 2. Options. The correct answer is always "Neither I nor II".
+    let correctText: string;
+    if (showsI && showsII) correctText = 'I and II';
+    else if (showsI) correctText = 'I only';
+    else if (showsII) correctText = 'II only';
+    else correctText = 'Neither I nor II';
+
+    // Each wrong choice names exactly which equation it gets wrong.
+    const reasonFor = (claimsI: boolean, claimsII: boolean): string => {
+      const parts: string[] = [];
+      if (claimsI && !showsI) parts.push(`equation I shows the coefficient ${eqI.coef} rather than the $y$-coordinate ${A}`);
+      if (!claimsI && showsI) parts.push(`it leaves out equation I, whose coefficient ${A} is the $y$-coordinate of the $y$-intercept`);
+      if (claimsII && !showsII) parts.push(`equation II shows the coefficient ${eqII.coef} rather than the $y$-coordinate ${A}`);
+      if (!claimsII && showsII) parts.push(`it leaves out equation II, whose coefficient ${A} is the $y$-coordinate of the $y$-intercept`);
+      return parts.join(', and ');
+    };
+
+    // 2. Options.
     const optionsData = [
-      { text: `I only`, isCorrect: false },
-      { text: `II only`, isCorrect: false },
-      { text: `I and II`, isCorrect: false },
-      { text: `Neither I nor II`, isCorrect: true }
+      { text: `I only`, isCorrect: correctText === 'I only', reason: reasonFor(true, false) },
+      { text: `II only`, isCorrect: correctText === 'II only', reason: reasonFor(false, true) },
+      { text: `I and II`, isCorrect: correctText === 'I and II', reason: reasonFor(true, true) },
+      { text: `Neither I nor II`, isCorrect: correctText === 'Neither I nor II', reason: reasonFor(false, false) }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -50,37 +88,19 @@ export const generator_1122 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
-    // 3. LaTeX strings (spans lead with a letter to keep MathJax unambiguous).
-    const funcF = `f(x)=${a}(${base}^{x}+${base}^{b})`;
-    const funcG = `g(x)=${a}(${base}^{x}+k)`;
-    const funcH = `h(x)=${a}(${base})^{x}+m`;
-
-    // 4. Build response.
+    // 3. Build response.
     return {
-      questionText: `The function $f$ is defined by $${funcF}$, where $a$ and $b$ are integer constants and $b>a>0$. The functions $g$ and $h$ are equivalent to function $f$, where $k$ and $m$ are constants. Which of the following equations displays the $y$-coordinate of the $y$-intercept as a constant or coefficient?
+      questionText: `The function $f$ is defined by $f(x)=${A}(${B})^{x}$. The functions $g$ and $h$ are equivalent to function $f$. Which of the following equations displays the $y$-coordinate of the $y$-intercept of the graph of $y=f(x)$ as a constant or coefficient?
       <br/><br/>
-      I. $${funcG}$
+      I. $${eqI.eq}$
       <br/>
-      II. $${funcH}$`,
+      II. $${eqII.eq}$`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct.
-      <br/><br/>
-      First, find the actual $y$-coordinate of the $y$-intercept of $f$ by evaluating at $x=0$:
-      $$f(0)=${a}(${base}^{0}+${base}^{b})=${a}(1+${base}^{b})=${a}+${a}\\cdot ${base}^{b}$$
-      So the $y$-intercept is $f(0)=${a}+${a}\\cdot ${base}^{b}$, a value that still involves the unknown $b$.
-      <br/><br/>
-      <strong>Analyze Equation I:</strong> $${funcG}$
-      <br/>
-      Matching with $f$ forces $k=${base}^{b}$. The displayed constants are the coefficient $a=${a}$ and $k$. Evaluating at $x=0$ gives $g(0)=${a}(1+k)$, so the intercept equals $g(0)=${a}(1+k)$, which is neither the single constant $k$ nor the coefficient $a=${a}$.
-      <br/><br/>
-      <strong>Analyze Equation II:</strong> $${funcH}$
-      <br/>
-      Matching with $f$ forces $m=${a}\\cdot ${base}^{b}$. The displayed constants are the coefficient $a=${a}$ and $m$. Evaluating at $x=0$ gives $h(0)=${a}+m$, so the intercept equals $h(0)=${a}+m$, which is neither the single constant $m$ nor the coefficient $a=${a}$.
-      <br/><br/>
-      In each form the $y$-intercept requires combining two displayed pieces, so neither equation shows it as a single constant or coefficient. Therefore <strong>Neither I nor II</strong> is correct.`
+      explanation: `Choice ${correctOption.letter} is correct. The $y$-coordinate of the $y$-intercept is $f(0)=${A}(${B})^{0}=${A}$. For equation I, ${eqI.work}. For equation II, ${eqII.work}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
