@@ -87,7 +87,7 @@ export const generator_1072 = {
     const sumStep = `${y1}${y2 < 0 ? `+(${y2})` : `+${y2}`}`;
 
     const optionsData = [
-      { text: `$${sumX}$`, isCorrect: false, reason: `$${sumX}$ is the sum of the $x$ coordinates, $x_1+x_2$, not the sum of the $y$ coordinates` },
+      { text: `$${sumX}$`, isCorrect: false, reason: `$${sumX}$ is the sum of the $x$-coordinates, $x_1+x_2$, not the sum of the $y$-coordinates` },
       { text: `$${once}$`, isCorrect: false, reason: `$${once}$ results from including the constant $${d}$ of the linear equation only once when adding $y_1$ and $y_2$, instead of once for each $y$ value` },
       { text: `$${flipped}$`, isCorrect: false, reason: `$${flipped}$ results from reading the solutions from the factors with the wrong signs, using $x=${-r1}$ and $x=${-r2}$` },
       { text: `$${sumY}$`, isCorrect: true, reason: '' }
@@ -102,7 +102,7 @@ export const generator_1072 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Setting the two expressions for $y$ equal to each other gives $${quadExpr}=${lineExpr}$. Rearranging gives $${stdExpr}=0$, which factors as $${factored}=0$. The $x$ coordinates of the solutions are $x_1=${r1}$ and $x_2=${r2}$. Substituting these into the linear equation gives $y_1=${fmtEval(r1)}=${y1}$ and $y_2=${fmtEval(r2)}=${y2}$. Therefore, $y_1+y_2=${sumStep}=${sumY}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
+    const explanation = `Choice ${correctLetter} is correct. Setting the two expressions for $y$ equal to each other gives $${quadExpr}=${lineExpr}$. Rearranging gives $${stdExpr}=0$, which factors as $${factored}=0$. The $x$-coordinates of the solutions are $x_1=${r1}$ and $x_2=${r2}$. Substituting these into the linear equation gives $y_1=${fmtEval(r1)}=${y1}$ and $y_2=${fmtEval(r2)}=${y2}$. Therefore, $y_1+y_2=${sumStep}=${sumY}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `$y = ${quadExpr}$\n$y = ${lineExpr}$\n\nIf $(x_1, y_1)$ and $(x_2, y_2)$ are the two solutions to the given system of equations, what is the value of $y_1+y_2$?`,

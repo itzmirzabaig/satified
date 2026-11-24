@@ -65,7 +65,7 @@ export const generator_1045 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Choice ${correctLetter} is correct. Both points lie on the parabola, so their $y$ coordinates come from the equation. At $x = ${p}$: $y = (${p})^2 - ${k} = ${y1}$, so $a = ${y1}$. At $x = ${q}$: $y = (${q})^2 - ${k} = ${y2}$, so $b = ${y2}$. The slope of line $p$ is $\\frac{${y2} - ${y1p}}{${q} - ${p}} = \\frac{${rise}}{${run}} = ${slope}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
+    const explanation = `Choice ${correctLetter} is correct. Both points lie on the parabola, so their $y$-coordinates come from the equation. At $x = ${p}$: $y = (${p})^2 - ${k} = ${y1}$, so $a = ${y1}$. At $x = ${q}$: $y = (${q})^2 - ${k} = ${y2}$, so $b = ${y2}$. The slope of line $p$ is $\\frac{${y2} - ${y1p}}{${q} - ${p}} = \\frac{${rise}}{${run}} = ${slope}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `In the $xy$-plane, the graph of $y = x^2 - ${k}$ intersects line $p$ at $(${p}, a)$ and $(${q}, b)$, where $a$ and $b$ are constants. What is the slope of line $p$?`,

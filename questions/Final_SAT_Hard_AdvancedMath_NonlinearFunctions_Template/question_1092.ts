@@ -44,10 +44,10 @@ export const generator_1092 = {
     const correctText = point(r2Num);
 
     const optionsData = [
-      { text: point(addedNum), isCorrect: false, reason: `${point(addedNum)} adds the $x$ coordinate of the vertex to the $x$ coordinate of the given intercept instead of doubling the vertex value and subtracting` },
+      { text: point(addedNum), isCorrect: false, reason: `${point(addedNum)} adds the $x$-coordinate of the vertex to the $x$-coordinate of the given intercept instead of doubling the vertex value and subtracting` },
       { text: correctText, isCorrect: true, reason: '' },
-      { text: point(distNum), isCorrect: false, reason: `${point(distNum)} uses the distance from the given intercept to the vertex, $${frac(distNum)}$, as the $x$ coordinate without adding that distance to $${h}$` },
-      { text: point(negNum), isCorrect: false, reason: `${point(negNum)} only changes the sign of the given $x$ coordinate, which reflects the intercept across the $y$ axis instead of across the line $x=${h}$` }
+      { text: point(distNum), isCorrect: false, reason: `${point(distNum)} uses the distance from the given intercept to the vertex, $${frac(distNum)}$, as the $x$-coordinate without adding that distance to $${h}$` },
+      { text: point(negNum), isCorrect: false, reason: `${point(negNum)} only changes the sign of the given $x$-coordinate, which reflects the intercept across the $y$-axis instead of across the line $x=${h}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -59,11 +59,11 @@ export const generator_1092 = {
     const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `The graph of the quadratic function $f$ in the $xy$ plane has a vertex at $(${h}, ${vertexY})$. One $x$ intercept of the graph is ${point(r1Num)}. What is the other $x$ intercept of the graph?`,
+      questionText: `The graph of the quadratic function $f$ in the $xy$-plane has a vertex at $(${h}, ${vertexY})$. One $x$-intercept of the graph is ${point(r1Num)}. What is the other $x$-intercept of the graph?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctOption.letter} is correct. The graph of a quadratic function is symmetric about the vertical line through its vertex, so the $x$ coordinate of the vertex, $${h}$, is the average of the $x$ coordinates of the two intercepts. If the other intercept has $x$ coordinate $t$, then $\\frac{${frac(r1Num)}+t}{2}=${h}$, so $t=2(${h})-\\left(${frac(r1Num)}\\right)=${frac(8 * h)}+\\frac{${-r1Num}}{4}=${frac(r2Num)}$. The other $x$ intercept is ${correctText}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
+      explanation: `Choice ${correctOption.letter} is correct. The graph of a quadratic function is symmetric about the vertical line through its vertex, so the $x$-coordinate of the vertex, $${h}$, is the average of the $x$-coordinates of the two intercepts. If the other intercept has $x$-coordinate $t$, then $\\frac{${frac(r1Num)}+t}{2}=${h}$, so $t=2(${h})-\\left(${frac(r1Num)}\\right)=${frac(8 * h)}+\\frac{${-r1Num}}{4}=${frac(r2Num)}$. The other $x$-intercept is ${correctText}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };

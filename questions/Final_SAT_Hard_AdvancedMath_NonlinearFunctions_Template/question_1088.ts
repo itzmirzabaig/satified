@@ -68,11 +68,11 @@ export const generator_1088 = {
     return {
       // Before: the stem was clipped ("values where") and the explanation had
       // raw line break tags and no stated answer.
-      questionText: `The table shows three values of $x$ and their corresponding values of $y$, where $y=f(x)+4$ and $f$ is a quadratic function. What is the $y$ coordinate of the $y$ intercept of the graph of $y=f(x)$ in the $xy$ plane?`,
+      questionText: `The table shows three values of $x$ and their corresponding values of $y$, where $y=f(x)+4$ and $f$ is a quadratic function. What is the $y$-coordinate of the $y$-intercept of the graph of $y=f(x)$ in the $xy$-plane?`,
       figureCode: tableCode,
       options: [],
       correctAnswer: f0.toString(),
-      explanation: `The correct answer is $${f0}$. The values of $y$ at $x=${x1}$ and $x=${x3}$ are equal, so the graph of $y=f(x)+4$ is symmetric about the line $x=${h}$, and its vertex is $(${h}, ${k})$. Writing $y=A(x-${h})^2+${k}$ and substituting the point $(${x1}, ${y1})$ gives $A(${x1-h})^2+${k}=${y1}$, so $${(x1-h)*(x1-h)}A=${y1-k}$ and $A=${(y1-k)/((x1-h)*(x1-h))}$. Thus $y=-(x-${h})^2+${k}$. Since $y=f(x)+4$, it follows that $f(x)=y-4=-(x-${h})^2+${k-4}$. The $y$ intercept of the graph of $y=f(x)$ occurs at $x=0$, so its $y$ coordinate is $f(0)=-(0-${h})^2+${k-4}=-${h*h}+${k-4}=${f0}$.`
+      explanation: `The correct answer is $${f0}$. The values of $y$ at $x=${x1}$ and $x=${x3}$ are equal, so the graph of $y=f(x)+4$ is symmetric about the line $x=${h}$, and its vertex is $(${h}, ${k})$. Writing $y=A(x-${h})^2+${k}$ and substituting the point $(${x1}, ${y1})$ gives $A(${x1-h})^2+${k}=${y1}$, so $${(x1-h)*(x1-h)}A=${y1-k}$ and $A=${(y1-k)/((x1-h)*(x1-h))}$. Thus $y=-(x-${h})^2+${k}$. Since $y=f(x)+4$, it follows that $f(x)=y-4=-(x-${h})^2+${k-4}$. The $y$-intercept of the graph of $y=f(x)$ occurs at $x=0$, so its $y$-coordinate is $f(0)=-(0-${h})^2+${k-4}=-${h*h}+${k-4}=${f0}$.`
     };
   }
 };

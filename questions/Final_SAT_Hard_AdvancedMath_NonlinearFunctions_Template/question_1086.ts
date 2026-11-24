@@ -153,7 +153,7 @@ export const generator_1086 = {
       figureCode: svgContent,
       options: [],
       correctAnswer: bc.toString(),
-      explanation: `The correct answer is $${bcTex}$. The graph shows that the vertex of the parabola is $(${h}, ${k})$, so the equation can be written in vertex form as $y=${aCoef}(x+${-h})^2-${-k}$, using the coefficient of $x^2$ given in the equation. Expanding gives $y=${aCoef}(x^2+${2 * -h}x+${h * h})-${-k}$, which simplifies to $y=${aCoef}x^2+${b}x${cTerm.replace(/\s/g, '')}$. Comparing this with $y=${aCoef}x^{2}+bx+c$ gives $b=${b}$ and $c=${c}$, and this value of $c$ matches the point $(0, ${c})$ where the graph crosses the $y$ axis. Therefore, $bc=(${b})(${c})=${bcTex}$.`
+      explanation: `The correct answer is $${bcTex}$. The graph shows that the vertex of the parabola is $(${h}, ${k})$, so the equation can be written in vertex form as $y=${aCoef}(x+${-h})^2-${-k}$, using the coefficient of $x^2$ given in the equation. Expanding gives $y=${aCoef}(x^2+${2 * -h}x+${h * h})-${-k}$, which simplifies to $y=${aCoef}x^2+${b}x${cTerm.replace(/\s/g, '')}$. Comparing this with $y=${aCoef}x^{2}+bx+c$ gives $b=${b}$ and $c=${c}$, and this value of $c$ matches the point $(0, ${c})$ where the graph crosses the $y$-axis. Therefore, $bc=(${b})(${c})=${bcTex}$.`
     };
   }
 };
