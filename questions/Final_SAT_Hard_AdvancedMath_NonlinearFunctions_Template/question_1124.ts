@@ -37,7 +37,9 @@ export const generator_1124 = {
       figureCode: null,
       options: [],
       correctAnswer: w.toString(),
-      explanation: `Let the width be $w$ inches. The length is $${mult}w-${diff}$, so the area equation is $w(${mult}w-${diff})=${area}$, which expands to $${mult}w^2-${diff}w-${area}=0$. Factoring the positive root gives $w=${w}$ (the width), and then the length is $${mult}(${w})-${diff}=${length}$ inches. The width is $${w}$ inches.`
+      // Before: no "The correct answer is" opening, and "factoring the positive root"
+      // skipped the actual factoring. Now the factored form and the rejected root are shown.
+      explanation: `The correct answer is ${w}. Let the width be $w$ inches. The length is $${mult}w-${diff}$ inches, so the area equation is $w(${mult}w-${diff})=${area}$, which expands to $${mult}w^2-${diff}w-${area}=0$. This factors as $(${mult}w+${length})(w-${w})=0$. The factor $${mult}w+${length}$ equals $0$ only for a negative value of $w$, which is not possible for a width, so $w=${w}$. As a check, the length is $${mult}(${w})-${diff}=${length}$ inches, and $${w}\\cdot${length}=${area}$ square inches.`
     };
   }
 };
