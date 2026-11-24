@@ -64,13 +64,16 @@ export const generator_1098 = {
 
     const bCoeff = capacity - basePrice * decreaseRate; // = 2 * decreaseRate * vertexX
     const constTerm = basePrice * capacity;
+    // Values of 1,000+ need commas (were bare, e.g. 2400).
+    const plain = (n: number) => n.toLocaleString('en-US');
+    const math = (n: number) => plain(n).replace(/,/g, '{,}');
 
     const optionsData = [
-      { value: vertexX, isCorrect: true },
-      { value: distractors[0], isCorrect: false },
-      { value: distractors[1], isCorrect: false },
-      { value: distractors[2], isCorrect: false },
-    ].map(o => ({ text: `$${o.value}$`, isCorrect: o.isCorrect }));
+      { value: vertexX, isCorrect: true, reason: '' },
+      { value: distractors[0], isCorrect: false, reason: `${distractors[0]} is the current ticket price in dollars, not the increase that maximizes revenue` },
+      { value: distractors[1], isCorrect: false, reason: `${distractors[1]} is twice the correct increase, the second value of $x$ at which the revenue equals the current revenue` },
+      { value: distractors[2], isCorrect: false, reason: `${distractors[2]} is the increase at which no tickets are sold, since $${math(capacity)}-${decreaseRate}(${distractors[2]})=0$, so the revenue there is $0$` },
+    ].map(o => ({ text: `$${o.value}$`, isCorrect: o.isCorrect, reason: o.reason }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -79,13 +82,15 @@ export const generator_1098 = {
 
     const correct = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correct.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `An auditorium has seats for ${capacity} people. Tickets to attend a show at the auditorium currently cost \\$${basePrice}.00. For each \\$1.00 increase to the ticket price, ${decreaseRate} fewer tickets will be sold. This situation can be modeled by a quadratic equation where $x$ represents the increase in ticket price, in dollars, and $y$ represents the revenue, in dollars. If this equation is graphed in the $xy$-plane, at what value of $x$ is the maximum of the graph?`,
+      // "All of the seats are sold" added: the model needs current sales to equal capacity.
+      questionText: `An auditorium has seats for ${plain(capacity)} people. Tickets to attend a show at the auditorium currently cost \\$${basePrice}.00, and at this price all of the seats are sold. For each \\$1.00 increase to the ticket price, ${decreaseRate} fewer tickets will be sold. This situation can be modeled by a quadratic equation where $x$ represents the increase in ticket price, in dollars, and $y$ represents the revenue, in dollars. If this equation is graphed in the $xy$-plane, at what value of $x$ is the maximum of the graph?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: correct.text,
-      explanation: `Choice ${correctLetter} is correct. The revenue is $y=(${basePrice}+x)(${capacity}-${decreaseRate}x)=-${decreaseRate}x^2+${bCoeff}x+${constTerm}$. This parabola opens downward, so its maximum is at the vertex $x=\\frac{-${bCoeff}}{2(-${decreaseRate})}=${vertexX}$.`,
+      explanation: `Choice ${correctLetter} is correct. The revenue is the product of the ticket price and the number of tickets sold, so $y=(${basePrice}+x)(${math(capacity)}-${decreaseRate}x)=-${decreaseRate}x^2+${math(bCoeff)}x+${math(constTerm)}$. This parabola opens downward, so its maximum is at the vertex, where $x=\\frac{-${math(bCoeff)}}{2(-${decreaseRate})}=${vertexX}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`,
     };
   }
 };
