@@ -45,7 +45,8 @@ export const generator_1142 = {
       figureCode: null,
       options: [],
       correctAnswer: g0.toString(),
-      explanation: `Since $g(x)=f(x)+${shift}$, we have $g(0)=f(0)+${shift}$. Computing $f(0)=(-${r1})(-${r2})(${r3})=${f0}$. Thus $g(0)=${f0}+${shift}=${g0}$.`
+      // FIXED: the explanation did not open with the answer or say why g(x) = f(x) + k.
+      explanation: `The correct answer is ${g0}. Translating a graph up ${shift} units adds ${shift} to every output, so $g(x)=f(x)+${shift}$ and $g(0)=f(0)+${shift}$. Substituting $0$ for $x$ in $f$ gives $f(0)=(-${r1})(-${r2})(${r3})=${f0}$. Therefore, $g(0)=${f0}+${shift}=${g0}$.`
     };
   }
 };
