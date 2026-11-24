@@ -24,66 +24,84 @@ export const generator_1101 = {
   },
   
   generate: (): QuestionData => {
-    // 1. Generate Parameters
-    // We choose a negative integer K to act as the distractor value (asymptote/intercept)
-    const K = -1 * getRandomInt(2, 9); // e.g., -3, -4, -7
-    
-    // Function I: f(x) = -A * (B)^x + K
-    // This function has a horizontal asymptote at y = K.
-    // It is decreasing (if A>0) and unbounded below. It approaches K from below but never reaches it.
-    const A1 = getRandomInt(2, 6);
-    const Base1 = getRandomInt(2, 5);
-    
-    // Function II: g(x) = K * (C)^x
-    // This function has a y-intercept at (0, K).
-    // Since K is negative, it's strictly decreasing (if Base > 1) or increasing (if 0 < Base < 1)
-    // but range is (-inf, 0). It has no minimum.
-    const Base2 = getRandomInt(2, 6); // Integers > 1 for standard exponential growth/decay form
+    // The answer used to be "Neither I nor II" on every draw. Each function is now
+    // independently a quadratic with vertex value K (a true minimum) or an
+    // exponential where K is only an asymptote or intercept, so all four
+    // answers occur.
+    const K = -1 * getRandomInt(2, 9);
 
-    // 2. Format Function Strings
-    // f(x)
-    const funcI = `f(x) = -${A1}(${Base1})^{x} ${K}`; // K is negative, so it prints like "- 3"
-    
-    // g(x)
-    const funcII = `g(x) = ${K}(${Base2})^{x}`;
+    const quadratic = (name: string) => {
+      const a = getRandomInt(2, 5);
+      const h = getRandomInt(1, 6);
+      return {
+        has: true,
+        tex: `${name}(x)=${a}(x-${h})^2${K}`,
+        analysis: `Function ${name === 'f' ? 'I' : 'II'} is a quadratic with a positive leading coefficient, so its graph opens upward and its least value is at the vertex $(${h}, ${K})$. It has a minimum value of $${K}$.`,
+        miss: '',
+      };
+    };
 
-    // 3. Options
-    // For this specific logic type, the answer is always "Neither" because exponentials don't have mins.
+    // f: exponential whose horizontal asymptote is y = K, approached but never reached.
+    const expI = () => {
+      const a = getRandomInt(2, 6);
+      const b = getRandomInt(2, 5);
+      const up = getRandomInt(0, 1) === 0;
+      const tex = `f(x)=${up ? '' : '-'}${a}(${b})^{x}${K}`;
+      const analysis = up
+        ? `Function I is exponential. The term $${a}(${b})^{x}$ is always positive and approaches $0$ as $x$ decreases, so $f(x)$ is always greater than $${K}$ and gets arbitrarily close to it without reaching it. It has no minimum value.`
+        : `Function I is exponential. The term $-${a}(${b})^{x}$ is always negative and decreases without bound as $x$ increases, so $f(x)$ has no minimum value. The line $y=${K}$ is only a horizontal asymptote.`;
+      return { has: false, tex, analysis, miss: `function I has no minimum value, since $y=${K}$ is only its horizontal asymptote` };
+    };
+
+    // g: exponential whose y-intercept is K; it decreases without bound.
+    const expII = () => {
+      const b = getRandomInt(2, 6);
+      return {
+        has: false,
+        tex: `g(x)=${K}(${b})^{x}`,
+        analysis: `Function II is exponential with a negative coefficient and a base greater than $1$, so it decreases without bound as $x$ increases. The value $${K}$ is only its $y$-intercept, so it has no minimum value.`,
+        miss: `function II has no minimum value, since $${K}$ is only its $y$-intercept`,
+      };
+    };
+
+    const fnI = getRandomInt(0, 1) === 0 ? quadratic('f') : expI();
+    const fnII = getRandomInt(0, 1) === 0 ? quadratic('g') : expII();
+
+    const hasMsgI = `function I does have a minimum value of $${K}$`;
+    const hasMsgII = `function II also has a minimum value of $${K}$`;
+
+    const reasonFor = (wantI: boolean, wantII: boolean): string => {
+      const problems: string[] = [];
+      if (wantI && !fnI.has) problems.push(fnI.miss);
+      if (!wantI && fnI.has) problems.push(hasMsgI);
+      if (wantII && !fnII.has) problems.push(fnII.miss);
+      if (!wantII && fnII.has) problems.push(fnI.has ? hasMsgII : `function II does have a minimum value of $${K}$`);
+      return problems.join(', and ');
+    };
+
     const optionsData = [
-      { text: `I only`, isCorrect: false },
-      { text: `II only`, isCorrect: false },
-      { text: `I and II`, isCorrect: false },
-      { text: `Neither I nor II`, isCorrect: true }
+      { text: `I only`, isCorrect: fnI.has && !fnII.has, reason: reasonFor(true, false) },
+      { text: `II only`, isCorrect: !fnI.has && fnII.has, reason: reasonFor(false, true) },
+      { text: `I and II`, isCorrect: fnI.has && fnII.has, reason: reasonFor(true, true) },
+      { text: `Neither I nor II`, isCorrect: !fnI.has && !fnII.has, reason: reasonFor(false, false) }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
 
-    // 4. Explanation
+    const correct = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+
     return {
-      questionText: `Which of the following functions has(have) a minimum value at $${K}$?
-      <br/><br/>
-      I. $${funcI}$
-      <br/>
-      II. $${funcII}$`,
+      // Was "has(have) a minimum value at"; K is a value of the function, not an x.
+      questionText: `Which of the following functions has a minimum value of $${K}$?<br/><br/>I. $${fnI.tex}$<br/>II. $${fnII.tex}$`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: "Neither I nor II",
-      explanation: `Choice ${correctLetter} is correct.
-      <br/><br/>
-      <strong>Analyze Function I:</strong> $${funcI}$
-      <br/>
-      This is an exponential function. As $x \\to -\\infty$, the term $-${A1}(${Base1})^x$ approaches 0, so $f(x)$ approaches the horizontal asymptote $y = ${K}$. However, an asymptote is a boundary the function approaches but never reaches or crosses. The function decreases without bound as $x \\to \\infty$. Therefore, it has no minimum value.
-      <br/><br/>
-      <strong>Analyze Function II:</strong> $${funcII}$
-      <br/>
-      This is also an exponential function. Since the coefficient $${K}$ is negative and the base $${Base2} > 1$, the function is strictly decreasing. Its range is $(-\\infty, 0)$. It has a y-intercept at $${K}$, but this is just a point on the graph, not a minimum.
-      <br/><br/>
-      Since exponential functions defined on all real numbers do not have absolute minimum values, <strong>Neither I nor II</strong> is correct.`
+      correctAnswer: correct.text,
+      // Was multiline HTML with bold headings and no reasons for the wrong choices.
+      explanation: `Choice ${correct.letter} is correct. ${fnI.analysis} ${fnII.analysis} ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
