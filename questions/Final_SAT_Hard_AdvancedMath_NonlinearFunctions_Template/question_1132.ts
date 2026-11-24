@@ -54,25 +54,22 @@ export const generator_1132 = {
     const distractorAbsUnit = absP;            // B
     const distractorUsedAOne = P;              // C
 
-    const values: number[] = [
-      correct,
-      distractorSignDropped,
-      distractorAbsUnit,
-      distractorUsedAOne
-    ];
-
+    // Before: the wrong choices were explained together instead of one reason per choice.
     const correctText = `$${correct}$`;
-    const optionsData = values.map((v, i) => ({
-      text: `$${v}$`,
-      isCorrect: i === 0
-    }));
+    const optionsData = [
+      { text: correctText, isCorrect: true, reason: '' },
+      { text: `$${distractorSignDropped}$`, isCorrect: false, reason: `$${distractorSignDropped}$ is positive, which results from dropping the negative sign of $${correct}$, but $a+b+c$ must be negative` },
+      { text: `$${distractorAbsUnit}$`, isCorrect: false, reason: `$${distractorAbsUnit}$ is positive, which results from using $a=1$ and dropping the negative sign of $${P}$, but $a+b+c$ must be negative` },
+      { text: `$${distractorUsedAOne}$`, isCorrect: false, reason: `$${distractorUsedAOne}$ is the value when $a=1$, but $a$ must be greater than $1$` }
+    ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
 
-    const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     // Signed factor strings so they read cleanly, e.g. (x-7)(x+3).
     const factor1 = `(x-${r1})`;
@@ -87,7 +84,7 @@ export const generator_1132 = {
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. Because the zeros are $x=${r1}$ and $x=${r2}$, $f(x)=a${factor1}${factor2}$. Then $a+b+c=f(1)=a${eval1}${eval2}=a(${val1})(${val2})$. Substituting $a=${a}$ gives $f(1)=${a}(${val1})(${val2})=${correct}$, which matches the correct choice. Because $a$ can be any integer greater than $1$, a possible value must be a negative multiple of $(${val1})(${val2})=${P}$, and $${correct}$ is the only option of that form. The positive options come from dropping the sign of $f(1)$, and $${P}$ mistakenly uses $a=1$, which is not permitted, so none of them can equal $a+b+c$.`
+      explanation: `Choice ${correctOption.letter} is correct. Because the zeros are $x=${r1}$ and $x=${r2}$, $f(x)=a${factor1}${factor2}$. Substituting $x=1$ into $f(x)=ax^2+bx+c$ gives $f(1)=a+b+c$, so $a+b+c=a${eval1}${eval2}=a(${val1})(${val2})=${P}a$. Since $a$ is an integer greater than $1$, $a+b+c$ must be $${P}$ times an integer greater than $1$. Of the choices, only $${correct}$ has this form, with $a=${a}$, since $${P}(${a})=${correct}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
