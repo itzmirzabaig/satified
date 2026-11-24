@@ -32,8 +32,11 @@ export const generator_1111 = {
     const f2_exp = start + diff;
     const f3_exp = start + 2 * diff;
     
-    const target = start + 7 * diff;
-    
+    // Previously k was always 8 and the table could show a^{1}; k now varies and a^1 prints as a.
+    const answerK = getRandomInt(5, 10);
+    const target = start + (answerK - 1) * diff;
+    const power = (e: number) => (e === 1 ? 'a' : `a^{${e}}`);
+
     const tableCode = `<table style="border-collapse: collapse; margin: 20px auto; text-align: center;">
       <thead>
         <tr>
@@ -44,7 +47,7 @@ export const generator_1111 = {
       <tbody>
         <tr>
           <td style="border: 1px solid #ccc; padding: 12px;">1</td>
-          <td style="border: 1px solid #ccc; padding: 12px;">$a^{${f1_exp}}$</td>
+          <td style="border: 1px solid #ccc; padding: 12px;">$${power(f1_exp)}$</td>
         </tr>
         <tr>
           <td style="border: 1px solid #ccc; padding: 12px;">2</td>
@@ -57,7 +60,7 @@ export const generator_1111 = {
       </tbody>
     </table>`;
     
-    const k = (target - start) / diff + 1;
+    const k = answerK;
 
     // Expanded exponent is diff*x + b, where b = start - diff.
     // Format the constant term with a proper leading sign (or omit when 0).
@@ -65,11 +68,11 @@ export const generator_1111 = {
     const bTerm = b > 0 ? ` + ${b}` : b < 0 ? ` - ${Math.abs(b)}` : ``;
 
     return {
-      questionText: `For exponential $f$, the table shows values where $a>1$. If $f(k)=a^{${target}}$, what is $k$?`,
+      questionText: `The table shows three values of $x$ and their corresponding values of $f(x)$ for the exponential function $f$, where $a$ is a constant greater than 1. If $f(k)=a^{${target}}$, what is the value of $k$?`,
       figureCode: tableCode,
       options: [],
       correctAnswer: k.toString(),
-      explanation: `The exponents increase by ${diff} each time $x$ increases by 1, so $f(x)=a^{${start}+${diff}(x-1)}=a^{${diff}x${bTerm}}$. Since $f(k)=a^{${target}}$, equating the powers gives $a^{${diff}k${bTerm}}=a^{${target}}$. The exponents must be equal, so $k=${k}$.`
+      explanation: `The correct answer is ${k}. The exponents increase by ${diff} each time $x$ increases by 1, so $f(x)=a^{${diff}(x-1)+${start}}=a^{${diff}x${bTerm}}$. Since $f(k)=a^{${target}}$ and $a>1$, the exponents must be equal, so $${diff}k${bTerm}=${target}$. ${b === 0 ? '' : `This gives $${diff}k=${target - b}$. `}Dividing both sides by ${diff} gives $k=${k}$.`
     };
   }
 };
