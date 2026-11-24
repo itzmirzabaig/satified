@@ -34,12 +34,16 @@ export const generator_1108 = {
     const minValue = getRandomInt(1000, 2500);
     const c = b * b + minValue;
 
+    // Previously the stem never named f and values of 1,000 or more had no commas.
+    const plain = (n: number) => n.toLocaleString('en-US');
+    const tex = (n: number) => plain(n).replace(/,/g, '{,}');
+
     return {
-      questionText: `The function is defined by $f(x) = x^2 - ${2 * b}x + ${c}$. What is the minimum value of the given function?`,
+      questionText: `The function $f$ is defined by $f(x)=x^2-${2 * b}x+${tex(c)}$. What is the minimum value of $f$?`,
       figureCode: null,
       options: [],
       correctAnswer: minValue.toString(),
-      explanation: `Completing the square: $f(x) = x^2 - ${2 * b}x + ${c} = (x-${b})^2 - ${b * b} + ${c} = (x-${b})^2 + ${minValue}$. Since $(x-${b})^2 \\geq 0$, the smallest possible value of $f(x)$ is ${minValue}, which occurs when $x = ${b}$. So the minimum value is ${minValue}.`
+      explanation: `The correct answer is ${plain(minValue)}. Completing the square gives $f(x)=x^2-${2 * b}x+${tex(c)}=(x-${b})^2-${tex(b * b)}+${tex(c)}=(x-${b})^2+${tex(minValue)}$. Since $(x-${b})^2 \\geq 0$, the smallest possible value of $f(x)$ is ${plain(minValue)}, which occurs when $x=${b}$.`
     };
   }
 };
