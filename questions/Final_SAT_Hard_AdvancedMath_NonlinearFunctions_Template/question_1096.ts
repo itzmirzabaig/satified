@@ -26,29 +26,37 @@ export const generator_1096 = {
   
   generate: (): QuestionData => {
     const P0 = getRandomInt(50, 150) * 100;
-    const decay = (getRandomInt(55, 75) / 100);
-    const wrongCalc = Math.round(P0 * decay);
-    
+    const decayPct = getRandomInt(55, 75);
+    const decayStr = (decayPct / 100).toFixed(2);
+    // Exact by construction: P0 is a multiple of 100 (was Math.round of a float).
+    const afterOneYear = (P0 / 100) * decayPct;
+    const plain = (n: number) => n.toLocaleString('en-US');
+    const math = (n: number) => plain(n).replace(/,/g, '{,}');
+
+    // Distractors were an unexplained P0/3 and a "minimum" of f(1). Each is now
+    // a real misreading of the intercept, and each has a reason.
+    const correctText = `The estimated number of coupons sent at the end of 1998 was ${plain(P0)}.`;
     const optionsData = [
-      { text: `The minimum was ${wrongCalc}.`, isCorrect: false },
-      { text: `The minimum was ${Math.round(P0/3)}.`, isCorrect: false },
-      { text: `The estimated number in 1998 was ${wrongCalc}.`, isCorrect: false },
-      { text: `The estimated number in 1998 was ${P0}.`, isCorrect: true }
+      { text: correctText, isCorrect: true, reason: '' },
+      { text: `The estimated number of coupons sent at the end of 1998 was ${plain(afterOneYear)}.`, isCorrect: false, reason: `${plain(afterOneYear)} is $f(1)$, the estimate for the end of 1999, found by applying the factor $${decayStr}$ once when $t=0$ calls for no change` },
+      { text: `The estimated number of coupons sent at the end of 1999 was ${plain(P0)}.`, isCorrect: false, reason: `it treats the intercept as the value at $t=1$, but the intercept occurs at $t=0$, which is 1998` },
+      { text: `The minimum estimated number of coupons sent in a year was ${plain(P0)}.`, isCorrect: false, reason: `${plain(P0)} is the greatest value of $f$ on this interval, not the least, since the factor $${decayStr}$ is less than $1$ and $f$ decreases` }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
-    
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+
     return {
-      questionText: `The function $f$ models the number of coupons a company sent to customers at the end of each year, where $t$ represents years since 1998. $f(t)=${P0}(${decay.toFixed(2)})^t$ for $0 \\leq t \\leq 5$. If $y=f(t)$ is graphed in the $ty$-plane, what is the best interpretation of the y-intercept?`,
+      questionText: `The function $f$ is defined by $f(t)=${math(P0)}(${decayStr})^t$ for $0 \\leq t \\leq 5$ and models the number of coupons a company sent to its customers at the end of each year, where $t$ is the number of years after 1998. If $y=f(t)$ is graphed in the $ty$-plane, what is the best interpretation of the $y$-intercept of the graph?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: `The estimated number in 1998 was ${P0}.`,
-      explanation: `Choice ${correctLetter} is correct. The y-intercept is at $t=0$: $f(0)=${P0}(${decay.toFixed(2)})^0=${P0}$. This represents the number of coupons at the end of 1998 (0 years after 1998).`
+      correctAnswer: correctText,
+      explanation: `Choice ${correctLetter} is correct. The $y$-intercept of the graph occurs at $t=0$, and $f(0)=${math(P0)}(${decayStr})^0=${math(P0)}$. Since $t=0$ corresponds to 1998, the model estimates that the company sent ${plain(P0)} coupons at the end of 1998. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
