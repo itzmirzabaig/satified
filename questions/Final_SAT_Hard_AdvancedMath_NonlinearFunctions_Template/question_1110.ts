@@ -31,7 +31,9 @@ export const generator_1110 = {
     
     const r1 = getRandomInt(-5, 2);
     const r2 = getRandomInt(3, 6);
-    const r3 = getRandomInt(-8, -3);
+    // Redraw so the stem never shows the same factor twice, such as (x+4)(x-3)(x+4).
+    let r3 = getRandomInt(-8, -3);
+    while (r3 === r1) r3 = getRandomInt(-8, -3);
     const shift = getRandomInt(3, 10);
     const evalPoint = getRandomInt(4, 8);
     
@@ -49,13 +51,16 @@ export const generator_1110 = {
     const t2 = evalPoint - r2;
     const t3 = evalPoint - r3;
     const wrap = (n: number) => (n < 0 ? `(${n})` : `${n}`);
+    // Previously values of 1,000 or more had no commas.
+    const plain = (n: number) => n.toLocaleString('en-US');
+    const tex = (n: number) => plain(n).replace(/,/g, '{,}');
 
     return {
       questionText: `The function $f$ is defined by $f(x)=${factor1}${factor2}${factor3}$. In the $xy$-plane, when the graph of $y=f(x)$ is shifted up ${shift} units, the resulting graph is defined by the function $g$. If the graph of $y=g(x)$ passes through the point $(${evalPoint}, b)$, where $b$ is a constant, what is the value of $b$?`,
       figureCode: null,
       options: [],
       correctAnswer: g_eval.toString(),
-      explanation: `Shifting the graph of $f$ up ${shift} units gives $g(x)=f(x)+${shift}$, so $g(${evalPoint})=f(${evalPoint})+${shift}$. Evaluating $f$ at $x=${evalPoint}$: $f(${evalPoint})=${wrap(t1)}\\cdot${wrap(t2)}\\cdot${wrap(t3)}=${f_eval}$. Therefore $b=${f_eval}+${shift}=${g_eval}$.`
+      explanation: `The correct answer is ${plain(g_eval)}. Shifting the graph of $f$ up ${shift} units gives $g(x)=f(x)+${shift}$, so $g(${evalPoint})=f(${evalPoint})+${shift}$. Evaluating $f$ at $x=${evalPoint}$ gives $f(${evalPoint})=${wrap(t1)}\\cdot${wrap(t2)}\\cdot${wrap(t3)}=${tex(f_eval)}$. Therefore $b=${tex(f_eval)}+${shift}=${tex(g_eval)}$.`
     };
   }
 };
