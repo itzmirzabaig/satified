@@ -30,15 +30,54 @@ export const generator_1133 = {
   },
 
   generate: (): QuestionData => {
-    const a = -getRandomInt(300, 600);        // opens downward (there is a maximum)
-    const b = getRandomInt(15000, 35000);     // positive linear coefficient
+    // Before: the answer was always the zero revenue price, b had no comma, p was an
+    // unreduced fraction, and wrong choices had no reasons. Now the asked feature varies,
+    // and a and p are chosen so the intercept and vertex are exact whole numbers.
+    const fmt = (n: number) => n.toLocaleString('en-US').replace(/,/g, '{,}');
+    const a = -5 * getRandomInt(4, 12);       // opens downward (there is a maximum)
+    const p = 2 * getRandomInt(15, 30);       // even, so the vertex is at a whole number
+    const b = -a * p;
+    const vertexX = p / 2;
+    const vertexY = a * vertexX * vertexX + b * vertexX;
+    const money = `\\$${vertexY.toLocaleString('en-US')}`;
 
-    const optionsData = [
-      { text: `The revenue, in dollars, when the unit price is \\$0`, isCorrect: false },
-      { text: `The unit price, in dollars, that produces the maximum revenue`, isCorrect: false },
-      { text: `The unit price, in dollars, at which the revenue is \\$0`, isCorrect: true },
-      { text: `The maximum revenue, in dollars`, isCorrect: false }
+    const features = [
+      {
+        key: 'zeroPrice',
+        asked: `the positive value of $x$ at which the graph crosses the $x$-axis`,
+        text: `The unit price, in dollars, at which the revenue is \\$0`,
+        why: `The graph crosses the $x$-axis where $f(x)=0$, which means the revenue is \\$0. Factoring gives $x(${a}x+${fmt(b)})=0$, so $x=0$ or $x=${p}$. The positive value, $${p}$, is the unit price in dollars at which the revenue is \\$0.`,
+        reason: `the unit price at which the revenue is \\$0 is the positive solution of $f(x)=0$, which is $x=${p}$`
+      },
+      {
+        key: 'bestPrice',
+        asked: `the $x$-coordinate of the vertex of the graph`,
+        text: `The unit price, in dollars, that produces the maximum revenue`,
+        why: `The coefficient of $x^2$ is negative, so the parabola opens downward and its vertex is its highest point. The $x$-coordinate of the vertex is $x=-\\frac{${fmt(b)}}{2(${a})}=${vertexX}$, so a unit price of \\$${vertexX} produces the greatest revenue.`,
+        reason: `the unit price that produces the maximum revenue is the $x$-coordinate of the vertex, $x=${vertexX}$`
+      },
+      {
+        key: 'maxRevenue',
+        asked: `the $y$-coordinate of the vertex of the graph`,
+        text: `The maximum revenue, in dollars`,
+        why: `The coefficient of $x^2$ is negative, so the parabola opens downward and its vertex is its highest point. The vertex is at $x=-\\frac{${fmt(b)}}{2(${a})}=${vertexX}$, and $f(${vertexX})=${fmt(vertexY)}$, so the greatest possible daily revenue is ${money}.`,
+        reason: `the maximum revenue is the $y$-coordinate of the vertex, which is ${money}`
+      },
+      {
+        key: 'freeRevenue',
+        asked: `the $y$-coordinate of the $y$-intercept of the graph`,
+        text: `The revenue, in dollars, when the unit price is \\$0`,
+        why: `The $y$-intercept occurs where $x=0$, which is a unit price of \\$0. Its $y$-coordinate is $f(0)=0$, the revenue in dollars at that price.`,
+        reason: `the revenue when the unit price is \\$0 is the $y$-coordinate of the $y$-intercept, $f(0)=0$`
+      }
     ];
+    const target = features[getRandomInt(0, features.length - 1)];
+
+    const optionsData = features.map(f => ({
+      text: f.text,
+      isCorrect: f.key === target.key,
+      reason: f.key === target.key ? '' : f.reason
+    }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -46,14 +85,14 @@ export const generator_1133 = {
     }));
 
     const correctOption = shuffledOptions.find(o => o.isCorrect)!;
-    const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `A store's daily revenue $f(x)$, in dollars, is modeled by $f(x)=${a}x^2+${b}x$, where $x$ is the unit price of an item in dollars. The graph of $y=f(x)$ crosses the $x$-axis at $x=0$ and at a positive value $x=p$. In this context, what does $p$ represent?`,
+      questionText: `A store's daily revenue, in dollars, from selling an item is modeled by $f(x)=${a}x^2+${fmt(b)}x$, where $x$ is the unit price of the item, in dollars. When $y=f(x)$ is graphed in the $xy$-plane, what does ${target.asked} represent?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctLetter} is correct. Factoring gives $f(x)=x(${a}x+${b})$, so the revenue is \\$0 when $x=0$ or when $${a}x+${b}=0$, that is at $x=p=\\dfrac{${b}}{${-a}}$. Because $p$ is an $x$-intercept, $f(p)=0$, so $p$ is the unit price at which the revenue is \\$0. Choices about maximum revenue describe the vertex, not an intercept, and the revenue when the price is \\$0 is $f(0)=0$, not $p$.`
+      explanation: `Choice ${correctOption.letter} is correct. ${target.why} ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
