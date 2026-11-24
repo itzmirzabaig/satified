@@ -35,17 +35,19 @@ export const generator_1130 = {
     const absK = -k;                 // = a*hh^2, positive
     const t = 2 * hh;                // the required intercept
 
-    // Distractors are distinct integer multiples of hh (hh >= 3), so the four
-    // displayed values {t=2hh, hh, 3hh, 4hh} can never collide.
+    // Before: a = 1 displayed as "1(x-3)^2", and 3h and 4h were arbitrary multiples with
+    // no real slip behind them. Each wrong choice now comes from a step of the solution.
+    // For hh >= 3 the values 2hh, hh, hh^2 and hh^2 + hh are always distinct.
+    const square = hh * hh;
     const dVertex = hh;              // stops at the vertex x-coordinate
-    const dTriple = 3 * hh;          // arithmetic slip
-    const dDouble = 4 * hh;          // doubles the correct root
+    const dSquare = square;          // stops at (x - hh)^2 = hh^2, no square root
+    const dNoRoot = square + hh;     // solves x - hh = hh^2, skipping the square root
 
     const optionsData = [
-      { text: `$${t}$`, isCorrect: true },
-      { text: `$${dVertex}$`, isCorrect: false },
-      { text: `$${dTriple}$`, isCorrect: false },
-      { text: `$${dDouble}$`, isCorrect: false }
+      { text: `$${t}$`, isCorrect: true, reason: '' },
+      { text: `$${dVertex}$`, isCorrect: false, reason: `$${dVertex}$ is the $x$-coordinate of the vertex, which lies halfway between the two $x$-intercepts` },
+      { text: `$${dSquare}$`, isCorrect: false, reason: `$${dSquare}$ is the value of $(x-${hh})^2$, which results from stopping before taking the square root and solving for $x$` },
+      { text: `$${dNoRoot}$`, isCorrect: false, reason: `$${dNoRoot}$ results from solving $x-${hh}=${dSquare}$, which skips taking the square root of $${dSquare}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -54,14 +56,18 @@ export const generator_1130 = {
     }));
 
     const correct = shuffledOptions.find(o => o.isCorrect)!;
-    const correctLetter = correct.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+    const aStr = a === 1 ? '' : `${a}`;
+    const isolate = a === 1
+      ? `$(x-${hh})^2=${absK}$`
+      : `$${a}(x-${hh})^2=${absK}$, and dividing both sides by $${a}$ gives $(x-${hh})^2=${square}$`;
 
     return {
-      questionText: `The quadratic function $h$ is defined by $h(x)=${a}(x-${hh})^2-${absK}$. In the $xy$-plane, the graph of $y=h(x)$ intersects the $x$-axis at the points $(0,0)$ and $(t,0)$, where $t$ is a constant. What is the value of $t$?`,
+      questionText: `The quadratic function $h$ is defined by $h(x)=${aStr}(x-${hh})^2-${absK}$. In the $xy$-plane, the graph of $y=h(x)$ intersects the $x$-axis at the points $(0,0)$ and $(t,0)$, where $t$ is a constant. What is the value of $t$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correct.text,
-      explanation: `Choice ${correctLetter} is correct. Set $h(x)=0$ to find the $x$-intercepts: $${a}(x-${hh})^2-${absK}=0$, so $(x-${hh})^2=${absK}/${a}=${hh * hh}$. Taking square roots gives $x-${hh}=\\pm ${hh}$, so $x=0$ or $x=${t}$. Since the graph already passes through $(0,0)$, the other intercept is at $t=${t}$. The value $${dVertex}$ is the $x$-coordinate of the vertex, not an intercept.`
+      explanation: `Choice ${correct.letter} is correct. The graph intersects the $x$-axis where $h(x)=0$, so $${aStr}(x-${hh})^2-${absK}=0$. Adding $${absK}$ to both sides gives ${isolate}. Taking the square root of both sides gives $x-${hh}=${hh}$ or $x-${hh}=-${hh}$, so $x=${t}$ or $x=0$. The solution $x=0$ is the given point $(0,0)$, so $t=${t}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
