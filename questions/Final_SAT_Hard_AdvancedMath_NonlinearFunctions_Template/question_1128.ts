@@ -55,11 +55,16 @@ export const generator_1128 = {
       )
     );
 
+    // Before: values of 1,000 or more had no comma, the explanation never showed how a
+    // was found, and the wrong choices were not given as "Choice X is incorrect" reasons.
+    const fmt = (n: number) => n.toLocaleString('en-US').replace(/,/g, '{,}');
+    const drop = a * dt * dt;                 // negative change from the maximum
+
     const optionsData = [
-      { text: `$${h_eval}$`, isCorrect: true },
-      { text: `$${d1}$`, isCorrect: false },
-      { text: `$${d2}$`, isCorrect: false },
-      { text: `$${d3}$`, isCorrect: false }
+      { text: `$${fmt(h_eval)}$`, isCorrect: true, reason: '' },
+      { text: `$${fmt(d1)}$`, isCorrect: false, reason: `$${fmt(d1)}$ is the maximum height, which is the height at $t=${timeToMax}$ rather than at $t=${evalTime}$` },
+      { text: `$${fmt(d2)}$`, isCorrect: false, reason: `$${fmt(d2)}$ results from adding $${fmt(-drop)}$ to the maximum height instead of subtracting it` },
+      { text: `$${fmt(d3)}$`, isCorrect: false, reason: `$${fmt(d3)}$ is the initial height, which is the height at $t=0$ rather than at $t=${evalTime}$` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -68,14 +73,14 @@ export const generator_1128 = {
     }));
 
     const correct = shuffledOptions.find(o => o.isCorrect)!;
-    const correctLetter = correct.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
-      questionText: `The height above the ground, in feet, of a launched object is modeled by a quadratic function of the time $t$, in seconds, after it is launched. The object's initial height is $${initial}$ feet, and it reaches its maximum height of $${maxH}$ feet at $t=${timeToMax}$ seconds. What is the object's height, in feet, at $t=${evalTime}$ seconds?`,
+      questionText: `The height above the ground, in feet, of a launched object is modeled by a quadratic function of the time $t$, in seconds, after it is launched. The object's initial height is $${initial}$ feet, and it reaches its maximum height of $${fmt(maxH)}$ feet at $t=${timeToMax}$ seconds. What is the object's height, in feet, at $t=${evalTime}$ seconds?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correct.text,
-      explanation: `Choice ${correctLetter} is correct. In vertex form the model is $h(t)=${a}(t-${timeToMax})^2+${maxH}$, whose vertex $(${timeToMax},\\,${maxH})$ gives the maximum height and which satisfies $h(0)=${initial}$. At $t=${evalTime}$ seconds, $t-${timeToMax}=${dt}$, so $h(${evalTime})=${a}(${dt})^2+${maxH}=${h_eval}$ feet. The choice $${d1}$ is the maximum height itself (not evaluated at $t=${evalTime}$), $${d2}$ comes from adding instead of subtracting $${Math.abs(a * dt * dt)}$, and $${d3}$ is the initial height at $t=0$.`
+      explanation: `Choice ${correct.letter} is correct. Because the maximum occurs at $t=${timeToMax}$, the model can be written in vertex form as $h(t)=a(t-${timeToMax})^2+${fmt(maxH)}$ for some constant $a$. The initial height means $h(0)=${initial}$, so $a(-${timeToMax})^2+${fmt(maxH)}=${initial}$. Then $${timeToMax * timeToMax}a=${fmt(initial - maxH)}$, so $a=${a}$. At $t=${evalTime}$, $h(${evalTime})=${a}(${evalTime}-${timeToMax})^2+${fmt(maxH)}=${a}(${dt})^2+${fmt(maxH)}=${fmt(drop)}+${fmt(maxH)}=${fmt(h_eval)}$ feet. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
