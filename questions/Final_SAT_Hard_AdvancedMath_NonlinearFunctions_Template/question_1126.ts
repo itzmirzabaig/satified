@@ -34,11 +34,13 @@ export const generator_1126 = {
     const signA = `+${a}`;
     
     return {
-      questionText: `The function $g$ is defined by $g(x)=(x${signA})(t-x)$, where $t$ is a constant. In the xy-plane, the graph of $y=g(x)$ passes through the point $(${p}, 0)$. What is the value of $g(0)$?`,
+      // Before: "xy-plane" was outside math, the explanation had no "The correct answer is"
+      // opening, and the step that substitutes the point into g was skipped.
+      questionText: `The function $g$ is defined by $g(x)=(x${signA})(t-x)$, where $t$ is a constant. In the $xy$-plane, the graph of $y=g(x)$ passes through the point $(${p}, 0)$. What is the value of $g(0)$?`,
       figureCode: null,
       options: [],
       correctAnswer: g0.toString(),
-      explanation: `Since $g(${p})=0$ and $g(x)=0$ when $x=-${a}$ or $x=t$, we have $t=${p}$. Then $g(0)=(${a})(${t})=${g0}$.`
+      explanation: `The correct answer is ${g0}. Since the graph passes through $(${p}, 0)$, $g(${p})=0$, so $(${p}+${a})(t-${p})=0$. The factor $${p}+${a}=${p + a}$ is not $0$, so $t-${p}=0$ and $t=${p}$. Therefore $g(x)=(x+${a})(${p}-x)$, and substituting $x=0$ gives $g(0)=(${a})(${p})=${g0}$.`
     };
   }
 };
