@@ -73,17 +73,16 @@ export const generator_1099 = {
       </tbody>
     </table>`;
 
-    const distractors = [
-      daysToReach - 7,
-      daysToReach - 3,
-      daysToReach - 1,
-      daysToReach
+    // Distractors were answer-7, -3, -1 with no reasons, so the answer was always
+    // the latest day. Each is now an off-by-some-days slip in the exponent.
+    const ratio = Math.pow(2, doublings);
+    const ratioStr = ratio.toLocaleString('en-US').replace(/,/g, '{,}');
+    const optionsData = [
+      { text: `Day $${daysToReach}$`, isCorrect: true, reason: '' },
+      { text: `Day $${daysToReach - 1}$`, isCorrect: false, reason: `${daysToReach - 1} is the number of doublings after Day 1, which is $n-1$ rather than the day number $n$` },
+      { text: `Day $${daysToReach - 2}$`, isCorrect: false, reason: `${daysToReach - 2} is the number of doublings after Day 2, found by dividing the target by the Day 2 value and not converting back to a day number` },
+      { text: `Day $${daysToReach + 1}$`, isCorrect: false, reason: `${daysToReach + 1} results from using the exponent $n-2$ instead of $n-1$, as if the first doubling happened after Day 2` }
     ];
-
-    const optionsData = distractors.map((d, i) => ({
-      text: `Day $${d}$`,
-      isCorrect: i === 3
-    }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
@@ -91,13 +90,14 @@ export const generator_1099 = {
     }));
 
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: `A culture of bacteria is growing at an exponential rate, as shown in the table. At this rate, on which day would the number of bacteria per milliliter reach $${targetSci}$?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `Day $${daysToReach}$`,
-      explanation: `Choice ${correctLetter} is correct. The bacteria double each day, so if Day 1 has $${day1Sci}$, then Day $n$ has $${day1Sci} \\cdot 2^{n-1}$. Setting this equal to $${targetSci}$ gives $2^{n-1}=${Math.pow(2, doublings)}$, so $n-1=${doublings}$ and $n=${daysToReach}$.`
+      explanation: `Choice ${correctLetter} is correct. The table shows that the number of bacteria doubles each day, so if Day 1 has $${day1Sci}$ bacteria per milliliter, then Day $n$ has $(${day1Sci}) \\cdot 2^{n-1}$. Setting this equal to $${targetSci}$ and dividing both sides by $${day1Sci}$ gives $2^{n-1}=${ratioStr}=2^{${doublings}}$, so $n-1=${doublings}$ and $n=${daysToReach}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
