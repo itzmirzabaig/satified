@@ -36,8 +36,9 @@ export const generator_1114 = {
     // Render a value of the form n/2 as a reduced integer when even,
     // otherwise as a proper half-integer fraction. Keeps display clean and
     // makes the correct option an exact string (no float artifacts).
+    // Negative halves lead with the sign (was \frac{-7}{2} in the choices).
     const halfStr = (n: number): string =>
-      (n % 2 === 0) ? `${n / 2}` : `\\frac{${n}}{2}`;
+      (n % 2 === 0) ? `${n / 2}` : n < 0 ? `-\\frac{${-n}}{2}` : `\\frac{${n}}{2}`;
 
     const vertexStr = halfStr(nv); // correct answer
     const signStr = halfStr(ns);   // sign-error midpoint
@@ -45,11 +46,12 @@ export const generator_1114 = {
     // Distractors are collision-free across the entire declared range
     // (verified by enumeration): the only coincidence r2 == (r1+r2-20)/2 from
     // the old design is gone; root/const/sign/vertex never coincide here.
+    // Each choice now carries its own reason (the explanation had none per choice).
     const optionsData = [
-      { text: `$${c}$`, isCorrect: false },          // mistakes the constant c for the vertex x
-      { text: `$${r2}$`, isCorrect: false },         // stops at a single root
-      { text: `$${signStr}$`, isCorrect: false },    // (r1 - r2)/2: sign error on the negative root
-      { text: `$${vertexStr}$`, isCorrect: true }    // correct midpoint (r1 + r2)/2
+      { text: `$${c}$`, isCorrect: false, reason: `$${c}$ is the constant term of the expanded function, which is the $y$-coordinate of the $y$-intercept rather than the $x$-value of the vertex` },
+      { text: `$${r2}$`, isCorrect: false, reason: `$${r2}$ is one of the two $x$-intercepts, where $f(x)=0$, rather than the midpoint of the intercepts` },
+      { text: `$${signStr}$`, isCorrect: false, reason: `$${signStr}$ comes from subtracting the intercept $${r2}$ instead of adding it, which gives half the distance between the intercepts rather than their midpoint` },
+      { text: `$${vertexStr}$`, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -59,18 +61,20 @@ export const generator_1114 = {
 
     const correct = shuffledOptions.find(o => o.isCorrect)!;
     const correctLetter = correct.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     const factor2 = `(x+${Math.abs(r2)})`; // r2 is always negative here
 
-    // Build the midpoint reduction tail: show the reduced integer only when nv is even.
-    const reduceTail = (nv % 2 === 0) ? `=${nv / 2}` : ``;
+    // Show the simplified value unless the fraction is already in final form.
+    const reduceTail = (nv % 2 === 0 || nv < 0) ? `=${vertexStr}` : ``;
 
     return {
-      questionText: `The function is defined by $f(x)=(x-${r1})${factor2}$. For what value of $x$ does $f(x)$ reach its minimum?`,
+      // Stem used to say "The function is defined by" without naming f.
+      questionText: `The function $f$ is defined by $f(x)=(x-${r1})${factor2}$. For what value of $x$ does $f(x)$ reach its minimum?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correct.text,
-      explanation: `Choice ${correctLetter} is correct. Because the parabola opens upward, its minimum is at the vertex, whose $x$-coordinate is the midpoint of the two $x$-intercepts. The intercepts are $x=${r1}$ and $x=${r2}$, so $x=\\frac{${r1}+(${r2})}{2}=\\frac{${nv}}{2}${reduceTail}$. Using the constant term $f(0)=${c}$ mistakes the $y$-intercept for the vertex $x$; stopping at a single intercept gives $x=${r2}$; and mishandling the sign of the negative intercept gives $\\frac{${r1}-(${r2})}{2}=${signStr}$.`
+      explanation: `Choice ${correctLetter} is correct. Because the parabola opens upward, its minimum is at the vertex, whose $x$-coordinate is the midpoint of the two $x$-intercepts. The intercepts are $x=${r1}$ and $x=${r2}$, so $x=\\frac{${r1}+(${r2})}{2}=\\frac{${nv}}{2}${reduceTail}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
