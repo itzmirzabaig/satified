@@ -30,7 +30,10 @@ export const generator_1121 = {
     //   w in {shift, shift - r2, shift - r3}
     const r2 = getRandomInt(5, 10);
     const r3 = -getRandomInt(4, 8);
-    const shift = getRandomInt(5, 12);
+    // Redraw when shift = r2, which would make one value of w equal 0 and
+    // print "+0" in the final sum.
+    let shift = getRandomInt(5, 12);
+    while (shift === r2) shift = getRandomInt(5, 12);
 
     // Roots of g are {0, r2, r3}; since r2 >= 5 > 0 > r3, they are always distinct.
     const w0 = shift - 0;      // from shift - w = 0
@@ -41,13 +44,15 @@ export const generator_1121 = {
     const factor2 = `(x-${r2})`;
     const factor3 = r3 >= 0 ? `(x-${r3})` : `(x+${Math.abs(r3)})`;
     const back3 = r3 >= 0 ? `-${r3}` : `+${Math.abs(r3)}`;
+    const paren = (n: number): string => (n < 0 ? `(${n})` : `${n}`);
 
     return {
-      questionText: `$g(x)=x${factor2}${factor3}^2$. If $g(${shift}-w)=0$, what is the sum of all possible values of $w$?`,
+      // Stem used to open with a bare equation instead of naming g.
+      questionText: `The function $g$ is defined by $g(x)=x${factor2}${factor3}^2$. If $g(${shift}-w)=0$, what is the sum of all possible values of $w$?`,
       figureCode: null,
       options: [],
       correctAnswer: sum.toString(),
-      explanation: `Substituting $x=${shift}-w$ gives $g(${shift}-w)=(${shift}-w)(${shift}-w-${r2})(${shift}-w${back3})^2=0$. A product equals zero exactly when one of its factors equals zero, so $(${shift}-w)\\in\\{0,\\ ${r2},\\ ${r3}\\}$. Solving each equation gives the values $w\\in\\{${w0},\\ ${w2},\\ ${w3}\\}$, whose sum is $w_1+w_2+w_3=${sum}$.`
+      explanation: `The correct answer is ${sum}. Substituting $x=${shift}-w$ gives $g(${shift}-w)=(${shift}-w)(${shift}-w-${r2})(${shift}-w${back3})^2=0$. A product equals zero exactly when one of its factors equals zero, so $${shift}-w=0$, $${shift}-w=${r2}$, or $${shift}-w=${r3}$. Solving these equations gives $w=${w0}$, $w=${w2}$, and $w=${w3}$. The sum of these values is $${w0}+${paren(w2)}+${w3}=${sum}$.`
     };
   }
 };
