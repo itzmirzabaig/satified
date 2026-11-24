@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1164
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [2, 14/15, 18/19, n > 1 (fractions and inequalities)]
  * - Difficulty factors: [No solution with fractions, parameter constraint n > 1]
@@ -22,63 +22,55 @@ export const generator_1164 = {
     skill: "Linear Equations In One Variable",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate equation with fractions
-    // Form: 2(kx - n) = ax + b where 2k = a, and -2n ≠ b, and n > 1
-    
-    let valid = false;
-    let a!: number, rightXNum!: number, c!: number, kNum: number, kDenom: number, finalKNum!: number, finalKDenom!: number, n!: number, rightConstNum!: number, rightConstDenom!: number;
-    
-    while (!valid) {
+    // Form: a(kx - n) = -(p/c)x - (u/v), so ak = -p/c and -an must differ from -u/v.
+    const gcd = (x: number, y: number): number => y === 0 ? x : gcd(y, x % y);
+
+    // Both fractions are drawn in lowest terms. Before, the stem could show
+    // unreduced fractions and wrote the sign inside the numerator.
+    let a!: number, c!: number, p!: number, u!: number, v!: number;
+    do {
       a = getRandomInt(2, 4);
       c = getRandomInt(10, 20);
-      rightXNum = getRandomInt(-15, -5);
-      
-      kNum = rightXNum;
-      kDenom = a * c;
-      
-      const gcd = (x: number, y: number): number => y === 0 ? x : gcd(y, x % y);
-      const kGcd = gcd(Math.abs(kNum), kDenom);
-      finalKNum = kNum / kGcd;
-      finalKDenom = kDenom / kGcd;
-      
-      rightConstNum = getRandomInt(-20, -10);
-      rightConstDenom = getRandomInt(15, 25);
-      
-      n = getRandomInt(2, 5);
-      
-      const leftConst = -a * n;
-      const rightConst = rightConstNum / rightConstDenom;
-      
-      if (leftConst !== rightConst) {
-        valid = true;
-      }
-    }
-    
-    // Fixed: Use \\frac instead of \\\\frac for proper LaTeX rendering
-    const kDisplay = `\\frac{${finalKNum}}{${finalKDenom}}`;
-    
-    // Fixed: Removed excessive escaping, use \\frac, \\times, \\div properly
-    const explanation = `A linear equation in the form $ax + b = cx + d$ has no solution only when the coefficients of $x$ on each side of the equation are equal and the constant terms are not equal.
+      p = getRandomInt(5, 15);
+      u = getRandomInt(10, 20);
+      v = getRandomInt(15, 25);
+    } while (gcd(p, c) !== 1 || gcd(u, v) !== 1);
 
-Dividing both sides of the given equation by ${a} yields:
-$kx - n = \\frac{${rightXNum}}{${c}}x + \\frac{${rightConstNum}}{${rightConstDenom}}$
+    const kGcd = gcd(p, a * c);
+    const kNum = p / kGcd;
+    const kDen = (a * c) / kGcd;
+    const kValue = kNum / kDen;
+    const kTex = `-\\frac{${kNum}}{${kDen}}`;
 
-Since it's given that the equation has no solution, the coefficient of $x$ on both sides of this equation must be equal, and the constant terms on both sides of this equation must not be equal.
+    // n would have to equal u/(av) for the constants to match. Since u/v < 2 and
+    // a >= 2, that value is below 1, so the given n > 1 rules it out.
+    const nGcd = gcd(u, a * v);
+    const nNum = u / nGcd;
+    const nDen = (a * v) / nGcd;
 
-Since $\\frac{${Math.abs(rightConstNum)}}{${rightConstDenom}} < 1$, and it's given that $n > 1$ (specifically $n = ${n}$), the constant condition is satisfied.
+    const rounded = Number(kValue.toFixed(3));
+    const decimal = Math.abs(rounded - kValue) < 1e-9 ? `-${rounded}` : `-${kValue.toFixed(3)}`;
+    const kSteps = kGcd > 1 ? `-\\frac{${p}}{${a * c}} = ${kTex}` : kTex;
 
-Thus, $k$ must equal $\\frac{${rightXNum}}{${c}} \\div ${a} = \\frac{${rightXNum}}{${c}} \\times \\frac{1}{${a}} = ${kDisplay}$.
+    // Before, the explanation claimed to divide by a but left the right side
+    // unchanged, and it stated a specific value of n that the stem never gives.
+    const explanation = `The correct answer is $${kTex}$. A linear equation in one variable has no solution only when the coefficients of $x$ on each side are equal and the constant terms are not equal.
 
-Note that ${finalKNum}/${finalKDenom} and ${(finalKNum/finalKDenom).toFixed(3)} are acceptable ways to enter the answer.`;
-    
+Distributing ${a} on the left side of the given equation yields $${a}kx - ${a}n = -\\frac{${p}}{${c}}x - \\frac{${u}}{${v}}$.
+
+Setting the coefficients of $x$ equal gives $${a}k = -\\frac{${p}}{${c}}$. Dividing both sides by ${a} gives $k = -\\frac{${p}}{${c}} \\times \\frac{1}{${a}} = ${kSteps}$.
+
+The constant terms must not be equal, so $-${a}n \\neq -\\frac{${u}}{${v}}$, which means $n \\neq \\frac{${nNum}}{${nDen}}$. Since $\\frac{${nNum}}{${nDen}} < 1$ and it's given that $n > 1$, this condition is met.
+
+Note that -${kNum}/${kDen} and ${decimal} are acceptable ways to enter the answer.`;
+
     return {
-      // Fixed: Use \\frac instead of \\\\frac
-      questionText: `In the equation $${a}(kx - n) = \\frac{${rightXNum}}{${c}}x + \\frac{${rightConstNum}}{${rightConstDenom}}$, $k$ and $n$ are constants and $n > 1$. The equation has no solution. What is the value of $k$?`,
+      questionText: `In the equation $${a}(kx - n) = -\\frac{${p}}{${c}}x - \\frac{${u}}{${v}}$, $k$ and $n$ are constants and $n > 1$. The equation has no solution. What is the value of $k$?`,
       figureCode: null,
       options: [],
-      correctAnswer: `${finalKNum}/${finalKDenom}`,
+      correctAnswer: `-${kNum}/${kDen}`,
       explanation: explanation
     };
   }
