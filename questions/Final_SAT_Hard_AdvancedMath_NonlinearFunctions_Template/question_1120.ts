@@ -29,15 +29,24 @@ export const generator_1120 = {
     const b = -getRandomInt(30, 70);
     const c = getRandomInt(50, 150);
     
-    const vertexX = -b / (2 * a);
-    const isInteger = Number.isInteger(vertexX);
-    
+    // Reduce the answer (it used to be stored and shown unreduced, like 50/6).
+    const gcd = (p: number, q: number): number => (q === 0 ? p : gcd(q, p % q));
+    const num = -b;
+    const den = 2 * a;
+    const g = gcd(num, den);
+    const rn = num / g;
+    const rd = den / g;
+    const answerText = rd === 1 ? `${rn}` : `${rn}/${rd}`;
+    const answerTex = rd === 1 ? `${rn}` : `\\frac{${rn}}{${rd}}`;
+    // Skip the simplify step when the fraction is already in lowest terms.
+    const simplifyStep = g === 1 ? '' : `=${answerTex}`;
+
     return {
       questionText: `The function $f$ is defined by $f(x)=${a}x^2${b}x+${c}$. For what value of $x$ does $f(x)$ reach its minimum?`,
       figureCode: null,
       options: [],
-      correctAnswer: isInteger ? vertexX.toString() : `${(-b).toString()}/${(2*a).toString()}`,
-      explanation: `The minimum occurs at $x=-\\frac{b}{2a}=-\\frac{${b}}{${2*a}}=${isInteger ? vertexX : `\\frac{${-b}}{${2*a}}`}$.`
+      correctAnswer: answerText,
+      explanation: `The correct answer is ${answerText}. The coefficient of $x^2$ is positive, so the parabola opens upward and $f(x)$ reaches its minimum at the vertex. For a quadratic $Ax^2+Bx+C$, the $x$-coordinate of the vertex is $x=-\\frac{B}{2A}$. Here $A=${a}$ and $B=${b}$, so $x=-\\frac{${b}}{2(${a})}=\\frac{${num}}{${den}}${simplifyStep}$.`
     };
   }
 };
