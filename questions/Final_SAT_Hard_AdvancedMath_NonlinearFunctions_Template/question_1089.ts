@@ -68,11 +68,21 @@ export const generator_1089 = {
 
     const correctText = `$(x+${a})(x-${b})$`;
 
+    // Before: two wrong choices shared one combined reason. Each now names its
+    // own sign slip. When -b is the first row of the table, the table actually
+    // shows p(-b) is nonzero, so the reason says that instead.
+    const flippedText = `$(x-${a})(x+${b})$`;
+    const single1Text = `$(x-${a})$`;
+    const single2Text = `$(x+${b})$`;
+    const negBFact = b === a + 1
+      ? `the table shows $p(${-b})=${pAtLeft}$, not $0$`
+      : `the table does not show that $p(${-b})=0$`;
+
     const optionsData = [
-      { key: 'correct', text: correctText, isCorrect: true },
-      { key: 'flipped', text: `$(x-${a})(x+${b})$`, isCorrect: false },
-      { key: 'single1', text: `$(x-${a})$`, isCorrect: false },
-      { key: 'single2', text: `$(x+${b})$`, isCorrect: false }
+      { key: 'correct', text: correctText, isCorrect: true, reason: '' },
+      { key: 'flipped', text: flippedText, isCorrect: false, reason: `${flippedText} reverses the sign in both factors, which would require $p(${a})=0$ and $p(${-b})=0$, but the table does not show that $p(${a})=0$, and ${negBFact}` },
+      { key: 'single1', text: single1Text, isCorrect: false, reason: `${single1Text} uses the wrong sign for the zero at $x=${root1}$, which would require $p(${a})=0$, and the table does not show that value` },
+      { key: 'single2', text: single2Text, isCorrect: false, reason: `${single2Text} uses the wrong sign for the zero at $x=${root2}$, which would require $p(${-b})=0$, but ${negBFact}` }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -80,17 +90,15 @@ export const generator_1089 = {
       letter: String.fromCharCode(65 + index)
     }));
 
-    const correctLetter = shuffledOptions.find(o => o.key === 'correct')!.letter;
-    const flippedLetter = shuffledOptions.find(o => o.key === 'flipped')!.letter;
-    const single1Letter = shuffledOptions.find(o => o.key === 'single1')!.letter;
-    const single2Letter = shuffledOptions.find(o => o.key === 'single2')!.letter;
+    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: `The table gives selected values of a polynomial function $p$. Based on the values in the table, which of the following must be a factor of $p(x)$?`,
       figureCode: tableCode,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctText,
-      explanation: `Choice ${correctLetter} is correct. The table shows that $p(${root1})=0$ and $p(${root2})=0$. By the factor theorem, if $p(k)=0$, then $(x-k)$ is a factor of $p(x)$, so $(x-(${root1}))=(x+${a})$ and $(x-${b})$ are both factors of $p(x)$. Therefore their product $(x+${a})(x-${b})$ must also be a factor of $p(x)$. Choice ${flippedLetter} is incorrect because it reverses the signs of the factors and would require $p(${a})=0$ and $p(${-b})=0$, which the table does not show. Choices ${single1Letter} and ${single2Letter} are incorrect because the table does not show that $p(${a})=0$ or that $p(${-b})=0$, so neither $(x-${a})$ nor $(x+${b})$ must be a factor.`
+      explanation: `Choice ${correctOption.letter} is correct. The table shows that $p(${root1})=0$ and $p(${root2})=0$. By the factor theorem, if $p(r)=0$ for a number $r$, then $(x-r)$ is a factor of $p(x)$, so $(x-(${root1}))=(x+${a})$ and $(x-${b})$ are both factors of $p(x)$. Because these factors come from two different zeros, their product $(x+${a})(x-${b})$ must also be a factor of $p(x)$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
