@@ -40,38 +40,45 @@ export const generator_1100 = {
   },
   
   generate: (): QuestionData => {
-    const r1 = -getRandomInt(2, 6);
-    const r2 = r1 + getRandomInt(2, 5);
+    // Zeros now share a sign and are never 0. Before, r2 could be 0, which showed
+    // "(x-0)", and the sum in the explanation printed as "-3+-1". Same sign also
+    // keeps the sign flipped interval below from overlapping the correct one.
+    const sign = getRandomInt(0, 1) === 0 ? -1 : 1;
+    const small = getRandomInt(1, 4);
+    const large = small + getRandomInt(2, 5);
+    const r1 = sign < 0 ? -large : small;
+    const r2 = sign < 0 ? -small : large;
     const vertex = (r1 + r2) / 2;
-    
+
     // Interval option text. Uses \lt, not <: option text is injected as HTML
     // before math rendering, and a raw "<x" opens a tag that swallows the
-    // rest of the string — including the closing $. KaTeX renders \lt as <.
+    // rest of the string, including the closing $. KaTeX renders \lt as <.
     const interval = (a: number, b: number) => `$${a} \\lt x \\lt ${b}$`;
-    
+    const factor = (r: number) => (r > 0 ? `(x-${r})` : `(x+${-r})`);
+    const paren = (r: number) => (r < 0 ? `(${r})` : `${r}`);
+
+    // Distractors were arbitrary intervals with no reasons.
     const optionsData = [
-      { text: interval(r1 - 1, r1), isCorrect: false },
-      { text: interval(r1, r2), isCorrect: true },
-      { text: interval(r2, r2 + 2), isCorrect: false },
-      { text: interval(r2 + 2, r2 + 3), isCorrect: false }
+      { text: interval(r1, r2), isCorrect: true, reason: '' },
+      { text: interval(-r2, -r1), isCorrect: false, reason: `it uses $x=${-r1}$ and $x=${-r2}$ as the zeros, which have the wrong signs, since the factor $${factor(r1)}$ equals $0$ at $x=${r1}$` },
+      { text: interval(r1 - 2, r1), isCorrect: false, reason: `every $x$ in this interval is less than the smaller zero, $${r1}$, where $f(x)$ is positive, so the minimum cannot occur there` },
+      { text: interval(r2, r2 + 2), isCorrect: false, reason: `every $x$ in this interval is greater than the larger zero, $${r2}$, where $f(x)$ is positive, so the minimum cannot occur there` }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
-    
-    const factor1 = r1 >= 0 ? `(x-${r1})` : `(x+${Math.abs(r1)})`;
-    const factor2 = r2 >= 0 ? `(x-${r2})` : `(x+${Math.abs(r2)})`;
-    
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
+
     return {
-      questionText: `The function $f$ is defined by $f(x)=${factor1}${factor2}$. In which of the following intervals does $f(x)$ reach its minimum?`,
+      questionText: `The function $f$ is defined by $f(x)=${factor(r1)}${factor(r2)}$. In which of the following intervals does $f(x)$ reach its minimum?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: interval(r1, r2),
-      explanation: `Choice ${correctLetter} is correct. The x-intercepts are at $x=${r1}$ and $x=${r2}$. The vertex (minimum) is at $x=\\frac{${r1}+${r2}}{2}=${vertex}$, which lies in the interval $(${r1}, ${r2})$.`
+      explanation: `Choice ${correctLetter} is correct. The zeros of $f$ are $x=${r1}$ and $x=${r2}$. The graph of $f$ is a parabola that opens upward, so its minimum is at the vertex, halfway between the zeros, at $x=\\frac{${paren(r1)}+${paren(r2)}}{2}=${vertex}$. This value lies in the interval ${interval(r1, r2)}. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
