@@ -40,11 +40,12 @@ export const generator_1104 = {
       r = getRandomInt(2, 6); // ensure a != r so no two option expressions coincide
     }
 
+    // Previously the explanation lumped the wrong choices together; each now has its own reason.
     const optionsData = [
-      { text: `$w=${r}(${a}^n)$`, isCorrect: false },
-      { text: `$w=${r}(${a}^{n-1})$`, isCorrect: false },
-      { text: `$w=${a}(${r}^n)$`, isCorrect: false },
-      { text: `$w=${a}(${r}^{n-1})$`, isCorrect: true }
+      { text: `$w=${r}(${a}^n)$`, isCorrect: false, reason: `$w=${r}(${a}^n)$ swaps the first term and the common ratio and also uses the exponent $n$ instead of $n-1$, so its first term would be ${r * a} instead of ${a}` },
+      { text: `$w=${r}(${a}^{n-1})$`, isCorrect: false, reason: `$w=${r}(${a}^{n-1})$ swaps the first term and the common ratio, so its first term would be ${r} instead of ${a}` },
+      { text: `$w=${a}(${r}^n)$`, isCorrect: false, reason: `$w=${a}(${r}^n)$ uses the exponent $n$ instead of $n-1$, so its first term would be ${a * r} instead of ${a}` },
+      { text: `$w=${a}(${r}^{n-1})$`, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -53,13 +54,14 @@ export const generator_1104 = {
     }));
 
     const correctLetter = shuffledOptions.find(o => o.isCorrect)!.letter;
+    const incorrectOptions = shuffledOptions.filter(o => !o.isCorrect);
 
     return {
       questionText: `The first term of a sequence is ${a}. Each term after the first is ${r} times the preceding term. If $w$ represents the $n$th term of the sequence, which equation gives $w$ in terms of $n$?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: `$w=${a}(${r}^{n-1})$`,
-      explanation: `Choice ${correctLetter} is correct. For a geometric sequence, the $n$th term equals the first term times the common ratio raised to the power $n-1$. With first term ${a} and common ratio ${r}, this gives $w=${a}(${r}^{n-1})$. Using ${r} as the base instead of the first term, or writing the exponent as $n$ rather than $n-1$ (which would give the term after the intended one), produces the other choices.`
+      explanation: `Choice ${correctLetter} is correct. For a geometric sequence, the $n$th term equals the first term times the common ratio raised to the power $n-1$. With first term ${a} and common ratio ${r}, this gives $w=${a}(${r}^{n-1})$. When $n=1$, this equation gives $w=${a}(${r}^0)=${a}$, which matches the first term. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
