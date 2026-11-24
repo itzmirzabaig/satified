@@ -42,11 +42,12 @@ export const generator_1103 = {
     const g_eval = a * Math.pow(evalTime - h, 2) + k;   // exact integer depth
 
     return {
-      questionText: `A seal's depth is modeled by quadratic $g$. Maximum depth is $${k}$ meters at ${h} minutes, and the seal surfaces at ${2 * h} minutes. What is the depth at ${evalTime} minutes?`,
+      // Stem was a fragment ("modeled by quadratic g") that never defined t or the dive.
+      questionText: `The quadratic function $g$ models the depth, in meters, of a seal below the surface of the water $t$ minutes after the seal begins a dive. The seal reaches its maximum depth of $${k}$ meters ${h} minutes after beginning the dive and returns to the surface ${2 * h} minutes after beginning the dive. According to the model, what is the depth, in meters, of the seal ${evalTime} minutes after beginning the dive?`,
       figureCode: null,
       options: [],
       correctAnswer: g_eval.toString(),
-      explanation: `The vertex is at $(${h}, ${k})$ and the seal surfaces (depth $0$) at $t=${2 * h}$, so $g(t)=a(t-${h})^2+${k}$ with $a(${2 * h}-${h})^2+${k}=0$, giving $a=-\\frac{${k}}{${h2}}=${a}$. Then $g(${evalTime})=${a}(${evalTime - h})^2+${k}=${g_eval}$ meters.`
+      explanation: `The correct answer is ${g_eval}. The vertex of the graph of $g$ is $(${h}, ${k})$, so $g(t)=a(t-${h})^2+${k}$ for some constant $a$. The seal is at the surface, a depth of $0$ meters, when $t=${2 * h}$, so $a(${2 * h}-${h})^2+${k}=0$, which gives $a=-\\frac{${k}}{${h2}}=${a}$. Then $g(${evalTime})=${a}(${evalTime}-${h})^2+${k}=${a}(${(evalTime - h) * (evalTime - h)})+${k}=${g_eval}$ meters.`
     };
   }
 };
