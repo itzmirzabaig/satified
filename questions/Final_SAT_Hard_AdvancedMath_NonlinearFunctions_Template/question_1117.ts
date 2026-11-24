@@ -34,11 +34,12 @@ export const generator_1117 = {
     const y_point = a * a + b;
     
     return {
-      questionText: `The function $f$ is defined by $f(x)=a^{x}+b$, where $a$ and $b$ are constants and $a>0$. The graph has a y-intercept at $(0, ${y_int})$ and passes through $(2, ${y_point})$. What is the value of $a+b$?`,
+      questionText: `The function $f$ is defined by $f(x)=a^{x}+b$, where $a$ and $b$ are constants and $a>0$. The graph of $y=f(x)$ has a $y$-intercept at $(0, ${y_int})$ and passes through $(2, ${y_point})$. What is the value of $a+b$?`,
       figureCode: null,
       options: [],
       correctAnswer: (a + b).toString(),
-      explanation: `From the y-intercept: $1+b=${y_int}$, so $b=${b}$. From the point: $a^2+${b}=${y_point}$, so $a^2=${a*a}$ and $a=${a}$. Thus $a+b=${a}+(${b})=${a+b}$.`
+      // b is always negative: the old text printed the double sign "a^2+-24".
+      explanation: `The correct answer is ${a + b}. Since the $y$-intercept is $(0, ${y_int})$, $f(0)=a^{0}+b=1+b=${y_int}$, so $b=${b}$. Since the graph passes through $(2, ${y_point})$, $f(2)=a^{2}${b}=${y_point}$, so $a^{2}=${a * a}$. Because $a>0$, $a=${a}$. Therefore, $a+b=${a}+(${b})=${a + b}$.`
     };
   }
 };
