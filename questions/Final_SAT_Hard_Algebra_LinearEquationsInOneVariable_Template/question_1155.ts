@@ -3,14 +3,17 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1155
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [10, 15, 9, 15, 6, 10 (small integers)]
- * - Difficulty factors: [Identifying infinitely many solutions by simplification]
- * - Distractor patterns: [A: exactly one (if coefficients differ), B: exactly two (quadratic confusion), D: zero (if same coeff but different constants)]
- * - Constraints: [Equation must simplify to identity]
+ * - Difficulty factors: [Identifying the number of solutions by simplification]
+ * - Constraints: [a(bx - c) = d(fx - e) with a != d so the sides never look identical]
  * - Question type: [Equation→Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * Previously the answer was always "Infinitely many", a draw could show the
+ * same expression on both sides or a 1x term, and the explanation used
+ * markdown. The outcome is now drawn: infinitely many, zero, or exactly one.
  */
 
 export const generator_1155 = {
@@ -22,82 +25,95 @@ export const generator_1155 = {
     skill: "Linear Equations In One Variable",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate equation with infinitely many solutions
-    // Structure: a(bx - c) = d(fx - e) where ab = df and ac = de
-    
-    let valid = false;
-    let a!: number, b!: number, c_pos!: number, d!: number, f!: number, e_pos!: number;
-    
-    while (!valid) {
-      a = getRandomInt(2, 12);
-      b = getRandomInt(2, 8);
-      d = getRandomInt(2, 8);
-      
-      // f must equal (a * b) / d for coefficients to match
-      const fRaw = (a * b) / d;
-      
-      // Ensure f is integer
-      if (Number.isInteger(fRaw) && fRaw > 0) {
-        f = fRaw;
-        e_pos = getRandomInt(2, 10);
-        c_pos = (d * e_pos) / a;
-        
-        // Ensure c_pos is valid integer
-        if (Number.isInteger(c_pos) && c_pos > 0) {
-          valid = true;
-        }
-      }
+    const gcd = (x: number, y: number): number => (y === 0 ? Math.abs(x) : gcd(y, x % y));
+
+    // STEP 1: Build a(bx - c) = d(fx - e) with ab = df and ac = de, so the two
+    // sides start out identical after distributing.
+    let a = 0, b = 0, c = 0, d = 0, f = 0, e = 0;
+    do {
+      a = getRandomInt(2, 9);
+      d = getRandomInt(2, 9);
+      const lcm = (a * d) / gcd(a, d);
+      const u = getRandomInt(1, 3);
+      const v = getRandomInt(1, 3);
+      b = (lcm * u) / a;
+      f = (lcm * u) / d;
+      c = (lcm * v) / a;
+      e = (lcm * v) / d;
+    } while (a === d || b < 2 || f < 2 || b > 15 || f > 15);
+
+    // STEP 2: Draw the outcome and adjust the right side to produce it.
+    const outcome = getRandomElement(['infinite', 'zero', 'one'] as const);
+    const k = getRandomInt(1, 3);  // shift in e
+    const s = getRandomInt(1, 2);  // shift in f
+    if (outcome !== 'infinite') e += k;
+    if (outcome === 'one') f += s;
+
+    const leftX = a * b;
+    const leftC = a * c;
+    const rightX = d * f;
+    const rightC = d * e;
+
+    const correctText =
+      outcome === 'infinite' ? 'Infinitely many' : outcome === 'zero' ? 'Zero' : 'Exactly one';
+
+    // STEP 3: The solving steps for this outcome.
+    const distributed = `Distributing on both sides gives $${leftX}x - ${leftC} = ${rightX}x - ${rightC}$.`;
+    let steps = '';
+    if (outcome === 'infinite') {
+      steps = `${distributed} The two sides are the same expression, so the equation is true for every value of $x$, and it has infinitely many solutions.`;
+    } else if (outcome === 'zero') {
+      steps = `${distributed} Subtracting $${leftX}x$ from both sides gives $-${leftC} = -${rightC}$, which is false. No value of $x$ makes the equation true, so it has zero solutions.`;
+    } else {
+      const g = gcd(k, s);
+      const xValue = s / g === 1 ? `${k / g}` : `\\frac{${k / g}}{${s / g}}`;
+      steps = `${distributed} Subtracting $${leftX}x$ from both sides gives $-${leftC} = ${rightX - leftX}x - ${rightC}$. Adding $${rightC}$ to both sides gives $${rightC - leftC} = ${rightX - leftX}x$, and dividing both sides by $${rightX - leftX}$ gives $x = ${xValue}$. This is the only value that makes the equation true, so it has exactly one solution.`;
     }
-    
-    const correctLeft = `${a}(${b}x - ${c_pos})`;
-    const correctRight = `${d}(${f}x - ${e_pos})`;
-    
-    // STEP 3: Create options
-    const optionsData = [
-      { text: "Exactly one", isCorrect: false, reason: "this would occur when the coefficients of $x$ are different, leading to a unique solution" },
-      { text: "Exactly two", isCorrect: false, reason: "linear equations cannot have exactly two solutions; this would require a quadratic equation" },
-      { text: "Zero", isCorrect: false, reason: "this would occur when the coefficients of $x$ are equal but the constant terms are different, leading to a contradiction like $0 = 5$" },
-      { text: "Infinitely many", isCorrect: true }
-    ];
-    
+
+    // STEP 4: Each wrong choice names the slip for this outcome.
+    const twoReason = `a linear equation cannot have exactly two solutions, since it has zero, one, or infinitely many`;
+    const reasons: Record<string, string> =
+      outcome === 'infinite'
+        ? {
+            'Exactly one': `exactly one solution assumes every linear equation has a single answer, but both sides simplify to $${leftX}x - ${leftC}$`,
+            'Zero': `zero comes from reading the result $0 = 0$ as no solution, but a true statement means every value of $x$ works`,
+            'Exactly two': twoReason
+          }
+        : outcome === 'zero'
+        ? {
+            'Exactly one': `exactly one solution assumes every linear equation has a single answer, but the $x$ terms cancel and leave a false statement`,
+            'Infinitely many': `infinitely many comes from seeing $${leftX}x$ on both sides and overlooking that the constants $-${leftC}$ and $-${rightC}$ differ`,
+            'Exactly two': twoReason
+          }
+        : {
+            'Zero': `zero solutions would require the same coefficient of $x$ on both sides, but the coefficients are $${leftX}$ and $${rightX}$`,
+            'Infinitely many': `infinitely many solutions would require both sides to be the same expression, but $${leftX}x - ${leftC}$ and $${rightX}x - ${rightC}$ differ`,
+            'Exactly two': twoReason
+          };
+
+    const optionsData = ['Exactly one', 'Exactly two', 'Zero', 'Infinitely many'].map(text => ({
+      text,
+      isCorrect: text === correctText,
+      reason: text === correctText ? '' : reasons[text]
+    }));
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    const explanation = `To determine the number of solutions, simplify both sides of the equation.
 
-1.  **Distribute the terms:**
-    *   Left side: $${a}(${b}x - ${c_pos}) = ${a * b}x - ${a * c_pos}$
-    *   Right side: $${d}(${f}x - ${e_pos}) = ${d * f}x - ${d * e_pos} = ${a * b}x - ${a * c_pos}$
+    const explanation = `Choice ${correctOption.letter} is correct. ${steps} ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
-2.  **Rewrite the simplified equation:**
-    $${a * b}x - ${a * c_pos} = ${a * b}x - ${a * c_pos}$
-
-3.  **Analyze the result:**
-    Since both sides of the equation are identical, any value substituted for $x$ will make the equation true.
-
-Therefore, the equation has **infinitely many solutions**.
-
-Choice ${correctLetter} is correct.
-
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
-    
     return {
-      questionText: `How many solutions does the equation $${correctLeft} = ${correctRight}$ have?`,
+      questionText: `How many solutions does the equation $${a}(${b}x - ${c}) = ${d}(${f}x - ${e})$ have?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: "Infinitely many",
+      correctAnswer: correctText,
       explanation: explanation
     };
   }
