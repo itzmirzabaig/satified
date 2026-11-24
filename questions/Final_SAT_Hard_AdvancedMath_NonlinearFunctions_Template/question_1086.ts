@@ -25,13 +25,23 @@ export const generator_1086 = {
     // y = a(x-h)² + k  =>  y = ax² - 2ahx + (ah² + k)
     // b = -2ah, c = ah² + k
     
-    const a = getRandomInt(1, 4);
-    const h = -getRandomInt(1, 4);  // Vertex x is negative
-    const k = -getRandomInt(4, 12); // Vertex y is negative
-    
+    // Before: some draws had c = 0, which made bc = 0 and printed "+ 0" in the
+    // explanation, and the explanation was split over several lines with raw
+    // line break tags. Redraw until c is nonzero.
+    let a = 1;
+    let h = -1;
+    let k = -4;
+    do {
+      a = getRandomInt(1, 4);
+      h = -getRandomInt(1, 4);  // Vertex x is negative
+      k = -getRandomInt(4, 12); // Vertex y is negative
+    } while (a * h * h + k === 0);
+
     const b = -2 * a * h;
     const c = a * h * h + k;
     const bc = b * c;
+    // Products can reach four digits, so group them inside math.
+    const bcTex = bc.toLocaleString('en-US').replace(/,/g, '{,}');
 
     // Render the leading coefficient cleanly: "x^2" when a===1, else "ax^2".
     const aCoef = a === 1 ? '' : `${a}`;
@@ -143,17 +153,7 @@ export const generator_1086 = {
       figureCode: svgContent,
       options: [],
       correctAnswer: bc.toString(),
-      explanation: `From the graph, the vertex is at $(${h}, ${k})$ and the y-intercept is at $(0, ${c})$.
-      <br/>
-      With leading coefficient $a=${a}$, use the vertex form $y = a(x-h)^2 + k$:
-      $$y = ${a}(x - (${h}))^2 + (${k})$$
-      $$y = ${a}(x + ${Math.abs(h)})^2 - ${Math.abs(k)}$$
-      $$y = ${a}(x^2 + ${2 * Math.abs(h)}x + ${h*h}) - ${Math.abs(k)}$$
-      $$y = ${aCoef}x^2 + ${b}x ${cTerm}$$
-      <br/>
-      Comparing this to $y = ax^2 + bx + c$ gives $b = ${b}$ and $c = ${c}$ (which matches the y-intercept read from the graph).
-      <br/>
-      Therefore, $bc = (${b})(${c}) = ${bc}$.`
+      explanation: `The correct answer is $${bcTex}$. The graph shows that the vertex of the parabola is $(${h}, ${k})$, so the equation can be written in vertex form as $y=${aCoef}(x+${-h})^2-${-k}$, using the coefficient of $x^2$ given in the equation. Expanding gives $y=${aCoef}(x^2+${2 * -h}x+${h * h})-${-k}$, which simplifies to $y=${aCoef}x^2+${b}x${cTerm.replace(/\s/g, '')}$. Comparing this with $y=${aCoef}x^{2}+bx+c$ gives $b=${b}$ and $c=${c}$, and this value of $c$ matches the point $(0, ${c})$ where the graph crosses the $y$ axis. Therefore, $bc=(${b})(${c})=${bcTex}$.`
     };
   }
 };
