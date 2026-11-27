@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, getRandomElement } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1152
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [-49, -98 (coefficients)]
  * - Difficulty factors: [Simplifying to find exactly one solution]
@@ -11,6 +11,11 @@ import type { QuestionData } from '../../study/types';
  * - Constraints: [Must simplify to x = 0]
  * - Question type: [Equation→Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * FIXED: the explanation was a markdown numbered list with broken TeX (\\\\frac and
+ * \\\\neq printed literally), the stem used a raw "\n", the answer was always
+ * "Exactly one", and the wrong choices had generic reasons. The equation is now one
+ * of three kinds (one solution x = 0, no solution, infinitely many solutions).
  */
 
 export const generator_1152 = {
@@ -22,60 +27,61 @@ export const generator_1152 = {
     skill: "Linear Equations In One Variable",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate equation of form ax = bx where a ≠ b but solution is x = 0
-    // Actually -49x = -98x → 49x = 0 → x = 0, exactly one solution
-    
     const factor = getRandomInt(20, 80);
-    const a = -factor;
-    const b = -2 * factor;
-    
-    const optionsData = [
-      { text: "Zero", isCorrect: false, reason: "this would be correct if the equation resulted in a contradiction, such as $5 = 0$" },
-      { text: "Exactly one", isCorrect: true },
-      { text: "Exactly two", isCorrect: false, reason: "linear equations of the form $ax + b = cx + d$ (where $a \\\\neq c$) will always have exactly one solution; they cannot have two solutions" },
-      { text: "Infinitely many", isCorrect: false, reason: "this would be correct if the equation simplified to an identity, such as $5x = 5x$ or $0 = 0$" }
-    ];
-    
-    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
-      ...opt,
+    const a = -factor;              // negative coefficient of x
+    const b = -2 * factor;          // used by the one solution kind
+    const p = getRandomInt(2, 9);   // constant inside the parentheses
+    const ap = a * p;               // negative product
+    const kind = getRandomElement(['one', 'none', 'infinite'] as const);
+
+    const twoReason = `a linear equation has zero, one, or infinitely many solutions, so it cannot have exactly two`;
+
+    let equation: string;
+    let solution: string;
+    let correctText: string;
+    const reasons: Record<string, string> = { 'Exactly two': twoReason };
+
+    if (kind === 'one') {
+      // The trap: dividing both sides by x gives a false statement and suggests zero solutions.
+      equation = `${a}x=${b}x`;
+      correctText = 'Exactly one';
+      solution = `Adding $${-b}x$ to both sides gives $${factor}x=0$. Dividing both sides by $${factor}$ gives $x=0$. This is the only value of $x$ that makes both sides equal, so the equation has exactly one solution.`;
+      reasons['Zero'] = `zero comes from dividing both sides by $x$ to get $${a}=${b}$, but dividing by $x$ is not allowed when $x=0$, and $x=0$ is a solution`;
+      reasons['Infinitely many'] = `infinitely many would require the two sides to be the same expression, but $${a}x$ and $${b}x$ are equal only when $x=0$`;
+    } else if (kind === 'none') {
+      // The right side is what a student writes after forgetting to distribute to the constant.
+      equation = `${a}(x+${p})=${a}x+${p}`;
+      correctText = 'Zero';
+      solution = `Distributing $${a}$ gives $${a}x${ap}=${a}x+${p}$. Adding $${factor}x$ to both sides gives $${ap}=${p}$, which is false. No value of $x$ makes the equation true, so it has zero solutions.`;
+      reasons['Exactly one'] = `exactly one would require different coefficients of $x$ on the two sides, but both sides have $${a}x$, so the $x$ terms cancel`;
+      reasons['Infinitely many'] = `infinitely many comes from distributing $${a}$ to $x$ only, which makes the two sides look identical, but distributing to both terms gives $${a}x${ap}$`;
+    } else {
+      equation = `${a}(x+${p})=${a}x${ap}`;
+      correctText = 'Infinitely many';
+      solution = `Distributing $${a}$ gives $${a}x${ap}=${a}x${ap}$. The two sides are identical, so every value of $x$ makes the equation true, and it has infinitely many solutions.`;
+      reasons['Zero'] = `zero would require the $x$ terms to cancel and leave a false statement, but here they cancel and leave the true statement $${ap}=${ap}$`;
+      reasons['Exactly one'] = `exactly one would require different coefficients of $x$ on the two sides, but both sides have $${a}x$`;
+    }
+
+    // Keep the conventional order of the choices.
+    const orderedOptions = ['Zero', 'Exactly one', 'Exactly two', 'Infinitely many'].map((text, index) => ({
+      text,
+      isCorrect: text === correctText,
+      reason: text === correctText ? '' : reasons[text],
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
-    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    const explanation = `To find the number of solutions for the equation $${a}x = ${b}x$, we need to solve for $x$.
 
-1. **Set up the equation:**
-   $${a}x = ${b}x$
+    const correctOption = orderedOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = orderedOptions.filter(o => !o.isCorrect);
 
-2. **Move all terms involving $x$ to one side.** We can add $${-b}x$ to both sides of the equation:
-   $${a}x + ${-b}x = ${b}x + ${-b}x$
-   $${a - b}x = 0$
-
-3. **Solve for $x$.** Divide both sides by $${a - b}$:
-   $x = \\\\frac{0}{${a - b}}$
-   $x = 0$
-
-Since we found a single, specific value for $x$ ($x = 0$) that satisfies the equation, there is exactly one solution.
-
-Choice ${correctLetter} is correct.
-
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
-    
     return {
-      questionText: `$${a}x = ${b}x$\nHow many solutions does the given equation have?`,
+      questionText: `$${equation}$\n\nHow many solutions does the given equation have?`,
       figureCode: null,
-      options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: "Exactly one",
-      explanation: explanation
+      options: orderedOptions.map(o => ({ text: o.text })),
+      correctAnswer: correctText,
+      explanation: `Choice ${correctOption.letter} is correct. ${solution} ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
