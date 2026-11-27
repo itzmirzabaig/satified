@@ -55,35 +55,24 @@ export const generator_1165 = {
     const equation = `$$ \\frac{${A}x+${B}}{${C}} - \\frac{s}{${D}} = ${r}(x - ${E}) $$`;
 
     // 5. Explanation
-    const explanation = `
-      For an equation to have infinitely many solutions, it must be an identity. This means the coefficient of $x$ on both sides must be the same, and the constant terms on both sides must be the same.
-      <br/><br/>
-      <strong>1. Simplify the equation:</strong>
-      $$ \\frac{${A}x}{${C}} + \\frac{${B}}{${C}} - \\frac{s}{${D}} = ${r}x - ${r}(${E}) $$
-      $$ ${r}x + ${B/C} - \\frac{s}{${D}} = ${r}x - ${r*E} $$
-      <br/>
-      <strong>2. Compare coefficients of $x$:</strong>
-      Left side: $${r}x$. Right side: $${r}x$. (These match, as expected).
-      <br/><br/>
-      <strong>3. Compare constant terms:</strong>
-      Left side: $${B/C} - \\frac{s}{${D}}$
-      <br/>
-      Right side: $-${r*E}$
-      <br/>
-      Set them equal:
-      $$ ${B/C} - \\frac{s}{${D}} = -${r*E} $$
-      <br/>
-      <strong>4. Solve for $s$:</strong>
-      Add $\\frac{s}{${D}}$ to the right and add $${r*E}$ to the left:
-      $$ ${B/C} + ${r*E} = \\frac{s}{${D}} $$
-      $$ ${B/C + r*E} = \\frac{s}{${D}} $$
-      Multiply by $${D}$:
-      $$ s = ${B/C + r*E} \\cdot ${D} $$
-      $$ s = ${s} $$
-    `;
-    
+    // Before: the steps were a bold outline, and "add to the right / add to the
+    // left" described the move wrongly. Now plain sentences in the standard format.
+    const explanation = `The correct answer is ${s}. An equation has infinitely many solutions when its two sides are equivalent, so the coefficients of $x$ must match and the constant terms must match.
+
+Dividing each term in the first fraction by ${C} and distributing ${r} on the right side gives:
+$$ ${r}x + ${B_factor} - \\frac{s}{${D}} = ${r}x - ${r * E} $$
+
+The coefficient of $x$ is ${r} on both sides, so the constant terms must be equal:
+$$ ${B_factor} - \\frac{s}{${D}} = -${r * E} $$
+
+Adding $\\frac{s}{${D}}$ and ${r * E} to both sides gives:
+$$ ${B_factor} + ${r * E} = \\frac{s}{${D}} $$
+
+So $\\frac{s}{${D}} = ${term1 + term2}$. Multiplying both sides by ${D} gives $s = ${term1 + term2} \\cdot ${D} = ${s}$.`;
+
     return {
-      questionText: `${equation}\nIn the given equation, $s$ and $r$ are constants, and $s > 0$. If the equation has infinitely many solutions, what is the value of $s$?`,
+      // Before: the stem also called r a constant, but no r appears in the equation.
+      questionText: `${equation}\nIn the given equation, $s$ is a constant and $s > 0$. If the equation has infinitely many solutions, what is the value of $s$?`,
       figureCode: null,
       options: [], // Fill-in-the-blank
       correctAnswer: s.toString(),
