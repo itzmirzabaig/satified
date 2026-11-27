@@ -23,24 +23,27 @@ export const generator_1182 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values
-    const onSiteHours = getRandomInt(5, 20);
-    const onlineHours = getRandomInt(onSiteHours + 5, onSiteHours + 20);
-    const totalCourses = getRandomInt(50, 150);
-    
-    // Ensure total is divisible by GCD of coefficients for integer solutions
-    const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
-    const g = gcd(onSiteHours, onlineHours);
-    const total = Math.round(totalCourses / g) * g;
-    
+    // FIXED (review): the total was rounded to a multiple of the gcd, which does
+    // not guarantee whole number course counts (17x + 37y = 100 has none), so
+    // the situation could be impossible. The total is now built from real
+    // course counts. The explanation lacked "The correct answer is".
+    let onSiteHours = 0, onlineHours = 0, total = 0;
+    do {
+      onSiteHours = getRandomInt(5, 20);
+      onlineHours = getRandomInt(onSiteHours + 5, onSiteHours + 20);
+      const onSiteCount = getRandomInt(1, 5);
+      const onlineCount = getRandomInt(1, 4);
+      total = onSiteHours * onSiteCount + onlineHours * onlineCount;
+    } while (total < 50 || total > 180);
+
     const difference = onlineHours - onSiteHours;
-    
+
     return {
-      questionText: `A certain apprentice has enrolled in ${total} hours of training courses. The equation $${onSiteHours}x+${onlineHours}y=${total}$ represents this situation, where $x$ is the number of on-site training courses and $y$ is the number of online training courses this apprentice has enrolled in. How many more hours does each online training course take than each on-site training course?`,
+      questionText: `A certain apprentice has enrolled in ${total} hours of training courses. The equation $${onSiteHours}x+${onlineHours}y=${total}$ represents this situation, where $x$ is the number of onsite training courses and $y$ is the number of online training courses this apprentice has enrolled in. How many more hours does each online training course take than each onsite training course?`,
       figureCode: null,
       options: [],
       correctAnswer: difference.toString(),
-      explanation: `In the equation $${onSiteHours}x+${onlineHours}y=${total}$, the coefficient ${onSiteHours} represents hours per on-site course and ${onlineHours} represents hours per online course. The difference is $${onlineHours}-${onSiteHours}=${difference}$ hours.`
+      explanation: `The correct answer is ${difference}. In the equation $${onSiteHours}x+${onlineHours}y=${total}$, the term $${onSiteHours}x$ is the number of hours for $x$ onsite courses, so each onsite course takes ${onSiteHours} hours. Likewise, the term $${onlineHours}y$ is the number of hours for $y$ online courses, so each online course takes ${onlineHours} hours. Each online course takes $${onlineHours} - ${onSiteHours} = ${difference}$ more hours than each onsite course.`
     };
   }
 };
