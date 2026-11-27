@@ -68,18 +68,20 @@ export const generator_1179 = {
       chosen.push(val);
       reasons[val] = why;
     };
-    consider(a, "is the value of $a$, not $k$");
-    consider(-k, "comes from a sign error when solving $k\\,y_2 = 6$");
-    consider(k + 1, "is a common off-by-one miscalculation");
-    consider(k - 1, "results from a computational slip");
-    consider(2 * k, "doubles the correct value");
-    consider(-a, "is the opposite of $a$, not $k$");
-    // Absolute fallbacks (kept distinct) in case the range was unlucky.
-    let filler = 1;
-    while (chosen.length < 4) { consider(filler, "does not satisfy the given point"); filler++; }
+    // FIXED (review): the distractors were k + 1, k - 1, 2k and filler values
+    // with made up reasons ("off-by-one miscalculation", "computational slip").
+    // Every wrong choice is now a real slip, tried in this order and kept only
+    // when its value is new. y2, -k and 6*y2 alone always give three distinct
+    // values different from k (6*y2 = k only when y2 = 1 or -1, and then
+    // 6 - y2 is used), so the list never runs short.
+    consider(a, `$${a}$ is the value of the other constant, $a$, not the value of $k$`);
+    consider(y2, `$${y2}$ is the $y$-coordinate of the point $(0, ${y2})$, not the value of $k$`);
+    consider(-k, `$${-k}$ has the wrong sign, since $6$ divided by $${y2}$ is $${k}$`);
+    consider(6 * y2, `$${6 * y2}$ comes from multiplying $6$ by $${y2}$ instead of dividing $6$ by $${y2}$`);
+    consider(6 - y2, `$${6 - y2}$ comes from subtracting $${y2}$ from $6$ instead of dividing $6$ by $${y2}$`);
 
     const optionsData = chosen.map((val, idx) => ({
-      text: `${val}`,
+      text: `$${val}$`,
       isCorrect: idx === 0,
       reason: idx === 0 ? "" : reasons[val]
     }));
@@ -97,13 +99,17 @@ export const generator_1179 = {
     const displayOptions = shuffledOptions.map(o => ({ text: `${o.letter}. ${o.text}` }));
 
     const y1Disp = y1;
+    // No "1k" or "-1k" and no "dividing by 1" when y2 is 1 or -1.
+    const solveK = y2 === 1 ? `so $k=6$.`
+      : y2 === -1 ? `so $-k=6$. Multiplying both sides by $-1$ gives $k=-6$.`
+      : `so $${y2}k=6$. Dividing both sides by $${y2}$ gives $k=\\frac{6}{${y2}}=${k}$.`;
 
     return {
       questionText: `The graph of the equation $ax+ky=6$ is a line in the $xy$-plane, where $a$ and $k$ are constants. If the line contains the points $(${x1}, ${y1Disp})$ and $(0, ${y2})$, what is the value of $k$?`,
       figureCode: null,
       options: displayOptions,
       correctAnswer: correctOption ? `${correctOption.letter}. ${correctOption.text}` : "",
-      explanation: `Choice ${correctLetter} is correct. Substituting the point $(0, ${y2})$ into $ax+ky=6$ gives $a(0)+k(${y2})=6$, so $k(${y2})=6$ and $k=\\frac{6}{${y2}}=${k}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. Substituting the point $(0, ${y2})$ into $ax+ky=6$ gives $a(0)+k(${y2})=6$, ${solveK} ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
