@@ -3,14 +3,18 @@ import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1162
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [12, 3, 3, 12 (small integers)]
- * - Difficulty factors: [Exactly one solution identification]
- * - Distractor patterns: [B: exactly two (quadratic confusion), C: infinitely many, D: zero]
- * - Constraints: [Equation must have unique solution]
+ * - Difficulty factors: [Counting solutions of a linear equation]
  * - Question type: [Equation→Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * Previously the answer was always "Exactly one" and the wrong choices had
+ * generic reasons. The outcome is now drawn:
+ *   one:      a(x - b) = -c(x + d), built answer first so x is an integer
+ *   zero:     a(x - b) = -a(d - x) with d != b  (x terms cancel, -ab = -ad false)
+ *   infinite: a(x - b) = -a(b - x)              (both sides are ax - ab)
  */
 
 export const generator_1162 = {
@@ -22,80 +26,88 @@ export const generator_1162 = {
     skill: "Linear Equations In One Variable",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // Form: a(x - b) = -c(x + d).  Distributing and collecting x gives
-    //   (a + c)x = ab - cd   =>   x = (ab - cd)/(a + c).
-    // Since a >= 5 and c >= 3, (a + c) is always positive, so the equation
-    // ALWAYS has exactly one solution — the correct answer never changes.
-    //
-    // We build the coefficients ANSWER-FIRST so the solution x is a clean
-    // integer (no float artifact in the worked explanation), with a guarantee
-    // rather than a probabilistic retry:
-    //   pick integer solution x, coefficient a, and coefficient c;
-    //   choose d so that (x + d) is a multiple of a  =>  a | c(x + d),
-    //   which makes b = ((a + c)x + c*d) / a an integer for ANY c.
-    // A small range-only retry keeps b in a natural, positive range.
-    let a = 0, b = 0, c = 0, d = 0, solution = 0;
-    let tries = 0;
-    do {
-      solution = getRandomInt(-6, 6);           // the single solution x
-      a = getRandomInt(5, 15);
-      c = getRandomInt(3, 10);
-      // smallest d >= 8 with d ≡ -x (mod a); window [8, 8+a-1] ⊆ [8, 22]
-      const base = ((-solution - 8) % a + a) % a;
-      d = 8 + base;
-      // b forced by the target solution; guaranteed integer by the d choice
-      b = ((a + c) * solution + c * d) / a;
-      tries++;
-    } while ((b < 2 || b > 40 || !Number.isInteger(b)) && tries < 50);
-    
-    const optionsData = [
-      { text: "Zero", isCorrect: false, reason: "this would occur when the equation simplifies to a contradiction like $0 = 5$" },
-      { text: "Exactly one", isCorrect: true },
-      { text: "Exactly two", isCorrect: false, reason: "linear equations cannot have exactly two solutions; this would require a quadratic equation" },
-      { text: "Infinitely many", isCorrect: false, reason: "this would occur when the equation simplifies to an identity like $0 = 0$" }
-    ];
-    
+    const outcome = getRandomElement(['one', 'zero', 'infinite'] as const);
+    const twoReason = `a linear equation cannot have exactly two solutions, since it has zero, one, or infinitely many`;
+
+    let questionEq = '';
+    let steps = '';
+    let reasons: Record<string, string> = {};
+
+    if (outcome === 'one') {
+      // (a + c)x = ab - cd  =>  x = (ab - cd)/(a + c). Choose d with (x + d)
+      // a multiple of a, which makes b = ((a + c)x + cd)/a an integer.
+      let a = 0, b = 0, c = 0, d = 0, solution = 0;
+      let tries = 0;
+      do {
+        solution = getRandomInt(-6, 6);
+        a = getRandomInt(5, 15);
+        c = getRandomInt(3, 10);
+        const base = ((-solution - 8) % a + a) % a;
+        d = 8 + base;
+        b = ((a + c) * solution + c * d) / a;
+        tries++;
+      } while ((b < 2 || b > 40 || !Number.isInteger(b)) && tries < 50);
+
+      questionEq = `${a}(x - ${b}) = -${c}(x + ${d})`;
+      steps = `Distributing on both sides gives $${a}x - ${a * b} = -${c}x - ${c * d}$. Adding $${c}x$ to both sides gives $${a + c}x - ${a * b} = -${c * d}$, and adding $${a * b}$ to both sides gives $${a + c}x = ${a * b - c * d}$. Dividing both sides by $${a + c}$ gives $x = ${solution}$. This is the only value that makes the equation true, so the equation has exactly one solution.`;
+      reasons = {
+        'Zero': `zero solutions would require the same coefficient of $x$ on both sides, but after distributing the coefficients are $${a}$ and $-${c}$`,
+        'Infinitely many': `infinitely many solutions would require both sides to be the same expression, but $${a}x - ${a * b}$ and $-${c}x - ${c * d}$ differ`,
+        'Exactly two': twoReason
+      };
+    } else {
+      const a = getRandomInt(5, 15);
+      const b = getRandomInt(2, 20);
+      let d = b;
+      if (outcome === 'zero') {
+        do { d = getRandomInt(2, 20); } while (d === b);
+      }
+      questionEq = `${a}(x - ${b}) = -${a}(${d} - x)`;
+      const distributed = `Distributing on both sides gives $${a}x - ${a * b} = -${a * d} + ${a}x$, or $${a}x - ${a * b} = ${a}x - ${a * d}$.`;
+      const signSlip = `exactly one comes from distributing $-${a}(${d} - x)$ as $-${a * d} - ${a}x$, a sign slip that makes the coefficients of $x$ differ`;
+      if (outcome === 'zero') {
+        steps = `${distributed} Subtracting $${a}x$ from both sides gives $-${a * b} = -${a * d}$, which is false. No value of $x$ makes the equation true, so the equation has zero solutions.`;
+        reasons = {
+          'Exactly one': signSlip,
+          'Infinitely many': `infinitely many comes from seeing $${a}x$ on both sides and overlooking that the constants $-${a * b}$ and $-${a * d}$ differ`,
+          'Exactly two': twoReason
+        };
+      } else {
+        steps = `${distributed} The two sides are the same expression, so the equation is true for every value of $x$, and it has infinitely many solutions.`;
+        reasons = {
+          'Exactly one': signSlip,
+          'Zero': `zero comes from reading the result $0 = 0$ as no solution, but a true statement means every value of $x$ works`,
+          'Exactly two': twoReason
+        };
+      }
+    }
+
+    const correctText =
+      outcome === 'one' ? 'Exactly one' : outcome === 'zero' ? 'Zero' : 'Infinitely many';
+
+    const optionsData = ['Zero', 'Exactly one', 'Exactly two', 'Infinitely many'].map(text => ({
+      text,
+      isCorrect: text === correctText,
+      reason: text === correctText ? '' : reasons[text]
+    }));
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
-    
-    const explanation = `To find the number of solutions, we can solve the equation for $x$.
-$${a}(x - ${b}) = -${c}(x + ${d})$
 
-First, distribute the constants on both sides:
-$${a}x - ${a * b} = -${c}x - ${c * d}$
+    const explanation = `Choice ${correctOption.letter} is correct. ${steps} ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
-Next, add $${c}x$ to both sides to group the $x$ terms:
-$${a + c}x - ${a * b} = -${c * d}$
-
-Then, add $${a * b}$ to both sides:
-$${a + c}x = ${a * b - c * d}$
-
-Divide by $${a + c}$:
-$x = ${solution}$
-
-Since we found a single, distinct value for $x$, the equation has exactly one solution.
-
-Choice ${correctLetter} is correct.
-
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
-    
     return {
-      questionText: `How many solutions does the equation $${a}(x - ${b}) = -${c}(x + ${d})$ have?`,
+      questionText: `How many solutions does the equation $${questionEq}$ have?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
-      correctAnswer: "Exactly one",
+      correctAnswer: correctText,
       explanation: explanation
     };
   }
