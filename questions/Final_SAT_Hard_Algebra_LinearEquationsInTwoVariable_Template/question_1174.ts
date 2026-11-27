@@ -121,22 +121,26 @@ export const generator_1174 = {
         grid + axes + ticks + line + dot + `</svg></div>`;
     };
 
+    // FIXED (review): the stem said "In the equation above" with the equation
+    // inline, and the explanation had no "Choice X is correct" opening and no
+    // reason for any wrong graph. Each graph now carries the slip it shows.
     const graphs = [
-      { text: buildGraph(distractorSlope1, yIntercept), isCorrect: false },
-      { text: buildGraph(distractorSlope2, yIntercept), isCorrect: false },
-      { text: buildGraph(slope, yIntercept), isCorrect: true },
-      { text: buildGraph(distractorSlope3, yIntercept), isCorrect: false }
+      { text: buildGraph(distractorSlope1, yIntercept), isCorrect: false, reason: 'its line falls more steeply than a line with slope $-1$, which comes from inverting the ratio and using $-\\frac{b}{a}$ as the slope' },
+      { text: buildGraph(distractorSlope2, yIntercept), isCorrect: false, reason: 'its line rises from left to right, which comes from dropping the negative sign and using $\\frac{a}{b}$ as the slope' },
+      { text: buildGraph(slope, yIntercept), isCorrect: true, reason: '' },
+      { text: buildGraph(distractorSlope3, yIntercept), isCorrect: false, reason: 'its line has a slope of exactly $-1$, which would require $a = b$, but $a$ is less than $b$' }
     ];
 
-    const shuffled = shuffle(graphs);
-    const correctGraphText = shuffled.find(g => g.isCorrect)!.text;
+    const shuffled = shuffle(graphs).map((g, i) => ({ ...g, letter: String.fromCharCode(65 + i) }));
+    const correctOption = shuffled.find(g => g.isCorrect)!;
+    const incorrectOptions = shuffled.filter(g => !g.isCorrect);
 
     return {
-      questionText: `In the equation above, $ax + by = b$, $a$ and $b$ are constants and $0 < a < b$. Which of the following could represent the graph of the equation in the $xy$-plane?`,
+      questionText: `In the equation $ax + by = b$, $a$ and $b$ are constants and $0 < a < b$. Which of the following could represent the graph of the equation in the $xy$-plane?`,
       figureCode: null,
       options: shuffled.map(g => ({ text: g.text })),
-      correctAnswer: correctGraphText,
-      explanation: `The equation can be rewritten as $y = -\\frac{a}{b}x + 1$. Since $0 < a < b$, the slope $-\\frac{a}{b}$ is between $-1$ and $0$. The y-intercept is $(0, 1)$. The correct graph shows a line with negative slope greater than $-1$ passing through $(0, 1)$.`
+      correctAnswer: correctOption.text,
+      explanation: `Choice ${correctOption.letter} is correct. Subtracting $ax$ from both sides of $ax + by = b$ gives $by = -ax + b$, and dividing both sides by $b$ gives $y = -\\frac{a}{b}x + 1$. So the graph is a line with $y$-intercept $(0, 1)$ and slope $-\\frac{a}{b}$. Since $0 < a < b$, the fraction $\\frac{a}{b}$ is between $0$ and $1$, so the slope is between $-1$ and $0$. The graph in choice ${correctOption.letter} passes through $(0, 1)$ and falls from left to right, but less steeply than a line with slope $-1$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
