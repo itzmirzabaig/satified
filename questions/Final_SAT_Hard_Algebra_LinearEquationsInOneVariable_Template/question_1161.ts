@@ -7,10 +7,15 @@ import type { QuestionData } from '../../study/types';
  * ORIGINAL ANALYSIS:
  * - Number ranges: [totalStations 4-8, saltA 4-8 tsp, saltB 2-5 tsp]
  * - Difficulty factors: [Expression building with remaining stations]
- * - Distractor patterns: [A: total*x, B: (saltA+saltB)*x, D: (saltA+saltB)x + constant]
  * - Constraints: [x A-stations, (total-x) B-stations; coeff of x = saltA-saltB]
  * - Question type: [Word Problem -> Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * Previously two wrong choices (total*x and (saltA+saltB)*x) were not slips a
+ * student would make, the stem did not say the salt amounts are per station,
+ * and the explanation used markdown. The wrong choices are now real slips:
+ * a sign slip when distributing, forgetting to subtract x, and swapping the
+ * two salt amounts.
  */
 
 export const generator_1161 = {
@@ -24,61 +29,50 @@ export const generator_1161 = {
   },
 
   generate: (): QuestionData => {
-    // STEP 1: Generate random values with guards.
-    // Total salt = saltA*x + saltB*(total - x) = (saltA - saltB)*x + saltB*total.
-    // Guards: xCoeff != 0 (genuine linear-in-x answer, no "0x"),
-    //         totalStations != saltA + saltB (keeps distractorA != distractorB).
+    // STEP 1: Draw values. Total salt = saltA*x + saltB*(total - x)
+    //                                  = (saltA - saltB)*x + saltB*total.
+    // saltA != saltB keeps a genuine x term and keeps all four choices distinct.
     let totalStations = 0, saltA = 0, saltB = 0;
-    let tries = 0;
     do {
       totalStations = getRandomInt(4, 8);
       saltA = getRandomInt(4, 8);   // teaspoons per Experiment A station
       saltB = getRandomInt(2, 5);   // teaspoons per Experiment B station
-      tries++;
-    } while (
-      tries < 50 &&
-      (saltA - saltB === 0 || totalStations === saltA + saltB)
-    );
+    } while (saltA === saltB);
 
-    // STEP 2: Build the simplified expression (saltA - saltB)*x + saltB*total.
     const xCoeff = saltA - saltB;
     const constant = saltB * totalStations;
     const sumSalt = saltA + saltB;
 
-    // Correct expression string (plain math, no surrounding $).
-    const correctExpr =
-      xCoeff === 1
-        ? `x + ${constant}`
-        : xCoeff === -1
-        ? `${constant} - x`
-        : xCoeff > 0
-        ? `${xCoeff}x + ${constant}`
-        : `${constant} - ${Math.abs(xCoeff)}x`;
+    // Linear expression kx + m (renders +/-1 as x and -x, never 1x).
+    const linear = (k: number, m: number): string =>
+      k === 1 ? `x + ${m}`
+      : k === -1 ? `${m} - x`
+      : k > 0 ? `${k}x + ${m}`
+      : `${m} - ${Math.abs(k)}x`;
+    const correctExpr = linear(xCoeff, constant);
 
-    // STEP 3: Distractors.
-    // A: treats every station as if it uses the same amount (total * x).
-    // B: adds the two per-station amounts and multiplies by x, ignoring the split.
-    // D: uses the summed coefficient but keeps the correct constant term.
-    const distractorA = `${totalStations}x`;
-    const distractorB = `${sumSalt}x`;
-    const distractorD = `${sumSalt}x + ${constant}`;
+    // STEP 2: Wrong choices, each a specific slip.
+    const signSlip = `${sumSalt}x + ${constant}`;                 // saltB(total - x) -> + saltB x
+    const noSubtract = `${saltA}x + ${constant}`;                 // B stations taken as all stations
+    // amounts swapped: saltB*x + saltA*(total - x)
+    const swapped = linear(saltB - saltA, saltA * totalStations);
 
     const optionsData = [
+      { text: correctExpr, isCorrect: true, reason: '' },
       {
-        text: distractorA,
+        text: signSlip,
         isCorrect: false,
-        reason: `this multiplies the total number of stations by $x$, treating every station as if it needed the same $${totalStations}$ teaspoons and ignoring the two different salt amounts`
+        reason: `$${signSlip}$ comes from a sign slip when distributing, writing $${saltB}(${totalStations} - x)$ as $${constant} + ${saltB}x$ instead of $${constant} - ${saltB}x$`
       },
       {
-        text: distractorB,
+        text: noSubtract,
         isCorrect: false,
-        reason: `this adds the two salt amounts ($${saltA} + ${saltB} = ${sumSalt}$) and multiplies by $x$, which incorrectly assumes all $${totalStations}$ stations use the same combined amount`
+        reason: `$${noSubtract}$ uses all $${totalStations}$ stations for Experiment B instead of the remaining $${totalStations} - x$ stations, so the stations for Experiment A are counted twice`
       },
-      { text: correctExpr, isCorrect: true },
       {
-        text: distractorD,
+        text: swapped,
         isCorrect: false,
-        reason: `this uses the sum of the two salt amounts ($${sumSalt}$) as the coefficient of $x$ instead of the difference $${saltA} - ${saltB} = ${xCoeff}$, an error when combining like terms`
+        reason: `$${swapped}$ swaps the two salt amounts, giving $${saltB}x + ${saltA}(${totalStations} - x)$, which uses $${saltB}$ teaspoons for each Experiment A station and $${saltA}$ teaspoons for each Experiment B station`
       }
     ];
 
@@ -88,48 +82,14 @@ export const generator_1161 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    // Coefficient of x as it appears when combining like terms (handles sign,
-    // and renders +/-1 as x / -x rather than 1x / -1x).
-    const xTerm =
-      xCoeff === 1 ? `x`
-      : xCoeff === -1 ? `-x`
-      : `${xCoeff}x`;
-    const combineStep = `${saltA}x - ${saltB}x = ${xTerm}`;
+    const xTerm = xCoeff === 1 ? `x` : xCoeff === -1 ? `-x` : `${xCoeff}x`;
 
-    const explanation = `1. **Identify the given information:**
-   * Total number of stations = ${totalStations}.
-   * Number of stations for Experiment A = $x$.
-   * Salt required for one Experiment A station = ${saltA} teaspoons.
-   * Salt required for one Experiment B station = ${saltB} teaspoons.
-
-2. **Determine the number of Experiment B stations:**
-   Since there are ${totalStations} stations in total and $x$ are for Experiment A, the remaining stations are for Experiment B: $${totalStations} - x$.
-
-3. **Formulate the expression for total salt:**
-   * Salt from Experiment A stations $= ${saltA} \\times x = ${saltA}x$.
-   * Salt from Experiment B stations $= ${saltB}(${totalStations} - x)$.
-   * Total salt $= ${saltA}x + ${saltB}(${totalStations} - x)$.
-
-4. **Simplify the expression:**
-   Distribute: $${saltA}x + ${constant} - ${saltB}x$.
-   Combine like terms: $${combineStep}$, giving a constant of $${constant}$.
-   Total salt $= ${correctExpr}$.
-
-Therefore, the correct expression is $${correctExpr}$.
-
-Choice ${correctLetter} is correct.
-
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Since $x$ of the $${totalStations}$ stations are set up for Experiment A, the remaining $${totalStations} - x$ stations are set up for Experiment B. The Experiment A stations need $${saltA}x$ teaspoons of salt, and the Experiment B stations need $${saltB}(${totalStations} - x)$ teaspoons of salt. So the total is $${saltA}x + ${saltB}(${totalStations} - x)$ teaspoons. Distributing gives $${saltA}x + ${constant} - ${saltB}x$, and combining like terms, $${saltA}x - ${saltB}x = ${xTerm}$, gives $${correctExpr}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `A science teacher is preparing the ${totalStations} stations of a science laboratory. Each station will have either Experiment A materials or Experiment B materials, but not both. Experiment A requires ${saltA} teaspoons of salt, and Experiment B requires ${saltB} teaspoons of salt. If $x$ is the number of stations that will be set up for Experiment A and the remaining stations will be set up for Experiment B, which of the following expressions represents the total number of teaspoons of salt required?`,
+      questionText: `A science teacher is preparing the ${totalStations} stations of a science laboratory. Each station will have either Experiment A materials or Experiment B materials, but not both. Each station set up for Experiment A requires ${saltA} teaspoons of salt, and each station set up for Experiment B requires ${saltB} teaspoons of salt. If $x$ is the number of stations that will be set up for Experiment A and the remaining stations will be set up for Experiment B, which of the following expressions represents the total number of teaspoons of salt required?`,
       figureCode: null,
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctExpr,
