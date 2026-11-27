@@ -40,24 +40,14 @@ export const generator_1160 = {
     const d = getRandomInt(3, 7);
     const f = b + getRandomInt(2, 5);      // f > b  =>  f - b in [2, 5]
     const m = f - b;
-    // smallest e >= 10 with (e - a) divisible by m (e stays <= 14 <= 20)
-    const e = 10 + (((a - 10) % m) + m) % m;
-    const y = (e - a) / m;                  // guaranteed positive integer
+    // Previously e was the smallest value >= 10 that worked, so the answer was
+    // usually 1. Now y is drawn first and e is built from it.
+    const y = getRandomInt(2, 7);           // the answer, a positive integer
+    const e = a + m * y;
     
-    const explanation = `To solve this problem, you can define a new variable for the repeating expression. Let $y = ${c} - ${d}x$. Then substitute $y$ into the equation:
-$${a} - ${b}y = ${e} - ${f}y$
-
-Now, solve for $y$.
-Add $${f}y$ to both sides:
-$${a} + ${f - b}y = ${e}$
-
-Subtract $${a}$ from both sides:
-$${f - b}y = ${e - a}$
-
-Divide by $${f - b}$:
-$y = ${y}$
-
-Since $y = ${c} - ${d}x$, the value of ${c} - ${d}x is $${y}$.`;
+    // Previously the explanation did not start with the answer and left the
+    // expression c - dx outside math in its last sentence.
+    const explanation = `The correct answer is ${y}. The expression $${c} - ${d}x$ appears on both sides, so let $y = ${c} - ${d}x$. Substituting $y$ into the equation gives $${a} - ${b}y = ${e} - ${f}y$. Adding $${f}y$ to both sides gives $${a} + ${f - b}y = ${e}$. Subtracting $${a}$ from both sides gives $${f - b}y = ${e - a}$, and dividing both sides by $${f - b}$ gives $y = ${y}$. Since $y = ${c} - ${d}x$, the value of $${c} - ${d}x$ is $${y}$.`;
     
     return {
       questionText: `If $${a} - ${b}(${c} - ${d}x) = ${e} - ${f}(${c} - ${d}x)$, what is the value of $${c} - ${d}x$?`,
