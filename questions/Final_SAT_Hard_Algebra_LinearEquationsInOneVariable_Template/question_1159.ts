@@ -1,16 +1,20 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1159
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [0.8, 0.46, 8, 0.001, 1.9 (decimals)]
  * - Difficulty factors: [Decimal arithmetic, careful distribution]
- * - Distractor patterns: [N/A - fill-in-blank, decimal answer]
- * - Constraints: [Decimal answer to 4 places]
  * - Question type: [Equation→Fill-in-blank]
  * - Figure generation: [None]
+ *
+ * Previously the answer was the solution rounded to 3 or 4 places and shown as
+ * exact, d could be 0, a could be 1.0, and the explanation added b to both
+ * sides when it should have moved it the other way. The equation is now built
+ * from an exact answer t = -T/100, working in thousandths so every number shown
+ * is exact.
  */
 
 export const generator_1159 = {
@@ -22,45 +26,44 @@ export const generator_1159 = {
     skill: "Linear Equations In One Variable",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // STEP 1: Generate decimal equation
-    // Form: ax - b = c(x - d) + e
-    
-    let valid = false;
-    let a!: number, b!: number, c!: number, d!: number, e!: number, solution: number, solutionRounded!: string;
-    
-    while (!valid) {
-      a = parseFloat((Math.random() * 1.5 + 0.3).toFixed(1)); // 0.3 to 1.8
-      b = parseFloat((Math.random() * 0.8 + 0.1).toFixed(2)); // 0.10 to 0.90
+    // Exact decimal from an integer count of thousandths (or tenths).
+    const dec = (n: number, places: number): string =>
+      (n / 10 ** places).toFixed(places).replace(/0+$/, '').replace(/\.$/, '');
+
+    // Equation: a t - b = c(t - d) + e, with
+    //   a = A/10, b = B/1000, d = D/1000, e = E/10, t = -T/100.
+    // Then (a - c)t = (e - cd) + b, and in thousandths
+    //   B = (10c - A)T + cD - 100E.
+    let A = 0, c = 0, D = 0, E = 0, T = 0, B = 0;
+    do {
+      A = getRandomInt(3, 18);   // a from 0.3 to 1.8
       c = getRandomInt(5, 15);
-      d = parseFloat((Math.random() * 0.01).toFixed(3)); // Small decimal
-      e = parseFloat((Math.random() * 3 + 0.5).toFixed(1)); // 0.5 to 3.5
-      
-      // Calculate solution: ax - b = cx - cd + e
-      // ax - cx = b - cd + e
-      // x(a - c) = b - cd + e
-      // x = (b - c*d + e)/(a - c)
-      
-      const numerator = b - c * d + e;
-      const denominator = a - c;
-      const solutionRaw = numerator / denominator;
-      
-      // Ensure reasonable decimal answer
-      if (Math.abs(solutionRaw) <= 10 && Math.abs(solutionRaw) >= 0.001) {
-        solution = solutionRaw;
-        solutionRounded = solution.toFixed(4);
-        valid = true;
-      }
-    }
-    
-    const explanation = `Applying the distributive property to the right-hand side of the given equation yields $${a}t - ${b} = ${c}t - ${(c * d).toFixed(3)} + ${e}$, or $${a}t - ${b} = ${c}t + ${(e - c * d).toFixed(3)}$. Subtracting $${a}t$ from both sides of this equation yields $-${b} = ${(c - a).toFixed(1)}t + ${(e - c * d).toFixed(3)}$. Adding ${b} to both sides yields $${(e - c * d + b).toFixed(3)} = ${(c - a).toFixed(1)}t$. Dividing both sides by ${(c - a).toFixed(1)} yields $t = ${solutionRounded}$. Therefore, the value of $t$ is approximately ${parseFloat(solutionRounded) < 0 ? parseFloat(solutionRounded).toFixed(3) : parseFloat(solutionRounded).toFixed(3)}.`;
-    
+      D = getRandomInt(2, 9);    // d from 0.002 to 0.009
+      E = getRandomInt(5, 35);   // e from 0.5 to 3.5
+      T = getRandomInt(5, 95);   // t from -0.05 to -0.95
+      B = (10 * c - A) * T + c * D - 100 * E;
+    } while (A === 10 || B < 100 || B > 900);
+
+    const a = dec(A, 1);
+    const b = dec(B, 3);
+    const d = dec(D, 3);
+    const e = dec(E, 1);
+    const t = `-${dec(T, 2)}`;
+
+    const cd = dec(c * D, 3);                     // c times d
+    const eMinusCd = dec(100 * E - c * D, 3);     // e - cd (always positive)
+    const rhs = dec((10 * c - A) * T, 3);         // (e - cd) + b
+    const aMinusC = `-${dec(10 * c - A, 1)}`;     // a - c (always negative)
+
+    const explanation = `The correct answer is ${t}. Distributing $${c}$ on the right side of the equation gives $${a}t - ${b} = ${c}t - ${cd} + ${e}$, which simplifies to $${a}t - ${b} = ${c}t + ${eMinusCd}$. Subtracting $${c}t$ from both sides gives $${aMinusC}t - ${b} = ${eMinusCd}$. Adding $${b}$ to both sides gives $${aMinusC}t = ${rhs}$. Dividing both sides by $${aMinusC}$ gives $t = \\frac{${rhs}}{${aMinusC}} = ${t}$.`;
+
     return {
       questionText: `What value of $t$ is the solution to the equation $${a}t - ${b} = ${c}(t - ${d}) + ${e}$?`,
       figureCode: null,
       options: [],
-      correctAnswer: parseFloat(solutionRounded) < 0 ? solutionRounded : parseFloat(solutionRounded).toFixed(3),
+      correctAnswer: t,
       explanation: explanation
     };
   }
