@@ -46,7 +46,9 @@ export const generator_1163 = {
       }
     }
     
-    const explanation = `The given equation can be rewritten as $${a}(t + ${b}) = ${c}$. Dividing both sides of this equation by ${a} yields $t + ${b} = ${c/a}$. Subtracting ${b} from both sides of this equation yields $t = ${c/a} - ${b} = ${t}$. Therefore, ${t} is the value of $t$ that is the solution to the given equation.`;
+    // Previously the explanation did not start with the answer, claimed the
+    // equation "can be rewritten as" itself, and left numbers outside math.
+    const explanation = `The correct answer is ${t}. Dividing both sides of the given equation by $${a}$ gives $t + ${b} = ${c / a}$. Subtracting $${b}$ from both sides of this equation gives $t = ${c / a} - ${b} = ${t}$.`;
     
     return {
       questionText: `What value of $t$ is the solution to the equation $${a}(t + ${b}) = ${c}$?`,
