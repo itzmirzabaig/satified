@@ -29,12 +29,14 @@ export const generator_1151 = {
     const b = getRandomInt(20, 50);
     const k = getRandomInt(40, 80);
     
+    // Fixed: the stem gave no unit or meaning for the depth, the explanation called
+    // the submersible a "device", and it did not open with the correct answer.
     return {
-      questionText: `The depth of a submersible $x$ minutes after collecting a sample is $g(x)=-\\frac{1}{${k}}(x+${a})(x-${b})$, where $x>0$. How many minutes after collecting the sample did it reach the surface?`,
+      questionText: `A submersible collected a sample underwater and then traveled to the surface. Its depth, in meters below the surface, $x$ minutes after it collected the sample is modeled by $g(x)=-\\frac{1}{${k}}(x+${a})(x-${b})$, where $x>0$. How many minutes after collecting the sample did the submersible reach the surface?`,
       figureCode: null,
       options: [],
       correctAnswer: b.toString(),
-      explanation: `The device is at the surface when its depth is $g(x)=0$. Setting $-\\frac{1}{${k}}(x+${a})(x-${b})=0$ makes the product zero, which gives $x=-${a}$ or $x=${b}$. Since the time must satisfy $x>0$, the device reaches the surface after ${b} minutes.`
+      explanation: `The correct answer is ${b}. The submersible is at the surface when its depth is $0$, so set $g(x)=0$: $-\\frac{1}{${k}}(x+${a})(x-${b})=0$. A product is $0$ only when one of its factors is $0$, so $x+${a}=0$ or $x-${b}=0$, which gives $x=-${a}$ or $x=${b}$. Since $x>0$, the submersible reached the surface ${b} minutes after collecting the sample.`
     };
   }
 };
