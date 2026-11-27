@@ -28,11 +28,17 @@ export const generator_1176 = {
 
   generate: (): QuestionData => {
     // STEP 1: Distinct denominators so the answer choices cannot collide.
-    const den1 = getRandomInt(3, 9);
-    let den2 = getRandomInt(3, 9);
-    let tries = 0;
-    while (den2 === den1 && tries++ < 50) den2 = getRandomInt(3, 9);
-    if (den2 === den1) den2 = den1 === 9 ? 8 : den1 + 1; // fallback: force distinct
+    // FIXED (review): den1 and den2 could share a factor (4 and 8), so every
+    // choice showed an unreduced fraction such as 8/4. They are now coprime,
+    // which keeps all four slopes in lowest terms. The reasons for the two
+    // middle choices were swapped (-den1/den2 IS the reciprocal with the sign
+    // kept; den2/den1 changes the sign without taking the reciprocal).
+    const gcd = (p: number, q: number): number => (q === 0 ? p : gcd(q, p % q));
+    let den1 = 3, den2 = 4;
+    do {
+      den1 = getRandomInt(3, 9);
+      den2 = getRandomInt(3, 9);
+    } while (den1 === den2 || gcd(den1, den2) !== 1);
 
     const c = getRandomInt(30, 100);
 
@@ -40,10 +46,10 @@ export const generator_1176 = {
     // Perpendicular (line j) slope: negative reciprocal = den1/den2.
 
     const optionsData = [
-      { text: `$-\\frac{${den2}}{${den1}}$`, isCorrect: false, reason: "is the slope of line $h$ itself, not of a perpendicular line" },
-      { text: `$-\\frac{${den1}}{${den2}}$`, isCorrect: false, reason: "keeps the negative sign but forgets to take the reciprocal" },
-      { text: `$\\frac{${den2}}{${den1}}$`, isCorrect: false, reason: "flips the sign of the slope of $h$ instead of taking the negative reciprocal" },
-      { text: `$\\frac{${den1}}{${den2}}$`, isCorrect: true }
+      { text: `$-\\frac{${den2}}{${den1}}$`, isCorrect: false, reason: `$-\\frac{${den2}}{${den1}}$ is the slope of line $h$ itself, not of a line perpendicular to it` },
+      { text: `$-\\frac{${den1}}{${den2}}$`, isCorrect: false, reason: `$-\\frac{${den1}}{${den2}}$ is the reciprocal of the slope of line $h$ without the change of sign` },
+      { text: `$\\frac{${den2}}{${den1}}$`, isCorrect: false, reason: `$\\frac{${den2}}{${den1}}$ is the slope of line $h$ with its sign changed but without taking the reciprocal` },
+      { text: `$\\frac{${den1}}{${den2}}$`, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -62,7 +68,7 @@ export const generator_1176 = {
       figureCode: null,
       options: displayOptions,
       correctAnswer: correctOption ? `${correctOption.letter}. ${correctOption.text}` : "",
-      explanation: `Choice ${correctLetter} is correct. Solving line $h$ for $y$: $\\frac{1}{${den2}}y = -\\frac{1}{${den1}}x + ${c}$, so $y = -\\frac{${den2}}{${den1}}x + ${den2 * c}$. The slope of line $h$ is $-\\frac{${den2}}{${den1}}$. A perpendicular line has the negative reciprocal slope, which is $\\frac{${den1}}{${den2}}$. Choice ${incorrectOptions[0].letter} is incorrect because it ${incorrectOptions[0].reason}. Choice ${incorrectOptions[1].letter} is incorrect because it ${incorrectOptions[1].reason}. Choice ${incorrectOptions[2].letter} is incorrect because it ${incorrectOptions[2].reason}.`
+      explanation: `Choice ${correctLetter} is correct. To find the slope of line $h$, solve its equation for $y$. Subtracting $\\frac{1}{${den1}}x$ from both sides and adding $${c}$ to both sides gives $\\frac{1}{${den2}}y = -\\frac{1}{${den1}}x + ${c}$. Multiplying both sides by $${den2}$ gives $y = -\\frac{${den2}}{${den1}}x + ${den2 * c}$, so the slope of line $h$ is $-\\frac{${den2}}{${den1}}$. Perpendicular lines have slopes that are negative reciprocals of each other, so the slope of line $j$ is $\\frac{${den1}}{${den2}}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
