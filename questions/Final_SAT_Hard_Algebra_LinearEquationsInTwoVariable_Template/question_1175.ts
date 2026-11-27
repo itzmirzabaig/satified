@@ -23,24 +23,34 @@ export const generator_1175 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate random values
-    const num = getRandomInt(2, 7);
-    const den = getRandomInt(3, 8);
+    // FIXED (review): the answer was rounded to 2 decimals (32/7 stored as
+    // "4.57", shown with \approx), the coefficient fraction could be unreduced
+    // (6/3, 4/6), and the explanation lacked "The correct answer is" and left
+    // the fraction unreduced. Now num/den is in lowest terms with num < den and
+    // the answer is the exact reduced fraction (or integer).
+    const gcd = (p: number, q: number): number => (q === 0 ? p : gcd(q, p % q));
+    let num = 2, den = 3;
+    do {
+      num = getRandomInt(2, 7);
+      den = getRandomInt(3, 8);
+    } while (num >= den || gcd(num, den) !== 1);
     const rhs = getRandomInt(1, 4);
-    
+
     // x-intercept: (num/den)*x = rhs => x = rhs*den/num
-    const xInt = (rhs * den) / num;
-    
-    // Ensure it's a nice decimal or fraction
-    const answerStr = Number.isInteger(xInt) ? xInt.toString() : (rhs * den).toString() + '/' + num;
-    const decimalStr = (rhs * den / num).toFixed(2);
-    
+    const top = rhs * den;
+    const g = gcd(top, num);
+    const rTop = top / g, rBot = num / g;
+    const answerStr = rBot === 1 ? `${rTop}` : `${rTop}/${rBot}`;
+    const answerTex = rBot === 1 ? `${rTop}` : `\\frac{${rTop}}{${rBot}}`;
+    const unreducedTex = `\\frac{${top}}{${num}}`;
+    const chain = (g === 1 && rBot !== 1) ? answerTex : `${unreducedTex} = ${answerTex}`;
+
     return {
-      questionText: `The line with the equation \\( \\frac{${num}}{${den}}x + \\frac{1}{${den + 2}}y = ${rhs} \\) is graphed in the \\( xy \\)-plane. What is the \\( x \\)-coordinate of the \\( x \\)-intercept of the line?`,
+      questionText: `The line with the equation $\\frac{${num}}{${den}}x + \\frac{1}{${den + 2}}y = ${rhs}$ is graphed in the $xy$-plane. What is the $x$-coordinate of the $x$-intercept of the line?`,
       figureCode: null,
       options: [],
-      correctAnswer: decimalStr.replace(/\.?0+$/, ''),
-      explanation: `Setting $y=0$: $\\frac{${num}}{${den}}x = ${rhs}$, so $x = ${rhs} \\cdot \\frac{${den}}{${num}} = \\frac{${rhs * den}}{${num}}${Number.isInteger(xInt) ? '' : ` \\approx ${decimalStr}`}$.`
+      correctAnswer: answerStr,
+      explanation: `The correct answer is ${answerStr}. The $x$-intercept is the point where $y = 0$. Substituting $0$ for $y$ gives $\\frac{${num}}{${den}}x + \\frac{1}{${den + 2}}(0) = ${rhs}$, which simplifies to $\\frac{${num}}{${den}}x = ${rhs}$. Multiplying both sides by $\\frac{${den}}{${num}}$ gives $x = ${rhs}\\cdot\\frac{${den}}{${num}} = ${chain}$. So the $x$-coordinate of the $x$-intercept is $${answerTex}$.`
     };
   }
 };
