@@ -24,20 +24,28 @@ export const generator_1180 = {
   generate: (): QuestionData => {
     // 1. Generate Linear Function
     // y = mx + b
-    const slope = getRandomInt(3, 6);
-    const b = getRandomInt(20, 40);
-    
+    // FIXED (review): when the slope shared a factor with the denominator
+    // (slope 3, x = 1/3) the answer printed as an unreduced fraction such as
+    // 66/3, and choice (m + b)/den could reduce while the others did not.
+    // Redraw until every choice is already in lowest terms.
+    const gcd = (p: number, q: number): number => (q === 0 ? p : gcd(q, p % q));
+    let slope = 0, b = 0, targetXDen = 0;
+    do {
+      slope = getRandomInt(3, 6);
+      b = getRandomInt(20, 40);
+      targetXDen = getRandomInt(3, 9);
+    } while (gcd(slope, targetXDen) !== 1 || gcd(slope + b, targetXDen) !== 1);
+
     // 2. Generate Table Points
     const x1 = -getRandomInt(15, 25);
     const x2 = getRandomInt(5, 12);
-    
+
     const y1 = slope * x1 + b;
     const y2 = slope * x2 + b;
-    
+
     // 3. Generate Target Problem
     // Find 'a' when x = targetXNum / targetXDen
     const targetXNum = 1;
-    const targetXDen = getRandomInt(3, 9);
 
     // Calculate correct answer (fraction arithmetic).
     // a = m(1/den) + b = (m + b*den) / den   [answer-first, exact integers]
@@ -105,31 +113,20 @@ export const generator_1180 = {
       </table>
     `;
     
-    // 6. Explanation
-    const explanation = `
-      Choice ${correctOption.letter} is correct.
-      <br/>
-      First, find the slope ($m$) of the line using the table values $(${x1}, ${y1})$ and $(${x2}, ${y2})$:
-      $$ m = \\frac{${y2} - (${y1})}{${x2} - (${x1})} = \\frac{${y2 - y1}}{${x2 - x1}} = ${slope} $$
-      <br/>
-      Next, find the equation of the line using the point-slope form $y - y_1 = m(x - x_1)$. Using $(${x2}, ${y2})$:
-      $$ y - ${y2} = ${slope}(x - ${x2}) $$
-      $$ y = ${slope}x - ${slope * x2} + ${y2} $$
-      $$ y = ${slope}x + ${b} $$
-      <br/>
-      The question asks for the value of $a$ when the line passes through $\\left( \\frac{${targetXNum}}{${targetXDen}}, a \\right)$. Substitute $x = \\frac{${targetXNum}}{${targetXDen}}$ into the equation:
-      $$ a = ${slope} \\left( \\frac{${targetXNum}}{${targetXDen}} \\right) + ${b} $$
-      $$ a = \\frac{${slope * targetXNum}}{${targetXDen}} + \\frac{${b * targetXDen}}{${targetXDen}} = \\frac{${slope * targetXNum} + ${b * targetXDen}}{${denominator}} = \\frac{${numerator}}{${denominator}} $$
-      <br/>
-      So Choice ${correctOption.letter} is correct.
-      <br/><br/>
-      Choice ${letterD1} ($\\frac{${numD1}}{${denominator}}$) drops the constant $${b}$ and keeps only $\\frac{${slope}}{${denominator}}$.
-      Choice ${letterD2} ($\\frac{${numD2}}{${denominator}}$) adds $${b}$ to the numerator without first writing it over $${denominator}$.
-      Choice ${letterD3} ($\\frac{${numD3}}{${denominator}}$) uses the wrong sign for the slope term, computing $-\\frac{${slope}}{${denominator}} + ${b}$.
-    `;
-    
+    // 6. Explanation. FIXED (review): it was built from <br/> breaks and
+    // display math, ended with "So Choice X is correct" a second time, and
+    // listed the wrong choices as "Choice X (...) drops" instead of the
+    // standard "Choice X is incorrect because" sentences. The stem never said
+    // the table's values lie on the line or that a is a constant.
+    const reasons: Record<string, string> = {
+      [letterD1]: `$\\frac{${numD1}}{${denominator}}$ is only the slope term $${slope}\\left(\\frac{1}{${targetXDen}}\\right)$; it leaves out the constant $${b}$`,
+      [letterD2]: `$\\frac{${numD2}}{${denominator}}$ comes from adding $${b}$ to the numerator without first rewriting $${b}$ as $\\frac{${b * targetXDen}}{${targetXDen}}$`,
+      [letterD3]: `$\\frac{${numD3}}{${denominator}}$ comes from subtracting the slope term instead of adding it, which gives $${b} - \\frac{${slope}}{${targetXDen}}$`
+    };
+    const explanation = `Choice ${correctOption.letter} is correct. Using the points $(${x1}, ${y1})$ and $(${x2}, ${y2})$ from the table, the slope of the line is $\\frac{${y2} - (${y1})}{${x2} - (${x1})} = \\frac{${y2 - y1}}{${x2 - x1}} = ${slope}$. So an equation of the line has the form $y = ${slope}x + c$, where $c$ is a constant. Substituting the point $(${x2}, ${y2})$ gives $${y2} = ${slope}(${x2}) + c$, or $${y2} = ${slope * x2} + c$, so $c = ${b}$. An equation of the line is therefore $y = ${slope}x + ${b}$. Since the point $\\left(\\frac{1}{${targetXDen}}, a\\right)$ lies on the line, substituting $\\frac{1}{${targetXDen}}$ for $x$ gives $a = ${slope}\\left(\\frac{1}{${targetXDen}}\\right) + ${b} = \\frac{${slope}}{${targetXDen}} + \\frac{${b * targetXDen}}{${targetXDen}} = \\frac{${numerator}}{${denominator}}$. ${[letterD1, letterD2, letterD3].sort().map(l => `Choice ${l} is incorrect because ${reasons[l]}.`).join(' ')}`;
+
     return {
-      questionText: `The table shows two values of $x$ and $y$. The graph of the line passes through $\\left( \\frac{${targetXNum}}{${targetXDen}}, a \\right)$. What is the value of $a$?`,
+      questionText: `The table shows the coordinates of two points on a line in the $xy$-plane. The line also passes through the point $\\left(\\frac{1}{${targetXDen}}, a\\right)$, where $a$ is a constant. What is the value of $a$?`,
       figureCode: tableHTML, // HTML Table only, no Mafs
       options: shuffledOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
