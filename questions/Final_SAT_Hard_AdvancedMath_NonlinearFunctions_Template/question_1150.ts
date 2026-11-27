@@ -1,4 +1,4 @@
-import { getRandomInt, shuffle } from '../../utils/math';
+import { getRandomInt, getRandomElement } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -23,82 +23,96 @@ export const generator_1150 = {
   },
   
   generate: (): QuestionData => {
-    // 1. Generate Function I Parameters
-    // Let's make Function I typically Growth (no max) to match original spirit, 
-    // but we can randomize slightly.
+    // Fixed: the answer was always "II only" with the same two function shapes, the
+    // stem was unclear, the explanation used HTML headings and bold, bases printed as
+    // 1.10, and wrong choices had no reasons. Each equation is now one of three kinds:
+    //   decay:   A(b)^x with 0<b<1, maximum A at x=0, displayed as the coefficient
+    //   growth:  A(b)^x+C with b>1, no maximum value
+    //   shifted: A(b)^x+C with 0<b<1, maximum A+C at x=0, not displayed
+    type Kind = 'decay' | 'growth' | 'shifted';
+    const decayBase = () => Number((getRandomInt(10, 19) * 0.05).toFixed(2)); // 0.5 to 0.95
+    const growthBase = () => Number((getRandomInt(11, 19) / 10).toFixed(1));  // 1.1 to 1.9
+
+    const build = (name: 'f' | 'g', kind: Kind, coeff: number) => {
+      const c = getRandomInt(20, 50);
+      if (kind === 'decay') {
+        const b = decayBase();
+        return {
+          displays: true,
+          eq: `${name}(x)=${coeff}(${b})^x`,
+          work: `the base $${b}$ is between $0$ and $1$ and the coefficient is positive, so $${name}$ decreases as $x$ increases and reaches its maximum value at $x=0$. That value is $${name}(0)=${coeff}(${b})^0=${coeff}$, which is the coefficient in the equation.`,
+          why: `$${name}(0)=${coeff}$ is its coefficient`
+        };
+      }
+      if (kind === 'growth') {
+        const b = growthBase();
+        return {
+          displays: false,
+          eq: `${name}(x)=${coeff}(${b})^x+${c}`,
+          work: `the base $${b}$ is greater than $1$ and the coefficient is positive, so $${name}$ increases without bound as $x$ increases and has no maximum value.`,
+          why: `$${name}$ increases without bound and has no maximum value`
+        };
+      }
+      const b = decayBase();
+      const max = coeff + c;
+      return {
+        displays: false,
+        eq: `${name}(x)=${coeff}(${b})^x+${c}`,
+        work: `the base $${b}$ is between $0$ and $1$ and the coefficient is positive, so $${name}$ decreases as $x$ increases and reaches its maximum value at $x=0$. That value is $${name}(0)=${coeff}(${b})^0+${c}=${coeff}+${c}=${max}$, which does not appear as a constant or coefficient in the equation.`,
+        why: `its maximum value is $${name}(0)=${coeff}+${c}=${max}$, which does not appear in the equation`
+      };
+    };
+
+    // Choose the answer first, then equation kinds that produce it.
+    const nonDisplaying = (): Kind => getRandomElement<Kind>(['growth', 'shifted']);
+    const correctText = getRandomElement(['I only', 'II only', 'I and II', 'Neither I nor II']);
+    let kind1: Kind;
+    let kind2: Kind;
+    if (correctText === 'I only') { kind1 = 'decay'; kind2 = nonDisplaying(); }
+    else if (correctText === 'II only') { kind1 = nonDisplaying(); kind2 = 'decay'; }
+    else if (correctText === 'I and II') { kind1 = 'decay'; kind2 = 'decay'; }
+    else { kind1 = nonDisplaying(); kind2 = kind1 === 'growth' ? 'shifted' : 'growth'; }
+
     const a1 = getRandomInt(10, 30);
-    const c1 = getRandomInt(20, 50);
-    // Base > 1 means growth (no max). 
-    const b1 = (getRandomInt(11, 19) / 10).toFixed(2); // 1.1 to 1.9
+    let a2 = getRandomInt(5, 40);
+    while (a2 === a1) a2 = getRandomInt(5, 40);
 
-    // 2. Generate Function II Parameters
-    // Let's make Function II typically Decay (max at 0).
-    const a2 = getRandomInt(5, 15);
-    // Base < 1 means decay.
-    const b2 = (getRandomInt(50, 95) / 100).toFixed(2); // 0.50 to 0.95
-    
-    // 3. Determine Truth
-    // Function I: f(x) = a1 * (b1)^x + c1
-    // Base > 1, A > 0 -> Strictly increasing for x >= 0. No maximum.
-    // (Even if we picked decay, max would be a1+c1, which isn't displayed as a single constant)
-    const isOneCorrect = false;
+    const one = build('f', kind1, a1);
+    const two = build('g', kind2, a2);
 
-    // Function II: g(x) = a2 * (b2)^x
-    // Base < 1, A > 0 -> Strictly decreasing for x >= 0.
-    // Maximum is at x=0: g(0) = a2.
-    // The value 'a2' IS displayed as a coefficient.
-    const isTwoCorrect = true;
+    const missing = (numeral: string, item: typeof one) => `equation ${numeral} does not display a maximum value, since ${item.why}`;
+    const present = (numeral: string, item: typeof one) => `equation ${numeral} does display its maximum value, since ${item.why}`;
 
-    // 4. Construct Options
-    let correctText = "";
-    if (isOneCorrect && isTwoCorrect) correctText = "I and II";
-    else if (isOneCorrect) correctText = "I only";
-    else if (isTwoCorrect) correctText = "II only";
-    else correctText = "Neither I nor II";
+    const reasonFor = (text: string): string => {
+      if (text === 'I only') return !one.displays ? missing('I', one) : `it leaves out equation II, which also displays its maximum value, since ${two.why}`;
+      if (text === 'II only') return !two.displays ? missing('II', two) : `it leaves out equation I, which also displays its maximum value, since ${one.why}`;
+      if (text === 'I and II') return !one.displays ? `it includes equation I, which does not display a maximum value, since ${one.why}` : `it includes equation II, which does not display a maximum value, since ${two.why}`;
+      return one.displays ? present('I', one) : present('II', two);
+    };
 
-    const optionsData = [
-      { text: `I only`, isCorrect: correctText === "I only" },
-      { text: `II only`, isCorrect: correctText === "II only" },
-      { text: `I and II`, isCorrect: correctText === "I and II" },
-      { text: `Neither I nor II`, isCorrect: correctText === "Neither I nor II" }
-    ];
-
-    const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
-      ...opt,
+    // Keep the conventional order of the numeral choices.
+    const orderedOptions = ['I only', 'II only', 'I and II', 'Neither I nor II'].map((text, index) => ({
+      text,
+      isCorrect: text === correctText,
+      reason: text === correctText ? '' : reasonFor(text),
       letter: String.fromCharCode(65 + index)
     }));
-    
-    const correctOption = shuffledOptions.find(o => o.isCorrect)!;
 
-    // 5. Build Explanation
-    const func1 = `f(x)=${a1}(${b1})^x+${c1}`;
-    const func2 = `g(x)=${a2}(${b2})^x`;
+    const correctOption = orderedOptions.find(o => o.isCorrect)!;
+    const incorrectOptions = orderedOptions.filter(o => !o.isCorrect);
+
+    const conclusion = correctText === 'I and II'
+      ? 'Therefore, both equations display their maximum values.'
+      : correctText === 'Neither I nor II'
+        ? 'Therefore, neither equation displays a maximum value.'
+        : `Therefore, only equation ${correctText === 'I only' ? 'I' : 'II'} displays its maximum value.`;
 
     return {
-      questionText: `Which of the following functions displays the maximum value of the function as a constant or coefficient for $x \\geq 0$?
-      <br/><br/>
-      I. $${func1}$
-      <br/>
-      II. $${func2}$`,
+      questionText: `The functions $f$ and $g$ are defined by the given equations, where $x \\geq 0$. Which of the following equations displays, as a constant or coefficient, the maximum value of the function it defines?\n\nI. $${one.eq}$\nII. $${two.eq}$`,
       figureCode: null,
-      options: shuffledOptions.map(o => ({ text: o.text })),
+      options: orderedOptions.map(o => ({ text: o.text })),
       correctAnswer: correctOption.text,
-      explanation: `Choice ${correctOption.letter} is correct.
-      <br/><br/>
-      <strong>Analyze Function I:</strong> $${func1}$
-      <br/>
-      Since the base $${b1} > 1$, this is an exponential growth function. As $x$ increases, the function value increases without bound. Therefore, it has <strong>no maximum value</strong> for $x \\geq 0$.
-      <br/><br/>
-      <strong>Analyze Function II:</strong> $${func2}$
-      <br/>
-      Since the base $${b2} < 1$ (and coefficient ${a2} is positive), this is an exponential decay function. The value decreases as $x$ increases.
-      Therefore, the maximum value occurs at the smallest possible $x$, which is $x=0$.
-      <br/>
-      Maximum value: $g(0) = ${a2}(${b2})^0 = ${a2}(1) = ${a2}$.
-      <br/>
-      The number ${a2} is explicitly displayed as the coefficient in the equation.
-      <br/><br/>
-      Thus, <strong>${correctText}</strong>.`
+      explanation: `Choice ${correctOption.letter} is correct. For equation I, ${one.work} For equation II, ${two.work} ${conclusion} ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`
     };
   }
 };
