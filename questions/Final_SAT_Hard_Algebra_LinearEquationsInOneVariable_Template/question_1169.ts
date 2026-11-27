@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -52,13 +52,13 @@ export const generator_1169 = {
     // C: forgets the n medium pans themselves (drops the +n term)
     const distractorC = `${multiplier}n + ${constantCount} = ${totalPans}`;
 
-    // STEP 4: Create options (wrapped as math; each option string leads with a
-    // digit and contains no "$<letter>", so no dollar/MathJax pairing risk).
+    // STEP 4: Create options. Before: the reasons did not name the expressions
+    // and the explanation used dash bullets and hyphenated sizes ("10-inch").
     const optionsData = [
-      { text: `$${distractorA}$`, isCorrect: false, reason: `this multiplies the number of pans by their sizes, which gives a total length rather than a total count` },
-      { text: `$${distractorB}$`, isCorrect: false, reason: `this assumes there are n pans of each size and then multiplies by the sizes, which is not what the situation describes` },
-      { text: `$${distractorC}$`, isCorrect: false, reason: `this forgets to count the n ${size2}-inch pans themselves, including only the ${size1}-inch pans (${multiplier}n) and the ${size3}-inch pans (${constantCount})` },
-      { text: `$${correctEquation}$`, isCorrect: true, reason: null }
+      { text: `$${distractorA}$`, isCorrect: false, reason: `$${size1}(${multiplier}n) + ${size2}n + ${size3}(${constantCount})$ multiplies each number of pans by its size in inches, but the total of ${totalPans} counts pans, not inches` },
+      { text: `$${distractorB}$`, isCorrect: false, reason: `$${size1}n + ${size2}n + ${size3}n$ uses the sizes in inches as if they were numbers of pans and assumes there are $n$ pans of each size` },
+      { text: `$${distractorC}$`, isCorrect: false, reason: `$${multiplier}n + ${constantCount}$ counts the large pans and the small pans but leaves out the $n$ medium pans` },
+      { text: `$${correctEquation}$`, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -67,37 +67,12 @@ export const generator_1169 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    // Explanation: every inline "$...$" leads with the variable $n$ or a "(",
-    // never with a digit, so there is no "$<digit>" that could pair with a
-    // currency "$". Coefficient arithmetic and the final restated equation are
-    // written as plain text to keep that invariant.
-    const explanation = `Let $n$ represent the number of ${size2}-inch frying pans made.
-
-- The number of ${size1}-inch pans is ${multiplier} times n, so there are ${multiplier}n of them.
-- The number of ${size3}-inch pans is ${constantCount}.
-- The total number of pans is ${totalPans}.
-
-The total is the sum of the three counts:
-$n + ${multiplier}n + ${constantCount} = ${totalPans}$
-
-Combine the like terms: $n + ${multiplier}n = (${multiplier} + 1)n$, so the equation becomes
-$(${multiplier} + 1)n + ${constantCount} = ${totalPans}$
-
-Since ${multiplier} + 1 = ${nCoeff}, this is ${correctEquation}, which is Choice ${correctLetter}.
-
-Choice ${correctLetter} is correct.
-
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. The plant makes $n$ medium pans, ${multiplier} times as many large pans, which is $${multiplier}n$, and ${constantCount} small pans. So the total number of pans is $n + ${multiplier}n + ${constantCount}$. Combining like terms gives $${nCoeff}n + ${constantCount}$, and the total is ${totalPans}, so $${correctEquation}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
-      questionText: `A manufacturing plant makes ${size1}-inch, ${size2}-inch, and ${size3}-inch frying pans. During a certain day, the number of ${size1}-inch frying pans that the plant makes is ${multiplier} times the number $n$ of ${size2}-inch frying pans it makes, and the number of ${size3}-inch frying pans it makes is ${constantCount}. During this day, the plant makes ${totalPans} frying pans in total. Which equation represents this situation?`,
+      questionText: `A manufacturing plant makes large, medium, and small frying pans, which measure ${size1} inches, ${size2} inches, and ${size3} inches across, respectively. During a certain day, the number of large frying pans the plant makes is ${multiplier} times the number $n$ of medium frying pans it makes, and the number of small frying pans it makes is ${constantCount}. During this day, the plant makes ${totalPans} frying pans in total. Which equation represents this situation?`,
       figureCode: null,
       options: shuffledOptions.map(o => o.text),
       correctAnswer: `$${correctEquation}$`,
