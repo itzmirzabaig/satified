@@ -54,78 +54,82 @@ export const generator_1183 = {
     // Grader-safe fill-in answer: plain integer when the denominator reduces to
     // 1, otherwise "num/den".
     const answerStr = rDen === 1 ? `${rNum}` : `${rNum}/${rDen}`;
-    // Pretty (LaTeX) forms for the explanation only.
-    const slopeKTex = `\\frac{${slopeKNum}}{${slopeKDen}}`;
     const perpTex = rDen === 1 ? `${rNum}` : `\\frac{${rNum}}{${rDen}}`;
 
-    // STEP 4: Figure — plain SVG showing line k through both intercepts.
+    // STEP 4: Figure. FIXED (review): tick labels were 9px and only on even
+    // values, so an odd intercept such as -5 or -7 had no label; the axes had
+    // no x and y letters; and the line was extended by a fixed 1.2 units, which
+    // ran past the grid when the line was steep. The line is now clipped to the
+    // window, both intercept points carry their coordinates, and the labels are
+    // readable. Same scale on both axes, so the slope looks true.
     const width = 300;
     const height = 300;
-    const pad = 24;
-    // World window: enough to show both negative intercepts and the origin.
+    const pad = 28;
     const xMinW = -10, xMaxW = 2;
     const yMinW = -10, yMaxW = 2;
     const sx = (x: number) => pad + ((x - xMinW) / (xMaxW - xMinW)) * (width - 2 * pad);
     const sy = (y: number) => (height - pad) - ((y - yMinW) / (yMaxW - yMinW)) * (height - 2 * pad);
+    const r2 = (v: number) => Math.round(v * 100) / 100;
 
-    // Gridlines + tick labels on each integer.
     let grid = '';
     for (let gx = xMinW; gx <= xMaxW; gx++) {
-      const px = sx(gx);
-      grid += `<line x1="${px}" y1="${sy(yMinW)}" x2="${px}" y2="${sy(yMaxW)}" stroke="currentColor" stroke-opacity="0.08" stroke-width="1" />`;
+      grid += `<line x1="${r2(sx(gx))}" y1="${r2(sy(yMinW))}" x2="${r2(sx(gx))}" y2="${r2(sy(yMaxW))}" stroke="currentColor" stroke-opacity="0.12" stroke-width="1" />`;
       if (gx !== 0 && gx % 2 === 0) {
-        grid += `<text x="${px}" y="${sy(0) + 12}" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.7">${gx}</text>`;
+        grid += `<text x="${r2(sx(gx))}" y="${r2(sy(0) + 14)}" text-anchor="middle" font-size="11" fill="currentColor">${gx}</text>`;
       }
     }
     for (let gy = yMinW; gy <= yMaxW; gy++) {
-      const py = sy(gy);
-      grid += `<line x1="${sx(xMinW)}" y1="${py}" x2="${sx(xMaxW)}" y2="${py}" stroke="currentColor" stroke-opacity="0.08" stroke-width="1" />`;
+      grid += `<line x1="${r2(sx(xMinW))}" y1="${r2(sy(gy))}" x2="${r2(sx(xMaxW))}" y2="${r2(sy(gy))}" stroke="currentColor" stroke-opacity="0.12" stroke-width="1" />`;
       if (gy !== 0 && gy % 2 === 0) {
-        grid += `<text x="${sx(0) - 5}" y="${py + 3}" text-anchor="end" font-size="9" fill="currentColor" fill-opacity="0.7">${gy}</text>`;
+        grid += `<text x="${r2(sx(0) - 6)}" y="${r2(sy(gy) + 4)}" text-anchor="end" font-size="11" fill="currentColor">${gy}</text>`;
       }
     }
 
-    // Axes through the origin.
-    const axes = `
-      <line x1="${sx(xMinW)}" y1="${sy(0)}" x2="${sx(xMaxW)}" y2="${sy(0)}" stroke="currentColor" stroke-width="1.5" />
-      <line x1="${sx(0)}" y1="${sy(yMinW)}" x2="${sx(0)}" y2="${sy(yMaxW)}" stroke="currentColor" stroke-width="1.5" />
-    `;
+    const axes = `<line x1="${r2(sx(xMinW))}" y1="${r2(sy(0))}" x2="${r2(sx(xMaxW))}" y2="${r2(sy(0))}" stroke="currentColor" stroke-width="1.5" />` +
+      `<line x1="${r2(sx(0))}" y1="${r2(sy(yMinW))}" x2="${r2(sx(0))}" y2="${r2(sy(yMaxW))}" stroke="currentColor" stroke-width="1.5" />` +
+      `<text x="${r2(sx(xMaxW) + 6)}" y="${r2(sy(0) + 4)}" font-size="13" font-style="italic" fill="currentColor">x</text>` +
+      `<text x="${r2(sx(0))}" y="${r2(sy(yMaxW) - 8)}" text-anchor="middle" font-size="13" font-style="italic" fill="currentColor">y</text>`;
 
-    // Line k: extend a little past each intercept along the line for looks.
-    // Direction from (xInt,0) to (0,yInt): dx = -xInt, dy = yInt.
-    const ax = xInt - 1.2, ay = 0 - 1.2 * (yInt / -xInt);         // one end (below-left)
-    const bx = 0 + 1.2, by = yInt + 1.2 * (yInt / -xInt);         // other end (above-right)
-    const lineK = `<line x1="${sx(ax).toFixed(1)}" y1="${sy(ay).toFixed(1)}" x2="${sx(bx).toFixed(1)}" y2="${sy(by).toFixed(1)}" stroke="#3b82f6" stroke-width="3" />`;
+    // Line k: y = m x + yInt with m = yInt / (-xInt), clipped to the window.
+    const m = yInt / -xInt;
+    const clip = (x1: number, y1: number, x2: number, y2: number): [number, number, number, number] => {
+      let t0 = 0, t1 = 1;
+      const dx = x2 - x1, dy = y2 - y1;
+      const p = [-dx, dx, -dy, dy];
+      const q = [x1 - xMinW, xMaxW - x1, y1 - yMinW, yMaxW - y1];
+      for (let i = 0; i < 4; i++) {
+        if (p[i] === 0) continue;
+        const r = q[i] / p[i];
+        if (p[i] < 0) { if (r > t0) t0 = r; } else { if (r < t1) t1 = r; }
+      }
+      return [x1 + t0 * dx, y1 + t0 * dy, x1 + t1 * dx, y1 + t1 * dy];
+    };
+    const seg = clip(xMinW, m * xMinW + yInt, xMaxW, m * xMaxW + yInt);
+    const lineK = `<line x1="${r2(sx(seg[0]))}" y1="${r2(sy(seg[1]))}" x2="${r2(sx(seg[2]))}" y2="${r2(sy(seg[3]))}" stroke="#3b82f6" stroke-width="2.5" />`;
 
-    // Intercept points and a "k" label near the line.
-    const points = `
-      <circle cx="${sx(xInt)}" cy="${sy(0)}" r="4" fill="#3b82f6" />
-      <circle cx="${sx(0)}" cy="${sy(yInt)}" r="4" fill="#3b82f6" />
-      <text x="${sx(bx).toFixed(1)}" y="${(sy(by) - 6).toFixed(1)}" text-anchor="middle" font-size="12" font-style="italic" fill="#3b82f6">k</text>
-    `;
+    // Intercept points with coordinates placed on the side away from the line
+    // (the line rises to the left), and a "k" label at the lower end.
+    const points = `<circle cx="${r2(sx(xInt))}" cy="${r2(sy(0))}" r="4" fill="#3b82f6" />` +
+      `<circle cx="${r2(sx(0))}" cy="${r2(sy(yInt))}" r="4" fill="#3b82f6" />` +
+      `<text x="${r2(sx(xInt) + 6)}" y="${r2(sy(0) - 8)}" text-anchor="start" font-size="11" fill="currentColor">(${xInt}, 0)</text>` +
+      `<text x="${r2(sx(0) + 7)}" y="${r2(sy(yInt) - 7)}" text-anchor="start" font-size="11" fill="currentColor">(0, ${yInt})</text>` +
+      `<text x="${r2(sx(seg[2]) + 8)}" y="${r2(sy(seg[3]) + 4)}" font-size="13" font-style="italic" fill="#3b82f6">k</text>`;
 
-    const figureCode = `
-      <div style="width: 100%; max-width: 320px; margin: 0 auto;">
-        <svg viewBox="0 0 ${width} ${height}" style="width: 100%; height: auto; display: block; color: inherit; user-select: none;">
-          ${grid}
-          ${axes}
-          ${lineK}
-          ${points}
-        </svg>
-      </div>
-    `;
+    const figureCode = `<div style="width:100%;max-width:340px;margin:0 auto;">` +
+      `<svg viewBox="0 0 ${width + 10} ${height}" style="width:100%;height:auto;display:block;color:inherit;user-select:none;">` +
+      grid + axes + lineK + points + `</svg></div>`;
 
-    // STEP 5: Explanation — signs computed from the live intercepts.
-    const explanation = `
-      The slope of line $k$ comes from its two intercepts, $(${xInt}, 0)$ and $(0, ${yInt})$:
-      $$ m_k = \\frac{${yInt} - 0}{0 - (${xInt})} = ${slopeKTex} $$
-      Line $j$ is perpendicular to line $k$, so its slope is the negative reciprocal of $m_k$:
-      $$ m_j = -\\frac{1}{m_k} = -\\frac{${slopeKDen}}{${slopeKNum}} = ${perpTex} $$
-      Enter your answer as a fraction or a decimal.
-    `;
+    // STEP 5: Explanation, signs computed from the live intercepts. FIXED
+    // (review): it did not open with "The correct answer is", wrote the slope
+    // of k with the minus sign inside the numerator, and repeated the entry
+    // instruction.
+    const slopeKShown = `-\\frac{${-yInt}}{${-xInt}}`;
+    const recipShown = `\\frac{${-xInt}}{${-yInt}}`;
+    const mjChain = (g === 1 && rDen !== 1) ? recipShown : `${recipShown} = ${perpTex}`;
+    const explanation = `The correct answer is ${answerStr}. Line $k$ passes through its $x$-intercept $(${xInt}, 0)$ and its $y$-intercept $(0, ${yInt})$. Moving from $(${xInt}, 0)$ to $(0, ${yInt})$, the value of $y$ changes by $${yInt}$ and the value of $x$ changes by $${-xInt}$, so the slope of line $k$ is $\\frac{${yInt}}{${-xInt}} = ${slopeKShown}$. Perpendicular lines have slopes that are negative reciprocals of each other, so the slope of line $j$ is $${mjChain}$.`;
 
     return {
-      questionText: `Line $k$ is shown in the $xy$-plane. Line $j$ is perpendicular to line $k$. What is the slope of line $j$? Enter your answer as a fraction or a decimal.`,
+      questionText: `Line $k$ is shown in the $xy$-plane. Line $j$ is perpendicular to line $k$. What is the slope of line $j$?`,
       figureCode,
       options: [],
       correctAnswer: answerStr,
