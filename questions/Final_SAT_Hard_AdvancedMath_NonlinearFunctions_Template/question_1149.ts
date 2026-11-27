@@ -39,12 +39,17 @@ export const generator_1149 = {
     const b = 2 * h + g;       // base offset
     const x = h + q;           // the answer (positive integer)
 
+    // Fixed: products of 1,000 or more had no comma, the expansion step was skipped,
+    // and the explanation did not open with the correct answer.
+    const m = (n: number) => n.toLocaleString('en-US').replace(/,/g, '{,}');
+    const product = m(b * h);
+
     return {
-      questionText: `A triangle has area $x^2$ square cm. The base is $(2x+${b})$ cm and the height is $(x-${h})$ cm. What is the value of $x$?`,
+      questionText: `A triangle has an area of $x^2$ square centimeters. Its base is $(2x+${b})$ centimeters long and its height is $(x-${h})$ centimeters. What is the value of $x$?`,
       figureCode: null,
       options: [],
       correctAnswer: x.toString(),
-      explanation: `The area of a triangle is $\\frac{1}{2}(\\text{base})(\\text{height})$, so $\\frac{1}{2}(2x+${b})(x-${h})=x^2$. Multiplying both sides by 2 gives $(2x+${b})(x-${h})=2x^2$. Expanding the left side and cancelling the matching $(2x^2)$ term on both sides leaves $(${b - 2 * h})x=${b * h}$. Therefore $x=\\frac{${b * h}}{${b - 2 * h}}=${x}$.`
+      explanation: `The correct answer is ${x}. The area of a triangle is $\\frac{1}{2}(\\text{base})(\\text{height})$, so $\\frac{1}{2}(2x+${b})(x-${h})=x^2$. Multiplying both sides by $2$ gives $(2x+${b})(x-${h})=2x^2$. Expanding the product gives $2x^2-${2 * h}x+${b}x-${product}=2x^2$. Subtracting $2x^2$ from both sides and combining like terms gives $${g}x-${product}=0$, so $${g}x=${product}$. Dividing both sides by $${g}$ gives $x=${x}$.`
     };
   }
 };
