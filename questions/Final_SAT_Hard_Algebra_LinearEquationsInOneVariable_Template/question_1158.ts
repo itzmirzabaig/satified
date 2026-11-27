@@ -1,16 +1,20 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1158
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [coefficient: 2-12, constant: 2-12, a, b (parameters)]
  * - Difficulty factors: [No solution conditions with multiple statements to evaluate]
- * - Distractor patterns: [A: None, B: I only, C: I and II, D: I and III]
- * - Constraints: [a=coefficient necessary, b≠constant/coefficient necessary, b=constant not necessary]
+ * - Constraints: [a = coefficient necessary, b != const/coefficient necessary, b = const not necessary]
  * - Question type: [Equation→Multiple Choice Text]
  * - Figure generation: [None]
+ *
+ * Previously the answer was always "I and III only", the fraction const/coeff
+ * was never reduced (b != 6/3), wrong choices had no reasons, and the
+ * explanation used markdown. The three statements are now shuffled into the
+ * labels I, II, III so the answer changes between draws.
  */
 
 export const generator_1158 = {
@@ -22,70 +26,71 @@ export const generator_1158 = {
     skill: "Linear Equations In One Variable",
     difficulty: "Hard"
   },
-  
+
   generate: (): QuestionData => {
-    // Randomize the equation structure: coeff*x + const = a(x + b)
+    const gcd = (x: number, y: number): number => (y === 0 ? Math.abs(x) : gcd(y, x % y));
+
+    // Equation: coeff*x + constVal = a(x + b)
     const coeff = getRandomInt(2, 12);
     const constVal = getRandomInt(2, 12);
-    
-    // For no solution: a must equal coeff, and b must not equal const/coeff
-    
-    const statementI = `a = ${coeff}`;
-    const statementII = `b = ${constVal}`;
-    const statementIII = `b \\neq \\frac{${constVal}}{${coeff}}`;
-    
+
+    // b must differ from constVal/coeff, written in lowest terms.
+    const g = gcd(constVal, coeff);
+    const bBad = coeff / g === 1 ? `${constVal / g}` : `\\frac{${constVal / g}}{${coeff / g}}`;
+
+    // STEP 1: Shuffle the three statements into the labels I, II, III.
+    const statements = shuffle([
+      { key: 'coef', tex: `a = ${coeff}` },
+      { key: 'example', tex: `b = ${constVal}` },
+      { key: 'const', tex: `b \\neq ${bBad}` }
+    ]);
+    const labels = ['I', 'II', 'III'];
+    const labelOf = (key: string): string => labels[statements.findIndex(s => s.key === key)];
+    const pair = (k1: string, k2: string): string => {
+      const [x, y] = [labelOf(k1), labelOf(k2)].sort((p, q) => labels.indexOf(p) - labels.indexOf(q));
+      return `${x} and ${y} only`;
+    };
+
+    const lCoef = labelOf('coef');
+    const lExample = labelOf('example');
+    const lConst = labelOf('const');
+    const correctText = pair('coef', 'const');
+
+    // STEP 2: Each wrong choice is a specific slip.
     const optionsData = [
-      { text: "None", isCorrect: false },
-      { text: "I only", isCorrect: false },
-      { text: "I and II only", isCorrect: false },
-      { text: "I and III only", isCorrect: true }
+      { text: correctText, isCorrect: true, reason: '' },
+      {
+        text: 'None',
+        isCorrect: false,
+        reason: `none overlooks that an equation with no solutions must have the same coefficient of $x$ on both sides, so statement ${lCoef} must be true`
+      },
+      {
+        text: `${lCoef} only`,
+        isCorrect: false,
+        reason: `${lCoef} only forgets that the constant terms must also differ: if $b = ${bBad}$, both sides become $${coeff}x + ${constVal}$ and the equation has infinitely many solutions, so statement ${lConst} must be true`
+      },
+      {
+        text: pair('coef', 'example'),
+        isCorrect: false,
+        reason: `${pair('coef', 'example')} treats $b = ${constVal}$, one value of $b$ that works, as required, even though any value other than $${bBad}$ works, and it leaves out statement ${lConst}, which must be true`
+      }
     ];
-    
+
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
       ...opt,
       letter: String.fromCharCode(65 + index)
     }));
-    
+
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
-    
-    // Fixed: Removed excessive escaping, plain text for words, $...$ for math only
-    const explanation = `To determine the conditions under which the linear equation has no solution, let's analyze the given equation: $${coeff}x + ${constVal} = a(x + b)$
+    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-First, expand the right side of the equation:
-$${coeff}x + ${constVal} = ax + ab$
+    const explanation = `Choice ${correctOption.letter} is correct. Distributing the right side of the equation gives $${coeff}x + ${constVal} = ax + ab$. A linear equation has no solutions when the coefficients of $x$ on the two sides are equal and the constant terms are different. The coefficients of $x$ must be equal, so $a = ${coeff}$, and statement ${lCoef} must be true. With $a = ${coeff}$, the constant term on the right side is $${coeff}b$, and it must differ from $${constVal}$. So $${coeff}b \\neq ${constVal}$, which means $b \\neq ${bBad}$, and statement ${lConst} must be true. Statement ${lExample} says $b = ${constVal}$. That value makes the right side $${coeff}x + ${coeff * constVal}$, so the equation has no solutions, but $b$ could be any other value except $${bBad}$, so statement ${lExample} need not be true. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
-For a linear equation of the form $Ax + B = Cx + D$ to have no solution, the coefficients of $x$ must be equal ($A = C$), but the constant terms must not be equal ($B \\neq D$).
-
-1. **Match the coefficients of x:**
-   On the left side, the coefficient of $x$ is $${coeff}$.
-   On the right side, the coefficient of $x$ is $a$.
-   So, for the lines to be parallel, we must have:
-   $a = ${coeff}$
-   This confirms that statement I is true.
-
-2. **Compare the constant terms:**
-   On the left side, the constant is $${constVal}$.
-   On the right side, the constant is $ab$. Since we know $a = ${coeff}$, the constant on the right becomes $${coeff}b$.
-   For the equation to have no solution, these constant terms must not be equal.
-   $${constVal} \\neq ${coeff}b$
-   Solving for $b$:
-   $b \\neq \\frac{${constVal}}{${coeff}}$
-   This confirms that statement III is true.
-
-3. **Check statement II:**
-   Statement II says $b = ${constVal}$. Is this required?
-   If $b = ${constVal}$, then the right side constant is $${coeff}(${constVal}) = ${coeff * constVal}$. Since $${constVal} \\neq ${coeff * constVal}$, the equation would have no solution. However, $b$ could be any number other than $\\frac{${constVal}}{${coeff}}$. Therefore, statement II is not necessarily true.
-
-Conclusion: Statements I and III must be true. Therefore, the correct choice is ${correctLetter}. I and III only.`;
-    
     return {
-      // Fixed: Removed excessive escaping, plain text for intro, $...$ for math
-      questionText: `The equation $${coeff}x + ${constVal} = a(x + b)$, where $a$ and $b$ are constants, has no solutions. Which of the following must be true?\n\nI. $a = ${coeff}$\nII. $b = ${constVal}$\nIII. $b \\neq \\frac{${constVal}}{${coeff}}$`,
+      questionText: `The equation $${coeff}x + ${constVal} = a(x + b)$, where $a$ and $b$ are constants, has no solutions. Which of the following must be true?\n\n${statements.map((s, i) => `${labels[i]}. $${s.tex}$`).join('\n')}`,
       figureCode: null,
-      // Fixed: Return string array
-      options: shuffledOptions.map(o => o.text),
-      correctAnswer: "I and III only",
+      options: shuffledOptions.map(o => ({ text: o.text })),
+      correctAnswer: correctText,
       explanation: explanation
     };
   }
