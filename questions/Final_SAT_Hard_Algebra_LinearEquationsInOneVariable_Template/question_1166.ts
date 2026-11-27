@@ -1,9 +1,9 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt, shuffle } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
  * Question 1166
- * 
+ *
  * ORIGINAL ANALYSIS:
  * - Number ranges: [6, 3, 13 (small integers)]
  * - Difficulty factors: [Recognizing x+6=0 is the only solution, value is 0]
@@ -22,31 +22,30 @@ export const generator_1166 = {
     skill: "Linear Equations In One Variable",
     difficulty: "Hard"
   },
-  
-  generate: (): QuestionData => {
-    // STEP 1: Generate equation of form (x+a)/b = (x+a)/c where b ≠ c
-    // This forces x+a = 0, so x = -a
-    
-    // b in [2,5] and c in [6,15] are disjoint, so b !== c always holds and the
-    // denominators genuinely differ — no retry needed. With different, nonzero
-    // denominators, (x+a)/b = (x+a)/c forces x + a = 0.
-    const a = getRandomInt(3, 10);
-    const b = getRandomInt(2, 5);
-    const c = getRandomInt(6, 15);
 
-    // The value of x + a is 0. Exactly one pair of bounds brackets 0; the
-    // three distractor pairs deliberately exclude 0. Each option carries its
-    // numeric bounds so the explanation can be built from the SHUFFLED order
-    // (its letters are only known after the shuffle).
-    // Distractor pairs (all exclude 0):
-    //   below zero:   [-a-3, -a-1]  (a >= 3  =>  high <= -4, both negative)
-    //   above zero A: [2, 7]
-    //   above zero B: [8, 13]
+  generate: (): QuestionData => {
+    // (x+a)/b = (x+a)/c with b != c forces x + a = 0.
+    // Before: the three wrong pairs were fixed or arbitrary ranges with no
+    // reasons. Now each wrong pair brackets a value a student reaches by a real
+    // slip: -a (the value of x), a (x + a read as if x were 0), and c - b (the
+    // coefficient in (c - b)(x + a) = 0). A redraw keeps a and c - b far enough
+    // apart that the pairs never overlap.
+    let a!: number, b!: number, c!: number;
+    do {
+      a = getRandomInt(3, 10);
+      b = getRandomInt(2, 5);
+      c = getRandomInt(8, 15);
+    } while (Math.abs(a - (c - b)) < 5);
+    const g = c - b;
+
+    // A pair [v - d1, v + d2] around v, with d1 and d2 in 1..2.
+    const around = (v: number) => ({ low: v - getRandomInt(1, 2), high: v + getRandomInt(1, 2) });
+
     const optionsData = [
-      { low: -a - 3, high: -a - 1, isCorrect: false },
-      { low: -2, high: 2, isCorrect: true },
-      { low: 2, high: 7, isCorrect: false },
-      { low: 8, high: 13, isCorrect: false }
+      { low: -getRandomInt(1, 3), high: getRandomInt(1, 3), isCorrect: true, reason: '' },
+      { ...around(-a), isCorrect: false, reason: `$${-a}$ is the value of $x$, not of $x+${a}$` },
+      { ...around(a), isCorrect: false, reason: `$${a}$ is the value of $x+${a}$ only when $x = 0$, but $x = 0$ does not satisfy the equation` },
+      { ...around(g), isCorrect: false, reason: `$${g}$ is the coefficient in $${g}(x+${a}) = 0$, not the value of $x+${a}$` }
     ].map(o => ({ ...o, text: `$${o.low}$ and $${o.high}$` }));
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -55,31 +54,9 @@ export const generator_1166 = {
     }));
 
     const correctOption = shuffledOptions.find(opt => opt.isCorrect)!;
-    const correctLetter = correctOption.letter;
+    const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    // Build the interval-check list in the exact shuffled order / letters.
-    const intervalChecks = shuffledOptions.map(opt => {
-      const inRange = opt.low < 0 && opt.high > 0;
-      return `Choice ${opt.letter} ($${opt.low}$ and $${opt.high}$): $0$ ${inRange ? `is between $${opt.low}$ and $${opt.high}$` : 'is not in this range'}.`;
-    }).join('\n');
-
-    const explanation = `To solve the given equation $\\frac{x+${a}}{${b}} = \\frac{x+${a}}{${c}}$, let's consider the term $x+${a}$ as a single entity, say $y$. So, the equation becomes $\\frac{y}{${b}} = \\frac{y}{${c}}$.
-
-Multiply both sides by the least common multiple of the denominators, which is $${b * c}$:
-$${c}y = ${b}y$
-
-Subtract $${b}y$ from both sides:
-$${c - b}y = 0$
-
-Divide by $${c - b}$:
-$y = 0$
-
-Substituting back $x+${a}$ for $y$, we find that the value of $x+${a}$ is $0$.
-
-Now we check which pair of values brackets $0$:
-${intervalChecks}
-
-Therefore, the correct option is Choice ${correctLetter}.`;
+    const explanation = `Choice ${correctOption.letter} is correct. Multiplying both sides of $\\frac{x+${a}}{${b}} = \\frac{x+${a}}{${c}}$ by $${b * c}$ gives $${c}(x+${a}) = ${b}(x+${a})$. Subtracting $${b}(x+${a})$ from both sides gives $${g}(x+${a}) = 0$. Since $${g} \\neq 0$, it follows that $x+${a} = 0$. Of the given pairs, only $${correctOption.low}$ and $${correctOption.high}$ have $0$ between them. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}; $0$ is not between $${o.low}$ and $${o.high}$.`).join(' ')}`;
 
     return {
       questionText: `If $\\frac{x+${a}}{${b}} = \\frac{x+${a}}{${c}}$, the value of $x+${a}$ is between which of the following pairs of values?`,
