@@ -46,15 +46,20 @@ export const generator_1167 = {
     // STEP 3: Create distractors
     // A & B: reciprocal fraction (miles per dollar) — A also confuses total miles with dollars on the RHS
     // C: correct fraction but confuses total miles (weeklyMiles - savingsGoal) with the dollar savings
-    const distractorA = `\\frac{${simplifiedDenom}}{${simplifiedNum}}m = ${weeklyMiles - savingsGoal}`;
-    const distractorB = `\\frac{${simplifiedDenom}}{${simplifiedNum}}m = ${savingsGoal}`;
-    const distractorC = `\\frac{${simplifiedNum}}{${simplifiedDenom}}m = ${weeklyMiles - savingsGoal}`;
+    // Before: when the cost per mile reduced to 1 over something, the reciprocal
+    // showed as a fraction over 1 (like 5/1); it is written as a whole number now.
+    const milesPerDollar = simplifiedNum === 1 ? `${simplifiedDenom}` : `\\frac{${simplifiedDenom}}{${simplifiedNum}}`;
+    const milesMinusSavings = weeklyMiles - savingsGoal;
+    const distractorA = `${milesPerDollar}m = ${milesMinusSavings}`;
+    const distractorB = `${milesPerDollar}m = ${savingsGoal}`;
+    const distractorC = `${costPerMile}m = ${milesMinusSavings}`;
 
+    // Before: reasons used "cost-per-mile" and did not name the values.
     const optionsData = [
-      { text: `$${distractorA}$`, isCorrect: false, reason: `this uses the reciprocal of the cost-per-mile ratio (miles per dollar) and confuses the total miles with the dollar amount` },
-      { text: `$${distractorB}$`, isCorrect: false, reason: `this uses the reciprocal of the cost-per-mile ratio (miles per dollar instead of dollars per mile)` },
-      { text: `$${distractorC}$`, isCorrect: false, reason: `this correctly finds the cost per mile but sets it equal to ${weeklyMiles - savingsGoal}, which confuses the total miles (${weeklyMiles}) with the dollar savings (\\$${savingsGoal})` },
-      { text: `$${correctEquation}$`, isCorrect: true, reason: null }
+      { text: `$${distractorA}$`, isCorrect: false, reason: `$${milesPerDollar}$ is the number of miles the car travels per dollar, not the cost per mile, and ${milesMinusSavings} is the weekly miles minus the savings goal, which mixes miles with dollars` },
+      { text: `$${distractorB}$`, isCorrect: false, reason: `$${milesPerDollar}$ is the number of miles the car travels per dollar, not the cost in dollars of each mile` },
+      { text: `$${distractorC}$`, isCorrect: false, reason: `${milesMinusSavings} is the weekly miles minus the savings goal, which mixes miles with dollars; the savings should equal ${savingsGoal} dollars` },
+      { text: `$${correctEquation}$`, isCorrect: true, reason: '' }
     ];
 
     const shuffledOptions = shuffle(optionsData).map((opt, index) => ({
@@ -66,23 +71,9 @@ export const generator_1167 = {
     const correctLetter = correctOption.letter;
     const incorrectOptions = shuffledOptions.filter(opt => !opt.isCorrect);
 
-    const explanation = `Let $m$ be the number of fewer miles the commuter should drive each week.
-
-The commuter wants to save \\$${savingsGoal} per week by driving fewer miles, so first find the cost of driving each mile.
-The car travels ${mpg} miles on 1 gallon of gas, and 1 gallon costs \\$${gasCost}.
-So it costs \\$${gasCost} to travel ${mpg} miles, which means the cost per mile is $\\frac{${gasCost}}{${mpg}}$ or $${costPerMile}$ dollars per mile.
-
-The money saved equals the cost per mile multiplied by the number of fewer miles driven ($m$):
-$$\\text{Savings} = (\\text{cost per mile}) \\times (\\text{fewer miles})$$
-$${costPerMile} \\times m = ${savingsGoal}$, which gives $${correctEquation}$.
-
-Choice ${correctLetter} is correct; this equation sets (cost per mile) $\\times$ (number of miles reduced) equal to the total savings desired, \\$${savingsGoal}.
-
-Choice ${incorrectOptions[0].letter} is incorrect; ${incorrectOptions[0].reason}.
-
-Choice ${incorrectOptions[1].letter} is incorrect; ${incorrectOptions[1].reason}.
-
-Choice ${incorrectOptions[2].letter} is incorrect; ${incorrectOptions[2].reason}.`;
+    // Before: the choice lines used "is incorrect;" instead of the standard format.
+    const costSteps = divisor > 1 ? `$\\frac{${gasCost}}{${mpg}} = ${costPerMile}$` : `$${costPerMile}$`;
+    const explanation = `Choice ${correctLetter} is correct. The car travels ${mpg} miles on 1 gallon of gasoline, and 1 gallon costs \\$${gasCost}, so driving 1 mile costs ${costSteps} dollars. Driving $m$ fewer miles each week saves $${costPerMile}m$ dollars. The commuter wants to save \\$${savingsGoal} each week, so the equation is $${correctEquation}$. ${incorrectOptions.map(o => `Choice ${o.letter} is incorrect because ${o.reason}.`).join(' ')}`;
 
     return {
       questionText: `A commuter drives an average of ${weeklyMiles} miles each week. Their car can travel an average of ${mpg} miles per gallon of gasoline. The commuter would like to reduce their weekly spending on gasoline by \\$${savingsGoal}. Assuming gasoline costs \\$${gasCost} per gallon, which equation can the commuter use to determine how many fewer average miles, $m$, they should drive each week?`,
