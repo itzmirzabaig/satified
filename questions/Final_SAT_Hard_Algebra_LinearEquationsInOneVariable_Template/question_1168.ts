@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomElement, shuffle } from '../../utils/math';
+import { getRandomInt } from '../../utils/math';
 import type { QuestionData } from '../../study/types';
 
 /**
@@ -33,60 +33,47 @@ export const generator_1168 = {
   },
   
   generate: (): QuestionData => {
-    // STEP 1: Generate equation with no solution
-    // Form: a(kx + b) = cx + d where ak = c but ab ≠ d
-    
-    let valid = false;
-    let a!: number, c!: number, kNum: number, kDenom: number, finalKNum!: number, finalKDenom!: number, b!: number, d!: number;
-    
-    while (!valid) {
-      a = getRandomInt(2, 5);
-      c = getRandomInt(3, 8);
-      
-      // k must equal c/a
-      kNum = c;
-      kDenom = a;
-      
-      // Simplify k
-      const gcd = (x: number, y: number): number => y === 0 ? x : gcd(y, x % y);
-      const divisor = gcd(kNum, kDenom);
-      finalKNum = kNum / divisor;
-      finalKDenom = kDenom / divisor;
-      
-      // Constants: ab ≠ d
-      b = getRandomInt(10, 20);
-      d = getRandomInt(5, 15);
-      
-      // Ensure ab ≠ d
-      if (a * b !== d) {
-        valid = true;
-      }
+    // Form: a(kx + b) = cx + d. Distributing gives akx + ab = cx + d, so
+    // no solution needs ak = c (k = c/a) and ab != d. Since ab >= 20 and
+    // d <= 15, the constants always differ.
+    const gcd = (x: number, y: number): number => y === 0 ? x : gcd(y, x % y);
+    // c is redrawn until a does not divide it: an integer k (often 1, from
+    // equal coefficients like 4 and 4) made this hard question trivial.
+    const a = getRandomInt(2, 5);
+    let c = getRandomInt(3, 9);
+    while (c % a === 0) c = getRandomInt(3, 9);
+    const b = getRandomInt(10, 20);
+    const d = getRandomInt(5, 15);
+
+    const divisor = gcd(c, a);
+    const kNum = c / divisor;
+    const kDen = a / divisor;
+    const kValue = kNum / kDen;
+    const kTex = kDen === 1 ? `${kNum}` : `\\frac{${kNum}}{${kDen}}`;
+    const kSteps = divisor > 1 ? `\\frac{${c}}{${a}} = ${kTex}` : kTex;
+
+    let enterNote = '';
+    if (kDen !== 1) {
+      const rounded = Number(kValue.toFixed(3));
+      const decimal = Math.abs(rounded - kValue) < 1e-9 ? `${rounded}` : kValue.toFixed(3);
+      enterNote = ` Note that ${kNum}/${kDen} and ${decimal} are acceptable ways to enter the answer.`;
     }
-    
-    // STEP 2: Format answer
-    let correctAnswer: string;
-    if (finalKDenom === 1) {
-      correctAnswer = finalKNum.toString();
-    } else {
-      correctAnswer = `\\\\frac{${finalKNum}}{${finalKDenom}}`;
-    }
-    
-    // STEP 3: Build explanation
-    const explanation = `It's given that the equation $${a}(kx + ${b}) = ${c}x + ${d}$ has no solution. A linear equation in the form $ax + b = cx + d$, where $a, b, c,$ and $d$ are constants, has no solution only when the coefficients of $x$ on each side of the equation are equal and the constant terms aren't equal.
 
-Dividing both sides of the given equation by ${a} yields:
-$kx + ${b} = \\\\frac{${c}}{${a}}x + \\\\frac{${d}}{${a}}$
+    // Before: the explanation wrote \\\\frac (two backslashes), so every fraction
+    // broke on the page, left d/a unreduced, and showed a rounded decimal as if exact.
+    const explanation = `The correct answer is $${kTex}$. A linear equation in one variable has no solution only when the coefficients of $x$ on each side are equal and the constant terms are not equal.
 
-Since the coefficients of $x$ on each side of the equation must be equal for no solution:
-$k = \\\\frac{${c}}{${a}} = ${correctAnswer}$
+Distributing ${a} on the left side of the given equation gives $${a}kx + ${a * b} = ${c}x + ${d}$.
 
-Note that $${finalKNum}/${finalKDenom}$ is the correct answer format. The constant terms are ${b} and $\\\\frac{${d}}{${a}}$, which are not equal (${b} ≠ ${(d/a).toFixed(2)}), confirming no solution exists.`;
-    
+The coefficients of $x$ must be equal, so $${a}k = ${c}$, which gives $k = ${kSteps}$.
+
+The constant terms are ${a * b} and ${d}, which are not equal, so for this value of $k$ the equation has no solution.${enterNote}`;
+
     return {
       questionText: `In the equation $${a}(kx + ${b}) = ${c}x + ${d}$, $k$ is a constant. The equation has no solution. What is the value of $k$?`,
       figureCode: null,
       options: [],
-      correctAnswer: finalKDenom === 1 ? correctAnswer : `${finalKNum}/${finalKDenom}`,
+      correctAnswer: kDen === 1 ? `${kNum}` : `${kNum}/${kDen}`,
       explanation: explanation
     };
   }
